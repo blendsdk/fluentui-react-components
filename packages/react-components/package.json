@@ -4,6 +4,7 @@
   "description": "Custom React components built on Fluent UI v9 in the Fluent component pattern",
   "type": "module",
   "license": "MIT",
+  "author": "TrueSoftware B.V.",
   "sideEffects": false,
   "engines": {
     "node": ">=22.0.0"
