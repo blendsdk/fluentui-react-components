@@ -1,0 +1,11 @@
+node_modules
+dist
+storybook-static
+coverage
+.turbo
+pnpm-lock.yaml
+
+# Skill templates contain placeholders such as <Name> that are not valid
+# TypeScript until the coding agent replaces them, so they are excluded from
+# formatting checks.
+.opencode/skills/*/templates

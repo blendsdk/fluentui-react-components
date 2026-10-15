@@ -1,0 +1,51 @@
+{
+  "name": "fluentui-react-components-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Monorepo for custom React components built on Fluent UI v9",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=12.8.0 <13"
+  },
+  "packageManager": "pnpm@12.11.2",
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "test": "turbo run test --concurrency=4",
+    "test:watch": "turbo run test:watch",
+    "type-check": "turbo run type-check",
+    "storybook": "turbo run storybook",
+    "storybook:build": "turbo run storybook:build",
+    "clean": "turbo run clean && rm -rf .turbo",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "skill:check": "node scripts/check-skill.mjs",
+    "verify": "pnpm format:check && pnpm skill:check && pnpm type-check && pnpm build && pnpm test",
+    "lockstep": "lockstep",
+    "lockstep:sync": "lockstep sync",
+    "lockstep:version:auto": "lockstep version --type auto --ci --no-changelog",
+    "lockstep:version:patch": "lockstep version --type patch --ci --no-changelog",
+    "lockstep:version:minor": "lockstep version --type minor --ci --no-changelog",
+    "lockstep:version:major": "lockstep version --type major --ci --no-changelog",
+    "lockstep:publish:latest": "lockstep publish --tag latest --git-push",
+    "lockstep:publish:next": "lockstep publish --tag next --git-push"
+  },
+  "devDependencies": {
+    "@blendsdk/lockstep": "^1.3.0",
+    "prettier": "^3.9.10",
+    "turbo": "^2.11.8"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blendsdk/fluentui-react-components.git"
+  },
+  "keywords": [
+    "fluentui",
+    "react",
+    "components",
+    "design-system",
+    "monorepo"
+  ]
+}

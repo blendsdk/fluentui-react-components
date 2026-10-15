@@ -1,0 +1,92 @@
+name: Release — Publish to npm
+
+# Manual release. The version bump type is analyzed from the conventional
+# commits since the last tag (`auto`) or forced. Publishing authenticates with
+# npm through OIDC trusted publishing: the workflow requests an `id-token`, and
+# npm exchanges it for a short-lived publish credential, so no long-lived npm
+# token is stored in the repository. Provenance attestations are generated
+# automatically under trusted publishing.
+#
+# One-time setup before the first automated release:
+#   1. Publish the package once from a workstation (`pnpm lockstep publish …`
+#      with an interactive login) so the package exists on npm.
+#   2. Register this workflow as a trusted publisher:
+#        npm trust github @blendsdk/fluentui-react-components \
+#          --file release.yml --repo blendsdk/fluentui-react-components \
+#          --allow-publish
+#   3. Restrict token-based publishing in the package settings.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_type:
+        description: 'Version bump (auto analyzes the conventional commits)'
+        required: true
+        default: 'auto'
+        type: choice
+        options:
+          - auto
+          - patch
+          - minor
+          - major
+      dist_tag:
+        description: 'npm dist-tag (latest = stable release)'
+        required: true
+        default: 'latest'
+        type: choice
+        options:
+          - latest
+          - next
+          - beta
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  release:
+    name: Version & publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Safety check — 'latest' requires main
+        if: inputs.dist_tag == 'latest' && github.ref != 'refs/heads/main'
+        run: |
+          echo "Publishing with the 'latest' dist-tag is only allowed from main."
+          echo "Current ref: ${{ github.ref }}"
+          echo "Use the 'next' or 'beta' dist-tag for other branches."
+          exit 1
+
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Install Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      - name: Test
+        run: pnpm test
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Version packages
+        run: pnpm exec lockstep version --type ${{ inputs.version_type }} --ci --no-changelog
+
+      - name: Publish packages
+        run: pnpm exec lockstep publish --tag ${{ inputs.dist_tag }} --git-push
