@@ -12,8 +12,8 @@
 
 - `packages/react-components/` — the only publishable package, `@blendsdk/fluentui-react-components`. Component sources live in `src/components/<Name>/`, tests in `test/`, stories beside the components, Storybook configuration in `.storybook/`.
 - `.opencode/skills/fluentui-components/` — the component-authoring skill (pattern, references, templates). Load it before creating, changing or reviewing a component.
-- `scripts/check-skill.mjs` — validates skill frontmatter, IDs and relative links.
-- `.github/workflows/` — CI (`ci.yml`), manual npm release via OIDC trusted publishing (`release.yml`), Storybook to GitHub Pages (`pages.yml`).
+- `scripts/check-skill.mjs` — validates the repo-authored skills under `.opencode/skills`: ID shape, frontmatter, and relative links outside code fences.
+- `.github/workflows/` — CI (`ci.yml`), manual npm release via OIDC trusted publishing (`release.yml`), Storybook to GitHub Pages (`pages.yml`; live at `https://blendsdk.github.io/fluentui-react-components/`).
 
 ## Commands
 
@@ -31,7 +31,7 @@
 - Hooks and render functions stay pure; styling uses `makeStyles` with `tokens` only, and class names merge with `mergeClasses`; native props of the root element pass through.
 - Documentation comments are mandatory for public and non-trivial internal symbols. Never reference plans, requirements or task identifiers in code or comments.
 - Conventional Commits (`feat(scope): ...`); Prettier is the only formatter — there is no ESLint.
-- `dist/` and `storybook-static/` are generated; never edit them.
+- `dist/` and `storybook-static/` are generated; never edit them. The CodeOps payload under `.opencode/` (the CodeOps `skills/` directories, `agents/`, `_shared/`, `references/`) is installer-managed and replaced on upgrade — never edit it; `fluentui-components` is the repo-authored skill.
 
 ## Verification
 
@@ -40,7 +40,8 @@
 
 ## CodeOps
 
-- No CodeOps layout yet (`codeops/` is absent); run `setup-codeops` to add requirements and plans when this repository adopts the workflow.
-- Specialist coverage: check due — run analyze-agents (never checked).
+- Nested layout: `codeops/.codeops.yml` is the marker (`integrationBranch: main`), `codeops/codeops.json` holds the strict quality policy, and `codeops/00-roadmap.md` is the portfolio roadmap. Feature artifacts live under `codeops/features/<feature>/` and appear lazily with the first requirement or plan.
+- Project skills and agents come from `opencode-codeops@2.2.1` (`install --project`), recorded in `.opencode/skills/.opencode-codeops.json`: 17 CodeOps skills plus 12 hidden agents that `exec-plan` dispatches. Restart OpenCode after an install or upgrade so they load.
+- Specialist coverage: up to date (2026-10-15) — no specialist is warranted yet; `make-plan` re-runs the check with phase evidence.
 
 <!-- CODEOPS-PROJECT:END -->
