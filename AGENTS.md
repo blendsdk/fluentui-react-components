@@ -23,7 +23,7 @@
 - One package: `pnpm --filter @blendsdk/fluentui-react-components <script>`.
 - Storybook workbench: `pnpm storybook` (port 6006).
 - Format: `pnpm format` / `pnpm format:check` (Prettier).
-- Release (unverified until the first run): `pnpm lockstep:version:auto`, `pnpm lockstep:publish:latest`.
+- Release: run the `release.yml` workflow (manual dispatch; it versions, publishes through npm OIDC, then pushes the release commit and tags), or locally `pnpm lockstep:version:auto` followed by `pnpm lockstep:publish:latest`.
 
 ## Conventions
 

@@ -89,4 +89,13 @@ jobs:
         run: pnpm exec lockstep version --type ${{ inputs.version_type }} --ci --no-changelog
 
       - name: Publish packages
-        run: pnpm exec lockstep publish --tag ${{ inputs.dist_tag }} --git-push
+        run: pnpm exec lockstep publish --tag ${{ inputs.dist_tag }}
+
+      # Lockstep creates lightweight tags (`git tag v<version>`) and pushes
+      # with `git push --follow-tags`, which only carries annotated tags — the
+      # version tag would stay on the runner. The workflow therefore pushes the
+      # release commit and every tag itself, after the publish succeeded.
+      - name: Push the release commit and tags
+        run: |
+          git push
+          git push --tags

@@ -29,8 +29,8 @@
     "lockstep:version:patch": "lockstep version --type patch --ci --no-changelog",
     "lockstep:version:minor": "lockstep version --type minor --ci --no-changelog",
     "lockstep:version:major": "lockstep version --type major --ci --no-changelog",
-    "lockstep:publish:latest": "lockstep publish --tag latest --git-push",
-    "lockstep:publish:next": "lockstep publish --tag next --git-push"
+    "lockstep:publish:latest": "lockstep publish --tag latest --git-push && git push --tags",
+    "lockstep:publish:next": "lockstep publish --tag next --git-push && git push --tags"
   },
   "devDependencies": {
     "@blendsdk/lockstep": "^1.3.0",
