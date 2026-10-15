@@ -8,6 +8,13 @@
  * `description`, and every relative Markdown link inside a skill must
  * resolve to a file that exists.
  *
+ * Link scanning is code-aware. Fenced code blocks and inline code spans are
+ * skipped, because skills legitimately show link examples inside snippets
+ * (the CodeOps skills shipped in this repository contain many). Site-absolute
+ * targets such as `/docs/page` are skipped too: they address a documentation
+ * site, not a file in the repository. An unterminated code fence is reported
+ * as a problem, because everything after it would otherwise be ignored.
+ *
  * The script prints one line per problem and exits with code 1 when any
  * problem was found, so CI fails on a broken skill. It exits with code 0 —
  * with a note — when the repository has no skills directory at all.
@@ -97,22 +104,70 @@ function listMarkdownFiles(dirPath) {
 }
 
 /**
+ * Blanks out fenced code blocks and inline code spans in a Markdown document.
+ *
+ * Everything inside a fence (``` or ~~~) or a `code span` is illustration, so
+ * a relative "link" found there is not navigation and must not be resolved.
+ * Fenced lines are replaced with empty lines to keep line structure readable
+ * in the reported problem locations.
+ *
+ * @param {string} content - raw Markdown file content
+ * @returns {{ text: string, unterminatedFence: boolean }} the scannable text,
+ *   and whether a fence was still open when the file ended
+ */
+function stripCode(content) {
+  const kept = [];
+  let fence = null;
+
+  for (const line of content.split(/\r?\n/)) {
+    const fenceMarker = line.match(/^\s*(`{3,}|~{3,})/);
+
+    if (fenceMarker) {
+      if (fence === null) {
+        fence = fenceMarker[1][0];
+        kept.push('');
+        continue;
+      }
+
+      if (fenceMarker[1][0] === fence) {
+        fence = null;
+        kept.push('');
+        continue;
+      }
+    }
+
+    kept.push(fence === null ? line : '');
+  }
+
+  return {
+    text: kept.join('\n').replace(/`[^`\n]*`/g, ''),
+    unterminatedFence: fence !== null,
+  };
+}
+
+/**
  * Checks that every relative link in one Markdown file resolves.
  *
- * Absolute URLs, mail links, and pure anchors are ignored; every other link
- * target is resolved against the file's directory and must exist. A missing
- * target is reported with the file and the raw link so the fix is obvious.
+ * Absolute URLs, mail links, pure anchors, and site-absolute routes such as
+ * `/docs/page` are ignored; every other link target is resolved against the
+ * file's directory and must exist. Code fences and code spans are skipped, so
+ * link examples inside snippets never count as links. A missing target is
+ * reported with the file and the raw link so the fix is obvious.
  *
  * @param {string} filePath - absolute path of the Markdown file to scan
  */
 function checkLinks(filePath) {
-  const content = readFileSync(filePath, 'utf8');
+  const { text, unterminatedFence } = stripCode(readFileSync(filePath, 'utf8'));
   const linkPattern = /\]\(([^()]+)\)/g;
 
-  for (const match of content.matchAll(linkPattern)) {
+  if (unterminatedFence) {
+    problems.push(`${filePath}: code fence is never closed`);
+  }
+
+  for (const match of text.matchAll(linkPattern)) {
     const target = match[1].trim().split('#')[0].split('?')[0];
 
-    if (target === '' || /^[a-z][a-z0-9+.-]*:/i.test(target)) {
+    if (target === '' || target.startsWith('/') || /^[a-z][a-z0-9+.-]*:/i.test(target)) {
       continue;
     }
 

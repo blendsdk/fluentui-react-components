@@ -9,3 +9,31 @@ pnpm-lock.yaml
 # TypeScript until the coding agent replaces them, so they are excluded from
 # formatting checks.
 .opencode/skills/*/templates
+
+# CodeOps skills, agents, and shared references installed into `.opencode/` by
+# `opencode-codeops install --project` (recorded in
+# `.opencode/skills/.opencode-codeops.json`). The installer owns and replaces
+# these files on upgrade and they are never edited here, so they are excluded
+# from formatting checks. When the plugin adds a skill, add its directory to
+# this list.
+.opencode/agents
+.opencode/_shared
+.opencode/references
+.opencode/skills/.opencode-codeops.json
+.opencode/skills/analyze-agents
+.opencode/skills/analyze-project
+.opencode/skills/clean-comments
+.opencode/skills/exec-plan
+.opencode/skills/git-commit
+.opencode/skills/github-issues
+.opencode/skills/grill-me
+.opencode/skills/make-plan
+.opencode/skills/make-requirements
+.opencode/skills/outcome-review
+.opencode/skills/preflight
+.opencode/skills/retro-requirements
+.opencode/skills/roadmap
+.opencode/skills/setup-codeops
+.opencode/skills/setup-routing
+.opencode/skills/techdocs
+.opencode/skills/upgrade-plan
