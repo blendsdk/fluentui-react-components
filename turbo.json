@@ -51,7 +51,8 @@
     "storybook:build": {
       "dependsOn": ["build"],
       "inputs": ["src/**/*.ts", "src/**/*.tsx", ".storybook/**", "package.json"],
-      "outputs": ["storybook-static/**"]
+      "outputs": ["storybook-static/**"],
+      "env": ["STORYBOOK_BASE_PATH"]
     },
     "clean": {
       "cache": false
