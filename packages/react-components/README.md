@@ -39,7 +39,9 @@ export function App() {
 
 - **Presentation only.** The components hold no data and no application state.
   Which pairs exist, which values are shown and what activation means are
-  decisions of the calling application.
+  decisions of the calling application. `SystemErrorProvider` is the deliberate
+  carve-out: it holds the current error as transient state so any part of the
+  application can report errors through one dialog.
 - **Semantic markup first.** Components render the element that already carries
   the meaning (`dl`/`dt`/`dd`, `button`, `ul`/`li`) and add ARIA attributes only
   where the platform has no element for the job.
@@ -141,6 +143,58 @@ component's own.
 - **The copy control renders only when the clipboard is available** (checked
   after mount) and confirms a successful copy briefly; clipboard failures
   change nothing.
+
+### SystemErrorProvider
+
+Wraps the application subtree once and lets any descendant report an error
+through `useSystemError()`; the provider holds the current error and renders
+one controlled `ErrorDialog`. It is a convenience layer, not a policy layer:
+it never inspects errors for authentication, never reloads, navigates or
+transmits, and repeated reports replace the current one (last-wins).
+
+```tsx
+<FluentProvider theme={webLightTheme}>
+  <SystemErrorProvider
+    captureGlobalErrors
+    onReload={() => window.location.reload()}
+    onSignOut={() => auth.signOut()}
+  >
+    <App />
+  </SystemErrorProvider>
+</FluentProvider>
+```
+
+| Prop                  | Type                          | Default      | Description                                                                                                                                                    |
+| --------------------- | ----------------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `children`            | `ReactNode`                   | — (required) | The application subtree; the provider adds no DOM of its own and one capture-enabled provider per application is the supported setup.                          |
+| `onReload`            | `() => void`                  | —            | Forwarded to the dialog's standard variant; when provided, the dialog adds the secondary Reload page action. The provider never reloads by itself.             |
+| `onSignOut`           | `() => void`                  | —            | Runs when the user activates Sign out of the session-expired variant — **after** the dialog has closed, so a missing or throwing handler cannot trap the user. |
+| `strings`             | `Partial<ErrorDialogStrings>` | —            | Text overrides applied to every dialog the provider shows.                                                                                                     |
+| `captureGlobalErrors` | `boolean`                     | `false`      | Registers opt-in window listeners for `error` and `unhandledrejection` and reports their payloads through the same dialog; the events are never suppressed.    |
+
+The hook returns the provider's imperative API:
+
+| Member       | Type                                                    | Description                                                                                                                                                         |
+| ------------ | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `catchError` | `(error: unknown, options?: CatchErrorOptions) => void` | Stores the value and opens the dialog; `options.kind` (`'error'` by default) selects the variant, `options.detailsText` overrides the details for this report only. |
+| `clearError` | `() => void`                                            | Closes and clears the dialog; a no-op when nothing is shown.                                                                                                        |
+
+#### Composition patterns
+
+- **Report from anywhere.** Call `useSystemError()` in any descendant and pass
+  the caught value to `catchError`; calling the hook outside the provider
+  throws a descriptive error.
+- **Session expiry is explicit and never traps.** The unauthorized variant is a
+  deliberate call-site decision — `catchError(error, { kind: 'unauthorized' })` —
+  and the README-documented setup provides a real `onSignOut` handler: signing
+  out closes the dialog first and runs the handler afterwards.
+- **Global capture is opt-in and non-suppressing.** With
+  `captureGlobalErrors`, uncaught window errors and unhandled rejections reach
+  the dialog while the browser console and other listeners keep seeing them;
+  the library carries no monitoring policy.
+- **The provider holds transient state only** (the principles carve-out): the
+  current error lives in memory until it is cleared or replaced, and nothing is
+  stored or transmitted.
 
 ## Development
 
