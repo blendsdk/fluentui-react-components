@@ -1,0 +1,212 @@
+# Execution Plan: confirm-dialog
+
+> **Document**: 99-execution-plan.md
+> **Parent**: [Index](00-index.md)
+> **Last Updated**: 2026-10-16 13:34
+> **Progress**: 0/27 tasks (0%)
+> **CodeOps Artifact Schema**: 1
+
+## Overview
+
+Implements `confirm-dialog/RD-01` and `confirm-dialog/RD-02`: the controlled Fluent UI v9
+`ConfirmDialog` (Phase 1) and its companion `ConfirmProvider` + `useConfirm()` (Phase 2), each
+with specification tests first, then the implementation, then implementation tests and hardening —
+the mandatory three-session ordering.
+
+**Paths:** relative to `packages/react-components/`.
+
+**🚨 Update this document after EACH completed task!**
+
+---
+
+## Implementation Phases
+
+| Phase | Title                   | Tasks |
+| ----- | ----------------------- | ----- |
+| 1     | ConfirmDialog component | 14    |
+| 2     | ConfirmProvider         | 13    |
+
+**Total: 27 tasks across 2 phases** (no fabricated hour estimates — scope is bounded by the
+task-size criteria in the make-plan quality checklist).
+
+> **⚠️ EXECUTION RULE — APPLIES TO EVERY AGENT EXECUTING THIS PLAN:**
+>
+> The task checkboxes in the phase sections below are the **single source of truth** for
+> progress. Every task line appears exactly once in this document. The executing agent MUST:
+>
+> 1. **On implementation:** mark the task `[~]` with a timestamp —
+>    `- [~] 1.1.1 Task description ⏳ (implemented: YYYY-MM-DD HH:MM)`
+> 2. **On verify pass:** promote it to `[x]` —
+>    `- [x] 1.1.1 Task description ✅ (completed: YYYY-MM-DD HH:MM)`
+> 3. **Update the Progress header** (`> **Progress**: X/Y tasks (Z%)`) and the Last Updated
+>    stamp after EVERY task — never batch updates. Only `[x]` counts as complete.
+> 4. **Resume** by scanning the phase sections top-to-bottom: the first `[~]` task is resumed
+>    first, else the first `[ ]` task.
+> 5. **On blocker:** mark the task `[!]` and append `Blocked: <short reason>` on the same line.
+>    The plan lifecycle is `Ready`, `Executing`, `Done`, or `Blocked`, derived from these markers.
+>
+> Timestamps come from `date '+%Y-%m-%d %H:%M'` — never invented. Failure to keep the marks
+> current means progress is invisible after crashes, context resets, or session handoffs.
+
+---
+
+## Phase 1: ConfirmDialog component
+
+> **Phase baseline tree**: `7242e7e5c64ff957137709a6751dd2f29edf60df`
+> **Scope mode**: strict · **Expected modification set** (`packages/react-components/`-relative):
+> `test/confirm-dialog.spec.test.tsx` · `test/package-exports.spec.test.ts` ·
+> `test/confirm-dialog.impl.test.tsx` · `src/components/ConfirmDialog/**` · `README.md` — plus the
+> plan/roadmap bookkeeping in this repository's `codeops/` documents
+> **Lenses**: api-surface (public component contract) · security (content inertness and
+> hostile-input containment)
+> **Reasoning**: high — contract-heavy component (20 acceptance criteria), Griffel specificity
+> override and two focus effects with environment-dependent conditions
+
+### Step 1.1: Specification Tests (before implementation)
+
+**Reference**: [07](07-testing-strategy.md) §ConfirmDialog (ST-1…ST-29) · [03-01](03-01-confirm-dialog.md) §Interfaces · AR #4, AR #6
+**Objective**: Pin the contract as executable tests before any implementation exists.
+
+- [ ] 1.1.1 [spec-author] Write the contract spec tests from the ST cases — `test/confirm-dialog.spec.test.tsx`
+- [ ] 1.1.2 [spec-author] Extend the export-surface pin with `ConfirmDialog` and its type pins (ST-29) — `test/package-exports.spec.test.ts`
+- [ ] 1.1.3 Run the spec suite and verify the **red phase** (import/export failures expected; document any case that passes pre-implementation with justification) — `pnpm test`
+
+**Deliverables**:
+
+- [ ] Spec files carrying every ST case with concrete assertions (including the ST-12/ST-13 `@ts-expect-error` directives)
+- [ ] Red-phase evidence recorded with the task marks
+
+**Verify**: `pnpm test` (expected failures documented; no other command)
+
+### Step 1.2: Implementation
+
+**Reference**: [03-01](03-01-confirm-dialog.md) §Public API, §Interfaces, §Danger styling, §Focus and accessibility machinery, §Behaviour details
+**Objective**: Implement the component so the frozen spec tests pass.
+
+- [ ] 1.2.1 Public types — `src/components/ConfirmDialog/ConfirmDialog.types.ts`
+- [ ] 1.2.2 Static Griffel classes: surface, message (`pre-line`), the guarded danger recipe — `src/components/ConfirmDialog/useConfirmDialogStyles.styles.ts`
+- [ ] 1.2.3 State hook: normalization, label resolution, ids, the outcome bridge, capture/restore and busy effects, merged ref — `src/components/ConfirmDialog/useConfirmDialog.ts`
+- [ ] 1.2.4 Pure render: alert Dialog, title/message wiring, action buttons, icon wrapping, native spread — `src/components/ConfirmDialog/renderConfirmDialog.tsx`
+- [ ] 1.2.5 Shell with the generic-preserving export assertion, folder barrel and package exports — `src/components/ConfirmDialog/ConfirmDialog.tsx`, `src/components/ConfirmDialog/index.ts`, `src/index.ts`
+- [ ] 1.2.6 Run the spec suite and verify the **green phase** — a failing spec test means the implementation is wrong, never edit the test — `pnpm test`
+
+**Deliverables**:
+
+- [ ] Component per the `03-01 §Proposed Changes` file table
+- [ ] All spec tests green
+
+**Verify**: `pnpm test`
+
+### Step 1.3: Implementation Tests & Hardening
+
+**Reference**: [03-01](03-01-confirm-dialog.md) §Testing Requirements · [07](07-testing-strategy.md) §Test Data
+**Objective**: Cover internals and edge paths, add story and documentation, run the manual pass, and verify the whole gate.
+
+- [ ] 1.3.1 Implementation tests: danger class rules/tokens, label-fallback internals, id wiring, effect conditions, merged ref, zero-v8 scan (RD-01 AC 14) — `test/confirm-dialog.impl.test.tsx`
+- [ ] 1.3.2 Stories: default pair, danger pair, custom action set, busy, multi-line message, string overrides + the manual review checklist — `src/components/ConfirmDialog/ConfirmDialog.stories.tsx`
+- [ ] 1.3.3 README component section: props table, composition notes, localization notes, "when not to use" boundary — `README.md`
+- [ ] 1.3.4 Storybook keyboard/a11y pass and forced-colors pass (real focus path; a11y addon clean) — user-assisted; record the pass result with the task marks and fix anything found
+- [ ] 1.3.5 Full verification — `pnpm verify` and `pnpm storybook:build`
+
+**Deliverables**:
+
+- [ ] Implementation tests passing; story set present; README section written; manual pass recorded (user-assisted)
+- [ ] All verification passing
+
+**Verify**: `pnpm verify`
+
+---
+
+## Phase 2: ConfirmProvider
+
+> **Phase baseline tree**: _(recorded by the exec-plan skill from a temporary-index snapshot of
+> committed, staged, unstaged, and untracked phase-start state)_
+> **Scope mode**: strict · **Expected modification set** (`packages/react-components/`-relative):
+> `test/confirm-provider.spec.test.tsx` · `test/package-exports.spec.test.ts` ·
+> `test/confirm-provider.impl.test.tsx` · `test/confirm-provider.ssr.test.tsx` ·
+> `src/components/ConfirmProvider/**` · `README.md` — plus the plan/roadmap bookkeeping in this
+> repository's `codeops/` documents
+> **Lenses**: api-surface (provider + hook contract) · concurrency (promise lifecycle:
+> replacement, settle-once, the StrictMode probe)
+> **Reasoning**: high — concurrency-sensitive settlement mechanics across supersede, unmount and
+> the StrictMode probe, on top of the string-chain and rendering rules
+
+### Step 2.1: Specification Tests (before implementation)
+
+**Reference**: [07](07-testing-strategy.md) §ConfirmProvider (ST-30…ST-41) · [03-02](03-02-confirm-provider.md) §Interfaces · AR #4, AR #8
+**Objective**: Pin the provider contract as executable tests before any implementation exists.
+
+- [ ] 2.1.1 [spec-author] Write the provider spec tests from the ST cases — `test/confirm-provider.spec.test.tsx`
+- [ ] 2.1.2 [spec-author] Extend the export-surface list with `ConfirmProvider`, `useConfirm` and their type pins (ST-41) — `test/package-exports.spec.test.ts`
+- [ ] 2.1.3 Run the spec suite and verify the **red phase** (import/export failures expected; document any case that passes pre-implementation with justification) — `pnpm test`
+
+**Deliverables**:
+
+- [ ] Spec file carrying the provider ST cases with concrete assertions; the export pin extended
+- [ ] Red-phase evidence recorded with the task marks
+
+**Verify**: `pnpm test` (expected failures documented; no other command)
+
+### Step 2.2: Implementation
+
+**Reference**: [03-02](03-02-confirm-provider.md) §Public API, §Interfaces, §Provider mechanics, §SSR and environment safety
+**Objective**: Implement the provider so the frozen spec tests pass.
+
+- [ ] 2.2.1 Public types and internal context — `src/components/ConfirmProvider/ConfirmProvider.types.ts`, `src/components/ConfirmProvider/ConfirmContext.ts`
+- [ ] 2.2.2 Provider: request record, replacement, settle-once activation, the probe discriminator, strings chain, always-rendered dialog with the idle-key reuse — `src/components/ConfirmProvider/ConfirmProvider.tsx`
+- [ ] 2.2.3 The public hook with the outside-provider error — `src/components/ConfirmProvider/useConfirm.ts`
+- [ ] 2.2.4 Barrel and package exports — `src/components/ConfirmProvider/index.ts`, `src/index.ts`
+- [ ] 2.2.5 Run the spec suite and verify the **green phase** — a failing spec test means the implementation is wrong, never edit the test — `pnpm test`
+
+**Deliverables**:
+
+- [ ] Provider and hook per the `03-02` file table
+- [ ] All spec tests green
+
+**Verify**: `pnpm test`
+
+### Step 2.3: Implementation Tests & Hardening
+
+**Reference**: [03-02](03-02-confirm-provider.md) §Testing Requirements · [07](07-testing-strategy.md) §Test Data
+**Objective**: Cover internals and edge paths, add the SSR smoke, stories and documentation, and verify the whole gate.
+
+- [ ] 2.3.1 Implementation tests: stability, focus-after-swap, settle-once, StrictMode probe, children identity — `test/confirm-provider.impl.test.tsx`
+- [ ] 2.3.2 SSR smoke test (node environment; import + `renderToString` must not throw) — `test/confirm-provider.ssr.test.tsx`
+- [ ] 2.3.3 Stories: interactive trigger covering pair mode, danger, custom actions and replacement — `src/components/ConfirmProvider/ConfirmProvider.stories.tsx`
+- [ ] 2.3.4 README provider section (setup, props and request tables, usage contract, provider-count caveat) and the Principles carve-out update — `README.md`
+- [ ] 2.3.5 Full verification — `pnpm verify` and `pnpm storybook:build`
+
+**Deliverables**:
+
+- [ ] Implementation tests and SSR smoke passing; story set present; README section written
+- [ ] All verification passing
+
+**Verify**: `pnpm verify`
+
+---
+
+## Dependencies
+
+```
+Phase 1 ──▶ Phase 2 (the provider renders the Phase 1 dialog). Within each phase the steps run
+in strict order:
+  1.1 (spec tests, red) ──▶ 1.2 (implementation, green) ──▶ 1.3 (impl tests & hardening)
+  2.1 (spec tests, red) ──▶ 2.2 (implementation, green) ──▶ 2.3 (impl tests & hardening)
+```
+
+---
+
+## Success Criteria
+
+**Feature is complete when:**
+
+1. ✅ All phases completed
+2. ✅ All verification passing (`pnpm verify`; `pnpm storybook:build`)
+3. ✅ No warnings/errors
+4. ✅ No dead code — no unused parameters, functions, classes, or modules
+5. ✅ Security hardened — content renders as text only (no HTML injection); no network, storage
+   or timer side effects; every promise settles exactly once and never rejects
+6. ✅ Documentation updated — README sections (with the "when not to use" boundary and the
+   Principles carve-out) and API doc comments
+7. ✅ Code reviewed (if applicable)
+8. ✅ Post-completion project re-analysis (handled by the exec-plan skill)
