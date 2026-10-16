@@ -91,6 +91,57 @@ layout; the item follows.
 - **Nesting works.** A pair may contain another `DescriptionList` in its
   value; nested lists provide their own layout to their own items.
 
+### ErrorDialog
+
+A blocking alert dialog that shows an error's details for the support workflow
+and offers the recovery actions the host provides: close, and optionally a page
+reload — or sign-out for a session that expired. The component is controlled and
+side-effect-free: visibility follows `open`, dismissal is a callback request to
+the application, and nothing is ever reloaded, navigated or logged on the
+component's own.
+
+| Prop          | Type                              | Default                                   | Description                                                                                                              |
+| ------------- | --------------------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `open`        | `boolean`                         | — (required)                              | Whether the dialog is shown; the application owns this state.                                                            |
+| `error`       | `unknown`                         | —                                         | The value to display; serialized into the details area (see below).                                                      |
+| `detailsText` | `string`                          | —                                         | Replaces the serialized details verbatim; an empty string renders a blank details value.                                 |
+| `strings`     | `Partial<ErrorDialogStrings>`     | —                                         | Text overrides merged key by key over the English defaults.                                                              |
+| `kind`        | `'error' \| 'unauthorized'`       | `'error'`                                 | The variant: standard recovery actions, or sign-out only for a session that expired.                                     |
+| `onDismiss`   | `() => void`                      | — (required for the error variant)        | Called once, without arguments, when Close is activated.                                                                 |
+| `onReload`    | `() => void`                      | —                                         | When provided, the secondary Reload page action renders.                                                                 |
+| `onSignOut`   | `() => void`                      | — (required for the unauthorized variant) | Called once, without arguments, when Sign out is activated.                                                              |
+| …             | `ComponentPropsWithoutRef<'div'>` | —                                         | All native props spread onto the dialog surface; `className` and `style` merge (the caller wins) and `ref` points at it. |
+
+```tsx
+<ErrorDialog
+  open={error !== undefined}
+  error={error}
+  onDismiss={() => setError(undefined)}
+  onReload={() => window.location.reload()}
+/>
+```
+
+#### Composition patterns
+
+- **The application owns visibility.** Render the dialog from the same state
+  that holds the current error; `onDismiss` clears that state and the dialog
+  disappears on the next render — the component keeps no state of its own.
+- **Error values are handled defensively.** `Error` instances serialize to
+  pretty-printed JSON with name, message, stack and custom fields; strings pass
+  through verbatim; exotic values fall back gracefully, so a hostile or broken
+  value can never make the dialog throw. Use `detailsText` when the application
+  wants full control of the text.
+- **Localization is incremental.** Pass a partial `strings` object; unset keys
+  keep their English defaults. A key set to an empty string suppresses that
+  text on purpose.
+- **Alert semantics.** The dialog is an `alertdialog`: Escape and backdrop
+  clicks cannot dismiss it — only the rendered actions can. The session-expired
+  variant deliberately offers no dismissal beyond signing out, so a user cannot
+  stay in a dead session.
+- **The copy control renders only when the clipboard is available** (checked
+  after mount) and confirms a successful copy briefly; clipboard failures
+  change nothing.
+
 ## Development
 
 ```bash
