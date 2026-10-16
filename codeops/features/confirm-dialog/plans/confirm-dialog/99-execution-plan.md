@@ -126,6 +126,16 @@ task-size criteria in the make-plan quality checklist).
 - [x] 1.3.2 Stories: default pair, danger pair, custom action set, busy, multi-line message, string overrides + the manual review checklist — `src/components/ConfirmDialog/ConfirmDialog.stories.tsx` ✅ (completed: 2026-10-16 14:04)
 - [x] 1.3.3 README component section: props table, composition notes, localization notes, "when not to use" boundary — `README.md` ✅ (completed: 2026-10-16 14:04)
 - [ ] 1.3.4 Storybook keyboard/a11y pass and forced-colors pass (real focus path; a11y addon clean) — user-assisted; record the pass result with the task marks and fix anything found
+
+> **Manual-pass record (1.3.4, in progress):** the user ran the danger pair story and reported a
+> contrast defect — the label rendered in the pinned `colorStatusDangerForegroundInverted`
+> (light theme `#dc626d` on `#c50f1f`; dark theme `#b10e1c` on `#c50f1f`) instead of white.
+> Fixed on the user's direction: the recipe now uses `colorNeutralForegroundOnBrand` (white in
+> both themes); RD-01, the plan spec `03-01` and the requirements register carry the amendment,
+> and the spec/impl tests pin the new token. The remaining checklist items (initial focus, trap
+> cycle, close-time restore, Escape/backdrop, busy focus, forced colors, a11y addon) await the
+> user's continuation.
+
 - [x] 1.3.5 Full verification — `pnpm verify` and `pnpm storybook:build` ✅ (completed: 2026-10-16 14:04)
 
 > **Full-verification record (1.3.5):** `pnpm verify` green — format, skill check, type-check, build

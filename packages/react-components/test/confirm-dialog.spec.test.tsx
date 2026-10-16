@@ -64,14 +64,16 @@ function classTokens(element: Element): string[] {
 }
 
 /**
- * Class names whose stylesheet rules consume the danger tokens.
+ * Class names whose stylesheet rules carry the danger recipe.
  *
  * Griffel compiles one style slot into atomic classes — one class per
  * declaration and pseudo-state — so a flagged action's danger styling is a
  * set of classes, not a single class name. The set is read back from the
- * injected stylesheets: every class whose rule consumes one of the danger
- * tokens through `var(...)` belongs to the danger recipe. (Rules that merely
- * define the tokens, such as the theme provider's, are not styling.)
+ * injected stylesheets, scoped to the guarded selectors the recipe uses (the
+ * `aria-disabled` guard appears only in these rules): the classes whose rules
+ * consume a danger background token or the on-brand label foreground. Rules
+ * that merely define the tokens, such as the theme provider's, are not
+ * styling.
  */
 function dangerTokenClasses(): Set<string> {
   const names = new Set<string>();
@@ -80,7 +82,14 @@ function dangerTokenClasses(): Set<string> {
       if (!(rule instanceof CSSStyleRule)) {
         continue;
       }
-      if (!/var\(--colorStatusDanger(Background3|ForegroundInverted)/.test(rule.cssText)) {
+      if (!rule.selectorText.includes('aria-disabled')) {
+        continue;
+      }
+      if (
+        !/var\(--colorStatusDangerBackground3|var\(--colorNeutralForegroundOnBrand\)/.test(
+          rule.cssText
+        )
+      ) {
         continue;
       }
       for (const match of rule.selectorText.matchAll(/\.([A-Za-z0-9_-]+)/g)) {

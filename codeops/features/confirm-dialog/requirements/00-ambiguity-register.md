@@ -60,12 +60,16 @@ upstream precedent (`Dialog` primitives + `Toaster`/`useToastController`); each 
 independently useful and independently testable.
 
 **AR-4 / AR-5:** Two intents only. The danger treatment uses the v9 status tokens
-(`colorStatusDangerBackground3` + `...Hover` + `...Pressed`, inverted foreground) on the one
-action that carries it, with the surface untouched — verified available in the installed tokens
-package; the Button primitive has no built-in danger look in `@fluentui/react-button@9.11.1` or
-upstream master. The guarded selector covers the base, hover, pressed and keyboard-pressed
-(`:active:focus-visible`) states; forced-colors behavior is a manual story checklist item (the
-override must not defeat Fluent's own handling). _(2026-10-16 preflight amendment.)_
+(`colorStatusDangerBackground3` + `...Hover` + `...Pressed`, and the on-brand white foreground)
+on the one action that carries it, with the surface untouched — verified available in the
+installed tokens package; the Button primitive has no built-in danger look in
+`@fluentui/react-button@9.11.1` or upstream master. The guarded selector covers the base, hover,
+pressed and keyboard-pressed (`:active:focus-visible`) states; forced-colors behavior is a manual
+story checklist item (the override must not defeat Fluent's own handling). _(2026-10-16 preflight
+amendment.)_ _(2026-10-16 manual-pass amendment: the danger foreground uses
+`colorNeutralForegroundOnBrand`; the pinned `colorStatusDangerForegroundInverted` resolved to a
+low-contrast red on the strong danger background in both themes — corrected by direct user report
+during the Storybook pass.)_
 
 **AR-6 / AR-7:** Verified v9 mechanics for the alert semantics: `modalType="alert"` renders
 `role="alertdialog"`, backdrop clicks are ignored, and Escape only requests a close when an

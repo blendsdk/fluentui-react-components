@@ -151,19 +151,19 @@ One class, applied to the flagged button only (RD-01 §Danger styling; requireme
 dangerAction: {
   ':enabled:not([aria-disabled="true"])': {
     backgroundColor: tokens.colorStatusDangerBackground3,
-    color: tokens.colorStatusDangerForegroundInverted,
+    color: tokens.colorNeutralForegroundOnBrand,
   },
   ':enabled:not([aria-disabled="true"]):hover': {
     backgroundColor: tokens.colorStatusDangerBackground3Hover,
-    color: tokens.colorStatusDangerForegroundInverted,
+    color: tokens.colorNeutralForegroundOnBrand,
   },
   ':enabled:not([aria-disabled="true"]):hover:active': {
     backgroundColor: tokens.colorStatusDangerBackground3Pressed,
-    color: tokens.colorStatusDangerForegroundInverted,
+    color: tokens.colorNeutralForegroundOnBrand,
   },
   ':enabled:not([aria-disabled="true"]):active:focus-visible': {
     backgroundColor: tokens.colorStatusDangerBackground3Pressed,
-    color: tokens.colorStatusDangerForegroundInverted,
+    color: tokens.colorNeutralForegroundOnBrand,
   },
 },
 ```

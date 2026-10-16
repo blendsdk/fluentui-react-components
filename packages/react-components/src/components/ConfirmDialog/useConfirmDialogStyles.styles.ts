@@ -10,9 +10,10 @@ import { makeStyles, tokens } from '@fluentui/react-components';
  * `:enabled:not([aria-disabled="true"])` and written in compound form so it
  * outweighs Fluent's own Button state styles (base, hover, pointer-pressed and
  * keyboard-pressed) while disabled buttons keep Fluent's disabled styling.
- * All colors come from status-danger tokens, so light, dark and custom themes
- * apply, and the override leaves the user agent's forced-colors handling
- * intact.
+ * The background colors come from the status-danger tokens and the label uses
+ * the on-brand foreground — white in both themes — so the button stays
+ * readable in light, dark and custom themes; the override leaves the user
+ * agent's forced-colors handling intact.
  */
 const useStyles = makeStyles({
   surface: {
@@ -24,19 +25,19 @@ const useStyles = makeStyles({
   dangerAction: {
     ':enabled:not([aria-disabled="true"])': {
       backgroundColor: tokens.colorStatusDangerBackground3,
-      color: tokens.colorStatusDangerForegroundInverted,
+      color: tokens.colorNeutralForegroundOnBrand,
     },
     ':enabled:not([aria-disabled="true"]):hover': {
       backgroundColor: tokens.colorStatusDangerBackground3Hover,
-      color: tokens.colorStatusDangerForegroundInverted,
+      color: tokens.colorNeutralForegroundOnBrand,
     },
     ':enabled:not([aria-disabled="true"]):hover:active': {
       backgroundColor: tokens.colorStatusDangerBackground3Pressed,
-      color: tokens.colorStatusDangerForegroundInverted,
+      color: tokens.colorNeutralForegroundOnBrand,
     },
     ':enabled:not([aria-disabled="true"]):active:focus-visible': {
       backgroundColor: tokens.colorStatusDangerBackground3Pressed,
-      color: tokens.colorStatusDangerForegroundInverted,
+      color: tokens.colorNeutralForegroundOnBrand,
     },
   },
 });

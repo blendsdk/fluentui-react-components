@@ -49,8 +49,8 @@ emphasis, the typed outcome and its accessibility wiring.
       message preserves `\n` as visible line breaks (AR #10, AR #11).
 - [ ] An `intent` variant, `'confirmation'` (default) or `'danger'`, which changes only the
       emphasis of the affirmative action: the danger token recipe (base, hover and pressed
-      backgrounds plus inverted foreground) for `'danger'`; the dialog surface is identical in
-      both variants (AR #4, AR #5).
+      backgrounds plus the on-brand white foreground) for `'danger'`; the dialog surface is
+      identical in both variants (AR #4, AR #5).
 - [ ] An optional `actions` array (custom action sets such as Yes/No/Cancel or
       Save/Discard/Cancel): a non-empty tuple of `ConfirmAction` records — `value`, `label`,
       optional `appearance`, `intent`, `icon`; it replaces the default pair, renders in array
@@ -224,14 +224,19 @@ that button only:
 | Background          | `colorStatusDangerBackground3`        |
 | Background, hover   | `colorStatusDangerBackground3Hover`   |
 | Background, pressed | `colorStatusDangerBackground3Pressed` |
-| Foreground          | `colorStatusDangerForegroundInverted` |
+| Foreground          | `colorNeutralForegroundOnBrand`       |
+
+> **2026-10-16 manual-pass amendment:** the foreground uses
+> `colorNeutralForegroundOnBrand` (white in both themes). The previously pinned
+> `colorStatusDangerForegroundInverted` resolves to a low-contrast red on the strong danger
+> background in both themes — a direct user finding during the Storybook pass.
 
 - The dialog surface, title and content classes are identical to the `confirmation` variant
   (AR #5).
 - The override beats the Fluent `Button` styles through specificity: the guarded selector
   `:enabled:not([aria-disabled="true"])` for the base state plus its combinations for every
   interactive state — `:hover`, `:hover:active` and `:active:focus-visible` (the keyboard-pressed
-  pair) — each applying the danger background tokens and the inverted foreground, with a comment
+  pair) — each applying the danger background tokens and the on-brand white foreground, with a comment
   explaining what it outweighs (house styling rules). Disabled buttons stay outside the guard and
   keep Fluent's disabled styling.
 - In forced-colors mode the button stays usable and the override must not defeat Fluent's
@@ -361,7 +366,7 @@ that button only:
 6. [ ] With `intent="danger"`, the affirmative button's class composition differs from the
        `confirmation` variant by exactly the danger class; the danger class declares
        `background-color` for base, `:hover`, `:hover:active` and `:active:focus-visible` from the
-       three danger background tokens, with the inverted danger foreground; the surface element's
+       three danger background tokens, with the on-brand white foreground; the surface element's
        classes are identical in both variants. A manual forced-colors pass (story checklist item)
        confirms the button stays usable and the override keeps Fluent's high-contrast handling
        intact.

@@ -49,7 +49,10 @@ function readDangerRules(): CssRule[] {
       }
       const background = rule.style.getPropertyValue('background-color');
       const color = rule.style.getPropertyValue('color');
-      if (!background.includes('colorStatusDanger') && !color.includes('colorStatusDanger')) {
+      if (
+        !background.includes('colorStatusDanger') &&
+        !color.includes('colorNeutralForegroundOnBrand')
+      ) {
         continue;
       }
       found.push({
@@ -106,7 +109,7 @@ describe('ConfirmDialog internals', () => {
       );
 
       for (const entry of states.values()) {
-        expect(entry.color).toContain('colorStatusDangerForegroundInverted');
+        expect(entry.color).toContain('colorNeutralForegroundOnBrand');
       }
     });
 
