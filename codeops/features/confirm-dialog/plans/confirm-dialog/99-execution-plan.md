@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-16 14:41
-> **Progress**: 21/27 tasks (78%)
+> **Last Updated**: 2026-10-16 14:44
+> **Progress**: 26/27 tasks (96%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -210,11 +210,16 @@ task-size criteria in the make-plan quality checklist).
 **Reference**: [03-02](03-02-confirm-provider.md) §Testing Requirements · [07](07-testing-strategy.md) §Test Data
 **Objective**: Cover internals and edge paths, add the SSR smoke, stories and documentation, and verify the whole gate.
 
-- [ ] 2.3.1 Implementation tests: stability, focus-after-swap, settle-once, StrictMode probe, children identity — `test/confirm-provider.impl.test.tsx`
-- [ ] 2.3.2 SSR smoke test (node environment; import + `renderToString` must not throw) — `test/confirm-provider.ssr.test.tsx`
-- [ ] 2.3.3 Stories: interactive trigger covering pair mode, danger, custom actions and replacement — `src/components/ConfirmProvider/ConfirmProvider.stories.tsx`
-- [ ] 2.3.4 README provider section (setup, props and request tables, usage contract, provider-count caveat) and the Principles carve-out update — `README.md`
-- [ ] 2.3.5 Full verification — `pnpm verify` and `pnpm storybook:build`
+- [x] 2.3.1 Implementation tests: stability, focus-after-swap, settle-once, StrictMode probe, children identity — `test/confirm-provider.impl.test.tsx` ✅ (completed: 2026-10-16 14:44)
+- [x] 2.3.2 SSR smoke test (node environment; import + `renderToString` must not throw) — `test/confirm-provider.ssr.test.tsx` ✅ (completed: 2026-10-16 14:44)
+- [x] 2.3.3 Stories: interactive trigger covering pair mode, danger, custom actions and replacement — `src/components/ConfirmProvider/ConfirmProvider.stories.tsx` ✅ (completed: 2026-10-16 14:44)
+- [x] 2.3.4 README provider section (setup, props and request tables, usage contract, provider-count caveat) and the Principles carve-out update — `README.md` ✅ (completed: 2026-10-16 14:44)
+- [x] 2.3.5 Full verification — `pnpm verify` and `pnpm storybook:build` ✅ (completed: 2026-10-16 14:44)
+
+> **Full-verification record (2.3.5):** `pnpm verify` green — format, skill check, type-check, build
+> and 166/166 tests across 12 files; `pnpm storybook:build` completes successfully with the
+> provider story set. Phase 1's manual keyboard/forced-colors pass (1.3.4) remains the only open
+> task in the plan.
 
 **Deliverables**:
 

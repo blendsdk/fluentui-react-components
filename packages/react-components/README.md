@@ -39,9 +39,10 @@ export function App() {
 
 - **Presentation only.** The components hold no data and no application state.
   Which pairs exist, which values are shown and what activation means are
-  decisions of the calling application. `SystemErrorProvider` is the deliberate
-  carve-out: it holds the current error as transient state so any part of the
-  application can report errors through one dialog.
+  decisions of the calling application. `SystemErrorProvider` and
+  `ConfirmProvider` are the deliberate carve-outs: they hold transient state —
+  the current error, the pending confirmation request — so any part of the
+  application can report errors or ask for a decision through one dialog.
 - **Semantic markup first.** Components render the element that already carries
   the meaning (`dl`/`dt`/`dd`, `button`, `ul`/`li`) and add ARIA attributes only
   where the platform has no element for the job.
@@ -257,6 +258,50 @@ and a rendered action set. It is **not** a general dialog host — for forms,
 validation, multi-step flows, custom bodies or header glyphs, compose the
 Fluent primitives (`Dialog`, `DialogSurface`, `DialogTitle`, `DialogContent`,
 `DialogActions`) directly.
+
+### ConfirmProvider
+
+Wraps the application subtree once and lets any descendant ask for a decision
+through `useConfirm()`; the provider holds the pending request and renders one
+`ConfirmDialog`. It is a convenience layer, not a policy layer: it never
+executes the decided work, and every request settles exactly once — a
+superseded or unmounted request resolves `false`, and the promise never
+rejects. One provider per React root is the supported setup; more than one
+could show two dialogs at the same time.
+
+```tsx
+<FluentProvider theme={webLightTheme}>
+  <ConfirmProvider strings={{ confirm: 'Yes', decline: 'No' }}>
+    <App />
+  </ConfirmProvider>
+</FluentProvider>
+```
+
+| Prop       | Type                            | Default      | Description                                                                                              |
+| ---------- | ------------------------------- | ------------ | -------------------------------------------------------------------------------------------------------- |
+| `children` | `ReactNode`                     | — (required) | The application subtree; the provider adds no DOM of its own while idle.                                 |
+| `strings`  | `Partial<ConfirmDialogStrings>` | —            | Text defaults applied to every dialog the provider shows; a non-blank per-call override wins key by key. |
+
+The hook returns a stable imperative function with two shapes:
+
+| Call                                              | Returns            | Description                                                                       |
+| ------------------------------------------------- | ------------------ | --------------------------------------------------------------------------------- |
+| `confirm({ title, message?, intent?, strings? })` | `Promise<boolean>` | The default pair; resolves `true`/`false` after the user decides.                 |
+| `confirm({ title, message?, strings?, actions })` | `Promise<V>`       | A custom action set; resolves the chosen `value` with its literal type preserved. |
+
+#### Composition patterns
+
+- **Mount once, above the router.** `useConfirm()` works from any descendant on
+  any page; per-page providers are never required.
+- **The dialog closes first, then the promise resolves.** The host's follow-up
+  work runs in the calling flow after the awaited decision — the provider never
+  keeps the dialog open while that work runs.
+- **Requests are one-at-a-time (replacement).** A new `confirm()` while a dialog
+  is open resolves the previous promise `false` and shows the new dialog; a
+  `confirm()` call never rejects and never leaves a dangling `await`.
+- **Call from handlers or effects — not during render, not on the server.**
+  Server rendering emits the children only; a request needs a client-side
+  interaction.
 
 ## Development
 
