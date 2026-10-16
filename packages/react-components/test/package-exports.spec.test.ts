@@ -1,12 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import * as api from '../src/index';
 import type {
+  AppLauncherDocking,
   AppLauncherGridProps,
   AppLauncherItemProps,
   AppLauncherListProps,
+  AppLauncherProps,
   AppLauncherSearchChangeData,
   AppLauncherSearchProps,
   AppLauncherSectionProps,
+  AppLauncherTriggerProps,
   CatchErrorOptions,
   ConfirmAction,
   ConfirmDialogProps,
@@ -27,11 +30,13 @@ describe('package export surface', () => {
     // of the contract: every documented component is reachable and no
     // internal module leaks out.
     expect(Object.keys(api).sort()).toEqual([
+      'AppLauncher',
       'AppLauncherGrid',
       'AppLauncherItem',
       'AppLauncherList',
       'AppLauncherSearch',
       'AppLauncherSection',
+      'AppLauncherTrigger',
       'ConfirmDialog',
       'ConfirmProvider',
       'DescriptionList',
@@ -128,5 +133,17 @@ describe('package export surface', () => {
     expect(change.value).toBe('mail');
     expect(searchProps.label).toBe('Search apps');
     expect(sectionProps.divider).toBe(true);
+  });
+
+  it('exports the public AppLauncher shell types', () => {
+    // The type imports above only compile when the package root exports them;
+    // the values below keep the file local-usage clean under noUnusedLocals.
+    const docking = 'full' satisfies AppLauncherDocking;
+    const launcherProps: AppLauncherProps = { children: null };
+    const triggerProps: AppLauncherTriggerProps = { label: 'App launcher' };
+
+    expect(docking).toBe('full');
+    expect(launcherProps.children).toBeNull();
+    expect(triggerProps.label).toBe('App launcher');
   });
 });

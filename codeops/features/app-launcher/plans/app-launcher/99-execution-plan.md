@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-16 17:09
-> **Progress**: 19/33 tasks (58%)
+> **Last Updated**: 2026-10-16 17:20
+> **Progress**: 22/33 tasks (67%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -160,7 +160,7 @@ task-size criteria in the make-plan quality checklist).
 
 ## Phase 2: Shell
 
-> **Phase baseline tree**: _(recorded at execution start by the exec-plan skill from a temporary-index snapshot)_
+> **Phase baseline tree**: `bb7d3d16aa1735b0d265c9dc031d53b78c67a21d`
 > **Scope mode**: strict · **Expected modification set** (`packages/react-components/`-relative):
 > `test/app-launcher.spec.test.tsx` · `test/app-launcher-trigger.spec.test.tsx` ·
 > `test/package-exports.spec.test.ts` · `src/components/AppLauncher/**` ·
@@ -175,9 +175,17 @@ task-size criteria in the make-plan quality checklist).
 **Reference**: [07](07-testing-strategy.md) §Shell–Trigger (ST-1…ST-14) · [03-02](03-02-app-launcher-shell.md) §Port procedure · AR #7 (req), AR #8 (req), AR P2
 **Objective**: Pin the shell contract as executable tests before any shell source exists.
 
-- [ ] 2.1.1 [spec-author] Port the two shell spec test files with **exactly the two whitelisted comment edits** (the two "workbench" comments in `app-launcher.spec.test.tsx` reworded to the Storybook equivalent; assertions untouched) — `test/app-launcher.spec.test.tsx`, `test/app-launcher-trigger.spec.test.tsx` (ST-1…ST-14)
-- [ ] 2.1.2 [spec-author] Extend the export-surface pin with `AppLauncher`, `AppLauncherTrigger` and their three type pins — `test/package-exports.spec.test.ts` (ST-37 completion; final 15-entry list)
-- [ ] 2.1.3 Run the spec suite and verify the **red phase** (import/render failures expected; document every pre-implementation pass with justification) — `pnpm test`
+- [x] 2.1.1 [spec-author] Port the two shell spec test files with **exactly the two whitelisted comment edits** (the two "workbench" comments in `app-launcher.spec.test.tsx` reworded to the Storybook equivalent; assertions untouched) — `test/app-launcher.spec.test.tsx`, `test/app-launcher-trigger.spec.test.tsx` (ST-1…ST-14) ✅ (completed: 2026-10-16 17:20)
+- [x] 2.1.2 [spec-author] Extend the export-surface pin with `AppLauncher`, `AppLauncherTrigger` and their three type pins — `test/package-exports.spec.test.ts` (ST-37 completion; final 15-entry list) ✅ (completed: 2026-10-16 17:20)
+- [x] 2.1.3 Run the spec suite and verify the **red phase** (import/render failures expected; document every pre-implementation pass with justification) — `pnpm test` ✅ (completed: 2026-10-16 17:20)
+
+> **Red-phase record (2.1.3):** the launcher-filtered run reports 18 failed / 25 passed (43) —
+> the 14 shell spec tests fail with "Element type is invalid" (the shell is not exported yet),
+> the pin's 15-entry assertion fails on exactly the two missing names (`AppLauncher`,
+> `AppLauncherTrigger`), and the three recorded Phase-1 composition tests remain red (P7). The
+> pin's type-pin tests pass pre-implementation (their real gate is the green-phase type-check).
+> Byte-identity: the trigger spec matches the Prettier-normalized source copy exactly; the shell
+> spec differs by exactly the two whitelisted comment rewords.
 
 **Deliverables**:
 
