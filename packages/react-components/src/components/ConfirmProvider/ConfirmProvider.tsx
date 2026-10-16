@@ -114,13 +114,6 @@ export function ConfirmProvider({ children, strings }: ConfirmProviderProps): Re
       options: ConfirmOptions | ConfirmOptionsWithActions<string>
     ): Promise<boolean | string> {
       return new Promise<boolean | string>(resolve => {
-        if (unmountedRef.current) {
-          // A stale reference calling after the provider unmounted: nothing
-          // can ever show or settle this request, so settle the safe outcome
-          // immediately instead of leaving the caller awaiting forever.
-          resolve(false);
-          return;
-        }
         // The record is written synchronously, so any call in the same tick
         // sees and supersedes the current request; promises are never settled
         // inside state updaters.
@@ -138,6 +131,22 @@ export function ConfirmProvider({ children, strings }: ConfirmProviderProps): Re
         };
         requestRef.current = next;
         setRequest(next);
+        if (unmountedRef.current) {
+          // This call landed after the provider's cleanup — either a stale
+          // reference used after a genuine unmount, or the synchronous
+          // StrictMode probe window (cleanup ran, re-setup is about to run).
+          // Defer one microtask: the probe's re-setup flips `mountedRef` back
+          // and the request survives with normal supersede semantics; after a
+          // genuine unmount nothing can show it, so it settles the safe
+          // outcome instead of leaving the caller awaiting forever.
+          queueMicrotask(() => {
+            if (mountedRef.current || next.settled) {
+              return;
+            }
+            next.settled = true;
+            next.resolve(false);
+          });
+        }
       });
     }
     return confirmFn;

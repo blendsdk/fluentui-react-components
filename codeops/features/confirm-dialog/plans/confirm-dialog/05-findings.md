@@ -19,6 +19,7 @@ One compact row per reviewed batch; identifiers `RV-`/`SA-`/`PE-`/`SR-` and area
 | RV-103  | 2     | MINOR    | docs/actions-settlement   | fixed    |
 | RV-104  | 2     | MINOR    | tests/focus-restore       | fixed    |
 | RV-105  | 2     | MINOR    | plan/record-count         | fixed    |
+| RV-201  | 2     | MAJOR    | provider/probe-window     | fixed    |
 
 Accepted entries are report-only acknowledgements (no change needed); fixed entries were
 implemented, verified and follow-up-committed.
@@ -32,5 +33,10 @@ reported no findings.
 Phase 2's reviewer and security auditor independently reported the same stale-activation defect
 (RV-101 = SA-101, the phase's only MAJOR): a supersede running before a click reached the old
 dialog's handler could settle the newer, never-shown request. Fixed by binding each activation to
-the request its dialog was rendered for; the fix diff ran the single scoped re-review (result
-recorded in the execution plan). All remaining phase 2 findings were MINOR and fixed alongside.
+the request its dialog was rendered for. The scoped re-review on the fix diff confirmed
+RV-101/SA-101 and RV-102/SA-102 resolved with discriminating tests (pre-fix reproductions failed
+as expected) and surfaced one new MAJOR introduced by the fix — RV-201: the unmount guard
+misread the StrictMode probe window, faking a live request to "declined"; fixed with the
+verifier-validated deferred remedy (install normally, defer the self-settlement one microtask)
+plus a discriminating impl test. The phase's budgeted re-review is spent; the remedy itself was
+independently proofed during that re-review's probes.

@@ -238,6 +238,16 @@ task-size criteria in the make-plan quality checklist).
 
 **Verify**: `pnpm verify`
 
+> **Phase-review record (Phase 2):** the correctness reviewer and the security auditor ran in
+> parallel on the phase diff; both reported the same stale-activation defect (RV-101 = SA-101,
+> the only MAJOR — a supersede running before a stale click could settle the never-shown newer
+> request), plus minor documentation and coverage findings. All were fixed. The scoped fix-diff
+> re-review confirmed RV-101/SA-101 and RV-102/SA-102 resolved with discriminating tests (pre-fix
+> reproductions failed as expected) and surfaced one further MAJOR introduced by the fix —
+> RV-201: the unmount guard misread the StrictMode probe window and faked a live request into
+> "declined"; fixed with the verifier-validated deferred remedy and a discriminating impl test.
+> Rulings are recorded in `05-findings.md`.
+
 ---
 
 ## Dependencies

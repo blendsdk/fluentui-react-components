@@ -199,6 +199,47 @@ describe('ConfirmProvider internals', () => {
       await act(async () => {});
       expect(settled.count).toBe(1);
     });
+
+    it('keeps an unguarded mount-effect request live across the probe with supersede semantics', async () => {
+      const captured: Array<Promise<boolean>> = [];
+
+      function Requester(): ReactElement {
+        const confirm = useConfirm();
+        useEffect(() => {
+          captured.push(confirm({ title: `Request ${captured.length + 1}?` }));
+        }, [confirm]);
+        return <span>requester</span>;
+      }
+
+      render(
+        <StrictMode>
+          <FluentProvider theme={webLightTheme}>
+            <ConfirmProvider>
+              <Requester />
+            </ConfirmProvider>
+          </FluentProvider>
+        </StrictMode>
+      );
+
+      await act(async () => {});
+
+      // The probe runs the effect twice: the first request is superseded
+      // `false`, and the second stays live and visible — a request landing in
+      // the probe window must not be faked into "not confirmed".
+      expect(captured).toHaveLength(2);
+      await expect(captured[0]).resolves.toBe(false);
+
+      const secondState = { settled: false };
+      void captured[1].then(() => {
+        secondState.settled = true;
+      });
+      await act(async () => {});
+      expect(secondState.settled).toBe(false);
+      expect(screen.getByRole('alertdialog', { name: 'Request 2?' })).toBeInTheDocument();
+
+      fireEvent.click(screen.getByRole('button', { name: 'Confirm' }));
+      await expect(captured[1]).resolves.toBe(true);
+    });
   });
 
   describe('children stability', () => {
