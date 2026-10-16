@@ -4,7 +4,7 @@ import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import type { ReactElement } from 'react';
 import { createRef } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import type { ConfirmAction } from '../src/index';
+import type { ConfirmAction, ConfirmDialogProps } from '../src/index';
 import { ConfirmDialog } from '../src/index';
 
 /** A callback that does nothing; used where a test only cares that nothing throws. */
@@ -608,10 +608,16 @@ describe('ConfirmDialog', () => {
       view.rerender(wrapDialog(<InvokerHost showInvoker={false} open />));
       expect(invoker.isConnected).toBe(false);
 
+      // A detached focus target must be recognized as gone: the restore path
+      // must not even attempt to focus it (jsdom ignores focus on detached
+      // elements, so only the spy can discriminate the guard).
+      const focusSpy = vi.spyOn(invoker, 'focus');
+
       expect(() => {
         view.rerender(wrapDialog(<InvokerHost showInvoker={false} open={false} />));
       }).not.toThrow();
 
+      expect(focusSpy).not.toHaveBeenCalled();
       expect(screen.queryByRole('alertdialog')).toBeNull();
       expect(document.activeElement).not.toBe(invoker);
     });
@@ -653,6 +659,18 @@ describe('ConfirmDialog', () => {
     // `@ts-expect-error` fails the type-check as soon as its construct stops
     // being an error. The constructs stay on one line so a directive provably
     // covers its whole statement, and minimal props keep those lines short.
+
+    it('accepts a variable of the declared props union', () => {
+      const props: ConfirmDialogProps = {
+        open: true,
+        title: 'Delete this record?',
+        onResolve: noop,
+      };
+
+      renderDialog(<ConfirmDialog {...props} />);
+
+      expect(screen.getByRole('alertdialog')).toBeInTheDocument();
+    });
 
     it('accepts a callback typed for exactly the literal action values', () => {
       const onResolveValues = (value: 'cancel' | 'discard' | 'save'): void => {

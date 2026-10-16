@@ -338,8 +338,11 @@ describe('ConfirmDialog internals', () => {
         '../src/components/ConfirmDialog/useConfirmDialogStyles.styles.ts',
         '../src/components/ConfirmDialog/renderConfirmDialog.tsx',
         '../src/components/ConfirmDialog/ConfirmDialog.stories.tsx',
+        '../src/components/ConfirmDialog/index.ts',
+        '../src/index.ts',
         './confirm-dialog.spec.test.tsx',
         './confirm-dialog.impl.test.tsx',
+        './package-exports.spec.test.ts',
       ];
 
       for (const source of sources) {

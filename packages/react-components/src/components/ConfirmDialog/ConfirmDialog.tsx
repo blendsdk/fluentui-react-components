@@ -66,15 +66,19 @@ ForwardedConfirmDialog.displayName = 'ConfirmDialog';
  *
  * The assertion is compile-time only: `forwardRef` cannot carry the single
  * generic type parameter, and typing the export as the plain props union
- * would strip contextual typing from inline `onResolve` callbacks. The two
- * overload signatures restore exactly what the type declarations promise —
- * the pair variant's boolean and the actions variant's literal value union —
- * and change nothing at runtime. It narrows no value and is revisited if a
- * cast-free generic `forwardRef` pattern becomes idiomatic.
+ * would strip contextual typing from inline `onResolve` callbacks. The first
+ * two overload signatures restore exactly what the type declarations promise
+ * — the pair variant's boolean and the actions variant's literal value union
+ * — and the third re-admits a variable of the declared `ConfirmDialogProps`
+ * union (the standard wrapper spread), which neither concrete overload
+ * accepts on its own. Nothing changes at runtime; no value is narrowed; the
+ * assertion is revisited if a cast-free generic `forwardRef` pattern becomes
+ * idiomatic.
  */
 export const ConfirmDialog = ForwardedConfirmDialog as {
   (props: ConfirmDialogPairProps & RefAttributes<HTMLDivElement>): ReactElement;
   <V extends string>(
     props: ConfirmDialogActionsProps<V> & RefAttributes<HTMLDivElement>
   ): ReactElement;
+  (props: ConfirmDialogProps & RefAttributes<HTMLDivElement>): ReactElement;
 };
