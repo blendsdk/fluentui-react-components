@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-16 17:44
-> **Progress**: 31/33 tasks (94%)
+> **Last Updated**: 2026-10-16 18:15
+> **Progress**: 33/33 tasks (100%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -237,7 +237,12 @@ task-size criteria in the make-plan quality checklist).
 > the 13 `Components/AppLauncher` entries.
 
 - [x] 2.3.3 README: `AppLauncher` and `AppLauncherTrigger` sections plus the family quick start and localization table, inserted before the block sections — `README.md` ✅ (completed: 2026-10-16 17:24)
-- [ ] 2.3.4 Manual Storybook review pass (docking geometry flush below the bar; full docking to the window bottom with internal scrolling; sticky search; tooltip suppressed while open; tile hover lift; keyboard flow; a11y addon clean) — user-assisted; record the pass result with the task marks and record anything found as a finding, never a fix — AR #13
+- [x] 2.3.4 Manual Storybook review pass (docking geometry flush below the bar; full docking to the window bottom with internal scrolling; sticky search; tooltip suppressed while open; tile hover lift; keyboard flow; a11y addon clean) — user-assisted; record the pass result with the task marks and record anything found as a finding, never a fix — AR #13 ✅ (completed: 2026-10-16 18:15)
+
+> **Manual-pass record (2.3.4, complete):** the user ran the pass in a real browser against the
+> ported integrated suite and confirmed the result (LGTM, 2026-10-16, after the suite port);
+> nothing was found that required a change or a finding.
+
 - [x] 2.3.5 Final port audit: zero `@virtuoapp`/`Virtuo` references in ported and shipped artifacts; the source repository untouched; README covers every family component — record the evidence ✅ (completed: 2026-10-16 17:24)
 
 > **Final port audit record (2.3.5):** zero `@virtuoapp`/"Virtuo" references in the shipped
@@ -246,13 +251,19 @@ task-size criteria in the make-plan quality checklist).
 > localization table; no plan/requirement identifiers or `codeops/` paths leaked into any shipped
 > artifact.
 
-- [ ] 2.3.6 Full verification — `pnpm verify` and `pnpm storybook:build`
+- [x] 2.3.6 Full verification — `pnpm verify` and `pnpm storybook:build` ✅ (completed: 2026-10-16 18:15)
+
+> **Full-verification record (2.3.6, complete):** `pnpm verify` green — format, skill check,
+> type-check, build and 209/209 tests; `pnpm storybook:build` completes with the full launcher
+> suite (the 13 `Components/AppLauncher` entries plus the block and trigger stories). Both
+> Phase-1 residuals (P7, P8) are closed; the recorded P9 staging and the user-directed P10
+> story source are integrated.
 
 **Deliverables**:
 
-- [ ] The shell story suite and the README family sections in place
-- [ ] Manual checklist recorded; final audit evidence recorded
-- [ ] `pnpm verify` and `pnpm storybook:build` green
+- [x] The shell story suite and the README family sections in place
+- [x] Manual checklist recorded; final audit evidence recorded
+- [x] `pnpm verify` and `pnpm storybook:build` green
 
 **Verify**: `pnpm verify` and `pnpm storybook:build`
 
