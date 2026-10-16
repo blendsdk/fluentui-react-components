@@ -29,9 +29,9 @@ RD-02 adds the DX layer the legacy application never had: a `ConfirmProvider` mo
 app root plus a promise-based `useConfirm()`. Instead of state flags, handlers and dialog JSX per
 call site, an application writes
 `if (await confirm({ intent: 'danger', title, message })) { deleteRecord(); }`. The provider
-renders at most one dialog, is invisible while idle, never rejects a promise, and follows the
-repository's `SystemErrorProvider` pattern and Fluent's own `Toaster`/`useToastController`
-precedent.
+renders at most one dialog per provider (one provider per React root is the supported setup),
+is invisible while idle, never rejects a promise, and follows the repository's
+`SystemErrorProvider` pattern and Fluent's own `Toaster`/`useToastController` precedent.
 
 ## Minimum-Sufficient Baseline
 
@@ -63,24 +63,25 @@ the two components.
 
 ## Domain Glossary
 
-| Term                 | Definition                                                                                                                            |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| Host                 | The consuming application; it owns `open`, the request options, and every side effect behind the outcome.                             |
-| Confirm prompt       | A modal that forces an explicit decision between a fixed set of actions before the host's operation may run.                          |
-| Controlled component | Visibility follows the `open` prop; closure is a callback request to the host, never a local state change.                            |
-| Alert dialog         | A modal that cannot be dismissed through Escape or the backdrop; only explicit actions dismiss it (Fluent UI v9 `modalType="alert"`). |
-| Intent               | `'confirmation'` or `'danger'`; drives the emphasis of the affirmative action, not the surface.                                       |
-| Affirmative action   | The action that adopts the pending decision — the confirm button of the default pair, or any custom action the caller marks.          |
-| Safe action          | The action that abandons the decision; documented first in the action order so it receives initial focus.                             |
-| Default pair         | The standard decline → confirm button pair with `confirm`/`decline` labels; resolves `boolean`.                                       |
-| Custom action        | A `ConfirmAction` record (`value`, `label`, `appearance`, `intent`, `icon`) of a caller-supplied action set; resolves its `value`.    |
-| Value                | The literal string a custom action reports; inferred as a literal union at the call site.                                             |
-| Busy                 | `busy` prop state: every action is disabled and nothing can resolve until the host clears it.                                         |
-| Strings              | Consumer-supplied text overrides (`strings`) merged over English defaults (`ConfirmDialogStrings`: `"Confirm"`, `"Cancel"`).          |
-| Request              | One `confirm(options)` call of the provider layer; holds the dialog's options and the pending promise.                                |
-| Supersede            | A new request while one is pending: the previous promise resolves `false` and the new dialog replaces it.                             |
-| Resolution           | The promise result of a request: `boolean` for the pair, the chosen `value` for action sets; never rejects.                           |
-| Legacy source        | The `fui8` `ConfirmDialog` (Fluent UI v8) analyzed for this feature — functional ideas only, no transferable implementation.          |
+| Term                 | Definition                                                                                                                                     |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| Host                 | The consuming application; it owns `open`, the request options, and every side effect behind the outcome.                                      |
+| Confirm prompt       | A modal that forces an explicit decision between a fixed set of actions before the host's operation may run.                                   |
+| Controlled component | Visibility follows the `open` prop; closure is a callback request to the host, never a local state change.                                     |
+| Alert dialog         | A modal that cannot be dismissed through Escape or the backdrop; only explicit actions dismiss it (Fluent UI v9 `modalType="alert"`).          |
+| Intent               | `'confirmation'` or `'danger'`; drives the emphasis of the affirmative action, not the surface.                                                |
+| Affirmative action   | The action that adopts the pending decision — the confirm button of the default pair, or any custom action the caller marks.                   |
+| Safe action          | The action that abandons the decision; documented first in the action order so it receives initial focus.                                      |
+| Activation           | One user action on a rendered dialog action — a click, or Space/Enter on the focused button; each activation reports its outcome exactly once. |
+| Default pair         | The standard decline → confirm button pair with `confirm`/`decline` labels; resolves `boolean`.                                                |
+| Custom action        | A `ConfirmAction` record (`value`, `label`, `appearance`, `intent`, `icon`) of a caller-supplied action set; resolves its `value`.             |
+| Value                | The literal string a custom action reports; inferred as a literal union at the call site.                                                      |
+| Busy                 | `busy` prop state: every action is disabled and nothing can resolve until the host clears it.                                                  |
+| Strings              | Consumer-supplied text overrides (`strings`) merged over English defaults (`ConfirmDialogStrings`: `"Confirm"`, `"Cancel"`).                   |
+| Request              | One `confirm(options)` call of the provider layer; holds the dialog's options and the pending promise.                                         |
+| Supersede            | A new request while one is pending: the previous promise resolves `false` and the new dialog replaces it.                                      |
+| Resolution           | The promise result of a request: `boolean` for the pair, the chosen `value` for action sets; never rejects.                                    |
+| Legacy source        | The `fui8` `ConfirmDialog` (Fluent UI v8) analyzed for this feature — functional ideas only, no transferable implementation.                   |
 
 ## Document Index
 

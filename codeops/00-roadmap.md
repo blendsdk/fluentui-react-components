@@ -14,7 +14,7 @@
 | Feature        | Roadmap                                    | Stage Summary            | Progress | Status | Last Updated |
 | -------------- | ------------------------------------------ | ------------------------ | -------- | ------ | ------------ |
 | error-dialog   | [→](features/error-dialog/00-roadmap.md)   | 1 plan done · 2 RDs done | 2/2 RDs  | ✅     | 2026-10-16   |
-| confirm-dialog | [→](features/confirm-dialog/00-roadmap.md) | 2 RDs drafted            | 0/2 RDs  | 🔄     | 2026-10-16   |
+| confirm-dialog | [→](features/confirm-dialog/00-roadmap.md) | 2 RDs preflighted        | 0/2 RDs  | 🔄     | 2026-10-16   |
 
 ## Archived
 

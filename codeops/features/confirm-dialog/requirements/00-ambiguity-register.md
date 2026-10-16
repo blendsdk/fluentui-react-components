@@ -1,7 +1,7 @@
 # Ambiguity Register: confirm-dialog requirements
 
 > **Status**: ✅ GATE PASSED — all 25 items resolved
-> **Last Updated**: 2026-10-16 11:54
+> **Last Updated**: 2026-10-16 13:05
 
 Context imported from the approved design session (2026-10-16): the legacy `ConfirmDialog` of
 CastingAppMT's `fui8` package (Fluent UI v8, `@fluentui/react`) was analyzed across all 25 call
@@ -14,7 +14,9 @@ acceptance (an explicit decision per the gate rules). Items 22–23 are user-con
 deferrals. Items 9, 11, 15, 19, 20 and 21 are eligible technical decisions resolved under
 `--auto-design` (root invocation `MR-CONFIRM-DIALOG-2026-10-16`, policy version 1); their complete
 delegated provenance is recorded in the Resolution Notes. Item 25 resolves against the
-repository's security standards (AGENTS.md) together with AR #10.
+repository's security standards (AGENTS.md) together with AR #10. The 2026-10-16 preflight review
+amended AR #5, #9, #13, #15, #17, #18, #19, #21 and #22 — each amendment is marked in its
+Resolution Note (root invocation `PF-CONFIRM-DIALOG-2026-10-16`).
 
 | #   | Category           | Ambiguity / Gap                                                                                                  | Options Presented                                                                                                                                                                                                                                                            | User Decision / Delegated Resolution                                                                                                                                                                                                               | Status           |
 | --- | ------------------ | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
@@ -26,7 +28,7 @@ repository's security standards (AGENTS.md) together with AR #10.
 | 6   | Behavioral gaps    | Dismissal semantics                                                                                              | (a) Strict alert: no Escape, no backdrop dismissal, no close button; every exit is an explicit action · (b) Escape/backdrop resolve as decline                                                                                                                               | **Option (a)** — parity with the legacy `isBlocking: true`; a forced decision requires an explicit choice                                                                                                                                          | ✅ Resolved      |
 | 7   | Behavioral gaps    | Visibility and outcome contract of RD-01                                                                         | (a) Controlled `open` (no uncontrolled mode); single `onResolve`; boolean for the default pair; the component never closes itself and never executes the action · (b) uncontrolled `defaultOpen`; per-action callbacks                                                       | **Option (a)** — host owns state and side effects (repository pattern; matches all legacy call sites)                                                                                                                                              | ✅ Resolved      |
 | 8   | Feature gaps       | Custom action sets (Yes/No/Cancel, Save/Discard/Cancel) beyond the default pair                                  | (a) Optional typed `actions` non-empty tuple (value/label/appearance/intent/icon) replacing the pair; resolution = chosen value; exclusive with dialog-level `intent` · (b) ReactNode actions slot · (c) pair only                                                           | **Option (a)** — user-requested capability; (b) rejected (promise outcomes become untyped); (c) rejected (the stated need). Legacy `actions` slot usage was 0 of 25 sites — this is new demand, recorded as such                                   | ✅ Resolved      |
-| 9   | Edge cases         | Runtime `actions: []` from untyped consumers (the non-empty tuple guard bypassed)                                | (a) Fall back to the default confirm/decline pair · (b) render no actions (an alert dialog with no exit) · (c) throw at render                                                                                                                                               | **AI (delegated)** — fallback to the default pair; documented and tested (see AR-9 notes)                                                                                                                                                          | ✅ Resolved — AI |
+| 9   | Edge cases         | Runtime `actions: []` from untyped consumers (the non-empty tuple guard bypassed)                                | (a) Fall back to the default confirm/decline pair · (b) render no actions (an alert dialog with no exit) · (c) throw at render                                                                                                                                               | **AI (delegated)** — fallback to the default pair (pair outcomes — a boolean); documented and tested (see AR-9 notes)                                                                                                                              | ✅ Resolved — AI |
 | 10  | UX & presentation  | Content contract (title/message)                                                                                 | (a) `title: ReactNode` required; `message?: ReactNode`; content never parsed as HTML · (b) string-only content with HTML allowed (legacy `dangerouslySetInnerHTML`)                                                                                                          | **Option (a)** — approved delta; (b) rejected: 0 of 55 legacy dialog i18n strings contain HTML, so the HTML path is unused risk and an XSS surface                                                                                                 | ✅ Resolved      |
 | 11  | UX & presentation  | Plain-string message line breaks                                                                                 | (a) Preserve `\n` via `white-space: pre-line` · (b) collapse newlines (effective legacy behavior) · (c) convert newlines into markup                                                                                                                                         | **AI (delegated)** — pre-line rendering for string messages (see AR-11 notes)                                                                                                                                                                      | ✅ Resolved — AI |
 | 12  | UX & presentation  | Action labels and localization                                                                                   | (a) `strings?: Partial<ConfirmDialogStrings>` with `confirm`/`decline` keys and English defaults "Confirm"/"Cancel"; per-call overrides · (b) required labels without defaults · (c) built-in NL/EN tables                                                                   | **Option (a)** — house precedent (`ErrorDialog`); consumer apps localize                                                                                                                                                                           | ✅ Resolved      |
@@ -61,7 +63,9 @@ independently useful and independently testable.
 (`colorStatusDangerBackground3` + `...Hover` + `...Pressed`, inverted foreground) on the one
 action that carries it, with the surface untouched — verified available in the installed tokens
 package; the Button primitive has no built-in danger look in `@fluentui/react-button@9.11.1` or
-upstream master.
+upstream master. The guarded selector covers the base, hover, pressed and keyboard-pressed
+(`:active:focus-visible`) states; forced-colors behavior is a manual story checklist item (the
+override must not defeat Fluent's own handling). _(2026-10-16 preflight amendment.)_
 
 **AR-6 / AR-7:** Verified v9 mechanics for the alert semantics: `modalType="alert"` renders
 `role="alertdialog"`, backdrop clicks are ignored, and Escape only requests a close when an
@@ -79,10 +83,12 @@ Authority: AI — delegated by --auto-design
 Eligibility: failure and recovery design — defensive runtime behavior for an approved API;
   changes no product behavior, scope or acceptance criterion; reversible pre-1.0 surface.
 Objective: no consumer can ever be shown an alert dialog without an exit.
-Decision: a runtime-empty `actions` array falls back to the default confirm/decline pair;
-  documented and covered by an acceptance criterion.
-Evidence: v9 `modalType="alert"` forbids backdrop/Escape dismissal
-  (`useDialogSurface.js:36-56`) — a zero-action alert traps keyboard users; the TypeScript
+Decision: a runtime-empty `actions` array falls back to the default confirm/decline pair and
+  reports pair outcomes (`onResolve` receives a boolean); documented and covered by an
+  acceptance criterion.
+Evidence: v9 `modalType="alert"` ignores backdrop clicks, and with a controlled dialog and no
+  `onOpenChange` an Escape keydown is inert (the controlled-state setter is a no-op) — a
+  zero-action alert traps keyboard users; the TypeScript
   non-empty tuple (AR #20) protects typed callers but not plain-JS consumers.
 Rejected alternatives: rendering no actions (trapped user); throwing at render (hostile to app
   error boundaries for a preventable state).
@@ -93,6 +99,9 @@ Hardening: not required — low blast radius, reversible, pre-1.0; in-context ch
 Policy version: 1 · Root invocation ID: MR-CONFIRM-DIALOG-2026-10-16
 Reopen triggers: a host reports deliberate zero-action usage; a dismissal affordance is added.
 ```
+
+_(2026-10-16 preflight amendment: pair-outcome pinning; Escape-inert rationale corrected to the
+controlled-state no-op.)_
 
 **AR-10:** `title` is required because an `alertdialog` must have an accessible name and v9 wires
 `aria-labelledby` from `DialogTitle` automatically (`useDialogSurface.js:104`); `ReactNode` keeps
@@ -123,7 +132,11 @@ Reopen triggers: a host reports unwanted pre-line wrapping; the content model ch
 the v9 built-in behavior (`useFocusFirstElement` focuses the first focusable element —
 `react-dialog/lib/utils/useFocusFirstElement.js`) with a documented safe-action-first ordering
 rule for callers that provide custom actions. The `aria-describedby` wiring is a deliberate
-improvement over v9's auto-wiring, which covers only the label.
+improvement over v9's auto-wiring, which covers only the label. Close-time restore: v9's built-in
+restore requires a `DialogTrigger` restorer target, which this trigger-less component does not
+render, so RD-01 restores best-effort — capture on open, re-focus on close when still connected.
+In jsdom, tabster finds no focusable element and the surface receives focus; the exact focus
+behavior is verified in the story's manual keyboard pass. _(2026-10-16 preflight amendment.)_
 
 **AR-15 (delegated):**
 
@@ -135,7 +148,8 @@ Objective: element attributes behave the way the repository's native pass-throug
   promises, and every interactive control keeps an accessible name.
 Decision: caller-provided aria/className/style win over component wiring (house rule);
   the component wires `aria-describedby` only when the caller did not supply one; empty-string
-  confirm/decline labels fall back to the English defaults so a control can never be unnamed.
+  confirm/decline labels fall back to the English defaults and a blank custom action `label`
+  falls back to the action's `value` — a control can never be unnamed.
 Evidence: repository rules — native props pass through, `mergeClasses` for every caller-settable
   class, caller wins; ARIA requires accessible names for interactive controls.
 Rejected alternatives: honoring empty labels verbatim (unnamed buttons — accessibility failure);
@@ -149,10 +163,17 @@ Policy version: 1 · Root invocation ID: MR-CONFIRM-DIALOG-2026-10-16
 Reopen triggers: a concrete need for blank action labels; the pass-through contract changes.
 ```
 
+_(2026-10-16 preflight amendment: blank custom labels fall back to the action's `value`.)_
+
 **AR-16 / AR-17 / AR-18:** The provider mirrors `SystemErrorProvider` (context-scoped, hook throws
 outside the provider) and upstream `Toaster` (`useToastController`). Replacement-not-queueing was
 chosen because prompts are modal; resolving the superseded promise `false` keeps the safe
-direction (no accidental action) and never leaves a dangling `await`.
+direction (no accidental action) and never leaves a dangling `await`. The provider mechanics pin
+this guarantee: the active record is written synchronously (same-tick calls supersede correctly;
+activation clears conditionally), the `strings` chain resolves per-call → provider → English
+defaults (an empty per-call value is not supplied), and requests created in mount effects survive
+the StrictMode probe — the deferred settlement is cancelled by the probe's synchronous re-setup.
+_(2026-10-16 preflight amendment.)_
 
 **AR-19 (delegated):**
 
@@ -165,7 +186,7 @@ Objective: a fluent, collision-free export surface consistent with the repositor
   barrels and the error-dialog precedent.
 Decision: exports `ConfirmDialog`, `ConfirmProvider`, `useConfirm`; types `ConfirmIntent`,
   `ConfirmAction`, `ConfirmDialogStrings`, `ConfirmDialogProps`, `ConfirmProviderProps`,
-  `ConfirmOptions`; feature folder `confirm-dialog`; RD slugs
+  `ConfirmOptions`, `ConfirmOptionsWithActions`; feature folder `confirm-dialog`; RD slugs
   `RD-01-confirm-dialog-component.md` / `RD-02-confirm-provider.md`.
 Evidence: `src/index.ts` barrel order and style (error-dialog addition); house rule "components
   and their props types from the package root"; RD slug precedent
@@ -180,6 +201,8 @@ Hardening: not required — naming only; in-context challenge applied.
 Policy version: 1 · Root invocation ID: MR-CONFIRM-DIALOG-2026-10-16
 Reopen triggers: an export name or RD slug is found misleading during plan review.
 ```
+
+_(2026-10-16 preflight amendment: `ConfirmOptionsWithActions` added to the export list.)_
 
 **AR-20 (delegated):**
 
@@ -215,8 +238,10 @@ Objective: verified delivery of this contract, matching the repository's non-neg
 Decision: per house conventions — `test/confirm-dialog.spec.test.tsx` (immutable oracle),
   `test/confirm-dialog.impl.test.tsx`, `test/confirm-provider.spec.test.tsx`,
   `test/confirm-provider.impl.test.tsx`, `test/confirm-provider.ssr.test.tsx` (node environment),
-  one story file per component, README sections, `test/package-exports.spec.test.ts` pin;
-  gates: `pnpm verify` and `pnpm storybook:build`.
+  one story file per component, README sections, `test/package-exports.spec.test.ts` pin (runtime
+  list and type pins), compile-time claims via `// @ts-expect-error`, enumerable story variants
+  with the focus/keyboard and forced-colors passes as manual checklist items; gates: `pnpm verify`
+  and `pnpm storybook:build`.
 Evidence: AGENTS.md Verification section; error-dialog precedent (93 tests across 8 files,
   red/green per phase).
 Rejected alternatives: minimal smoke coverage (leaves the contract untested; the house standard
@@ -230,16 +255,20 @@ Policy version: 1 · Root invocation ID: MR-CONFIRM-DIALOG-2026-10-16
 Reopen triggers: house verification conventions change; a preflight finding adjusts the matrix.
 ```
 
+_(2026-10-16 preflight amendment: two-part export pin, compile-time pins, enumerable stories
+with the manual focus/keyboard and forced-colors passes.)_
+
 **AR-22 / AR-23 (deferrals):** Both deferrals were presented with their consequences and accepted
 in bulk. Neither may appear in executable requirements or plans: the provider closes immediately
-on activation (no hold-open mode), and no dialog glyph prop exists in v1.
+on activation and never sets `busy` (no hold-open mode), and no dialog glyph prop exists in v1.
+_(2026-10-16 preflight amendment: the never-sets-`busy` clarification.)_
 
 **AR-24:** The boundary statement is part of the definition of done for RD-01's README section —
 "when not to use" pointing to `Dialog` + `DialogActions` composition.
 
 **AR-25:** No sensitive data, no network calls, no authentication, no storage, no secrets, no
-infrastructure. The only content-driven exposure is the message, eliminated as markup by AR #10
-and verified by a spec criterion (markup-like strings render inert).
+infrastructure. The content-driven exposures are `title` and `message`; both are eliminated as
+markup by AR #10 and verified by spec criteria (markup-like strings render inert in each).
 
 **Approved complexity escalations:** None — the feature adds two components to the existing
 package using existing dependencies and patterns; no new layer, dependency, harness or
