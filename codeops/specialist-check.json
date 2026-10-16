@@ -1,6 +1,7 @@
 {
-  "checkedAt": "2026-10-16T14:18:28Z",
+  "checkedAt": "2026-10-16T22:14:33Z",
   "plans": [
+    "codeops/features/app-launcher/plans/app-launcher",
     "codeops/features/confirm-dialog/plans/confirm-dialog",
     "codeops/features/error-dialog/plans/error-dialog"
   ]
