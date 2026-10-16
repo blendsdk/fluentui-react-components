@@ -148,6 +148,14 @@ task-size criteria in the make-plan quality checklist).
 
 **Verify**: `pnpm verify` (green except the recorded P7/P8 set) and `pnpm storybook:build`
 
+> **Phase-review record (Phase 1):** the independent correctness review ran on the phase diff
+> (baseline `6d13c3d2…`) with the base lenses plus `api-surface`; auditors were skipped — no
+> security, performance or concurrency tags apply to this presentation-only diff (logged, never
+> silent). The reviewer independently re-ran the byte-identity gate: 37/37 ported files identical
+> after Prettier normalization; the residual red set is exactly the recorded P7/P8 set. Two MINOR
+> findings (RV-101 `plan/verification`, RV-102 `stories/conventions`) — both fixed as follow-ups
+> and recorded in `05-findings.md`; no critical or major findings.
+
 ---
 
 ## Phase 2: Shell

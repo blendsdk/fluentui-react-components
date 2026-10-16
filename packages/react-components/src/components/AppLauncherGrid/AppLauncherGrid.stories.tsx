@@ -10,8 +10,8 @@ import {
 } from '@fluentui/react-icons';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { ReactElement } from 'react';
-import { AppLauncherGrid } from './AppLauncherGrid';
 import { AppLauncherItem } from '../AppLauncherItem';
+import { AppLauncherGrid } from './AppLauncherGrid';
 
 const meta: Meta<typeof AppLauncherGrid> = {
   title: 'Components/AppLauncherGrid',
