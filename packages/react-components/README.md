@@ -307,6 +307,159 @@ as the user's choice. The promise never rejects.
   Server rendering emits the children only; a request needs a client-side
   interaction.
 
+### AppLauncher
+
+The launcher shell: a waffle trigger that opens a popover panel of application
+content. The application owns everything the panel shows — which apps exist,
+when one is disabled, what a search matches and what "recent" means — and the
+open state when it needs to close the panel from an activation. Docked to the
+application bar (the `dockTarget` pattern), the panel opens flush below the bar,
+the way the Microsoft 365 launcher behaves.
+
+A launcher in an application bar: the waffle trigger, a search field, a pinned
+grid, and a result list with an application-provided empty state while
+searching.
+
+```tsx
+import { useRef, useState } from 'react';
+import {
+  AppLauncher,
+  AppLauncherGrid,
+  AppLauncherItem,
+  AppLauncherList,
+  AppLauncherSearch,
+  AppLauncherSection,
+} from '@blendsdk/fluentui-react-components';
+
+function AppMenu() {
+  const barRef = useRef<HTMLElement>(null);
+  const [query, setQuery] = useState('');
+
+  const needle = query.trim().toLowerCase();
+  const matches = apps.filter(app => app.label.toLowerCase().includes(needle));
+
+  return (
+    <header ref={barRef}>
+      <AppLauncher label="App launcher" dockTarget={barRef}>
+        <AppLauncherSearch
+          label="Search apps"
+          value={query}
+          onChange={(_event, data) => setQuery(data.value)}
+        />
+        {needle === '' ? (
+          <AppLauncherSection title="Pinned">
+            <AppLauncherGrid>
+              {apps.map(app => (
+                <AppLauncherItem
+                  key={app.label}
+                  label={app.label}
+                  icon={app.icon}
+                  onClick={() => open(app)}
+                />
+              ))}
+            </AppLauncherGrid>
+          </AppLauncherSection>
+        ) : (
+          <AppLauncherSection>
+            {matches.length === 0 ? (
+              <p>No apps found</p>
+            ) : (
+              <AppLauncherList>
+                {matches.map(app => (
+                  <AppLauncherItem
+                    key={app.label}
+                    label={app.label}
+                    icon={app.icon}
+                    onClick={() => open(app)}
+                  />
+                ))}
+              </AppLauncherList>
+            )}
+          </AppLauncherSection>
+        )}
+      </AppLauncher>
+    </header>
+  );
+}
+```
+
+| Prop           | Type                                       | Default                         | Description                                                                                                                                                                                                                                                                                                                      |
+| -------------- | ------------------------------------------ | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `label`        | `string`                                   | `'App launcher'`                | Accessible name of the built-in trigger and its tooltip; pass a localized string. Applies to the built-in trigger only.                                                                                                                                                                                                          |
+| `icon`         | `ReactElement`                             | the Fluent waffle glyph         | Trigger icon override; built-in trigger only.                                                                                                                                                                                                                                                                                    |
+| `trigger`      | `ReactElement`                             | —                               | Caller-provided trigger element used instead of the built-in waffle button — for example a Fluent `ToolbarButton`, so the launcher can live in an application toolbar or a drawer header. The element must accept and forward injected props and a ref (the `PopoverTrigger` contract) and owns its accessible name and tooltip. |
+| `positioning`  | `PopoverProps['positioning']`              | below the anchor, start-aligned | Fluent popover positioning; combine with `dockTarget` to dock to the right edge (`align: 'end'`).                                                                                                                                                                                                                                |
+| `dockTarget`   | `RefObject<HTMLElement \| null>`           | —                               | Element the panel anchors to instead of the trigger — usually the application bar, so the panel docks flush with the window edge. The element must stay mounted while the launcher is open.                                                                                                                                      |
+| `docking`      | `'default' \| 'full'`                      | `'default'`                     | `'default'` wraps the content; `'full'` stretches the panel from its anchored top edge to the bottom of the window. Either way the panel is capped at the window bottom and scrolls internally when the content is taller. Size panel content with `box-sizing: border-box`.                                                     |
+| `open`         | `boolean`                                  | uncontrolled                    | Controlled open state; pair with `onOpenChange` to close the panel from an item click, for example.                                                                                                                                                                                                                              |
+| `onOpenChange` | `(event, data: { open: boolean }) => void` | —                               | Fired whenever the launcher asks to change the open state: the trigger, Escape, or a click outside.                                                                                                                                                                                                                              |
+| `children`     | `ReactNode`                                | — (required)                    | The panel content: search, sections, grids and lists.                                                                                                                                                                                                                                                                            |
+
+#### Composition patterns
+
+- **The application owns the state.** The package holds no query and no app
+  list; keep them in the calling component and switch what the panel renders.
+- **Activating an app closes the panel.** Keep the open state in the
+  application (`open` + `onOpenChange`) and close it from the item click, the
+  way the Microsoft 365 launcher behaves.
+- **The trigger can live in a toolbar.** Pass `trigger` with an element that
+  accepts injected props and a ref; the launcher replaces its waffle with that
+  element and the panel still anchors to the element itself.
+- **Docking chooses the anchor.** Without `dockTarget` the panel opens below
+  its trigger; with `dockTarget` it anchors to that element — the bar — so it
+  opens flush with the window edge. `positioning` picks the edge and
+  alignment, `docking="full"` fills the window below the anchor.
+- **Keyboard flow.** Tab moves through the panel content, Enter and Space
+  activate an item, Escape clears a controlled query first — the second
+  Escape closes the panel.
+- **Empty search results need a state.** Render a short message (for example
+  "No apps found") in place of the result list.
+
+### AppLauncherTrigger
+
+The built-in waffle trigger, exported for applications that place it
+themselves. It renders an icon-only button whose `label` is both the
+accessible name and the tooltip; while the launcher's panel is open the
+tooltip is suppressed without remounting the button. The launcher renders
+this component unless a caller-provided `trigger` replaces it.
+
+| Prop          | Type                        | Default           | Description                                                                                 |
+| ------------- | --------------------------- | ----------------- | ------------------------------------------------------------------------------------------- |
+| `label`       | `string`                    | `'App launcher'`  | Accessible name, also shown as the tooltip; pass a localized string.                        |
+| `icon`        | `ReactElement`              | the Fluent waffle | Icon rendered inside the button.                                                            |
+| `appearance`  | `ButtonProps['appearance']` | `'subtle'`        | Visual style of the button.                                                                 |
+| `size`        | `ButtonProps['size']`       | Fluent's default  | Size of the button.                                                                         |
+| `shape`       | `ButtonProps['shape']`      | Fluent's default  | Shape of the button.                                                                        |
+| `hideTooltip` | `boolean`                   | `false`           | Suppresses the tooltip without removing it from the tree, so the button keeps its identity. |
+| …             | native button props         | —                 | All native button props (`onClick`, `className`, `aria-*`, ...) pass through.               |
+
+### Texts and localization
+
+Every user-facing string is a prop; the package ships no string resource
+files. The defaults are English and can be overridden per application:
+
+| Text                             | Kind                      | Default                               | How to localize                                                                                   |
+| -------------------------------- | ------------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Trigger label (also the tooltip) | accessible name + tooltip | `'App launcher'`                      | `label` on `AppLauncher` / `AppLauncherTrigger`                                                   |
+| Search field's accessible name   | accessible                | none — required                       | `label` on `AppLauncherSearch`                                                                    |
+| Search placeholder               | visible                   | `'Search'`                            | `placeholder` (SearchBox passthrough)                                                             |
+| Clear button on the search field | accessible                | `'clear'` — set by Fluent's SearchBox | `dismiss={{ 'aria-label': '…' }}` (SearchBox passthrough; the slot merges over Fluent's defaults) |
+| Item names                       | visible + accessible      | none — caller content                 | `label` on `AppLauncherItem`                                                                      |
+| Section titles                   | visible                   | none — caller content                 | `title` on `AppLauncherSection` (or omit)                                                         |
+| Empty search state               | visible                   | none — caller content                 | render your own message instead of the result list                                                |
+
+A German search field — the override the `Localized` story renders:
+
+```tsx
+<AppLauncherSearch
+  label="Apps durchsuchen"
+  placeholder="Suchen"
+  dismiss={{ 'aria-label': 'Eingabe löschen' }}
+  value={query}
+  onChange={onQueryChange}
+/>
+```
+
 ### AppLauncherSearch
 
 The panel's search field: a Fluent `SearchBox` with the launcher defaults —
