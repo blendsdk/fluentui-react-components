@@ -27,7 +27,7 @@
 
 ## Conventions
 
-- Components follow the Fluent UI v9 pattern documented in the `fluentui-components` skill: `<Name>.tsx` (forwardRef shell), `<Name>.types.ts` (props contract), `use<Name>.ts` (state hook), `render<Name>.tsx` (pure render), `use<Name>Styles.styles.ts` (Griffel + tokens), optional `<Name>Context.ts`, `index.ts` barrel. Deviations from the anatomy are recorded exceptions (for example `SystemErrorProvider` has no styles file and keeps its state and render in one file), never silent drift.
+- Components follow the Fluent UI v9 pattern documented in the `fluentui-components` skill: `<Name>.tsx` (forwardRef shell), `<Name>.types.ts` (props contract), `use<Name>.ts` (state hook), `render<Name>.tsx` (pure render), `use<Name>Styles.styles.ts` (Griffel + tokens), optional `<Name>Context.ts`, `index.ts` barrel. Deviations from the anatomy are recorded exceptions (for example `SystemErrorProvider` has no styles file and keeps its state and render in one file; the provider-shaped `ConfirmProvider` has no render or styles layers either), never silent drift.
 - Tests live in `test/`: `*.spec.test.tsx` (contract, written first and kept unchanged — the immutable oracle), `*.impl.test.tsx` (internals), a `*.ssr.test.tsx` smoke in the node environment where server rendering matters, and `package-exports.spec.test.ts` pinning the public export surface; one story file per component.
 - Hooks and render functions stay pure; styling uses `makeStyles` with `tokens` only, and class names merge with `mergeClasses`; native props of the root element pass through.
 - Documentation comments are mandatory for public and non-trivial internal symbols. Never reference plans, requirements or task identifiers in code or comments.
@@ -42,7 +42,7 @@
 ## CodeOps
 
 - Nested layout: `codeops/.codeops.yml` is the marker (`integrationBranch: main`), `codeops/codeops.json` holds the strict quality policy, and `codeops/00-roadmap.md` is the portfolio roadmap. Feature artifacts live under `codeops/features/<feature>/` and appear lazily with the first requirement or plan.
-- Project skills and agents come from `opencode-codeops@2.2.1` (`install --project`), recorded in `.opencode/skills/.opencode-codeops.json`: 17 CodeOps skills plus 12 hidden agents that `exec-plan` dispatches. Restart OpenCode after an install or upgrade so they load.
+- Project skills and agents come from `opencode-codeops@2.2.1` (`install --project`): 17 CodeOps skills recorded in `.opencode/skills/.opencode-codeops.json` plus 12 hidden dispatch agents in `.opencode/agents/`. Restart OpenCode after an install or upgrade so they load.
 - Specialist coverage: up to date (2026-10-16) — no specialist is warranted; `make-plan` re-runs the check with phase evidence.
 
 <!-- CODEOPS-PROJECT:END -->
