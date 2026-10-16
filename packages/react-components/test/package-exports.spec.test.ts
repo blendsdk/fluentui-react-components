@@ -2,6 +2,10 @@ import { describe, expect, it } from 'vitest';
 import * as api from '../src/index';
 import type {
   CatchErrorOptions,
+  ConfirmAction,
+  ConfirmDialogProps,
+  ConfirmDialogStrings,
+  ConfirmIntent,
   ErrorDialogKind,
   ErrorDialogProps,
   ErrorDialogStrings,
@@ -14,6 +18,7 @@ describe('package export surface', () => {
     // of the contract: every documented component is reachable and no
     // internal module leaks out.
     expect(Object.keys(api).sort()).toEqual([
+      'ConfirmDialog',
       'DescriptionList',
       'DescriptionListItem',
       'ErrorDialog',
@@ -45,5 +50,23 @@ describe('package export surface', () => {
 
     expect(options.kind).toBe('error');
     expect(providerProps.captureGlobalErrors).toBe(false);
+  });
+
+  it('exports the public ConfirmDialog types', () => {
+    // The type imports above only compile when the package root exports them;
+    // the values below keep the file local-usage clean under noUnusedLocals.
+    const intent = 'danger' satisfies ConfirmIntent;
+    const action = { value: 'save', label: 'Save' } satisfies ConfirmAction;
+    const strings: ConfirmDialogStrings = { confirm: 'Delete', decline: 'Cancel' };
+    const dialogProps: ConfirmDialogProps = {
+      open: true,
+      title: 'Delete this record?',
+      onResolve: () => {},
+    };
+
+    expect(intent).toBe('danger');
+    expect(action.value).toBe('save');
+    expect(strings.confirm).toBe('Delete');
+    expect(dialogProps.open).toBe(true);
   });
 });

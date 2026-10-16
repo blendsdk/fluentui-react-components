@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-16 13:34
-> **Progress**: 0/27 tasks (0%)
+> **Last Updated**: 2026-10-16 13:55
+> **Progress**: 3/27 tasks (11%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -67,9 +67,19 @@ task-size criteria in the make-plan quality checklist).
 **Reference**: [07](07-testing-strategy.md) §ConfirmDialog (ST-1…ST-29) · [03-01](03-01-confirm-dialog.md) §Interfaces · AR #4, AR #6
 **Objective**: Pin the contract as executable tests before any implementation exists.
 
-- [ ] 1.1.1 [spec-author] Write the contract spec tests from the ST cases — `test/confirm-dialog.spec.test.tsx`
-- [ ] 1.1.2 [spec-author] Extend the export-surface pin with `ConfirmDialog` and its type pins (ST-29) — `test/package-exports.spec.test.ts`
-- [ ] 1.1.3 Run the spec suite and verify the **red phase** (import/export failures expected; document any case that passes pre-implementation with justification) — `pnpm test`
+- [x] 1.1.1 [spec-author] Write the contract spec tests from the ST cases — `test/confirm-dialog.spec.test.tsx` ✅ (completed: 2026-10-16 13:53)
+- [x] 1.1.2 [spec-author] Extend the export-surface pin with `ConfirmDialog` and its type pins (ST-29) — `test/package-exports.spec.test.ts` ✅ (completed: 2026-10-16 13:53)
+- [x] 1.1.3 Run the spec suite and verify the **red phase** (import/export failures expected; document any case that passes pre-implementation with justification) — `pnpm test` ✅ (completed: 2026-10-16 13:54)
+
+> **Red-phase record (1.1.3):** 33 failed / 6 passed across the two files (39 tests; the dialog spec
+> carries 35) — 32 dialog tests fail with "Element type is invalid … got: undefined" (the component
+> is not exported yet), the export-list assertion fails on the missing `ConfirmDialog` key, and no
+> file-load or transform errors occurred. Every pre-existing suite stays green (96 passed). Four
+> pre-implementation passes are documented as type-level pins: `import type` is erased at runtime
+> (the type-pin test), and the three negative compile constructs only build elements — their real
+> gate is `pnpm type-check` in the green phase. Technique note: `fui-Button--primary` does not
+> exist in Fluent v9, so the appearance assertions compare class lists (primary differs from
+> secondary as a strict superset) instead of invented class names.
 
 **Deliverables**:
 
