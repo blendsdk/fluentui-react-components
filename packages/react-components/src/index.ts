@@ -19,3 +19,6 @@ export type {
   ErrorDialogProps,
   ErrorDialogStrings,
 } from './components/ErrorDialog';
+export { SystemErrorProvider } from './components/SystemErrorProvider';
+export { useSystemError } from './components/SystemErrorProvider';
+export type { CatchErrorOptions, SystemErrorProviderProps } from './components/SystemErrorProvider';

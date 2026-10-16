@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-16 09:47
-> **Progress**: 18/28 tasks (64%)
+> **Last Updated**: 2026-10-16 09:48
+> **Progress**: 23/28 tasks (82%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -166,11 +166,11 @@ task-size criteria in `quality-checklist.md`).
 **Reference**: [03-02](03-02-system-error-provider.md) §Interfaces, §Provider state and construction, §Capture hook
 **Objective**: Implement the provider so the frozen spec tests pass.
 
-- [ ] 2.2.1 Public types and context — `src/components/SystemErrorProvider/SystemErrorProvider.types.ts`, `src/components/SystemErrorProvider/SystemErrorContext.ts`
-- [ ] 2.2.2 Opt-in capture hook (effect-scoped listeners, StrictMode/SSR-safe) — `src/components/SystemErrorProvider/useGlobalErrorCapture.ts`
-- [ ] 2.2.3 Provider state, per-variant dialog construction, sign-out wrapper, hook — `src/components/SystemErrorProvider/SystemErrorProvider.tsx`, `src/components/SystemErrorProvider/useSystemError.ts`
-- [ ] 2.2.4 Barrel and package exports — `src/components/SystemErrorProvider/index.ts`, `src/index.ts`
-- [ ] 2.2.5 Run the spec suite and verify the **green phase** — a failing spec test means the implementation is wrong, never edit the test — `pnpm test`
+- [x] 2.2.1 Public types and context — `src/components/SystemErrorProvider/SystemErrorProvider.types.ts`, `src/components/SystemErrorProvider/SystemErrorContext.ts` ✅ (completed: 2026-10-16 09:48)
+- [x] 2.2.2 Opt-in capture hook (effect-scoped listeners, StrictMode/SSR-safe) — `src/components/SystemErrorProvider/useGlobalErrorCapture.ts` ✅ (completed: 2026-10-16 09:48)
+- [x] 2.2.3 Provider state, per-variant dialog construction, sign-out wrapper, hook — `src/components/SystemErrorProvider/SystemErrorProvider.tsx`, `src/components/SystemErrorProvider/useSystemError.ts` ✅ (completed: 2026-10-16 09:48)
+- [x] 2.2.4 Barrel and package exports — `src/components/SystemErrorProvider/index.ts`, `src/index.ts` ✅ (completed: 2026-10-16 09:48)
+- [x] 2.2.5 Run the spec suite and verify the **green phase** — a failing spec test means the implementation is wrong, never edit the test — `pnpm test` ✅ (completed: 2026-10-16 09:48)
 
 **Deliverables**:
 
