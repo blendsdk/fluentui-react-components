@@ -176,4 +176,5 @@ export const Titled: Story = {
 Pointer to [07-testing-strategy.md](07-testing-strategy.md): ST-15…ST-36 (blocks) plus the pin's
 ST-37 contribution; the five block spec files and the item impl test are ported unchanged; the
 normalized-diff gate covers the byte-identity claim; the phase verify is `pnpm verify` and
-`pnpm storybook:build`.
+`pnpm storybook:build`. Three of the ported cases (ST-17, ST-22, ST-24) render inside the
+launcher surface and turn green in Phase 2, when the shell lands (AR P7).

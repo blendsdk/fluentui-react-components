@@ -25,6 +25,10 @@
 > (RD-01/RD-02 acceptance criteria), never from re-imagining the implementation. The IMMUTABLE
 > ORACLE RULE applies in full: a failing spec test means the port is wrong — never edit the test
 > (only the two whitelisted comment edits in ST-1…ST-12's file are permitted).
+>
+> **Cross-phase note:** ST-17, ST-22 and ST-24 render inside the launcher surface (`AppLauncher`),
+> which is implemented in Phase 2 — they stay red from the Phase-1 spec step until the shell
+> lands. Every other block case is shell-independent.
 
 ### Shell (RD-01; file `test/app-launcher.spec.test.tsx`, 12 tests)
 

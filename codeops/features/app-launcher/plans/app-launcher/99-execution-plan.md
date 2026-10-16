@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-16 16:44
-> **Progress**: 0/33 tasks (0%)
+> **Last Updated**: 2026-10-16 17:00
+> **Progress**: 3/33 tasks (9%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -54,7 +54,7 @@ task-size criteria in the make-plan quality checklist).
 
 ## Phase 1: Content blocks
 
-> **Phase baseline tree**: _(recorded at execution start by the exec-plan skill from a temporary-index snapshot)_
+> **Phase baseline tree**: `6d13c3d279b8d49e795f055cd9e3e7c2293df585`
 > **Scope mode**: strict · **Expected modification set** (`packages/react-components/`-relative):
 > `test/app-launcher-search.spec.test.tsx` · `test/app-launcher-section.spec.test.tsx` ·
 > `test/app-launcher-grid.spec.test.tsx` · `test/app-launcher-list.spec.test.tsx` ·
@@ -72,9 +72,9 @@ task-size criteria in the make-plan quality checklist).
 **Reference**: [07](07-testing-strategy.md) §Search–Item (ST-15…ST-33) · [03-01](03-01-app-launcher-blocks.md) §Port procedure · AR #7 (req), AR P2, AR P6
 **Objective**: Pin the block contract as executable tests before any block source exists.
 
-- [ ] 1.1.1 [spec-author] Port the five block spec test files **unchanged** — `test/app-launcher-search.spec.test.tsx`, `test/app-launcher-section.spec.test.tsx`, `test/app-launcher-grid.spec.test.tsx`, `test/app-launcher-list.spec.test.tsx`, `test/app-launcher-item.spec.test.tsx` (ST-15…ST-33)
-- [ ] 1.1.2 [spec-author] Extend the export-surface pin with the five block components and their six type pins — `test/package-exports.spec.test.ts` (ST-37, phase-1 part)
-- [ ] 1.1.3 Run the spec suite and verify the **red phase** (import/render failures expected — the components are not exported yet; document every pre-implementation pass with justification, e.g. erased `import type` pins) — `pnpm test`
+- [x] 1.1.1 [spec-author] Port the five block spec test files **unchanged** — `test/app-launcher-search.spec.test.tsx`, `test/app-launcher-section.spec.test.tsx`, `test/app-launcher-grid.spec.test.tsx`, `test/app-launcher-list.spec.test.tsx`, `test/app-launcher-item.spec.test.tsx` (ST-15…ST-33) ✅ (completed: 2026-10-16 17:00)
+- [x] 1.1.2 [spec-author] Extend the export-surface pin with the five block components and their six type pins — `test/package-exports.spec.test.ts` (ST-37, phase-1 part) ✅ (completed: 2026-10-16 17:00)
+- [x] 1.1.3 Run the spec suite and verify the **red phase** (import/render failures expected — the components are not exported yet; document every pre-implementation pass with justification, e.g. erased `import type` pins) — `pnpm test` ✅ (completed: 2026-10-16 17:00)
 
 **Deliverables**:
 
@@ -96,15 +96,21 @@ task-size criteria in the make-plan quality checklist).
 - [ ] 1.2.6 Port `AppLauncherSearch` verbatim — `src/components/AppLauncherSearch/**` (6 files)
 - [ ] 1.2.7 Extend the package barrel with the five block exports and their types — `src/index.ts`
 - [ ] 1.2.8 Run the Phase-1 normalized-diff gate (format the source copies in `$CODEOPS_TMPDIR`; **expected: every diff empty** across the 31 component files and the five spec test files) and record the evidence — AR P3
-- [ ] 1.2.9 Run the spec suite and verify the **green phase** — a failing spec test means the port is wrong, never edit the test — `pnpm test`
+- [ ] 1.2.9 Run the spec suite and verify the **green phase** (expected: the 16 shell-independent block spec tests and the extended pin pass; ST-17, ST-22 and ST-24 stay red until Phase 2 — AR P7) — a failing spec test means the port is wrong, never edit the test — `pnpm test`
 
-> **Red/Green records:** append the measured evidence (failing counts, then passing counts) beneath
-> this step after the runs, mirroring the house execution-plan style.
+> **Red-phase record (1.1.3, complete):** the filtered run over the six new/modified files reports
+> 20 failed / 5 passed (25) — the 19 ported block tests fail with "Element type is invalid" (the
+> components are not exported yet) and the pin's runtime-list assertion fails on exactly the five
+> missing keys; the five type-pin tests pass pre-implementation (type-level pins erase at runtime —
+> their real gate is the green-phase type-check). The full suite fails exactly the six files of
+> this step: 20 failed / 171 passed (191); all 12 pre-existing test files stay green. Byte-identity:
+> the Prettier-normalized diff of all five ported spec files against the source copies is empty.
+> The three shell-composition cases (ST-17, ST-22, ST-24) stay red until Phase 2 (AR P7).
 
 **Deliverables**:
 
 - [ ] The five block folders per RD-02 §Ported file inventory
-- [ ] All block spec tests green; normalized-diff evidence recorded
+- [ ] All shell-independent block spec tests green (16/19) plus the extended pin; the three shell-composition tests documented as Phase-2-dependent; normalized-diff evidence recorded
 
 **Verify**: `pnpm test`
 
@@ -167,7 +173,7 @@ task-size criteria in the make-plan quality checklist).
 - [ ] 2.2.2 Port `AppLauncher` with **exactly the one whitelisted comment edit** (drop the stale "and (in later iterations) the panel behavior" phrase from the `AppLauncher.tsx` JSDoc) — `src/components/AppLauncher/**` (6 files)
 - [ ] 2.2.3 Extend the package barrel with the two shell exports and their types — `src/index.ts`
 - [ ] 2.2.4 Run the Phase-2 normalized-diff gate (expected: **exactly the three comment hunks** — one in `AppLauncher.tsx`, two in `app-launcher.spec.test.tsx`; every other diff empty) and record the evidence — AR P3
-- [ ] 2.2.5 Run the spec suite and verify the **green phase** — a failing spec test means the port is wrong, never edit the test — `pnpm test`
+- [ ] 2.2.5 Run the spec suite and verify the **green phase** — includes the three cross-phase block composition tests (ST-17, ST-22, ST-24) turning green (AR P7); a failing spec test means the port is wrong, never edit the test — `pnpm test`
 
 **Deliverables**:
 

@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import * as api from '../src/index';
 import type {
+  AppLauncherGridProps,
+  AppLauncherItemProps,
+  AppLauncherListProps,
+  AppLauncherSearchChangeData,
+  AppLauncherSearchProps,
+  AppLauncherSectionProps,
   CatchErrorOptions,
   ConfirmAction,
   ConfirmDialogProps,
@@ -21,6 +27,11 @@ describe('package export surface', () => {
     // of the contract: every documented component is reachable and no
     // internal module leaks out.
     expect(Object.keys(api).sort()).toEqual([
+      'AppLauncherGrid',
+      'AppLauncherItem',
+      'AppLauncherList',
+      'AppLauncherSearch',
+      'AppLauncherSection',
       'ConfirmDialog',
       'ConfirmProvider',
       'DescriptionList',
@@ -95,5 +106,27 @@ describe('package export surface', () => {
     expect(options.title).toBe('Delete this record?');
     expect(actions.actions).toHaveLength(3);
     expect(providerProps.strings?.confirm).toBe('Yes');
+  });
+
+  it('exports the public AppLauncher block types', () => {
+    // The type imports above only compile when the package root exports them;
+    // the values below keep the file local-usage clean under noUnusedLocals.
+    const gridProps: AppLauncherGridProps = { children: null, columns: 4 };
+    const itemProps: AppLauncherItemProps = { label: 'Mail', disabledFocusable: true };
+    const listProps: AppLauncherListProps = { children: null };
+    const change: AppLauncherSearchChangeData = { value: 'mail' };
+    const searchProps: AppLauncherSearchProps = { label: 'Search apps' };
+    const sectionProps: AppLauncherSectionProps = {
+      children: null,
+      title: 'All apps',
+      divider: true,
+    };
+
+    expect(gridProps.columns).toBe(4);
+    expect(itemProps.disabledFocusable).toBe(true);
+    expect(listProps.children).toBeNull();
+    expect(change.value).toBe('mail');
+    expect(searchProps.label).toBe('Search apps');
+    expect(sectionProps.divider).toBe(true);
   });
 });
