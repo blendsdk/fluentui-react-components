@@ -13,7 +13,7 @@
 
 | Feature      | Roadmap                                  | Stage Summary                          | Progress | Status | Last Updated |
 | ------------ | ---------------------------------------- | -------------------------------------- | -------- | ------ | ------------ |
-| error-dialog | [→](features/error-dialog/00-roadmap.md) | 1 plan preflighted · 2 RDs preflighted | 0/2 RDs | 🔄 | 2026-10-16 |
+| error-dialog | [→](features/error-dialog/00-roadmap.md) | 1 plan preflighted · 2 RDs preflighted | 0/2 RDs  | 🔄     | 2026-10-16   |
 
 ## Archived
 

@@ -15,5 +15,5 @@
 
 | ID    | Title                 | RD                                                    | Plan                                           | Stage            | Status | Last Updated | Depends-on / Blocker |
 | ----- | --------------------- | ----------------------------------------------------- | ---------------------------------------------- | ---------------- | ------ | ------------ | -------------------- |
-| RD-01 | ErrorDialog component | [RD-01](requirements/RD-01-error-dialog-component.md) | [error-dialog](plans/error-dialog/00-index.md) | Executing | 🔄     | 2026-10-16   | —                    |
+| RD-01 | ErrorDialog component | [RD-01](requirements/RD-01-error-dialog-component.md) | [error-dialog](plans/error-dialog/00-index.md) | Executing        | 🔄     | 2026-10-16   | —                    |
 | RD-02 | SystemErrorProvider   | [RD-02](requirements/RD-02-system-error-provider.md)  | [error-dialog](plans/error-dialog/00-index.md) | Plan Preflighted | 🔬     | 2026-10-16   | RD-01                |
