@@ -267,6 +267,15 @@ task-size criteria in the make-plan quality checklist).
 
 **Verify**: `pnpm verify` and `pnpm storybook:build`
 
+> **Phase-review record (Phase 2):** the independent correctness review ran on the phase diff
+> (baseline `bb7d3d16…`) with the base lenses plus `api-surface`; auditors were skipped — no
+> security, performance or concurrency tags apply (logged). The reviewer re-ran both byte-level
+> comparisons: the shell sources and spec files differ from the source by exactly the three
+> whitelisted comment hunks, and the story-suite port differs from its upstream only inside the
+> recorded adaptation classes. One MINOR finding (RV-201 — the named-import conversion was not
+> in P10's recorded adaptation list; fixed by recording it), no critical or major findings; the
+> full gate is green (21 files / 209 tests, type-check clean).
+
 ---
 
 ## Dependencies

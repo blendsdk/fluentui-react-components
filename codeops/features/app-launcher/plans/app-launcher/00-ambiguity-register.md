@@ -144,12 +144,15 @@ The shell stories are now a port of that suite — twelve scenarios (KitchenSink
 FullDock, TriggerAnchoredList, ToolbarTrigger, DisabledItems, IconTreatments, SearchStates,
 ControlledOpen, ItemActions, Localization, BrandedBars) over shared story fixtures — replacing
 the workbench-derived composed samples. The per-block and trigger variant stories stay (the
-house definition of done wants story coverage per component). Two recorded adaptations:
+house definition of done wants story coverage per component). Recorded adaptations:
 scenario/fixture modules are `.story.tsx` support files excluded from the declaration build
 (`tsconfig.build.json`; this repository's storybook glob indexes every `*.stories.tsx`, so
-meta-less modules would fail indexing), and the trigger fixture's typing follows React 19's
-native button props instead of the upstream's polymorphic `ButtonProps` spread, which does not
-type-check under this repository's React 19 types.
+meta-less modules would fail indexing); the trigger fixture's typing follows React 19's native
+button props instead of the upstream's polymorphic `ButtonProps` spread, which does not
+type-check under this repository's React 19 types; the `Bookings` tiles use the 32px glyph this
+repository's icon version provides (upstream used a 24px workaround for an older version, with
+its version-specific comment dropped); and the upstream React namespace imports are converted to
+this repository's named-import convention (behavior-neutral; review RV-201).
 
 Authority: User — direction given during Phase-2 execution
 Decision: port the upstream suite as the launcher stories; replace the workbench compositions
