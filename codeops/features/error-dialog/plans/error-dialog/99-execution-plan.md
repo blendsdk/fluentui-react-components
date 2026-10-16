@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-16 08:59
-> **Progress**: 3/28 tasks (11%)
+> **Last Updated**: 2026-10-16 09:02
+> **Progress**: 10/28 tasks (36%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -91,13 +91,13 @@ task-size criteria in `quality-checklist.md`).
 **Reference**: [03-01](03-01-error-dialog.md) §Interfaces, §Serialization algorithm, §Copy state machine, §Dialog structure, §Strings resolution
 **Objective**: Implement the component so the frozen spec tests pass.
 
-- [ ] 1.2.1 Public types — `src/components/ErrorDialog/ErrorDialog.types.ts`
-- [ ] 1.2.2 Pure serializer: replacer maps and failure containment — `src/components/ErrorDialog/serializeError.ts`
-- [ ] 1.2.3 State hook: English string defaults and resolution, details, copy state machine, surface props, ref — `src/components/ErrorDialog/useErrorDialog.ts`
-- [ ] 1.2.4 Pure render: alert Dialog, labelled details area, variant actions, native spread — `src/components/ErrorDialog/renderErrorDialog.tsx`
-- [ ] 1.2.5 Static Griffel classes with tokens (danger title, 700 px surface cap) — `src/components/ErrorDialog/useErrorDialogStyles.styles.ts`
-- [ ] 1.2.6 Shell, folder barrel and package exports — `src/components/ErrorDialog/ErrorDialog.tsx`, `src/components/ErrorDialog/index.ts`, `src/index.ts`
-- [ ] 1.2.7 Run the spec suite and verify the **green phase** — a failing spec test means the implementation is wrong, never edit the test — `pnpm test`
+- [x] 1.2.1 Public types — `src/components/ErrorDialog/ErrorDialog.types.ts` ✅ (completed: 2026-10-16 09:02)
+- [x] 1.2.2 Pure serializer: replacer maps and failure containment — `src/components/ErrorDialog/serializeError.ts` ✅ (completed: 2026-10-16 09:02)
+- [x] 1.2.3 State hook: English string defaults and resolution, details, copy state machine, surface props, ref — `src/components/ErrorDialog/useErrorDialog.ts` ✅ (completed: 2026-10-16 09:02)
+- [x] 1.2.4 Pure render: alert Dialog, labelled details area, variant actions, native spread — `src/components/ErrorDialog/renderErrorDialog.tsx` ✅ (completed: 2026-10-16 09:02)
+- [x] 1.2.5 Static Griffel classes with tokens (danger title, 700 px surface cap) — `src/components/ErrorDialog/useErrorDialogStyles.styles.ts` ✅ (completed: 2026-10-16 09:02)
+- [x] 1.2.6 Shell, folder barrel and package exports — `src/components/ErrorDialog/ErrorDialog.tsx`, `src/components/ErrorDialog/index.ts`, `src/index.ts` ✅ (completed: 2026-10-16 09:02)
+- [x] 1.2.7 Run the spec suite and verify the **green phase** — a failing spec test means the implementation is wrong, never edit the test — `pnpm test` ✅ (completed: 2026-10-16 09:02)
 
 **Deliverables**:
 

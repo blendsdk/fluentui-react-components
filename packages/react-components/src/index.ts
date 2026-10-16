@@ -13,3 +13,9 @@ export { DescriptionList } from './components/DescriptionList';
 export type { DescriptionListProps } from './components/DescriptionList';
 export { DescriptionListItem } from './components/DescriptionListItem';
 export type { DescriptionListItemProps } from './components/DescriptionListItem';
+export { ErrorDialog } from './components/ErrorDialog';
+export type {
+  ErrorDialogKind,
+  ErrorDialogProps,
+  ErrorDialogStrings,
+} from './components/ErrorDialog';
