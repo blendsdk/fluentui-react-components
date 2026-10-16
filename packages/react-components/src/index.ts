@@ -16,6 +16,12 @@ export type {
   ConfirmDialogStrings,
   ConfirmIntent,
 } from './components/ConfirmDialog';
+export { ConfirmProvider, useConfirm } from './components/ConfirmProvider';
+export type {
+  ConfirmOptions,
+  ConfirmOptionsWithActions,
+  ConfirmProviderProps,
+} from './components/ConfirmProvider';
 export { DescriptionList } from './components/DescriptionList';
 export type { DescriptionListProps } from './components/DescriptionList';
 export { DescriptionListItem } from './components/DescriptionListItem';

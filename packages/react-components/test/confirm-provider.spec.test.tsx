@@ -121,10 +121,10 @@ afterEach(() => {
 describe('ConfirmProvider', () => {
   describe('mounting and idle state', () => {
     it('renders the child markup where it was placed without adding a wrapper element', () => {
-      const { container } = renderProvider(() => <span data-testid="child">child content</span>);
+      const { view } = renderProvider(() => <span data-testid="child">child content</span>);
 
       const child = screen.getByTestId('child');
-      const providerRoot = container.firstElementChild;
+      const providerRoot = view.container.firstElementChild;
 
       // The provider adds no element of its own: the child sits directly
       // under the theme provider's root, which is the only wrapper in the

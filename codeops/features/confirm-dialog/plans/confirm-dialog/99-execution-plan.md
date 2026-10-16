@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-16 14:38
-> **Progress**: 16/27 tasks (59%)
+> **Last Updated**: 2026-10-16 14:41
+> **Progress**: 21/27 tasks (78%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -185,11 +185,18 @@ task-size criteria in the make-plan quality checklist).
 **Reference**: [03-02](03-02-confirm-provider.md) §Public API, §Interfaces, §Provider mechanics, §SSR and environment safety
 **Objective**: Implement the provider so the frozen spec tests pass.
 
-- [ ] 2.2.1 Public types and internal context — `src/components/ConfirmProvider/ConfirmProvider.types.ts`, `src/components/ConfirmProvider/ConfirmContext.ts`
-- [ ] 2.2.2 Provider: request record, replacement, settle-once activation, the probe discriminator, strings chain, always-rendered dialog with the idle-key reuse — `src/components/ConfirmProvider/ConfirmProvider.tsx`
-- [ ] 2.2.3 The public hook with the outside-provider error — `src/components/ConfirmProvider/useConfirm.ts`
-- [ ] 2.2.4 Barrel and package exports — `src/components/ConfirmProvider/index.ts`, `src/index.ts`
-- [ ] 2.2.5 Run the spec suite and verify the **green phase** — a failing spec test means the implementation is wrong, never edit the test — `pnpm test`
+- [x] 2.2.1 Public types and internal context — `src/components/ConfirmProvider/ConfirmProvider.types.ts`, `src/components/ConfirmProvider/ConfirmContext.ts` ✅ (completed: 2026-10-16 14:41)
+- [x] 2.2.2 Provider: request record, replacement, settle-once activation, the probe discriminator, strings chain, always-rendered dialog with the idle-key reuse — `src/components/ConfirmProvider/ConfirmProvider.tsx` ✅ (completed: 2026-10-16 14:41)
+- [x] 2.2.3 The public hook with the outside-provider error — `src/components/ConfirmProvider/useConfirm.ts` ✅ (completed: 2026-10-16 14:41)
+- [x] 2.2.4 Barrel and package exports — `src/components/ConfirmProvider/index.ts`, `src/index.ts` ✅ (completed: 2026-10-16 14:41)
+- [x] 2.2.5 Run the spec suite and verify the **green phase** — a failing spec test means the implementation is wrong, never edit the test — `pnpm test` ✅ (completed: 2026-10-16 14:41)
+
+> **Green-phase record (2.2.5):** 22/22 spec + export-pin tests pass; `pnpm type-check` is clean
+> (the provider type pins and the runtime-empty-actions directive are enforced); the full package
+> suite passes 160/160 across 11 files. One test-authoring slip was corrected in the spec file
+> before green (recorded for review): the ST-30 test destructured a `container` the harness does
+> not return; the expectation is unchanged (no wrapper element) and the lookup now goes through
+> the render result's container. No implementation defect was involved.
 
 **Deliverables**:
 
