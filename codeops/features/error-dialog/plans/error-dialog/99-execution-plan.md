@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-16 07:31
-> **Progress**: 0/28 tasks (0%)
+> **Last Updated**: 2026-10-16 08:59
+> **Progress**: 3/28 tasks (11%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -52,8 +52,11 @@ task-size criteria in `quality-checklist.md`).
 
 ## Phase 1: ErrorDialog component
 
-> **Phase baseline tree**: _(recorded by the exec-plan skill from a temporary-index snapshot of
-> committed, staged, unstaged, and untracked phase-start state)_
+> **Phase baseline tree**: `62d6ab2500ac9dfaab716c06a96b7c6e4d3b290f`
+> **Scope mode**: strict · **Expected modification set** (`packages/react-components/`-relative):
+> `test/error-dialog.spec.test.tsx` · `test/package-exports.spec.test.ts` ·
+> `test/error-dialog.impl.test.tsx` · `src/components/ErrorDialog/**` · `README.md` — plus the
+> plan/roadmap bookkeeping in this repository's `codeops/` documents
 > **Lenses**: api-surface (public component contract) · security (hostile-value containment)
 > **Reasoning**: high — contract-heavy component (19 acceptance criteria), hostile-input
 > serialization and a timed copy state machine
@@ -63,9 +66,18 @@ task-size criteria in `quality-checklist.md`).
 **Reference**: [07](07-testing-strategy.md) §Specification Test Cases (ST-01…ST-32, ST-55) · [03-01](03-01-error-dialog.md) §Interfaces · AR #6
 **Objective**: Pin the contract as executable tests before any implementation exists.
 
-- [ ] 1.1.1 [spec-author] Write the contract spec tests from the ST cases — `test/error-dialog.spec.test.tsx`
-- [ ] 1.1.2 [spec-author] Extend the export-surface list with `ErrorDialog` (ST-28) — `test/package-exports.spec.test.ts`
-- [ ] 1.1.3 Run the spec suite and verify the **red phase** (import/export failures expected; document any case that passes pre-implementation with justification) — `pnpm test`
+- [x] 1.1.1 [spec-author] Write the contract spec tests from the ST cases — `test/error-dialog.spec.test.tsx` ✅ (completed: 2026-10-16 08:59)
+- [x] 1.1.2 [spec-author] Extend the export-surface list with `ErrorDialog` (ST-28) — `test/package-exports.spec.test.ts` ✅ (completed: 2026-10-16 08:59)
+- [x] 1.1.3 Run the spec suite and verify the **red phase** (import/export failures expected; document any case that passes pre-implementation with justification) — `pnpm test` ✅ (completed: 2026-10-16 08:59)
+
+> **Red-phase record (1.1.3):** 43 failed / 10 passed — all 42 dialog tests fail with
+> "Element type is invalid … got: undefined" (the component is not exported yet), the
+> export-list assertion fails as expected, and description-list stays green; no file-load
+> errors. One pre-implementation pass is documented: the type-import witness from 1.1.2 runs
+> trivially because `import type` is erased at runtime — its real gate is `pnpm type-check`
+> in the green phase. Technique adjustment (mechanical): the dialog surface portals to
+> `document.body`, so the spec file locates the backdrop document-wide
+> (`.fui-DialogSurface__backdrop`), not via the render container.
 
 **Deliverables**:
 
