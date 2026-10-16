@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-16 09:50
-> **Progress**: 25/28 tasks (89%)
+> **Last Updated**: 2026-10-16 09:51
+> **Progress**: 26/28 tasks (93%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -186,7 +186,7 @@ task-size criteria in `quality-checklist.md`).
 
 - [x] 2.3.1 Implementation tests: capture-hook listener attach/remove spies, StrictMode-safe single pair, memoization stability — `test/system-error-provider.impl.test.tsx` ✅ (completed: 2026-10-16 09:50)
 - [x] 2.3.2 SSR smoke test (node environment; import + `renderToString` must not throw) — `test/system-error-provider.ssr.test.tsx` ✅ (completed: 2026-10-16 09:50)
-- [ ] 2.3.3 Stories: both variants via `catchError`, a `detailsText` demo and a capture demo — `src/components/SystemErrorProvider/SystemErrorProvider.stories.tsx`
+- [x] 2.3.3 Stories: both variants via `catchError`, a `detailsText` demo and a capture demo — `src/components/SystemErrorProvider/SystemErrorProvider.stories.tsx` ✅ (completed: 2026-10-16 09:51)
 - [ ] 2.3.4 README provider section and the principles carve-out — `README.md`
 - [ ] 2.3.5 Full verification — `pnpm verify` and `pnpm storybook:build`
 
