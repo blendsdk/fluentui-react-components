@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-16 09:02
-> **Progress**: 10/28 tasks (36%)
+> **Last Updated**: 2026-10-16 09:06
+> **Progress**: 11/28 tasks (39%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -111,7 +111,7 @@ task-size criteria in `quality-checklist.md`).
 **Reference**: [03-01](03-01-error-dialog.md) §Testing Requirements · [07](07-testing-strategy.md) §Test Data
 **Objective**: Cover internals and edge paths, add story and documentation, run the manual pass, and verify the whole gate.
 
-- [ ] 1.3.1 Implementation tests: serializer internals, copy-timer mechanics, availability detection, class/token + 700 px checks (AC 17b/17c) — `test/error-dialog.impl.test.tsx`
+- [x] 1.3.1 Implementation tests: serializer internals, copy-timer mechanics, availability detection, class/token + 700 px checks (AC 17b/17c) — `test/error-dialog.impl.test.tsx` ✅ (completed: 2026-10-16 09:06)
 - [ ] 1.3.2 Stories: standard variant, unauthorized variant, Dutch strings, long details, missing details — `src/components/ErrorDialog/ErrorDialog.stories.tsx`
 - [ ] 1.3.3 README component section: description, props table, composition and localization notes — `README.md`
 - [ ] 1.3.4 Storybook keyboard/a11y pass (real focus path; a11y addon clean) — user-assisted; record the pass result with the task marks and fix anything found
