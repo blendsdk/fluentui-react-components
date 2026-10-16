@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-16 14:04
-> **Progress**: 13/27 tasks (48%)
+> **Last Updated**: 2026-10-16 14:38
+> **Progress**: 16/27 tasks (59%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -143,8 +143,7 @@ task-size criteria in the make-plan quality checklist).
 
 ## Phase 2: ConfirmProvider
 
-> **Phase baseline tree**: _(recorded by the exec-plan skill from a temporary-index snapshot of
-> committed, staged, unstaged, and untracked phase-start state)_
+> **Phase baseline tree**: `b7f246b80012408d33be4816a5c65625a68a6f93`
 > **Scope mode**: strict · **Expected modification set** (`packages/react-components/`-relative):
 > `test/confirm-provider.spec.test.tsx` · `test/package-exports.spec.test.ts` ·
 > `test/confirm-provider.impl.test.tsx` · `test/confirm-provider.ssr.test.tsx` ·
@@ -160,9 +159,19 @@ task-size criteria in the make-plan quality checklist).
 **Reference**: [07](07-testing-strategy.md) §ConfirmProvider (ST-30…ST-41) · [03-02](03-02-confirm-provider.md) §Interfaces · AR #4, AR #8
 **Objective**: Pin the provider contract as executable tests before any implementation exists.
 
-- [ ] 2.1.1 [spec-author] Write the provider spec tests from the ST cases — `test/confirm-provider.spec.test.tsx`
-- [ ] 2.1.2 [spec-author] Extend the export-surface list with `ConfirmProvider`, `useConfirm` and their type pins (ST-41) — `test/package-exports.spec.test.ts`
-- [ ] 2.1.3 Run the spec suite and verify the **red phase** (import/export failures expected; document any case that passes pre-implementation with justification) — `pnpm test`
+- [x] 2.1.1 [spec-author] Write the provider spec tests from the ST cases — `test/confirm-provider.spec.test.tsx` ✅ (completed: 2026-10-16 14:38)
+- [x] 2.1.2 [spec-author] Extend the export-surface list with `ConfirmProvider`, `useConfirm` and their type pins (ST-41) — `test/package-exports.spec.test.ts` ✅ (completed: 2026-10-16 14:38)
+- [x] 2.1.3 Run the spec suite and verify the **red phase** (import/export failures expected; document any case that passes pre-implementation with justification) — `pnpm test` ✅ (completed: 2026-10-16 14:38)
+
+> **Red-phase record (2.1.3):** 18 failed / 4 passed across the two files (22 tests; the provider
+> spec carries 17) — 16 tests fail with "Element type is invalid … got: undefined" (the provider is
+> not exported yet), ST-35 fails because `useConfirm` is not a function yet (the thrown message
+> cannot name `ConfirmProvider`), and the export-list assertion fails on the two missing keys.
+> Every pre-existing suite stays green (142 passed across 9 files); no file-load or transform
+> errors. Justified pre-implementation passes: the three untouched export pins and the new
+> provider type pin (a runtime-local block; its real gate is `pnpm type-check` in the green
+> phase). Technique notes: ST-33 triggers the second request through an `act`-wrapped hook call
+> (deterministic, no jsdom modal dependence); ST-36 asserts both `''` and whitespace blanks.
 
 **Deliverables**:
 

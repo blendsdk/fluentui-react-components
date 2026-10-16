@@ -6,6 +6,9 @@ import type {
   ConfirmDialogProps,
   ConfirmDialogStrings,
   ConfirmIntent,
+  ConfirmOptions,
+  ConfirmOptionsWithActions,
+  ConfirmProviderProps,
   ErrorDialogKind,
   ErrorDialogProps,
   ErrorDialogStrings,
@@ -19,10 +22,12 @@ describe('package export surface', () => {
     // internal module leaks out.
     expect(Object.keys(api).sort()).toEqual([
       'ConfirmDialog',
+      'ConfirmProvider',
       'DescriptionList',
       'DescriptionListItem',
       'ErrorDialog',
       'SystemErrorProvider',
+      'useConfirm',
       'useSystemError',
     ]);
   });
@@ -68,5 +73,27 @@ describe('package export surface', () => {
     expect(action.value).toBe('save');
     expect(strings.confirm).toBe('Delete');
     expect(dialogProps.open).toBe(true);
+  });
+
+  it('exports the public ConfirmProvider types', () => {
+    // The type imports above only compile when the package root exports them;
+    // the values below keep the file local-usage clean under noUnusedLocals.
+    const options: ConfirmOptions = { title: 'Delete this record?' };
+    const actions = {
+      title: 'Save your changes?',
+      actions: [
+        { value: 'cancel', label: 'Cancel' },
+        { value: 'discard', label: 'Discard' },
+        { value: 'save', label: 'Save' },
+      ],
+    } satisfies ConfirmOptionsWithActions<'cancel' | 'discard' | 'save'>;
+    const providerProps: ConfirmProviderProps = {
+      children: null,
+      strings: { confirm: 'Yes', decline: 'No' },
+    };
+
+    expect(options.title).toBe('Delete this record?');
+    expect(actions.actions).toHaveLength(3);
+    expect(providerProps.strings?.confirm).toBe('Yes');
   });
 });

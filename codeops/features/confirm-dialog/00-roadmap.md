@@ -16,7 +16,7 @@
 | ID    | Title                        | RD                                                      | Plan                                               | Stage        | Status | Last Updated | Depends-on / Blocker |
 | ----- | ---------------------------- | ------------------------------------------------------- | -------------------------------------------------- | ------------ | ------ | ------------ | -------------------- |
 | RD-01 | ConfirmDialog component      | [RD-01](requirements/RD-01-confirm-dialog-component.md) | [confirm-dialog](plans/confirm-dialog/00-index.md) | Executing    | 🔄     | 2026-10-16   | —                    |
-| RD-02 | ConfirmProvider + useConfirm | [RD-02](requirements/RD-02-confirm-provider.md)         | [confirm-dialog](plans/confirm-dialog/00-index.md) | Plan Created | 📋     | 2026-10-16   | RD-01                |
+| RD-02 | ConfirmProvider + useConfirm | [RD-02](requirements/RD-02-confirm-provider.md)         | [confirm-dialog](plans/confirm-dialog/00-index.md) | Executing    | 🔄     | 2026-10-16   | RD-01                |
 
 ## Notes
 
