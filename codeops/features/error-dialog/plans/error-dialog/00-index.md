@@ -1,7 +1,7 @@
 # ErrorDialog Implementation Plan
 
 > **Feature**: Controlled Fluent UI v9 error dialog — error details for support plus close, reload, and sign-out recovery actions; plus the opt-in `SystemErrorProvider`
-> **Status**: Planning Complete
+> **Status**: Done
 > **Created**: 2026-10-16
 > **Implements**: error-dialog/RD-01, error-dialog/RD-02
 > **CodeOps Artifact Schema**: 1

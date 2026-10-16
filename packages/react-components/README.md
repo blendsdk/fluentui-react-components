@@ -164,13 +164,13 @@ transmits, and repeated reports replace the current one (last-wins).
 </FluentProvider>
 ```
 
-| Prop                  | Type                          | Default      | Description                                                                                                                                                    |
-| --------------------- | ----------------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `children`            | `ReactNode`                   | — (required) | The application subtree; the provider adds no DOM of its own and one capture-enabled provider per application is the supported setup.                          |
-| `onReload`            | `() => void`                  | —            | Forwarded to the dialog's standard variant; when provided, the dialog adds the secondary Reload page action. The provider never reloads by itself.             |
-| `onSignOut`           | `() => void`                  | —            | Runs when the user activates Sign out of the session-expired variant — **after** the dialog has closed, so a missing or throwing handler cannot trap the user. |
-| `strings`             | `Partial<ErrorDialogStrings>` | —            | Text overrides applied to every dialog the provider shows.                                                                                                     |
-| `captureGlobalErrors` | `boolean`                     | `false`      | Registers opt-in window listeners for `error` and `unhandledrejection` and reports their payloads through the same dialog; the events are never suppressed.    |
+| Prop                  | Type                          | Default      | Description                                                                                                                                                                                                                          |
+| --------------------- | ----------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `children`            | `ReactNode`                   | — (required) | The application subtree; the provider adds no DOM of its own.                                                                                                                                                                        |
+| `onReload`            | `() => void`                  | —            | Forwarded to the dialog's standard variant; when provided, the dialog adds the secondary Reload page action. The provider never reloads by itself.                                                                                   |
+| `onSignOut`           | `() => void`                  | —            | Runs when the user activates Sign out of the session-expired variant — **after** the dialog has closed, so a missing or throwing handler cannot trap the user.                                                                       |
+| `strings`             | `Partial<ErrorDialogStrings>` | —            | Text overrides applied to every dialog the provider shows.                                                                                                                                                                           |
+| `captureGlobalErrors` | `boolean`                     | `false`      | Registers opt-in window listeners for `error` and `unhandledrejection` and reports their payloads through the same dialog; the events are never suppressed, and one capture-enabled provider per application is the supported setup. |
 
 The hook returns the provider's imperative API:
 
