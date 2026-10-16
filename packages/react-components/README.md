@@ -100,17 +100,17 @@ side-effect-free: visibility follows `open`, dismissal is a callback request to
 the application, and nothing is ever reloaded, navigated or logged on the
 component's own.
 
-| Prop          | Type                              | Default                                   | Description                                                                                                              |
-| ------------- | --------------------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| `open`        | `boolean`                         | — (required)                              | Whether the dialog is shown; the application owns this state.                                                            |
-| `error`       | `unknown`                         | —                                         | The value to display; serialized into the details area (see below).                                                      |
-| `detailsText` | `string`                          | —                                         | Replaces the serialized details verbatim; an empty string renders a blank details value.                                 |
-| `strings`     | `Partial<ErrorDialogStrings>`     | —                                         | Text overrides merged key by key over the English defaults.                                                              |
-| `kind`        | `'error' \| 'unauthorized'`       | `'error'`                                 | The variant: standard recovery actions, or sign-out only for a session that expired.                                     |
-| `onDismiss`   | `() => void`                      | — (required for the error variant)        | Called once, without arguments, when Close is activated.                                                                 |
-| `onReload`    | `() => void`                      | —                                         | When provided, the secondary Reload page action renders.                                                                 |
-| `onSignOut`   | `() => void`                      | — (required for the unauthorized variant) | Called once, without arguments, when Sign out is activated.                                                              |
-| …             | `ComponentPropsWithoutRef<'div'>` | —                                         | All native props spread onto the dialog surface; `className` and `style` merge (the caller wins) and `ref` points at it. |
+| Prop          | Type                              | Default                                   | Description                                                                                                                                                              |
+| ------------- | --------------------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `open`        | `boolean`                         | — (required)                              | Whether the dialog is shown; the application owns this state.                                                                                                            |
+| `error`       | `unknown`                         | —                                         | The value to display; serialized into the details area (see below).                                                                                                      |
+| `detailsText` | `string`                          | —                                         | Replaces the serialized details verbatim; an empty string renders a blank details value.                                                                                 |
+| `strings`     | `Partial<ErrorDialogStrings>`     | —                                         | Text overrides merged key by key over the English defaults.                                                                                                              |
+| `kind`        | `'error' \| 'unauthorized'`       | `'error'`                                 | The variant: standard recovery actions, or sign-out only for a session that expired.                                                                                     |
+| `onDismiss`   | `() => void`                      | — (required for the error variant)        | Called once, without arguments, when Close is activated.                                                                                                                 |
+| `onReload`    | `() => void`                      | —                                         | When provided, the secondary Reload page action renders.                                                                                                                 |
+| `onSignOut`   | `() => void`                      | — (required for the unauthorized variant) | Called once, without arguments, when Sign out is activated.                                                                                                              |
+| …             | `ComponentPropsWithoutRef<'div'>` | —                                         | All native props except `children` (the dialog owns its content) spread onto the dialog surface; `className` and `style` merge (the caller wins) and `ref` points at it. |
 
 ```tsx
 <ErrorDialog

@@ -102,6 +102,22 @@ describe('ErrorDialog internals', () => {
       expect(JSON.parse(serialized)).toEqual({ name: 'N', message: 'M', stack: 'S' });
     });
 
+    it('keeps an own __proto__ key as a plain field', () => {
+      // JSON payloads can carry an own `__proto__` key; building the
+      // structured object must keep it as a visible field instead of
+      // letting it reach the prototype setter.
+      const errorLike = JSON.parse('{"name": "E", "message": "M", "__proto__": {"x": 1}}') as {
+        name: string;
+        message: string;
+      };
+
+      const serialized = serializeError(errorLike) as string;
+      const parsed = JSON.parse(serialized) as Record<string, unknown>;
+
+      expect(Object.getOwnPropertyDescriptor(parsed, '__proto__')?.value).toEqual({ x: 1 });
+      expect(Object.getPrototypeOf(parsed)).toBe(Object.prototype);
+    });
+
     it('maps nested bigints, functions and cycles at any depth', () => {
       const leaf: Record<string, unknown> = { big: 10n, fn: () => undefined };
       leaf.inner = { again: leaf };
@@ -149,6 +165,20 @@ describe('ErrorDialog internals', () => {
       view.unmount();
 
       expect(clearTimeoutSpy).toHaveBeenCalledWith(confirmation?.id);
+    });
+
+    it('contains a clipboard write that throws synchronously', () => {
+      const writeText = vi.fn(() => {
+        throw new Error('broken clipboard');
+      });
+      stubClipboard(writeText);
+
+      renderDialog(<ErrorDialog open error="boom" onDismiss={noop} />);
+
+      expect(() =>
+        fireEvent.click(screen.getByRole('button', { name: 'Copy details' }))
+      ).not.toThrow();
+      expect(screen.getByRole('button', { name: 'Copy details' })).toBeInTheDocument();
     });
 
     it('detects clipboard availability once at mount', () => {

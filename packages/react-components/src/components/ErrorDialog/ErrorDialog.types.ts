@@ -73,9 +73,10 @@ interface ErrorDialogUnauthorizedProps extends ErrorDialogBaseProps {
  * variants narrows the callback set by `kind` before constructing the props.
  *
  * All native `div` props (`className`, `style`, `data-*`, `aria-*`, event
- * handlers, ...) pass through to the dialog surface element, and a forwarded
- * ref points at it. Callbacks are invoked only when defined: an untyped
- * consumer that omits one gets a visible but inert action, never a crash.
+ * handlers, ...) pass through to the dialog surface element — except
+ * `children`, which the dialog owns — and a forwarded ref points at it.
+ * Callbacks are invoked only when defined: an untyped consumer that omits
+ * one gets a visible but inert action, never a crash.
  *
  * @example
  * ```tsx

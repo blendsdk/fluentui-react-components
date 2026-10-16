@@ -44,7 +44,10 @@ function buildStructuredError(error: ErrorLike): Record<string, unknown> {
   if (stack !== undefined) {
     structured.stack = stack;
   }
-  return Object.assign(structured, own);
+  // The spread copies own keys as plain data properties, so an own
+  // `__proto__` stays a visible field instead of reaching the prototype
+  // setter the way `Object.assign` would — which would silently drop it.
+  return { ...structured, ...own };
 }
 
 /**
