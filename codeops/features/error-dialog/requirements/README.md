@@ -1,6 +1,6 @@
 # error-dialog — Requirements Documents
 
-> **Feature**: error-dialog — a reusable Fluent UI v9 error dialog component
+> **Feature**: error-dialog — a reusable Fluent UI v9 error dialog component with an opt-in error provider
 > **Status**: Draft
 > **Created**: 2026-10-16
 > **Architecture**: React 19 + Fluent UI v9 (`@fluentui/react-components` 9.74), TypeScript, Griffel styling with design tokens, Vitest + Testing Library
@@ -22,6 +22,11 @@ presentational component driven by callbacks. This feature keeps that proven spl
 component is fully controlled, performs no capture and no side effects, and leaves session
 policy, page reloads and error storage to the host application.
 
+RD-02 adds an explicit, optional convenience layer on top: a `SystemErrorProvider` that holds
+the current error, renders the dialog once, exposes `useSystemError()` for one-call reporting
+from anywhere in the application, and offers opt-in global capture. Auth and navigation policy
+still stay with the host.
+
 The rebuild also fixes the defects observed in the legacy code: error objects serialized as
 `{}`, a dismissal escape hatch on session-expired errors, visibility tied to translation
 loading, and unbounded action side effects inside the component.
@@ -31,13 +36,14 @@ loading, and unbounded action side effects inside the component.
 **Original goal:** bring the legacy application-error dialog to this repository as a
 Fluent UI v9 component suitable for the current applications.
 
-**Smallest viable design:** one controlled `ErrorDialog` component with a typed prop contract,
-defined error serialization, copy-to-clipboard details, and callback-based actions — built with
-the repository's existing component pattern and existing dependencies.
+**Smallest viable design:** RD-01 — one controlled `ErrorDialog` component with a typed prop
+contract, defined error serialization, copy-to-clipboard details, and callback-based actions;
+RD-02 — a thin `SystemErrorProvider` holding the current error, rendering the dialog once, with
+opt-in global capture. Both built with the repository's existing component pattern and existing
+dependencies.
 
-**Excluded support machinery:** global error capture and a store/provider, a React error
-boundary, telemetry/automatic reporting, mail-to and support-reference-ID affordances, an i18n
-framework, and any new dependency.
+**Excluded support machinery:** a React error boundary, telemetry/automatic reporting, mail-to
+and support-reference-ID affordances, an i18n framework, and any new dependency.
 
 **Approved complexity:** None.
 
@@ -63,36 +69,44 @@ framework, and any new dependency.
 | Controlled component           | Visibility is driven by the `open` prop; dismissal is a callback request to the host, never a local state change.                     |
 | Strings                        | Consumer-supplied text overrides (`strings`) merged over English defaults (`ErrorDialogStrings`).                                     |
 | Last-wins                      | A newer error replaces the displayed one; the component keeps no history of earlier errors.                                           |
+| SystemErrorProvider            | The RD-02 provider that holds the current error and renders one `ErrorDialog`; the app wraps its tree with it once.                   |
+| catchError                     | The `useSystemError()` call that reports an error value (with optional `kind` and `detailsText`) to the provider from anywhere.       |
+| Global capture (opt-in)        | `captureGlobalErrors` — when true, the provider listens for window `error` and `unhandledrejection` events; off by default.           |
 
 ## Document Index
 
-| #         | Document                                                         | Description                                                                | Depends On |
-| --------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------- | ---------- |
-| **AR**    | [Ambiguity Register](00-ambiguity-register.md)                   | Zero-Ambiguity Gate decisions (audit trail)                                | —          |
-| **RD-01** | [RD-01 — ErrorDialog component](RD-01-error-dialog-component.md) | The complete feature: controlled dialog, serialization, copy, tests, story | —          |
+| #         | Document                                                         | Description                                              | Depends On |
+| --------- | ---------------------------------------------------------------- | -------------------------------------------------------- | ---------- |
+| **AR**    | [Ambiguity Register](00-ambiguity-register.md)                   | Zero-Ambiguity Gate decisions (audit trail)              | —          |
+| **RD-01** | [RD-01 — ErrorDialog component](RD-01-error-dialog-component.md) | The controlled dialog: serialization, copy, tests, story | —          |
+| **RD-02** | [RD-02 — SystemErrorProvider](RD-02-system-error-provider.md)    | Provider + `useSystemError()` with opt-in global capture | RD-01      |
 
 ## Dependency Graph
 
     RD-01 (ErrorDialog component)
-      └── standalone; builds on the existing package infrastructure
-          (FluentProvider theming, component file pattern, Vitest suite)
+      └── RD-02 (SystemErrorProvider) — renders the RD-01 dialog
+          └── builds on the existing package infrastructure
+              (FluentProvider theming, component file pattern, Vitest suite)
 
 ## Suggested Implementation Order
 
-| Phase      | Documents | Description                                                                             |
-| ---------- | --------- | --------------------------------------------------------------------------------------- |
-| **A: MVP** | RD-01     | The complete feature — one component with its spec/impl tests, story and documentation. |
+| Phase              | Documents | Description                                                                            |
+| ------------------ | --------- | -------------------------------------------------------------------------------------- |
+| **A: MVP**         | RD-01     | The complete dialog — one component with its spec/impl tests, story and documentation. |
+| **B: Convenience** | RD-02     | Provider + hook on top of RD-01: one-call error reporting and opt-in global capture.   |
 
 ## Key Architecture Decisions
 
-| Decision                                                | Choice                                           | Rationale                                                                                            | AR Ref |
-| ------------------------------------------------------- | ------------------------------------------------ | ---------------------------------------------------------------------------------------------------- | ------ |
-| Capture and storage live outside the library            | App / future framework provider                  | Keeps the component SSR- and test-safe; matches the v8 successor where the framework owned the store | AR #1  |
-| Session-expired errors are a variant, not code sniffing | `kind: "error" \| "unauthorized"`                | The component never inspects `code === 401`; the host states its intent explicitly                   | AR #4  |
-| All side effects are callbacks                          | `onDismiss` / `onReload` / `onSignOut`           | Provider- and app-agnostic; no reload, navigation or logout inside the component                     | AR #7  |
-| Strings arrive via props with English defaults          | `strings?: Partial<ErrorDialogStrings>`          | Localization without an i18n dependency; Dutch is supplied by consumer apps                          | AR #11 |
-| The component serializes error details                  | Defined rules + `detailsText` override           | Fixes the legacy `{}` and crash defects; hosts can still take full control                           | AR #10 |
-| Blocking alert semantics                                | Fluent v9 `modalType="alert"`, controlled `open` | Esc/backdrop cannot dismiss; parity with the legacy `isBlocking: true`                               | AR #6  |
+| Decision                                                | Choice                                                       | Rationale                                                                          | AR Ref      |
+| ------------------------------------------------------- | ------------------------------------------------------------ | ---------------------------------------------------------------------------------- | ----------- |
+| Error capture and storage policy                        | RD-01: none in the component; RD-02: opt-in provider state   | Keeps the dialog SSR- and test-safe; the provider adds convenience, not policy     | AR #1, #15  |
+| Session-expired errors are a variant, not code sniffing | `kind: "error" \| "unauthorized"`                            | The component never inspects `code === 401`; the host states its intent explicitly | AR #4       |
+| All side effects are callbacks                          | `onDismiss` / `onReload` / `onSignOut`                       | Provider- and app-agnostic; no reload, navigation or logout inside the component   | AR #7       |
+| Strings arrive via props with English defaults          | `strings?: Partial<ErrorDialogStrings>`                      | Localization without an i18n dependency; Dutch is supplied by consumer apps        | AR #11      |
+| The component serializes error details                  | Defined rules + `detailsText` override                       | Fixes the legacy `{}` and crash defects; hosts can still take full control         | AR #10      |
+| Blocking alert semantics                                | Fluent v9 `modalType="alert"`, controlled `open`             | Esc/backdrop cannot dismiss; parity with the legacy `isBlocking: true`             | AR #6       |
+| Provider ships in this library                          | `SystemErrorProvider` + `useSystemError()` (RD-02)           | One wrapper + one call for adoption; RD-01 and its preflight pass stay untouched   | AR #15, #16 |
+| Global capture is opt-in and non-suppressing            | `captureGlobalErrors` default `false`; no `preventDefault()` | The library stays policy-free; existing monitoring keeps working                   | AR #17      |
 
 ## How to Use These Documents
 
