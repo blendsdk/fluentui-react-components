@@ -227,7 +227,7 @@ task-size criteria in the make-plan quality checklist).
 - [x] 2.3.5 Full verification — `pnpm verify` and `pnpm storybook:build` ✅ (completed: 2026-10-16 14:44)
 
 > **Full-verification record (2.3.5):** `pnpm verify` green — format, skill check, type-check, build
-> and 166/166 tests across 12 files; `pnpm storybook:build` completes successfully with the
+> and 166/166 tests across 13 files; `pnpm storybook:build` completes successfully with the
 > provider story set. Phase 1's manual keyboard/forced-colors pass (1.3.4) remains the only open
 > task in the plan.
 

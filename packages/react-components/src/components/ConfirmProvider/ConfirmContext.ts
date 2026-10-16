@@ -7,7 +7,11 @@ import type { ConfirmOptions, ConfirmOptionsWithActions } from './ConfirmProvide
 export interface ConfirmContextValue {
   /** Requests a decision from the default pair; resolves the boolean outcome. */
   confirm(options: ConfirmOptions): Promise<boolean>;
-  /** Requests a decision from a custom action set; resolves the chosen value. */
+  /**
+   * Requests a decision from a custom action set; resolves the chosen value,
+   * or `false` when the request was superseded or the provider unmounted —
+   * the safe "not confirmed" direction.
+   */
   confirm<V extends string>(options: ConfirmOptionsWithActions<V>): Promise<V>;
 }
 

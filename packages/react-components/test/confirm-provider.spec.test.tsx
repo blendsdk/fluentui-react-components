@@ -517,5 +517,41 @@ describe('ConfirmProvider', () => {
       await expect(followUp).resolves.toBe(true);
       expect(screen.queryByRole('alertdialog')).toBeNull();
     });
+
+    it('ignores a stale activation when the request was superseded before the click', async () => {
+      const { confirmRef } = renderProvider(() => <span />);
+      const confirm = getConfirm(confirmRef);
+      let first!: Promise<boolean>;
+      let second!: Promise<boolean>;
+
+      act(() => {
+        first = confirm({ title: 'First?' });
+      });
+      expect(screen.getByRole('alertdialog', { name: 'First?' })).toBeInTheDocument();
+      const staleConfirmButton = screen.getByRole('button', { name: 'Confirm' });
+
+      act(() => {
+        second = confirm({ title: 'Second?' });
+        fireEvent.click(staleConfirmButton);
+      });
+
+      await expect(first).resolves.toBe(false);
+
+      // The newer request was never shown when the stale click happened; it
+      // must still be pending, visible, and settle through its own activation.
+      const secondState = { settled: false };
+      void second.then(() => {
+        secondState.settled = true;
+      });
+      await act(async () => {});
+      expect(secondState.settled).toBe(false);
+      expect(screen.getAllByRole('alertdialog')).toHaveLength(1);
+      expect(screen.getByRole('alertdialog', { name: 'Second?' })).toBeInTheDocument();
+
+      fireEvent.click(screen.getByRole('button', { name: 'Confirm' }));
+
+      await expect(second).resolves.toBe(true);
+      expect(screen.queryByRole('alertdialog')).toBeNull();
+    });
   });
 });

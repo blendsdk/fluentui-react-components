@@ -226,4 +226,68 @@ describe('ConfirmProvider internals', () => {
       expect(renderSpy.mock.calls.length).toBe(baseline);
     });
   });
+
+  describe('late and superseded settlement', () => {
+    it('settles a stale confirm call false after the provider unmounted', async () => {
+      const { view, confirmRef } = renderProvider(() => <span />);
+      const staleConfirm = getConfirm(confirmRef);
+
+      view.unmount();
+
+      const late = staleConfirm({ title: 'Late request?' });
+
+      await expect(late).resolves.toBe(false);
+      expect(screen.queryByRole('alertdialog')).toBeNull();
+    });
+
+    it('resolves a superseded actions request false', async () => {
+      const { confirmRef } = renderProvider(() => <span />);
+      const confirm = getConfirm(confirmRef);
+      let actionsRequest: Promise<'cancel' | 'save'> | undefined;
+      let followUp: Promise<boolean> | undefined;
+
+      act(() => {
+        actionsRequest = confirm({
+          title: 'Save your changes?',
+          actions: [
+            { value: 'cancel', label: 'Cancel' },
+            { value: 'save', label: 'Save' },
+          ],
+        });
+      });
+
+      act(() => {
+        followUp = confirm({ title: 'Follow-up?' });
+      });
+
+      await expect(actionsRequest).resolves.toBe(false);
+
+      fireEvent.click(screen.getByRole('button', { name: 'Confirm' }));
+      await expect(followUp).resolves.toBe(true);
+    });
+
+    it('returns focus to the invoker when the request closes the dialog', async () => {
+      const { confirmRef } = renderProvider(() => (
+        <button type="button" data-testid="invoker">
+          Ask
+        </button>
+      ));
+      const invoker = screen.getByTestId('invoker');
+      act(() => {
+        invoker.focus();
+      });
+      expect(document.activeElement).toBe(invoker);
+
+      let request: Promise<boolean> | undefined;
+      act(() => {
+        request = getConfirm(confirmRef)({ title: 'Delete this record?' });
+      });
+      expect(screen.getByRole('alertdialog')).toBeInTheDocument();
+
+      fireEvent.click(screen.getByRole('button', { name: 'Confirm' }));
+
+      await expect(request).resolves.toBe(true);
+      expect(document.activeElement).toBe(invoker);
+    });
+  });
 });

@@ -289,6 +289,10 @@ The hook returns a stable imperative function with two shapes:
 | `confirm({ title, message?, intent?, strings? })` | `Promise<boolean>` | The default pair; resolves `true`/`false` after the user decides.                 |
 | `confirm({ title, message?, strings?, actions })` | `Promise<V>`       | A custom action set; resolves the chosen `value` with its literal type preserved. |
 
+A superseded or unmounted request resolves `false` — the safe "not confirmed"
+direction — in both shapes, so inspect for `false` before treating an outcome
+as the user's choice. The promise never rejects.
+
 #### Composition patterns
 
 - **Mount once, above the router.** `useConfirm()` works from any descendant on

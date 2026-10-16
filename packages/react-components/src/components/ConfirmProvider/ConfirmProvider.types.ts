@@ -28,6 +28,10 @@ export interface ConfirmOptions {
 /**
  * Request options for a custom action set; the promise resolves the chosen
  * action's `value` with its literal type preserved at the call site.
+ *
+ * Like every request, a superseded or unmounted decision resolves `false` —
+ * the safe "not confirmed" direction — so inspect for `false` before treating
+ * an outcome as a user's choice.
  */
 export interface ConfirmOptionsWithActions<V extends string> extends Omit<
   ConfirmOptions,

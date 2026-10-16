@@ -103,6 +103,8 @@ function resolveChainStrings(
 export function ConfirmProvider({ children, strings }: ConfirmProviderProps): ReactElement {
   const requestRef = useRef<ConfirmRequest | undefined>(undefined);
   const lastKeyRef = useRef(0);
+  const mountedRef = useRef(false);
+  const unmountedRef = useRef(false);
   const [request, setRequest] = useState<ConfirmRequest | undefined>(undefined);
 
   const confirm = useMemo<ConfirmContextValue['confirm']>(() => {
@@ -112,6 +114,13 @@ export function ConfirmProvider({ children, strings }: ConfirmProviderProps): Re
       options: ConfirmOptions | ConfirmOptionsWithActions<string>
     ): Promise<boolean | string> {
       return new Promise<boolean | string>(resolve => {
+        if (unmountedRef.current) {
+          // A stale reference calling after the provider unmounted: nothing
+          // can ever show or settle this request, so settle the safe outcome
+          // immediately instead of leaving the caller awaiting forever.
+          resolve(false);
+          return;
+        }
         // The record is written synchronously, so any call in the same tick
         // sees and supersedes the current request; promises are never settled
         // inside state updaters.
@@ -134,26 +143,31 @@ export function ConfirmProvider({ children, strings }: ConfirmProviderProps): Re
     return confirmFn;
   }, []);
 
-  const handleResolve = useCallback((outcome: boolean | string) => {
-    const active = requestRef.current;
-    if (active === undefined || active.settled) {
-      return; // a repeat activation before the re-render is a no-op
+  const settleRequest = useCallback((target: ConfirmRequest, outcome: boolean | string) => {
+    // A stale activation — the dialog instance was superseded before the
+    // click reached its handler — must do nothing: the newer request was
+    // never shown to this user, so it must not adopt this outcome. The
+    // superseded promise was already settled `false` when the newer request
+    // was installed.
+    if (target.settled || requestRef.current !== target) {
+      return;
     }
-    active.settled = true;
-    if (requestRef.current === active) {
+    target.settled = true;
+    if (requestRef.current === target) {
       requestRef.current = undefined;
     }
     // Close the dialog first and only if the rendered state still identifies
     // this request: a request installed in the same dispatch must survive.
-    setRequest(current => (current === active ? undefined : current));
-    active.resolve(outcome);
+    setRequest(current => (current === target ? undefined : current));
+    target.resolve(outcome);
   }, []);
 
-  const mountedRef = useRef(false);
   useEffect(() => {
     mountedRef.current = true;
+    unmountedRef.current = false;
     return () => {
       mountedRef.current = false;
+      unmountedRef.current = true;
       const pending = requestRef.current;
       if (pending !== undefined && !pending.settled) {
         // A development StrictMode probe remounts the provider synchronously
@@ -176,6 +190,16 @@ export function ConfirmProvider({ children, strings }: ConfirmProviderProps): Re
   const dialogKey = request?.key ?? lastKeyRef.current;
   const effectiveStrings = resolveChainStrings(options?.strings, strings);
 
+  // Bind activations to the request this render shows: a stale click from a
+  // dialog that was superseded before the click reached its handler must not
+  // settle the newer request.
+  const activeRequest = request;
+  const settle = (outcome: boolean | string): void => {
+    if (activeRequest !== undefined) {
+      settleRequest(activeRequest, outcome);
+    }
+  };
+
   return (
     <ConfirmContext.Provider value={contextValue}>
       {children}
@@ -187,7 +211,7 @@ export function ConfirmProvider({ children, strings }: ConfirmProviderProps): Re
           message={options.message}
           actions={options.actions}
           strings={effectiveStrings}
-          onResolve={handleResolve}
+          onResolve={settle}
         />
       ) : (
         <ConfirmDialog
@@ -197,7 +221,7 @@ export function ConfirmProvider({ children, strings }: ConfirmProviderProps): Re
           message={options?.message}
           intent={options?.intent}
           strings={effectiveStrings}
-          onResolve={handleResolve}
+          onResolve={settle}
         />
       )}
     </ConfirmContext.Provider>
