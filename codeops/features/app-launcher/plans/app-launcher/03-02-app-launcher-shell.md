@@ -67,31 +67,38 @@ Any other hunk fails the gate; the port is corrected, never the source.
 | `CustomIcon`  | An icon override (for example a different Fluent sized icon).                |
 | `Appearance`  | An appearance/size variant through the Button passthrough.                   |
 
-#### `src/components/AppLauncher/AppLauncher.stories.tsx` — the workbench port
+#### `src/components/AppLauncher/AppLauncher.stories.tsx` — the integrated story suite
 
-Five composed samples, each rendered inside a small local application-bar shell (a `header` with a
-`ref` for `dockTarget`), with the sample data and logos local to the file:
+Amended during execution (register P10, user direction): the shell stories are a port of the
+component's upstream integrated demo — twelve scenarios over shared fixtures — with this
+repository's adaptations: the index file is the single indexed entry, the scenario and fixture
+modules are `.story.tsx` support files excluded from the declaration build, and the trigger
+fixture follows React 19's native button props. The workbench-derived composition this replaces
+is recorded in the ambiguity register.
 
-| Story                 | Sample (ported from the workbench)                                                                                                                                                                                                                                                                                                             |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Microsoft365Flow`    | Search + "Recent" rows + "Pinned" tiles + "All apps" tiles; typing filters into a result list; "No apps found" empty state; activating an app closes the panel and records it in recents (refreshed at open time); Bookings/Insights disabled, "Bookings (focusable)" as `disabledFocusable`; long name wraps in tiles and ellipsizes in rows. |
-| `FullDocking`         | `docking="full"`: 40 stress tiles (every tenth disabled) filling the window below the bar, scrolling inside the panel, with the search field pinned on top.                                                                                                                                                                                    |
-| `TriggerAnchoredList` | `positioning={{ position: 'below', align: 'end' }}`: the plain rows list anchored to its trigger at the far end of the bar.                                                                                                                                                                                                                    |
-| `DrawerToolbar`       | A caller `ToolbarButton` trigger inside a non-modal `OverlayDrawer` toolbar between two other commands; the panel opens below the button; a toggle button shows the page with and without the drawer.                                                                                                                                          |
-| `Localized`           | German strings on every prop: trigger label, search label/placeholder, the `dismiss` slot's `aria-label`, and the empty state.                                                                                                                                                                                                                 |
+| Story                 | Shows                                                                                                                                                                                                                   |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `KitchenSink`         | Search + "Recent" rows + "Pinned" tiles + "All apps" tiles; filtering with the "No apps found" empty state; activation closes the panel and refreshes the recents at open time; disabled and `disabledFocusable` items. |
+| `DockedToAppBar`      | `dockTarget`: the panel opens flush below the bar, wrapping its content and scrolling internally when the space runs out.                                                                                               |
+| `FullDock`            | `docking="full"`: the panel extends to the window bottom; 40 stress tiles scroll inside with the search field pinned on top.                                                                                            |
+| `TriggerAnchoredList` | `positioning={{ position: 'below', align: 'end' }}`: the rows list anchored to its trigger at the far end of the bar.                                                                                                   |
+| `ToolbarTrigger`      | A `ToolbarButton` trigger inside a non-modal `OverlayDrawer` toolbar between two commands; the panel opens below the button.                                                                                            |
+| `DisabledItems`       | The two disabled flavors side by side, in tiles and rows.                                                                                                                                                               |
+| `IconTreatments`      | Monochrome icons beside colorful logos; long labels wrapping vs ellipsizing.                                                                                                                                            |
+| `SearchStates`        | The controlled field in every state with tile results.                                                                                                                                                                  |
+| `ControlledOpen`      | Controlled open state with a recently-used list refreshed at open time.                                                                                                                                                 |
+| `ItemActions`         | An activation log proving whole-item click targets and inert disabled items.                                                                                                                                            |
+| `Localization`        | German and Armenian examples covering every string.                                                                                                                                                                     |
+| `BrandedBars`         | The trigger on five brand-colored bars, keeping its on-brand colors in every interaction state.                                                                                                                         |
 
-- **Local fixtures** (self-contained, requirements AR #10): the 16-entry sample app list, the six
-  hand-drawn SVG logos (mail, files, chat, notes, whiteboard, insights), the 40-entry stress list,
-  the `useActivatingLauncher` hook (controlled open; close on activation) and the `AppTiles` /
-  `AppRows` helpers.
-- **De-branding** (requirements AR #9): `'Virtuo Resource Planning'` → `'Resource Planning'`; the
-  `'VirtuoApp'` brand text is dropped (the drawer toolbar keeps its Home/Settings commands).
-- **Manual review checklist** — rendered in the story's `docs.description` (the `ConfirmDialog`
-  precedent), covering the behaviors jsdom cannot verify: docking geometry flush below the bar;
-  full docking reaching the window bottom with internal scrolling; the sticky search field over
-  scrolling content; the tooltip suppressed (not floating) while the panel is open; the tile hover
-  lift above neighbors; the keyboard flow (Tab, Enter/Space, first Escape clears the query, second
-  closes); and a clean a11y addon pass for every story.
+- **Shared fixtures** (`AppLauncherStoryApps.story.tsx`, `AppLauncherStoryLogos.story.tsx`): the
+  brand-blue `AppBar` with the on-brand `LauncherTriggerButton`, the `Page` frame, the `Captions`
+  card, the 16-entry sample app list, the 40-entry stress list, the `useActivatingLauncher` hook,
+  the `AppTiles`/`AppRows` helpers and the six hand-drawn SVG logos.
+- **Manual review checklist** — rendered in the index story's `docs.description` (the
+  `ConfirmDialog` precedent), covering the behaviors jsdom cannot verify: docking geometry,
+  full docking with the sticky search, tooltip suppression, tile hover lift, keyboard flow, the
+  drawer trigger, branded bars, localization, item actions and a clean a11y addon pass.
 
 #### README — shell sections, family quick start and localization table
 

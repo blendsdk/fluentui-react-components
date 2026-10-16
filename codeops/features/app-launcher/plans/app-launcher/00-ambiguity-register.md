@@ -1,6 +1,6 @@
 # Ambiguity Register: app-launcher plan
 
-> **Status**: ✅ GATE PASSED — 6 plan items + 3 runtime items resolved
+> **Status**: ✅ GATE PASSED — 6 plan items + 4 runtime items resolved
 > **Last Updated**: 2026-10-16 17:03
 
 **Imported context (not re-confirmed):** the feature's requirements register
@@ -24,6 +24,7 @@ runtime correction under the invoked auto-design delegation.
 | P7  | Technical (runtime) | Cross-phase composition tests                | (a) keep the approved blocks-first order; the three shell-composition block tests (ST-17, ST-22, ST-24) stay red until Phase 2 · (b) swap the phase order to shell-first (contradicts P1) · (c) merge both phases                                                                                                                   | **Option (a)** — AI-delegated (ad-app-launcher-20261016-01) | ✅ Resolved (runtime) |
 | P8  | Technical (runtime) | Phase-1 boundary gate under cross-phase reds | (a) adapt task 1.3.7: run `pnpm verify`; pass when the only failures are the documented P7 set (3 tests + 3 type-import errors), recorded; complete green gate at 2.3.6 · (b) defer the full gate entirely to Phase 2 (loses the boundary gate) · (c) revert the committed spec files and reorder (history churn; no red reduction) | **Option (a)** — AI-delegated (ad-app-launcher-20261016-01) | ✅ Resolved (runtime) |
 | P9  | Technical (runtime) | A11y criterion staging (task 1.3.6)          | (a) keep the build-green criterion with the interactive a11y addon check owned by the Phase-2 manual checklist (2.3.4), recorded here · (b) attempt an addon-based a11y run without a browser (not possible with the installed tooling) · (c) drop the a11y criterion (loses the check)                                             | **Option (a)** — AI-delegated (ad-app-launcher-20261016-01) | ✅ Resolved (runtime) |
+| P10 | Scope (runtime)     | Story source for the launcher shell          | **User direction (2026-10-16):** port the component's upstream integrated story suite as the repo's launcher stories — replacing the workbench-derived composed samples; the block and trigger variant stories stay                                                                                                                 | **User decision** — user-directed                           | ✅ Resolved (runtime) |
 
 ## Resolution Notes
 
@@ -137,6 +138,25 @@ Root invocation ID: ad-app-launcher-20261016-01
 Reopen triggers: an a11y regression caught in the built stories; a project decision to add a
 browser-driven a11y harness
 
+**P10 (runtime — user-directed, 2026-10-16):** Mid-execution the user pointed at the component's
+upstream home (`fluentui-contrib/packages/react-app-launcher`) and its integrated story demo.
+The shell stories are now a port of that suite — twelve scenarios (KitchenSink, DockedToAppBar,
+FullDock, TriggerAnchoredList, ToolbarTrigger, DisabledItems, IconTreatments, SearchStates,
+ControlledOpen, ItemActions, Localization, BrandedBars) over shared story fixtures — replacing
+the workbench-derived composed samples. The per-block and trigger variant stories stay (the
+house definition of done wants story coverage per component). Two recorded adaptations:
+scenario/fixture modules are `.story.tsx` support files excluded from the declaration build
+(`tsconfig.build.json`; this repository's storybook glob indexes every `*.stories.tsx`, so
+meta-less modules would fail indexing), and the trigger fixture's typing follows React 19's
+native button props instead of the upstream's polymorphic `ButtonProps` spread, which does not
+type-check under this repository's React 19 types.
+
+Authority: User — direction given during Phase-2 execution
+Decision: port the upstream suite as the launcher stories; replace the workbench compositions
+Evidence: the upstream suite read in full (12 scenarios + fixtures); the port type-checks,
+builds and renders (209/209 tests; the storybook build indexes the 13 AppLauncher entries)
+Reopen triggers: user review of the ported suite; any further story-source direction
+
 **No deferrals. No complexity escalations** — the port reuses the existing package, patterns,
-dependencies and test infrastructure. Three runtime corrections (P7, P8, P9) were recorded during
-execution; they change no behavior, scope or acceptance criterion.
+dependencies and test infrastructure. Four runtime corrections (P7, P8, P9, P10) were recorded
+during execution; they change no behavior, scope or acceptance criterion.

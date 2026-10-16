@@ -2,7 +2,7 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-16 17:24
+> **Last Updated**: 2026-10-16 17:44
 > **Progress**: 31/33 tasks (94%)
 > **CodeOps Artifact Schema**: 1
 
@@ -164,8 +164,9 @@ task-size criteria in the make-plan quality checklist).
 > **Scope mode**: strict · **Expected modification set** (`packages/react-components/`-relative):
 > `test/app-launcher.spec.test.tsx` · `test/app-launcher-trigger.spec.test.tsx` ·
 > `test/package-exports.spec.test.ts` · `src/components/AppLauncher/**` ·
-> `src/components/AppLauncherTrigger/**` · `src/index.ts` · `README.md` — plus the plan/roadmap
-> bookkeeping under `codeops/`
+> `src/components/AppLauncherTrigger/**` · `src/index.ts` · `README.md` · `tsconfig.build.json`
+> (the story-support exclusion added by the user-directed suite port — P10) — plus the
+> plan/roadmap bookkeeping under `codeops/`
 > **Lenses**: api-surface (ported public contract and export pin)
 > **Reasoning**: medium — verbatim port with deterministic checks (normalized-diff gate, oracle
 > suite) plus the composed workbench story
@@ -222,10 +223,19 @@ task-size criteria in the make-plan quality checklist).
 ### Step 2.3: Implementation Tests & Hardening
 
 **Reference**: [03-02](03-02-app-launcher-shell.md) §New artifacts · [07](07-testing-strategy.md) §End-to-End Tests · AR #5, #9, #10, #13, #18 (req)
-**Objective**: Add the shell stories (workbench port), the README family sections and the final audit, then verify the phase gate.
+**Objective**: Add the shell story suite (the integrated upstream demo, P10), the README family sections and the final audit, then verify the phase gate.
 
 - [x] 2.3.1 Story: `AppLauncherTrigger` variants (Default/CustomLabel/CustomIcon/Appearance) — `src/components/AppLauncherTrigger/AppLauncherTrigger.stories.tsx` ✅ (completed: 2026-10-16 17:24)
-- [x] 2.3.2 Story: `AppLauncher` composed samples — Microsoft365Flow, FullDocking, TriggerAnchoredList, DrawerToolbar, Localized — with the local sample data, the six logos, the de-branded copy and the manual review checklist in the story docs — `src/components/AppLauncher/AppLauncher.stories.tsx` ✅ (completed: 2026-10-16 17:24)
+- [x] 2.3.2 Story: `AppLauncher` — the upstream integrated suite ported per user direction (P10): twelve scenarios (KitchenSink, DockedToAppBar, FullDock, TriggerAnchoredList, ToolbarTrigger, DisabledItems, IconTreatments, SearchStates, ControlledOpen, ItemActions, Localization, BrandedBars) over shared `.story.tsx` fixtures, with the manual review checklist in the index docs — `src/components/AppLauncher/AppLauncher.stories.tsx` + `AppLauncher*.story.tsx` ✅ (amended and re-verified: 2026-10-16 17:44)
+
+> **Story-source change record (2.3.2, user-directed — P10):** mid-execution the user pointed at
+> the component's upstream home and its integrated story demo; the shell stories are now a port
+> of that suite, replacing the workbench-derived composed samples (the block and trigger variant
+> stories stay). Recorded adaptations: `.story.tsx` support modules are excluded from the
+> declaration build (`tsconfig.build.json`), and the trigger fixture follows React 19's native
+> button props. Re-verified: full `pnpm verify` green (209/209) and the storybook build indexes
+> the 13 `Components/AppLauncher` entries.
+
 - [x] 2.3.3 README: `AppLauncher` and `AppLauncherTrigger` sections plus the family quick start and localization table, inserted before the block sections — `README.md` ✅ (completed: 2026-10-16 17:24)
 - [ ] 2.3.4 Manual Storybook review pass (docking geometry flush below the bar; full docking to the window bottom with internal scrolling; sticky search; tooltip suppressed while open; tile hover lift; keyboard flow; a11y addon clean) — user-assisted; record the pass result with the task marks and record anything found as a finding, never a fix — AR #13
 - [x] 2.3.5 Final port audit: zero `@virtuoapp`/`Virtuo` references in ported and shipped artifacts; the source repository untouched; README covers every family component — record the evidence ✅ (completed: 2026-10-16 17:24)
@@ -240,7 +250,7 @@ task-size criteria in the make-plan quality checklist).
 
 **Deliverables**:
 
-- [ ] Both shell stories and the README family sections in place
+- [ ] The shell story suite and the README family sections in place
 - [ ] Manual checklist recorded; final audit evidence recorded
 - [ ] `pnpm verify` and `pnpm storybook:build` green
 
