@@ -43,6 +43,6 @@
 
 - Nested layout: `codeops/.codeops.yml` is the marker (`integrationBranch: main`), `codeops/codeops.json` holds the strict quality policy, and `codeops/00-roadmap.md` is the portfolio roadmap. Feature artifacts live under `codeops/features/<feature>/` and appear lazily with the first requirement or plan.
 - Project skills and agents come from `opencode-codeops@2.2.1` (`install --project`), recorded in `.opencode/skills/.opencode-codeops.json`: 17 CodeOps skills plus 12 hidden agents that `exec-plan` dispatches. Restart OpenCode after an install or upgrade so they load.
-- Specialist coverage: check due — run `analyze-agents`; the recorded check predates the plan set (`make-plan` re-runs the check with phase evidence).
+- Specialist coverage: up to date (2026-10-16) — no specialist is warranted; `make-plan` re-runs the check with phase evidence.
 
 <!-- CODEOPS-PROJECT:END -->
