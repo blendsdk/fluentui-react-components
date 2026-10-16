@@ -307,6 +307,96 @@ as the user's choice. The promise never rejects.
   Server rendering emits the children only; a request needs a client-side
   interaction.
 
+### AppLauncherSearch
+
+The panel's search field: a Fluent `SearchBox` with the launcher defaults —
+full width, the search icon, and a clear button while a query is present.
+`label` is required and becomes the accessible name; the field renders no
+visible label. `onChange` fires with `{ value }` while typing, when the clear
+button is clicked, and when Escape clears a controlled field.
+
+| Prop       | Type                                                                 | Default      | Description                                                                                                                   |
+| ---------- | -------------------------------------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| `label`    | `string`                                                             | — (required) | Accessible name of the field.                                                                                                 |
+| `onChange` | `(event: SyntheticEvent, data: AppLauncherSearchChangeData) => void` | —            | Fired with the next query value; the event is the common `SyntheticEvent` shape rather than Fluent's event union.             |
+| …          | `SearchBoxProps` (except `aria-label`, `onChange`, `onKeyDown`)      | —            | All other `SearchBox` props pass through (`value`, `placeholder`, `size`, `dismiss`, ...); `onKeyDown` is owned by the block. |
+
+#### Composition patterns
+
+- **The application owns the query.** Keep it in component state and pass
+  `value` with `onChange`; the field keeps no state of its own.
+- **Clearing happens in two steps.** The first Escape clears a non-empty
+  query and stops there — the panel stays open; with an empty field, the next
+  Escape reaches the panel and closes it.
+- **Localization is props all the way down.** `label` names the field,
+  `placeholder` is the visible cue, and Fluent's `dismiss` slot takes the
+  clear button's `aria-label`.
+
+### AppLauncherSection
+
+Groups tiles under an optional `title` with the launcher's spacing between
+sections; `divider` draws a line above the section, between it and the one
+before it. An untitled section is a plain unlabeled group.
+
+| Prop       | Type                              | Default      | Description                                                              |
+| ---------- | --------------------------------- | ------------ | ------------------------------------------------------------------------ |
+| `children` | `ReactNode`                       | — (required) | Section content, usually an `AppLauncherGrid`.                           |
+| `title`    | `string`                          | —            | Caption above the content, for example "Pinned" or "All apps".           |
+| `divider`  | `boolean`                         | `false`      | Draws a divider line above the section, between it and the previous one. |
+| …          | `ComponentPropsWithoutRef<'div'>` | —            | All native div props pass through (`className`, `aria-*`, ...).          |
+
+### AppLauncherGrid
+
+Lays `AppLauncherItem` children out as tiles — icon above the name — and wraps
+each tile in a list item, so assistive technology hears the panel content as a
+list of apps. The default is three columns, the Microsoft 365 launcher's
+column count.
+
+| Prop       | Type                             | Default      | Description                                        |
+| ---------- | -------------------------------- | ------------ | -------------------------------------------------- |
+| `children` | `ReactNode`                      | — (required) | Tiles to lay out; pass `AppLauncherItem` elements. |
+| `columns`  | `number`                         | `3`          | Number of tile columns.                            |
+| …          | `ComponentPropsWithoutRef<'ul'>` | —            | All native list props pass through.                |
+
+### AppLauncherList
+
+Stacks `AppLauncherItem` children as full-width rows — the icon beside the app
+name — the layout of the launcher's search results and recents. Long names end
+in an ellipsis.
+
+| Prop       | Type                             | Default      | Description                                          |
+| ---------- | -------------------------------- | ------------ | ---------------------------------------------------- |
+| `children` | `ReactNode`                      | — (required) | Rows to lay out, usually `AppLauncherItem` elements. |
+| …          | `ComponentPropsWithoutRef<'ul'>` | —            | All native list props pass through.                  |
+
+### AppLauncherItem
+
+One app in the launcher: the name as the button's text — so the accessible
+name is the visible label — with an optional icon. The surrounding container
+decides the layout: inside `AppLauncherGrid` the item renders as a tile (icon
+above the name), inside `AppLauncherList` as a row (icon beside the name);
+standalone it falls back to the tile layout.
+
+| Prop                | Type                                 | Default      | Description                                                                                                                                                                                                                            |
+| ------------------- | ------------------------------------ | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `label`             | `string`                             | — (required) | Name of the app; also the accessible name.                                                                                                                                                                                             |
+| `icon`              | `ReactElement`                       | —            | Any element: a sized Fluent icon (`*32` for tiles, `*20` for rows) or a colorful logo; the item does not constrain its size.                                                                                                           |
+| `disabled`          | `boolean`                            | `false`      | Renders the item disabled — muted name, dimmed icon, no activation, skipped by keyboard navigation; for apps an application disables from business rules.                                                                              |
+| `disabledFocusable` | `boolean`                            | `false`      | Renders the item disabled but reachable: announced as disabled, kept in the tab order, never activating; the same muted look. When both are set, the Button's precedence applies — the item stays focusable and is announced disabled. |
+| …                   | `ComponentPropsWithoutRef<'button'>` | —            | All native button props pass through (`onClick`, `className`, `aria-*`, ...).                                                                                                                                                          |
+
+#### Composition patterns
+
+- **Tiles for browsing, rows for scanning.** A typical panel mixes grids of
+  tiles for pinned and all apps with lists of rows for search results and
+  recents — the same item adapts to its container, section by section.
+- **Icons are free-form.** Monochrome Fluent icons follow the item's text
+  color, including the disabled color. Colorful logos are dimmed automatically
+  while disabled: desaturated and faded to the lightness of the muted name.
+- **Disabled items come from business rules.** `disabled` removes an app from
+  keyboard navigation; `disabledFocusable` keeps a disabled app reachable for
+  keyboard users. Both never activate.
+
 ## Development
 
 ```bash

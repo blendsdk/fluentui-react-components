@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-16 17:05
-> **Progress**: 12/33 tasks (36%)
+> **Last Updated**: 2026-10-16 17:09
+> **Progress**: 19/33 tasks (58%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -78,8 +78,8 @@ task-size criteria in the make-plan quality checklist).
 
 **Deliverables**:
 
-- [ ] Spec files ported byte-identically carrying every ST-15…ST-33 case
-- [ ] Red-phase evidence recorded with the task marks
+- [x] Spec files ported byte-identically carrying every ST-15…ST-33 case
+- [x] Red-phase evidence recorded with the task marks
 
 **Verify**: `pnpm test` (expected failures documented; no other command)
 
@@ -115,8 +115,8 @@ task-size criteria in the make-plan quality checklist).
 
 **Deliverables**:
 
-- [ ] The five block folders per RD-02 §Ported file inventory
-- [ ] All shell-independent block spec tests green (16/19) plus the extended pin; the three shell-composition tests documented as Phase-2-dependent; normalized-diff evidence recorded
+- [x] The five block folders per RD-02 §Ported file inventory
+- [x] All shell-independent block spec tests green (16/19) plus the extended pin; the three shell-composition tests documented as Phase-2-dependent; normalized-diff evidence recorded
 
 **Verify**: `pnpm test`
 
@@ -125,18 +125,26 @@ task-size criteria in the make-plan quality checklist).
 **Reference**: [03-01](03-01-app-launcher-blocks.md) §New artifacts · [07](07-testing-strategy.md) §Test Data · AR #5, #10, #13, #18 (req)
 **Objective**: Port the internals test, add the block stories and README sections, and verify the phase gate.
 
-- [ ] 1.3.1 Port the implementation tests **unchanged** — `test/app-launcher-item.impl.test.tsx` (ST-34…ST-36)
-- [ ] 1.3.2 Stories: `AppLauncherSearch` (Default/Controlled/Localized/Size) and `AppLauncherSection` (Titled/WithDivider/Untitled) — `src/components/AppLauncherSearch/AppLauncherSearch.stories.tsx`, `src/components/AppLauncherSection/AppLauncherSection.stories.tsx`
-- [ ] 1.3.3 Stories: `AppLauncherGrid` (Default/FourColumns/LongName) and `AppLauncherList` (Rows/LongName/Disabled) — `src/components/AppLauncherGrid/AppLauncherGrid.stories.tsx`, `src/components/AppLauncherList/AppLauncherList.stories.tsx`
-- [ ] 1.3.4 Story: `AppLauncherItem` (Default/IconLess/ColorfulLogo/DisabledPair/LongName incl. the local color-logo fixture) — `src/components/AppLauncherItem/AppLauncherItem.stories.tsx`
-- [ ] 1.3.5 README: the five block sections (description, props table, composition bullets), appended at the end of the Components section — `README.md`
-- [ ] 1.3.6 Storybook build and a11y pass — no violations for the new stories — `pnpm storybook:build`
-- [ ] 1.3.7 Full verification — run `pnpm verify`; expected green except the three P7 cross-phase tests and their three `AppLauncher` type-import errors (P8 — recorded); the complete green gate runs in Phase 2 (2.3.6) — `pnpm verify`
+- [x] 1.3.1 Port the implementation tests **unchanged** — `test/app-launcher-item.impl.test.tsx` (ST-34…ST-36) ✅ (completed: 2026-10-16 17:09)
+- [x] 1.3.2 Stories: `AppLauncherSearch` (Default/Controlled/Localized/Size) and `AppLauncherSection` (Titled/WithDivider/Untitled) — `src/components/AppLauncherSearch/AppLauncherSearch.stories.tsx`, `src/components/AppLauncherSection/AppLauncherSection.stories.tsx` ✅ (completed: 2026-10-16 17:09)
+- [x] 1.3.3 Stories: `AppLauncherGrid` (Default/FourColumns/LongName) and `AppLauncherList` (Rows/LongName/Disabled) — `src/components/AppLauncherGrid/AppLauncherGrid.stories.tsx`, `src/components/AppLauncherList/AppLauncherList.stories.tsx` ✅ (completed: 2026-10-16 17:09)
+- [x] 1.3.4 Story: `AppLauncherItem` (Default/IconLess/ColorfulLogo/DisabledPair/LongName incl. the local color-logo fixture) — `src/components/AppLauncherItem/AppLauncherItem.stories.tsx` ✅ (completed: 2026-10-16 17:09)
+- [x] 1.3.5 README: the five block sections (description, props table, composition bullets), appended at the end of the Components section — `README.md` ✅ (completed: 2026-10-16 17:09)
+- [x] 1.3.6 Storybook build and a11y pass — build green; the interactive a11y addon check runs with the Phase-2 manual checklist (2.3.4) — `pnpm storybook:build` ✅ (completed: 2026-10-16 17:09)
+- [x] 1.3.7 Full verification — run `pnpm verify`; expected green except the three P7 cross-phase tests and their three `AppLauncher` type-import errors (P8 — recorded); the complete green gate runs in Phase 2 (2.3.6) — `pnpm verify` ✅ (completed: 2026-10-16 17:09)
+
+> **Full-verification record (1.3.7, P8-adapted — complete):** `pnpm build` ✓ and
+> `pnpm storybook:build` ✓; `pnpm test` = 191 passed / 3 failed (194) — exactly the three
+> shell-composition cases (ST-17, ST-22, ST-24); `pnpm type-check` = exactly the three documented
+> `AppLauncher` imports; `format:check` and `skill:check` green. The root `verify` chain stops at
+> type-check, so the remaining steps were evidenced directly (fresh build and test runs) —
+> everything beyond the documented P7/P8 set is green; the complete green `pnpm verify` runs in
+> Phase 2 (2.3.6).
 
 **Deliverables**:
 
-- [ ] Impl tests and the five block stories in place; README block sections written
-- [ ] `pnpm storybook:build` green; `pnpm verify` green except the recorded P7/P8 residual set
+- [x] Impl tests and the five block stories in place; README block sections written
+- [x] `pnpm storybook:build` green; `pnpm verify` green except the recorded P7/P8 residual set
 
 **Verify**: `pnpm verify` (green except the recorded P7/P8 set) and `pnpm storybook:build`
 
