@@ -1,10 +1,10 @@
 # Roadmap: Confirm Dialog
 
 > **Feature-Set**: confirm-dialog
-> **Status**: Active
+> **Status**: Done
 > **Created**: 2026-10-16
-> **Last Updated**: 2026-10-16 13:40
-> **Progress**: 0 / 2 (0%)
+> **Last Updated**: 2026-10-16 16:15
+> **Progress**: 2 / 2 (100%)
 > **CodeOps Artifact Schema**: 1
 
 ## Legend
@@ -13,10 +13,10 @@
 
 ## Tracker
 
-| ID    | Title                        | RD                                                      | Plan                                               | Stage     | Status | Last Updated | Depends-on / Blocker |
-| ----- | ---------------------------- | ------------------------------------------------------- | -------------------------------------------------- | --------- | ------ | ------------ | -------------------- |
-| RD-01 | ConfirmDialog component      | [RD-01](requirements/RD-01-confirm-dialog-component.md) | [confirm-dialog](plans/confirm-dialog/00-index.md) | Executing | 🔄     | 2026-10-16   | —                    |
-| RD-02 | ConfirmProvider + useConfirm | [RD-02](requirements/RD-02-confirm-provider.md)         | [confirm-dialog](plans/confirm-dialog/00-index.md) | Executing | 🔄     | 2026-10-16   | RD-01                |
+| ID    | Title                        | RD                                                      | Plan                                               | Stage | Status | Last Updated | Depends-on / Blocker |
+| ----- | ---------------------------- | ------------------------------------------------------- | -------------------------------------------------- | ----- | ------ | ------------ | -------------------- |
+| RD-01 | ConfirmDialog component      | [RD-01](requirements/RD-01-confirm-dialog-component.md) | [confirm-dialog](plans/confirm-dialog/00-index.md) | Done  | ✅     | 2026-10-16   | —                    |
+| RD-02 | ConfirmProvider + useConfirm | [RD-02](requirements/RD-02-confirm-provider.md)         | [confirm-dialog](plans/confirm-dialog/00-index.md) | Done  | ✅     | 2026-10-16   | RD-01                |
 
 ## Notes
 
