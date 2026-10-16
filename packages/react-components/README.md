@@ -196,6 +196,68 @@ The hook returns the provider's imperative API:
   current error lives in memory until it is cleared or replaced, and nothing is
   stored or transmitted.
 
+### ConfirmDialog
+
+The prompt an application shows when a user action needs an explicit decision
+before it runs. It is a controlled strict alert dialog: visibility follows
+`open`, Escape and backdrop clicks cannot dismiss it, and every closure is an
+explicit action reporting through `onResolve` — the component never closes
+itself, never executes the decision and performs no side effects. The default
+pair reports a boolean; a custom action set reports the chosen value.
+
+| Prop        | Type                                                   | Default          | Description                                                                                                                                                                                              |
+| ----------- | ------------------------------------------------------ | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `open`      | `boolean`                                              | — (required)     | Whether the dialog is shown; the application owns this state.                                                                                                                                            |
+| `title`     | `ReactNode`                                            | — (required)     | The question, rendered as the dialog title; also the accessible name.                                                                                                                                    |
+| `message`   | `ReactNode`                                            | —                | Optional explanation; a plain string preserves newlines as visible line breaks. Content is never parsed as HTML.                                                                                         |
+| `strings`   | `Partial<ConfirmDialogStrings>`                        | —                | Action-label overrides merged key by key over the English defaults (`"Confirm"` / `"Cancel"`); a blank override keeps the default.                                                                       |
+| `busy`      | `boolean`                                              | `false`          | Disables every action while the application finishes its work; focus moves to the dialog surface when the focused action becomes disabled, so keyboard focus never falls to the page body.               |
+| `intent`    | `'confirmation' \| 'danger'`                           | `'confirmation'` | Pair variant only: `'danger'` applies the danger token recipe to the affirmative action; the dialog surface stays neutral.                                                                               |
+| `actions`   | `readonly [ConfirmAction<V>, ...ConfirmAction<V>[]]`   | —                | Custom action set replacing the default pair; renders in array order and resolves the chosen `value` with its literal type inferred at the call site. Mutually exclusive with the dialog-level `intent`. |
+| `onResolve` | `(confirmed: boolean) => void` or `(value: V) => void` | — (required)     | Called once per activation with the adopted outcome; the dialog stays open until the application reacts, and repeat activations report again.                                                            |
+| …           | `ComponentPropsWithoutRef<'div'>`                      | —                | All native props except `children` and `title` spread onto the dialog surface; `className`/`style` merge (the caller wins) and `ref` points at it.                                                       |
+
+```tsx
+<ConfirmDialog
+  open={pending}
+  title="Delete this record?"
+  message={'This cannot be undone.\nThe record is removed for everyone.'}
+  intent="danger"
+  onResolve={confirmed => {
+    setPending(false);
+    if (confirmed) deleteRecord();
+  }}
+/>
+```
+
+#### Composition patterns
+
+- **The application owns visibility and side effects.** Render the dialog from
+  the same state that drives the decision. An activation reports the outcome —
+  it does not act; close the dialog (or set `busy`) on the first report, and
+  remember that repeat activations while it stays open report again.
+- **The safe action comes first.** The first action in DOM order receives
+  initial focus (Fluent's behavior), so the default pair renders decline before
+  confirm; list the cautious choice first in custom action sets too.
+- **Danger emphasis flags the destructive action.** `intent="danger"` on the
+  pair, or `intent: 'danger'` on one action of a custom set. In forced-colors
+  mode the label carries the meaning, because the user agent replaces authored
+  colors.
+- **Custom sets carry typed outcomes.** With `actions={[{ value: 'discard' },
+…]}` the resolved value is the literal union of the values, so a `switch`
+  over the outcome is exhaustive.
+- **Localization is incremental.** Pass a partial `strings` object; unset keys
+  keep their English defaults. Blank labels fall back — an action can never be
+  unnamed.
+
+#### When not to use
+
+`ConfirmDialog` is a fixed-shape decision prompt: a title, an optional message
+and a rendered action set. It is **not** a general dialog host — for forms,
+validation, multi-step flows, custom bodies or header glyphs, compose the
+Fluent primitives (`Dialog`, `DialogSurface`, `DialogTitle`, `DialogContent`,
+`DialogActions`) directly.
+
 ## Development
 
 ```bash

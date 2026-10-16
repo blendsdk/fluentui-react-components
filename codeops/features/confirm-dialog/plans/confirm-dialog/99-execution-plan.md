@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-16 13:59
-> **Progress**: 9/27 tasks (33%)
+> **Last Updated**: 2026-10-16 14:04
+> **Progress**: 13/27 tasks (48%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -122,11 +122,15 @@ task-size criteria in the make-plan quality checklist).
 **Reference**: [03-01](03-01-confirm-dialog.md) §Testing Requirements · [07](07-testing-strategy.md) §Test Data
 **Objective**: Cover internals and edge paths, add story and documentation, run the manual pass, and verify the whole gate.
 
-- [ ] 1.3.1 Implementation tests: danger class rules/tokens, label-fallback internals, id wiring, effect conditions, merged ref, zero-v8 scan (RD-01 AC 14) — `test/confirm-dialog.impl.test.tsx`
-- [ ] 1.3.2 Stories: default pair, danger pair, custom action set, busy, multi-line message, string overrides + the manual review checklist — `src/components/ConfirmDialog/ConfirmDialog.stories.tsx`
-- [ ] 1.3.3 README component section: props table, composition notes, localization notes, "when not to use" boundary — `README.md`
+- [x] 1.3.1 Implementation tests: danger class rules/tokens, label-fallback internals, id wiring, effect conditions, merged ref, zero-v8 scan (RD-01 AC 14) — `test/confirm-dialog.impl.test.tsx` ✅ (completed: 2026-10-16 14:04)
+- [x] 1.3.2 Stories: default pair, danger pair, custom action set, busy, multi-line message, string overrides + the manual review checklist — `src/components/ConfirmDialog/ConfirmDialog.stories.tsx` ✅ (completed: 2026-10-16 14:04)
+- [x] 1.3.3 README component section: props table, composition notes, localization notes, "when not to use" boundary — `README.md` ✅ (completed: 2026-10-16 14:04)
 - [ ] 1.3.4 Storybook keyboard/a11y pass and forced-colors pass (real focus path; a11y addon clean) — user-assisted; record the pass result with the task marks and fix anything found
-- [ ] 1.3.5 Full verification — `pnpm verify` and `pnpm storybook:build`
+- [x] 1.3.5 Full verification — `pnpm verify` and `pnpm storybook:build` ✅ (completed: 2026-10-16 14:04)
+
+> **Full-verification record (1.3.5):** `pnpm verify` green — format, skill check, type-check, build
+> and 141/141 tests across 10 files; `pnpm storybook:build` completes successfully with the new
+> story set. The manual keyboard/forced-colors pass (1.3.4) awaits the user-assisted run.
 
 **Deliverables**:
 
