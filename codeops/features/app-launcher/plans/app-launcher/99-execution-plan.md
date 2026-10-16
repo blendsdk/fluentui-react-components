@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-16 17:20
-> **Progress**: 22/33 tasks (67%)
+> **Last Updated**: 2026-10-16 17:21
+> **Progress**: 27/33 tasks (82%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -199,16 +199,23 @@ task-size criteria in the make-plan quality checklist).
 **Reference**: [03-02](03-02-app-launcher-shell.md) §Port procedure, §Normalized-diff gate, §Root barrel and pin · AR #1–#3 (req), AR P3
 **Objective**: Port the shell sources so the frozen spec tests pass.
 
-- [ ] 2.2.1 Port `AppLauncherTrigger` verbatim — `src/components/AppLauncherTrigger/**` (5 files)
-- [ ] 2.2.2 Port `AppLauncher` with **exactly the one whitelisted comment edit** (drop the stale "and (in later iterations) the panel behavior" phrase from the `AppLauncher.tsx` JSDoc) — `src/components/AppLauncher/**` (6 files)
-- [ ] 2.2.3 Extend the package barrel with the two shell exports and their types — `src/index.ts`
-- [ ] 2.2.4 Run the Phase-2 normalized-diff gate (expected: **exactly the three comment hunks** — one in `AppLauncher.tsx`, two in `app-launcher.spec.test.tsx`; every other diff empty) and record the evidence — AR P3
-- [ ] 2.2.5 Run the spec suite and verify the **green phase** — includes the three cross-phase block composition tests (ST-17, ST-22, ST-24) turning green (AR P7); a failing spec test means the port is wrong, never edit the test — `pnpm test`
+- [x] 2.2.1 Port `AppLauncherTrigger` verbatim — `src/components/AppLauncherTrigger/**` (5 files) ✅ (completed: 2026-10-16 17:21)
+- [x] 2.2.2 Port `AppLauncher` with **exactly the one whitelisted comment edit** (drop the stale "and (in later iterations) the panel behavior" phrase from the `AppLauncher.tsx` JSDoc) — `src/components/AppLauncher/**` (6 files) ✅ (completed: 2026-10-16 17:21)
+- [x] 2.2.3 Extend the package barrel with the two shell exports and their types — `src/index.ts` ✅ (completed: 2026-10-16 17:21)
+- [x] 2.2.4 Run the Phase-2 normalized-diff gate (expected: **exactly the three comment hunks** — one in `AppLauncher.tsx`, two in `app-launcher.spec.test.tsx`; every other diff empty) and record the evidence — AR P3 ✅ (completed: 2026-10-16 17:21)
+- [x] 2.2.5 Run the spec suite and verify the **green phase** — includes the three cross-phase block composition tests (ST-17, ST-22, ST-24) turning green (AR P7); a failing spec test means the port is wrong, never edit the test — `pnpm test` ✅ (completed: 2026-10-16 17:21)
+
+> **Green-phase record (2.2.5):** the full suite is green — **209/209 tests pass**, including the
+> three Phase-1 cross-phase composition tests (the P7 residual is closed); `pnpm type-check`
+> exits clean with 0 errors (the P8 residual is closed). The normalized-diff gate shows exactly
+> the three whitelisted comment hunks at this boundary — 1 in `AppLauncher.tsx` (the reworded
+> JSDoc phrase) and 2 in `app-launcher.spec.test.tsx`; every other shell file matched its
+> Prettier-normalized source copy with an empty diff.
 
 **Deliverables**:
 
-- [ ] The two shell folders per RD-01 §Ported file inventory
-- [ ] All shell spec tests green; normalized-diff evidence recorded
+- [x] The two shell folders per RD-01 §Ported file inventory
+- [x] All shell spec tests green; normalized-diff evidence recorded
 
 **Verify**: `pnpm test`
 

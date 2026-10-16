@@ -9,6 +9,8 @@
  * @packageDocumentation
  */
 
+export { AppLauncher } from './components/AppLauncher';
+export type { AppLauncherDocking, AppLauncherProps } from './components/AppLauncher';
 export { AppLauncherGrid } from './components/AppLauncherGrid';
 export type { AppLauncherGridProps } from './components/AppLauncherGrid';
 export { AppLauncherItem } from './components/AppLauncherItem';
@@ -22,6 +24,8 @@ export type {
 } from './components/AppLauncherSearch';
 export { AppLauncherSection } from './components/AppLauncherSection';
 export type { AppLauncherSectionProps } from './components/AppLauncherSection';
+export { AppLauncherTrigger } from './components/AppLauncherTrigger';
+export type { AppLauncherTriggerProps } from './components/AppLauncherTrigger';
 export { ConfirmDialog } from './components/ConfirmDialog';
 export type {
   ConfirmAction,
