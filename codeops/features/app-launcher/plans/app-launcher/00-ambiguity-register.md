@@ -1,7 +1,7 @@
 # Ambiguity Register: app-launcher plan
 
-> **Status**: ✅ GATE PASSED — 6 plan items + 1 runtime item resolved
-> **Last Updated**: 2026-10-16 16:56
+> **Status**: ✅ GATE PASSED — 6 plan items + 2 runtime items resolved
+> **Last Updated**: 2026-10-16 17:03
 
 **Imported context (not re-confirmed):** the feature's requirements register
 ([../requirements/00-ambiguity-register.md](../requirements/00-ambiguity-register.md), 19 items,
@@ -13,15 +13,16 @@ decisions introduced by planning itself; the user answered all six by direct dec
 confirmed the complete register (2026-10-16 planning round). P7 was added during execution as a
 runtime correction under the invoked auto-design delegation.
 
-| #   | Category            | Ambiguity / Gap                       | Options Presented                                                                                                                                                                                                                                                                   | User Decision                                               | Status                |
-| --- | ------------------- | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- | --------------------- |
-| P1  | Scope               | Phase structure and order             | (a) two phases — content blocks first (RD-02), shell second (RD-01), 3-step spec-first ordering each · (b) shell first · (c) one combined phase                                                                                                                                     | **Option (a)** — blocks first, shell second                 | ✅ Resolved           |
-| P2  | Behavioral          | Spec-first ordering adapted to a port | (a) port the test files before the sources; red phase = import/render failures with documented evidence; impl tests in the impl-tests step · (b) copy tests and sources together                                                                                                    | **Option (a)** — port tests first                           | ✅ Resolved           |
-| P3  | Verification        | Byte-identity verification method     | (a) Prettier-normalized diff against the source in `$CODEOPS_TMPDIR` with the edit whitelist: blocks expect an empty diff; shell expects exactly the 1 comment hunk; test files the 2 comment hunks · (b) review-only inspection                                                    | **Option (a)** — normalized diff gate                       | ✅ Resolved           |
-| P4  | Integration         | Verify command (confirmed once)       | `pnpm verify` (AGENTS.md full gate) for every phase; `pnpm storybook:build` additionally required in phases that add stories                                                                                                                                                        | **Confirmed** — `pnpm verify` + `pnpm storybook:build`      | ✅ Resolved           |
-| P5  | Naming              | Plan document set and folder          | (a) `codeops/features/app-launcher/plans/app-launcher/` with 00-index, 01-requirements (thin delta), 02-current-state, 03-01-app-launcher-blocks, 03-02-app-launcher-shell, 07-testing-strategy, 99-execution-plan · (b) other names                                                | **Option (a)** — house document set                         | ✅ Resolved           |
-| P6  | Granularity         | Task grouping for verbatim copies     | (a) one port task per component folder (5–6 files); `AppLauncherItem` split into state (context/types/hook) and view (styles/render/shell/barrel) because of its 7 files; separate cross-cutting tasks (root barrel, export pin, stories, README) · (b) every folder split by layer | **Option (a)** — per-component tasks                        | ✅ Resolved           |
-| P7  | Technical (runtime) | Cross-phase composition tests         | (a) keep the approved blocks-first order; the three shell-composition block tests (ST-17, ST-22, ST-24) stay red until Phase 2 · (b) swap the phase order to shell-first (contradicts P1) · (c) merge both phases                                                                   | **Option (a)** — AI-delegated (ad-app-launcher-20261016-01) | ✅ Resolved (runtime) |
+| #   | Category            | Ambiguity / Gap                              | Options Presented                                                                                                                                                                                                                                                                                                                   | User Decision                                               | Status                |
+| --- | ------------------- | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- | --------------------- |
+| P1  | Scope               | Phase structure and order                    | (a) two phases — content blocks first (RD-02), shell second (RD-01), 3-step spec-first ordering each · (b) shell first · (c) one combined phase                                                                                                                                                                                     | **Option (a)** — blocks first, shell second                 | ✅ Resolved           |
+| P2  | Behavioral          | Spec-first ordering adapted to a port        | (a) port the test files before the sources; red phase = import/render failures with documented evidence; impl tests in the impl-tests step · (b) copy tests and sources together                                                                                                                                                    | **Option (a)** — port tests first                           | ✅ Resolved           |
+| P3  | Verification        | Byte-identity verification method            | (a) Prettier-normalized diff against the source in `$CODEOPS_TMPDIR` with the edit whitelist: blocks expect an empty diff; shell expects exactly the 1 comment hunk; test files the 2 comment hunks · (b) review-only inspection                                                                                                    | **Option (a)** — normalized diff gate                       | ✅ Resolved           |
+| P4  | Integration         | Verify command (confirmed once)              | `pnpm verify` (AGENTS.md full gate) for every phase; `pnpm storybook:build` additionally required in phases that add stories                                                                                                                                                                                                        | **Confirmed** — `pnpm verify` + `pnpm storybook:build`      | ✅ Resolved           |
+| P5  | Naming              | Plan document set and folder                 | (a) `codeops/features/app-launcher/plans/app-launcher/` with 00-index, 01-requirements (thin delta), 02-current-state, 03-01-app-launcher-blocks, 03-02-app-launcher-shell, 07-testing-strategy, 99-execution-plan · (b) other names                                                                                                | **Option (a)** — house document set                         | ✅ Resolved           |
+| P6  | Granularity         | Task grouping for verbatim copies            | (a) one port task per component folder (5–6 files); `AppLauncherItem` split into state (context/types/hook) and view (styles/render/shell/barrel) because of its 7 files; separate cross-cutting tasks (root barrel, export pin, stories, README) · (b) every folder split by layer                                                 | **Option (a)** — per-component tasks                        | ✅ Resolved           |
+| P7  | Technical (runtime) | Cross-phase composition tests                | (a) keep the approved blocks-first order; the three shell-composition block tests (ST-17, ST-22, ST-24) stay red until Phase 2 · (b) swap the phase order to shell-first (contradicts P1) · (c) merge both phases                                                                                                                   | **Option (a)** — AI-delegated (ad-app-launcher-20261016-01) | ✅ Resolved (runtime) |
+| P8  | Technical (runtime) | Phase-1 boundary gate under cross-phase reds | (a) adapt task 1.3.7: run `pnpm verify`; pass when the only failures are the documented P7 set (3 tests + 3 type-import errors), recorded; complete green gate at 2.3.6 · (b) defer the full gate entirely to Phase 2 (loses the boundary gate) · (c) revert the committed spec files and reorder (history churn; no red reduction) | **Option (a)** — AI-delegated (ad-app-launcher-20261016-01) | ✅ Resolved (runtime) |
 
 ## Resolution Notes
 
@@ -78,6 +79,35 @@ Policy version: 1
 Root invocation ID: ad-app-launcher-20261016-01
 Reopen triggers: any added block test composing with the shell; a decision to reorder the phases
 
+**P8 (runtime — discovered 2026-10-16 while preparing the Phase-1 implementation):** With the
+blocks implemented, the repo gate is green except the P7 set: `pnpm test` fails the three
+shell-composition tests and `pnpm type-check` reports the three matching `AppLauncher` imports
+(all inside the ported spec files; `build` compiles `src` only and stays green). The block spec
+files are already committed, so reordering cannot remove the residual — blocks-first minimizes it.
+Task 1.3.7 therefore verifies the adapted boundary: no failures beyond the documented set,
+recorded with the run evidence; the complete green `pnpm verify` runs in Phase 2.
+
+Authority: AI — delegated by --auto-design
+Eligibility: testing strategy; keeps scope, behavior, the P1 order and every acceptance criterion
+unchanged; adapts only the phase-boundary gate expectation
+Objective: a truthful, checkable Phase-1 gate without losing its signal
+Decision: option (a) — task 1.3.7 runs the full gate and passes when the only failures are the
+documented P7/P8 set (3 tests + 3 type-import errors), recorded
+Evidence: type-check log (TS2305 errors, all in the ported spec files); `tsconfig.build.json`
+excludes tests (build green); both component families are import-free of each other (grep
+verified in both directions)
+Rejected alternatives: deferring the gate entirely to Phase 2 (loses the boundary signal);
+reverting the committed spec files and reordering (history churn, larger red window, contradicts
+P1 without benefit)
+Strongest counterargument: a boundary gate that passes with known failures is weaker than a fully
+green gate; the counter is that the residual set is exact, pre-declared, and unreachable until
+Phase 2 by construction
+Confidence: High — verified by direct type-check run and config reads
+Hardening: not required (process-expectation adaptation; no product behavior; trivially revised)
+Policy version: 1
+Root invocation ID: ad-app-launcher-20261016-01
+Reopen triggers: residual failures beyond the documented set; any further cross-phase dependency
+
 **No deferrals. No complexity escalations** — the port reuses the existing package, patterns,
-dependencies and test infrastructure. A single runtime correction (P7) was recorded during
-execution; it changes no behavior, scope or acceptance criterion.
+dependencies and test infrastructure. Two runtime corrections (P7, P8) were recorded during
+execution; they change no behavior, scope or acceptance criterion.

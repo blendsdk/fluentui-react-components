@@ -28,7 +28,8 @@
 >
 > **Cross-phase note:** ST-17, ST-22 and ST-24 render inside the launcher surface (`AppLauncher`),
 > which is implemented in Phase 2 — they stay red from the Phase-1 spec step until the shell
-> lands. Every other block case is shell-independent.
+> lands. Every other block case is shell-independent. The Phase-1 boundary gate records exactly
+> this residual set; the complete green gate runs in Phase 2 (AR P8).
 
 ### Shell (RD-01; file `test/app-launcher.spec.test.tsx`, 12 tests)
 

@@ -9,6 +9,19 @@
  * @packageDocumentation
  */
 
+export { AppLauncherGrid } from './components/AppLauncherGrid';
+export type { AppLauncherGridProps } from './components/AppLauncherGrid';
+export { AppLauncherItem } from './components/AppLauncherItem';
+export type { AppLauncherItemProps } from './components/AppLauncherItem';
+export { AppLauncherList } from './components/AppLauncherList';
+export type { AppLauncherListProps } from './components/AppLauncherList';
+export { AppLauncherSearch } from './components/AppLauncherSearch';
+export type {
+  AppLauncherSearchChangeData,
+  AppLauncherSearchProps,
+} from './components/AppLauncherSearch';
+export { AppLauncherSection } from './components/AppLauncherSection';
+export type { AppLauncherSectionProps } from './components/AppLauncherSection';
 export { ConfirmDialog } from './components/ConfirmDialog';
 export type {
   ConfirmAction,

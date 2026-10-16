@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-16 17:00
-> **Progress**: 3/33 tasks (9%)
+> **Last Updated**: 2026-10-16 17:05
+> **Progress**: 12/33 tasks (36%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -88,15 +88,15 @@ task-size criteria in the make-plan quality checklist).
 **Reference**: [03-01](03-01-app-launcher-blocks.md) §Port procedure, §Normalized-diff gate, §Root barrel extension, §Export-pin extension · AR #1–#3 (req), AR P3
 **Objective**: Port the block sources so the frozen spec tests pass.
 
-- [ ] 1.2.1 Port `AppLauncherItem` state layer verbatim — `src/components/AppLauncherItem/AppLauncherItemLayoutContext.ts`, `AppLauncherItem.types.ts`, `useAppLauncherItem.ts`
-- [ ] 1.2.2 Port `AppLauncherItem` view layer verbatim — `src/components/AppLauncherItem/useAppLauncherItemStyles.styles.ts`, `renderAppLauncherItem.tsx`, `AppLauncherItem.tsx`, `index.ts`
-- [ ] 1.2.3 Port `AppLauncherGrid` verbatim — `src/components/AppLauncherGrid/**` (6 files)
-- [ ] 1.2.4 Port `AppLauncherList` verbatim — `src/components/AppLauncherList/**` (6 files)
-- [ ] 1.2.5 Port `AppLauncherSection` verbatim — `src/components/AppLauncherSection/**` (6 files)
-- [ ] 1.2.6 Port `AppLauncherSearch` verbatim — `src/components/AppLauncherSearch/**` (6 files)
-- [ ] 1.2.7 Extend the package barrel with the five block exports and their types — `src/index.ts`
-- [ ] 1.2.8 Run the Phase-1 normalized-diff gate (format the source copies in `$CODEOPS_TMPDIR`; **expected: every diff empty** across the 31 component files and the five spec test files) and record the evidence — AR P3
-- [ ] 1.2.9 Run the spec suite and verify the **green phase** (expected: the 16 shell-independent block spec tests and the extended pin pass; ST-17, ST-22 and ST-24 stay red until Phase 2 — AR P7) — a failing spec test means the port is wrong, never edit the test — `pnpm test`
+- [x] 1.2.1 Port `AppLauncherItem` state layer verbatim — `src/components/AppLauncherItem/AppLauncherItemLayoutContext.ts`, `AppLauncherItem.types.ts`, `useAppLauncherItem.ts` ✅ (completed: 2026-10-16 17:05)
+- [x] 1.2.2 Port `AppLauncherItem` view layer verbatim — `src/components/AppLauncherItem/useAppLauncherItemStyles.styles.ts`, `renderAppLauncherItem.tsx`, `AppLauncherItem.tsx`, `index.ts` ✅ (completed: 2026-10-16 17:05)
+- [x] 1.2.3 Port `AppLauncherGrid` verbatim — `src/components/AppLauncherGrid/**` (6 files) ✅ (completed: 2026-10-16 17:05)
+- [x] 1.2.4 Port `AppLauncherList` verbatim — `src/components/AppLauncherList/**` (6 files) ✅ (completed: 2026-10-16 17:05)
+- [x] 1.2.5 Port `AppLauncherSection` verbatim — `src/components/AppLauncherSection/**` (6 files) ✅ (completed: 2026-10-16 17:05)
+- [x] 1.2.6 Port `AppLauncherSearch` verbatim — `src/components/AppLauncherSearch/**` (6 files) ✅ (completed: 2026-10-16 17:05)
+- [x] 1.2.7 Extend the package barrel with the five block exports and their types — `src/index.ts` ✅ (completed: 2026-10-16 17:05)
+- [x] 1.2.8 Run the Phase-1 normalized-diff gate (format the source copies in `$CODEOPS_TMPDIR`; **expected: every diff empty** across the 31 component files and the five spec test files) and record the evidence — AR P3 ✅ (completed: 2026-10-16 17:05)
+- [x] 1.2.9 Run the spec suite and verify the **green phase** (expected: the 16 shell-independent block spec tests and the extended pin pass; ST-17, ST-22 and ST-24 stay red until Phase 2 — AR P7) — a failing spec test means the port is wrong, never edit the test — `pnpm test` ✅ (completed: 2026-10-16 17:05)
 
 > **Red-phase record (1.1.3, complete):** the filtered run over the six new/modified files reports
 > 20 failed / 5 passed (25) — the 19 ported block tests fail with "Element type is invalid" (the
@@ -106,6 +106,12 @@ task-size criteria in the make-plan quality checklist).
 > this step: 20 failed / 171 passed (191); all 12 pre-existing test files stay green. Byte-identity:
 > the Prettier-normalized diff of all five ported spec files against the source copies is empty.
 > The three shell-composition cases (ST-17, ST-22, ST-24) stay red until Phase 2 (AR P7).
+>
+> **Green-phase record (1.2.9, complete):** 188/191 tests pass — the only failures are the three
+> recorded shell-composition cases (search "clears the query…", grid/list "composes inside the
+> launcher surface") waiting for Phase 2. `pnpm type-check` reports exactly the three matching
+> `AppLauncher` imports (P8). The normalized-diff gate is empty for all 31 ported component files;
+> all 12 pre-existing test files stay green.
 
 **Deliverables**:
 
@@ -125,14 +131,14 @@ task-size criteria in the make-plan quality checklist).
 - [ ] 1.3.4 Story: `AppLauncherItem` (Default/IconLess/ColorfulLogo/DisabledPair/LongName incl. the local color-logo fixture) — `src/components/AppLauncherItem/AppLauncherItem.stories.tsx`
 - [ ] 1.3.5 README: the five block sections (description, props table, composition bullets), appended at the end of the Components section — `README.md`
 - [ ] 1.3.6 Storybook build and a11y pass — no violations for the new stories — `pnpm storybook:build`
-- [ ] 1.3.7 Full verification — `pnpm verify`
+- [ ] 1.3.7 Full verification — run `pnpm verify`; expected green except the three P7 cross-phase tests and their three `AppLauncher` type-import errors (P8 — recorded); the complete green gate runs in Phase 2 (2.3.6) — `pnpm verify`
 
 **Deliverables**:
 
 - [ ] Impl tests and the five block stories in place; README block sections written
-- [ ] `pnpm verify` and `pnpm storybook:build` green
+- [ ] `pnpm storybook:build` green; `pnpm verify` green except the recorded P7/P8 residual set
 
-**Verify**: `pnpm verify` and `pnpm storybook:build`
+**Verify**: `pnpm verify` (green except the recorded P7/P8 set) and `pnpm storybook:build`
 
 ---
 
