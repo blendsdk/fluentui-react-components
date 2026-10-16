@@ -17,6 +17,13 @@ const preview: Preview = {
   decorators: [withFluentProvider],
   parameters: {
     controls: { expanded: true },
+    docs: {
+      // The Code panel shows each story's source beneath the rendered
+      // example, so a reader can copy the usage straight from the docs.
+      // Storybook 9 removed `@storybook/addon-storysource` in favour of
+      // this panel.
+      codePanel: true,
+    },
   },
 };
 
