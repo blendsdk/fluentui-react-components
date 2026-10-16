@@ -1,0 +1,222 @@
+# Execution Plan: app-launcher
+
+> **Document**: 99-execution-plan.md
+> **Parent**: [Index](00-index.md)
+> **Last Updated**: 2026-10-16 16:44
+> **Progress**: 0/33 tasks (0%)
+> **CodeOps Artifact Schema**: 1
+
+## Overview
+
+Implements `app-launcher/RD-01` and `app-launcher/RD-02`: a byte-identical port of the VirtuoApp
+launcher family with its stories migrated from the source development workbench. Phase 1 lands the
+content blocks (RD-02), Phase 2 the shell (RD-01) — each with specification tests first (ported;
+red phase verified), then the implementation, then implementation tests and hardening, the
+mandatory three-step ordering (AR P2).
+
+**Paths:** relative to `packages/react-components/` unless stated otherwise; the source authority
+is `/home/gevik/workdir/codeindustry/VirtuoApp/packages/react-app-launcher` (read-only).
+
+**🚨 Update this document after EACH completed task!**
+
+---
+
+## Implementation Phases
+
+| Phase | Title          | Tasks |
+| ----- | -------------- | ----- |
+| 1     | Content blocks | 19    |
+| 2     | Shell          | 14    |
+
+**Total: 33 tasks across 2 phases** (no fabricated hour estimates — scope is bounded by the
+task-size criteria in the make-plan quality checklist).
+
+> **⚠️ EXECUTION RULE — APPLIES TO EVERY AGENT EXECUTING THIS PLAN:**
+>
+> The task checkboxes in the phase sections below are the **single source of truth** for
+> progress. Every task line appears exactly once in this document. The executing agent MUST:
+>
+> 1. **On implementation:** mark the task `[~]` with a timestamp —
+>    `- [~] 1.1.1 Task description ⏳ (implemented: YYYY-MM-DD HH:MM)`
+> 2. **On verify pass:** promote it to `[x]` —
+>    `- [x] 1.1.1 Task description ✅ (completed: YYYY-MM-DD HH:MM)`
+> 3. **Update the Progress header** (`> **Progress**: X/Y tasks (Z%)`) and the Last Updated
+>    stamp after EVERY task — never batch updates. Only `[x]` counts as complete.
+> 4. **Resume** by scanning the phase sections top-to-bottom: the first `[~]` task is resumed
+>    first, else the first `[ ]` task.
+> 5. **On blocker:** mark the task `[!]` and append `Blocked: <short reason>` on the same line.
+>    The plan lifecycle is `Ready`, `Executing`, `Done`, or `Blocked`, derived from these markers.
+>
+> Timestamps come from `date '+%Y-%m-%d %H:%M'` — never invented. Failure to keep the marks
+> current means progress is invisible after crashes, context resets, or session handoffs.
+
+---
+
+## Phase 1: Content blocks
+
+> **Phase baseline tree**: _(recorded at execution start by the exec-plan skill from a temporary-index snapshot)_
+> **Scope mode**: strict · **Expected modification set** (`packages/react-components/`-relative):
+> `test/app-launcher-search.spec.test.tsx` · `test/app-launcher-section.spec.test.tsx` ·
+> `test/app-launcher-grid.spec.test.tsx` · `test/app-launcher-list.spec.test.tsx` ·
+> `test/app-launcher-item.spec.test.tsx` · `test/app-launcher-item.impl.test.tsx` ·
+> `test/package-exports.spec.test.ts` · `src/components/AppLauncherItem/**` ·
+> `src/components/AppLauncherGrid/**` · `src/components/AppLauncherList/**` ·
+> `src/components/AppLauncherSection/**` · `src/components/AppLauncherSearch/**` ·
+> `src/index.ts` · `README.md` — plus the plan/roadmap bookkeeping under `codeops/`
+> **Lenses**: api-surface (ported public contract and export pin)
+> **Reasoning**: medium — verbatim port with deterministic checks (normalized-diff gate, oracle
+> suite) plus story authoring
+
+### Step 1.1: Specification Tests (before implementation)
+
+**Reference**: [07](07-testing-strategy.md) §Search–Item (ST-15…ST-33) · [03-01](03-01-app-launcher-blocks.md) §Port procedure · AR #7 (req), AR P2, AR P6
+**Objective**: Pin the block contract as executable tests before any block source exists.
+
+- [ ] 1.1.1 [spec-author] Port the five block spec test files **unchanged** — `test/app-launcher-search.spec.test.tsx`, `test/app-launcher-section.spec.test.tsx`, `test/app-launcher-grid.spec.test.tsx`, `test/app-launcher-list.spec.test.tsx`, `test/app-launcher-item.spec.test.tsx` (ST-15…ST-33)
+- [ ] 1.1.2 [spec-author] Extend the export-surface pin with the five block components and their six type pins — `test/package-exports.spec.test.ts` (ST-37, phase-1 part)
+- [ ] 1.1.3 Run the spec suite and verify the **red phase** (import/render failures expected — the components are not exported yet; document every pre-implementation pass with justification, e.g. erased `import type` pins) — `pnpm test`
+
+**Deliverables**:
+
+- [ ] Spec files ported byte-identically carrying every ST-15…ST-33 case
+- [ ] Red-phase evidence recorded with the task marks
+
+**Verify**: `pnpm test` (expected failures documented; no other command)
+
+### Step 1.2: Implementation
+
+**Reference**: [03-01](03-01-app-launcher-blocks.md) §Port procedure, §Normalized-diff gate, §Root barrel extension, §Export-pin extension · AR #1–#3 (req), AR P3
+**Objective**: Port the block sources so the frozen spec tests pass.
+
+- [ ] 1.2.1 Port `AppLauncherItem` state layer verbatim — `src/components/AppLauncherItem/AppLauncherItemLayoutContext.ts`, `AppLauncherItem.types.ts`, `useAppLauncherItem.ts`
+- [ ] 1.2.2 Port `AppLauncherItem` view layer verbatim — `src/components/AppLauncherItem/useAppLauncherItemStyles.styles.ts`, `renderAppLauncherItem.tsx`, `AppLauncherItem.tsx`, `index.ts`
+- [ ] 1.2.3 Port `AppLauncherGrid` verbatim — `src/components/AppLauncherGrid/**` (6 files)
+- [ ] 1.2.4 Port `AppLauncherList` verbatim — `src/components/AppLauncherList/**` (6 files)
+- [ ] 1.2.5 Port `AppLauncherSection` verbatim — `src/components/AppLauncherSection/**` (6 files)
+- [ ] 1.2.6 Port `AppLauncherSearch` verbatim — `src/components/AppLauncherSearch/**` (6 files)
+- [ ] 1.2.7 Extend the package barrel with the five block exports and their types — `src/index.ts`
+- [ ] 1.2.8 Run the Phase-1 normalized-diff gate (format the source copies in `$CODEOPS_TMPDIR`; **expected: every diff empty** across the 31 component files and the five spec test files) and record the evidence — AR P3
+- [ ] 1.2.9 Run the spec suite and verify the **green phase** — a failing spec test means the port is wrong, never edit the test — `pnpm test`
+
+> **Red/Green records:** append the measured evidence (failing counts, then passing counts) beneath
+> this step after the runs, mirroring the house execution-plan style.
+
+**Deliverables**:
+
+- [ ] The five block folders per RD-02 §Ported file inventory
+- [ ] All block spec tests green; normalized-diff evidence recorded
+
+**Verify**: `pnpm test`
+
+### Step 1.3: Implementation Tests & Hardening
+
+**Reference**: [03-01](03-01-app-launcher-blocks.md) §New artifacts · [07](07-testing-strategy.md) §Test Data · AR #5, #10, #13, #18 (req)
+**Objective**: Port the internals test, add the block stories and README sections, and verify the phase gate.
+
+- [ ] 1.3.1 Port the implementation tests **unchanged** — `test/app-launcher-item.impl.test.tsx` (ST-34…ST-36)
+- [ ] 1.3.2 Stories: `AppLauncherSearch` (Default/Controlled/Localized/Size) and `AppLauncherSection` (Titled/WithDivider/Untitled) — `src/components/AppLauncherSearch/AppLauncherSearch.stories.tsx`, `src/components/AppLauncherSection/AppLauncherSection.stories.tsx`
+- [ ] 1.3.3 Stories: `AppLauncherGrid` (Default/FourColumns/LongName) and `AppLauncherList` (Rows/LongName/Disabled) — `src/components/AppLauncherGrid/AppLauncherGrid.stories.tsx`, `src/components/AppLauncherList/AppLauncherList.stories.tsx`
+- [ ] 1.3.4 Story: `AppLauncherItem` (Default/IconLess/ColorfulLogo/DisabledPair/LongName incl. the local color-logo fixture) — `src/components/AppLauncherItem/AppLauncherItem.stories.tsx`
+- [ ] 1.3.5 README: the five block sections (description, props table, composition bullets), appended at the end of the Components section — `README.md`
+- [ ] 1.3.6 Storybook build and a11y pass — no violations for the new stories — `pnpm storybook:build`
+- [ ] 1.3.7 Full verification — `pnpm verify`
+
+**Deliverables**:
+
+- [ ] Impl tests and the five block stories in place; README block sections written
+- [ ] `pnpm verify` and `pnpm storybook:build` green
+
+**Verify**: `pnpm verify` and `pnpm storybook:build`
+
+---
+
+## Phase 2: Shell
+
+> **Phase baseline tree**: _(recorded at execution start by the exec-plan skill from a temporary-index snapshot)_
+> **Scope mode**: strict · **Expected modification set** (`packages/react-components/`-relative):
+> `test/app-launcher.spec.test.tsx` · `test/app-launcher-trigger.spec.test.tsx` ·
+> `test/package-exports.spec.test.ts` · `src/components/AppLauncher/**` ·
+> `src/components/AppLauncherTrigger/**` · `src/index.ts` · `README.md` — plus the plan/roadmap
+> bookkeeping under `codeops/`
+> **Lenses**: api-surface (ported public contract and export pin)
+> **Reasoning**: medium — verbatim port with deterministic checks (normalized-diff gate, oracle
+> suite) plus the composed workbench story
+
+### Step 2.1: Specification Tests (before implementation)
+
+**Reference**: [07](07-testing-strategy.md) §Shell–Trigger (ST-1…ST-14) · [03-02](03-02-app-launcher-shell.md) §Port procedure · AR #7 (req), AR #8 (req), AR P2
+**Objective**: Pin the shell contract as executable tests before any shell source exists.
+
+- [ ] 2.1.1 [spec-author] Port the two shell spec test files with **exactly the two whitelisted comment edits** (the two "workbench" comments in `app-launcher.spec.test.tsx` reworded to the Storybook equivalent; assertions untouched) — `test/app-launcher.spec.test.tsx`, `test/app-launcher-trigger.spec.test.tsx` (ST-1…ST-14)
+- [ ] 2.1.2 [spec-author] Extend the export-surface pin with `AppLauncher`, `AppLauncherTrigger` and their three type pins — `test/package-exports.spec.test.ts` (ST-37 completion; final 15-entry list)
+- [ ] 2.1.3 Run the spec suite and verify the **red phase** (import/render failures expected; document every pre-implementation pass with justification) — `pnpm test`
+
+**Deliverables**:
+
+- [ ] Shell spec files ported with only the whitelisted comment edits
+- [ ] Red-phase evidence recorded with the task marks
+
+**Verify**: `pnpm test` (expected failures documented; no other command)
+
+### Step 2.2: Implementation
+
+**Reference**: [03-02](03-02-app-launcher-shell.md) §Port procedure, §Normalized-diff gate, §Root barrel and pin · AR #1–#3 (req), AR P3
+**Objective**: Port the shell sources so the frozen spec tests pass.
+
+- [ ] 2.2.1 Port `AppLauncherTrigger` verbatim — `src/components/AppLauncherTrigger/**` (5 files)
+- [ ] 2.2.2 Port `AppLauncher` with **exactly the one whitelisted comment edit** (drop the stale "and (in later iterations) the panel behavior" phrase from the `AppLauncher.tsx` JSDoc) — `src/components/AppLauncher/**` (6 files)
+- [ ] 2.2.3 Extend the package barrel with the two shell exports and their types — `src/index.ts`
+- [ ] 2.2.4 Run the Phase-2 normalized-diff gate (expected: **exactly the three comment hunks** — one in `AppLauncher.tsx`, two in `app-launcher.spec.test.tsx`; every other diff empty) and record the evidence — AR P3
+- [ ] 2.2.5 Run the spec suite and verify the **green phase** — a failing spec test means the port is wrong, never edit the test — `pnpm test`
+
+**Deliverables**:
+
+- [ ] The two shell folders per RD-01 §Ported file inventory
+- [ ] All shell spec tests green; normalized-diff evidence recorded
+
+**Verify**: `pnpm test`
+
+### Step 2.3: Implementation Tests & Hardening
+
+**Reference**: [03-02](03-02-app-launcher-shell.md) §New artifacts · [07](07-testing-strategy.md) §End-to-End Tests · AR #5, #9, #10, #13, #18 (req)
+**Objective**: Add the shell stories (workbench port), the README family sections and the final audit, then verify the phase gate.
+
+- [ ] 2.3.1 Story: `AppLauncherTrigger` variants (Default/CustomLabel/CustomIcon/Appearance) — `src/components/AppLauncherTrigger/AppLauncherTrigger.stories.tsx`
+- [ ] 2.3.2 Story: `AppLauncher` composed samples — Microsoft365Flow, FullDocking, TriggerAnchoredList, DrawerToolbar, Localized — with the local sample data, the six logos, the de-branded copy and the manual review checklist in the story docs — `src/components/AppLauncher/AppLauncher.stories.tsx`
+- [ ] 2.3.3 README: `AppLauncher` and `AppLauncherTrigger` sections plus the family quick start and localization table, inserted before the block sections — `README.md`
+- [ ] 2.3.4 Manual Storybook review pass (docking geometry flush below the bar; full docking to the window bottom with internal scrolling; sticky search; tooltip suppressed while open; tile hover lift; keyboard flow; a11y addon clean) — user-assisted; record the pass result with the task marks and record anything found as a finding, never a fix — AR #13
+- [ ] 2.3.5 Final port audit: zero `@virtuoapp`/`Virtuo` references in ported and shipped artifacts; the source repository untouched; README covers every family component — record the evidence
+- [ ] 2.3.6 Full verification — `pnpm verify` and `pnpm storybook:build`
+
+**Deliverables**:
+
+- [ ] Both shell stories and the README family sections in place
+- [ ] Manual checklist recorded; final audit evidence recorded
+- [ ] `pnpm verify` and `pnpm storybook:build` green
+
+**Verify**: `pnpm verify` and `pnpm storybook:build`
+
+---
+
+## Dependencies
+
+```
+Phase 1 (Content blocks: RD-02)
+    ↓
+Phase 2 (Shell: RD-01 — its composed story renders the Phase-1 blocks)
+```
+
+---
+
+## Success Criteria
+
+**Feature is complete when:**
+
+1. ✅ All phases completed
+2. ✅ All verification passing (`pnpm verify`; `pnpm storybook:build` in both phases)
+3. ✅ All 36 ported oracle tests pass unchanged (plus the extended export pin); the normalized-diff gate passed per phase with only the whitelisted comment edits
+4. ✅ No dead code — the port adds no unused module; no internal file is exported
+5. ✅ Security posture documented and unchanged — presentation-only components, no new exposure (AR #15 req); no new dependency
+6. ✅ Documentation updated — README family sections, stories with autodocs, the manual checklist recorded
+7. ✅ Code reviewed per the repository's quality policy (independent reviewer + auditor per phase)
+8. ✅ Post-completion project re-analysis (handled by the exec-plan skill)

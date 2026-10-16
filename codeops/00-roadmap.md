@@ -2,7 +2,7 @@
 
 > **Status**: Active
 > **Last Updated**: 2026-10-16
-> **Features**: 2 / 2 done
+> **Features**: 2 / 3 done
 > **CodeOps Artifact Schema**: 1
 
 ## Legend
@@ -15,6 +15,7 @@
 | -------------- | ------------------------------------------ | ------------------------ | -------- | ------ | ------------ |
 | error-dialog   | [→](features/error-dialog/00-roadmap.md)   | 1 plan done · 2 RDs done | 2/2 RDs  | ✅     | 2026-10-16   |
 | confirm-dialog | [→](features/confirm-dialog/00-roadmap.md) | 1 plan done · 2 RDs done | 2/2 RDs  | ✅     | 2026-10-16   |
+| app-launcher   | [→](features/app-launcher/00-roadmap.md)   | 1 plan executing         | 0/2 RDs  | 🔄     | 2026-10-16   |
 
 ## Archived
 
