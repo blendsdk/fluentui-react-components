@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-16 09:40
-> **Progress**: 15/28 tasks (54%)
+> **Last Updated**: 2026-10-16 09:47
+> **Progress**: 18/28 tasks (64%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -128,8 +128,12 @@ task-size criteria in `quality-checklist.md`).
 
 ## Phase 2: SystemErrorProvider
 
-> **Phase baseline tree**: _(recorded by the exec-plan skill from a temporary-index snapshot of
-> committed, staged, unstaged, and untracked phase-start state)_
+> **Phase baseline tree**: `cf34243b316a1bb8e59edc0c134aeb4e09548bcf`
+> **Scope mode**: strict · **Expected modification set** (`packages/react-components/`-relative):
+> `test/system-error-provider.spec.test.tsx` · `test/package-exports.spec.test.ts` ·
+> `test/system-error-provider.impl.test.tsx` · `test/system-error-provider.ssr.test.tsx` ·
+> `src/components/SystemErrorProvider/**` · `README.md` — plus the plan/roadmap bookkeeping in this
+> repository's `codeops/` documents
 > **Lenses**: api-surface (public provider + hook contract) · security (capture listener hygiene)
 > **Reasoning**: high — listener lifecycle, typed per-kind construction and the user-ruled sign-out
 > semantics (requirements AR #19)
@@ -139,9 +143,16 @@ task-size criteria in `quality-checklist.md`).
 **Reference**: [07](07-testing-strategy.md) §Specification Test Cases (ST-33…ST-54) · [03-02](03-02-system-error-provider.md) §Interfaces · [RD-02](../../requirements/RD-02-system-error-provider.md) · requirements AR #19
 **Objective**: Pin the provider contract as executable tests before any implementation exists.
 
-- [ ] 2.1.1 [spec-author] Write the provider spec tests from the ST cases — `test/system-error-provider.spec.test.tsx`
-- [ ] 2.1.2 [spec-author] Extend the export-surface list with `SystemErrorProvider` + `useSystemError` (ST-52) — `test/package-exports.spec.test.ts`
-- [ ] 2.1.3 Run the spec suite and verify the **red phase** (import/export failures expected; document any case that passes pre-implementation with justification) — `pnpm test`
+- [x] 2.1.1 [spec-author] Write the provider spec tests from the ST cases — `test/system-error-provider.spec.test.tsx` ✅ (completed: 2026-10-16 09:47)
+- [x] 2.1.2 [spec-author] Extend the export-surface list with `SystemErrorProvider` + `useSystemError` (ST-52) — `test/package-exports.spec.test.ts` ✅ (completed: 2026-10-16 09:47)
+- [x] 2.1.3 Run the spec suite and verify the **red phase** (import/export failures expected; document any case that passes pre-implementation with justification) — `pnpm test` ✅ (completed: 2026-10-16 09:48)
+
+> **Red-phase record (2.1.3):** 22 failed / 65 passed — all 21 provider tests fail because the
+> module is not exported yet, the export-list assertion fails as expected, and every pre-existing
+> suite stays green; no file-load errors. Documented pre-implementation pass: the two type-import
+> witness tests run trivially (`import type` is erased at runtime) — their real gate is
+> `pnpm type-check` in the green phase. The capture-positive dispatches are exercised for the
+> first time in the green phase, since the provider render fails before them in red.
 
 **Deliverables**:
 

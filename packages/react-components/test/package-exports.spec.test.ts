@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import * as api from '../src/index';
-import type { ErrorDialogKind, ErrorDialogProps, ErrorDialogStrings } from '../src/index';
+import type {
+  CatchErrorOptions,
+  ErrorDialogKind,
+  ErrorDialogProps,
+  ErrorDialogStrings,
+  SystemErrorProviderProps,
+} from '../src/index';
 
 describe('package export surface', () => {
   it('exposes exactly the documented component exports', () => {
@@ -11,6 +17,8 @@ describe('package export surface', () => {
       'DescriptionList',
       'DescriptionListItem',
       'ErrorDialog',
+      'SystemErrorProvider',
+      'useSystemError',
     ]);
   });
 
@@ -24,5 +32,18 @@ describe('package export surface', () => {
     expect(kind).toBe('error');
     expect(partialStrings.title).toBe('Application error');
     expect(dialogProps.open).toBe(true);
+  });
+
+  it('exports the public provider types', () => {
+    // Both type imports above only compile when the package root exports them;
+    // the values below keep the file local-usage clean under noUnusedLocals.
+    const options: CatchErrorOptions = { kind: 'error', detailsText: 'Support case 4711' };
+    const providerProps: SystemErrorProviderProps = {
+      captureGlobalErrors: false,
+      children: null,
+    };
+
+    expect(options.kind).toBe('error');
+    expect(providerProps.captureGlobalErrors).toBe(false);
   });
 });
