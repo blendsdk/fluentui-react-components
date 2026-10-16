@@ -60,7 +60,7 @@ task-size criteria in `quality-checklist.md`).
 
 ### Step 1.1: Specification Tests (before implementation)
 
-**Reference**: [07](07-testing-strategy.md) §Specification Test Cases (ST-01…ST-32) · [03-01](03-01-error-dialog.md) §Interfaces · AR #6
+**Reference**: [07](07-testing-strategy.md) §Specification Test Cases (ST-01…ST-32, ST-55) · [03-01](03-01-error-dialog.md) §Interfaces · AR #6
 **Objective**: Pin the contract as executable tests before any implementation exists.
 
 - [ ] 1.1.1 [spec-author] Write the contract spec tests from the ST cases — `test/error-dialog.spec.test.tsx`
@@ -79,9 +79,9 @@ task-size criteria in `quality-checklist.md`).
 **Reference**: [03-01](03-01-error-dialog.md) §Interfaces, §Serialization algorithm, §Copy state machine, §Dialog structure, §Strings resolution
 **Objective**: Implement the component so the frozen spec tests pass.
 
-- [ ] 1.2.1 Public types and English string defaults — `src/components/ErrorDialog/ErrorDialog.types.ts`
+- [ ] 1.2.1 Public types — `src/components/ErrorDialog/ErrorDialog.types.ts`
 - [ ] 1.2.2 Pure serializer: replacer maps and failure containment — `src/components/ErrorDialog/serializeError.ts`
-- [ ] 1.2.3 State hook: strings resolution, details, copy state machine, surface props, ref — `src/components/ErrorDialog/useErrorDialog.ts`
+- [ ] 1.2.3 State hook: English string defaults and resolution, details, copy state machine, surface props, ref — `src/components/ErrorDialog/useErrorDialog.ts`
 - [ ] 1.2.4 Pure render: alert Dialog, labelled details area, variant actions, native spread — `src/components/ErrorDialog/renderErrorDialog.tsx`
 - [ ] 1.2.5 Static Griffel classes with tokens (danger title, 700 px surface cap) — `src/components/ErrorDialog/useErrorDialogStyles.styles.ts`
 - [ ] 1.2.6 Shell, folder barrel and package exports — `src/components/ErrorDialog/ErrorDialog.tsx`, `src/components/ErrorDialog/index.ts`, `src/index.ts`
@@ -89,7 +89,7 @@ task-size criteria in `quality-checklist.md`).
 
 **Deliverables**:
 
-- [ ] Component per the `03-01 §Files` table
+- [ ] Component per the `03-01 §Proposed Changes` file table
 - [ ] All spec tests green
 
 **Verify**: `pnpm test`
@@ -102,12 +102,12 @@ task-size criteria in `quality-checklist.md`).
 - [ ] 1.3.1 Implementation tests: serializer internals, copy-timer mechanics, availability detection, class/token + 700 px checks (AC 17b/17c) — `test/error-dialog.impl.test.tsx`
 - [ ] 1.3.2 Stories: standard variant, unauthorized variant, Dutch strings, long details, missing details — `src/components/ErrorDialog/ErrorDialog.stories.tsx`
 - [ ] 1.3.3 README component section: description, props table, composition and localization notes — `README.md`
-- [ ] 1.3.4 Storybook keyboard/a11y pass (real focus path; a11y addon clean) and fix anything found
+- [ ] 1.3.4 Storybook keyboard/a11y pass (real focus path; a11y addon clean) — user-assisted; record the pass result with the task marks and fix anything found
 - [ ] 1.3.5 Full verification — `pnpm verify` and `pnpm storybook:build`
 
 **Deliverables**:
 
-- [ ] Implementation tests passing; story set present; README section written; manual pass recorded
+- [ ] Implementation tests passing; story set present; README section written; manual pass recorded (user-assisted)
 - [ ] All verification passing
 
 **Verify**: `pnpm verify`
@@ -120,11 +120,11 @@ task-size criteria in `quality-checklist.md`).
 > committed, staged, unstaged, and untracked phase-start state)_
 > **Lenses**: api-surface (public provider + hook contract) · security (capture listener hygiene)
 > **Reasoning**: high — listener lifecycle, typed per-kind construction and the user-ruled sign-out
-> semantics (register AR #19)
+> semantics (requirements AR #19)
 
 ### Step 2.1: Specification Tests (before implementation)
 
-**Reference**: [07](07-testing-strategy.md) §Specification Test Cases (ST-33…ST-53) · [03-02](03-02-system-error-provider.md) §Interfaces · [RD-02](../../requirements/RD-02-system-error-provider.md) · requirements AR #19
+**Reference**: [07](07-testing-strategy.md) §Specification Test Cases (ST-33…ST-54) · [03-02](03-02-system-error-provider.md) §Interfaces · [RD-02](../../requirements/RD-02-system-error-provider.md) · requirements AR #19
 **Objective**: Pin the provider contract as executable tests before any implementation exists.
 
 - [ ] 2.1.1 [spec-author] Write the provider spec tests from the ST cases — `test/system-error-provider.spec.test.tsx`
@@ -133,7 +133,7 @@ task-size criteria in `quality-checklist.md`).
 
 **Deliverables**:
 
-- [ ] Spec file carrying ST-33…ST-51 with concrete assertions (including the sink-listener technique for negative dispatches)
+- [ ] Spec file carrying ST-33…ST-51 and ST-54 with concrete assertions (including the sink-listener technique for negative dispatches and for ST-40's throwing handler); ST-52 extends the export-surface list (task 2.1.2); the ST-53 SSR smoke is authored in Step 2.3
 - [ ] Red-phase evidence recorded with the task marks
 
 **Verify**: `pnpm test` (expected failures documented; no other command)

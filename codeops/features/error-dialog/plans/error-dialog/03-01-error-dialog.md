@@ -31,8 +31,8 @@ touched, and no dependency is added.
 | File                             | Role                                                                          |
 | -------------------------------- | ----------------------------------------------------------------------------- |
 | `ErrorDialog.tsx`                | `forwardRef` shell: `useErrorDialog(props, ref)` → `renderErrorDialog(state)` |
-| `ErrorDialog.types.ts`           | Public types and default strings (per RD-01 §Public API)                      |
-| `useErrorDialog.ts`              | State hook: strings, details, copy state machine, surface props               |
+| `ErrorDialog.types.ts`           | Public types (per RD-01 §Public API)                                          |
+| `useErrorDialog.ts`              | State hook: default strings, details, copy state machine, surface props       |
 | `renderErrorDialog.tsx`          | Pure render function                                                          |
 | `useErrorDialogStyles.styles.ts` | Griffel `makeStyles` classes with Fluent tokens (static)                      |
 | `serializeError.ts`              | Pure serialization helper (internal)                                          |
@@ -61,14 +61,14 @@ export interface ErrorDialogStrings {
   copied: string;
   noDetails: string;
 }
-/** English defaults for every key (exported internally, not from the package root). */
-export const errorDialogDefaultStrings: ErrorDialogStrings;
 export type ErrorDialogProps = ErrorDialogErrorProps | ErrorDialogUnauthorizedProps; // per RD-01 §Public API
 
 // serializeError.ts — pure, never throws (RD-01 §Details serialization)
-export function serializeError(error: unknown): string;
+export function serializeError(error: unknown): string | undefined;
 
 // useErrorDialog.ts — house pattern: the hook owns state AND classes
+/** English defaults for every key; resolved per key with the caller's overrides. */
+export const errorDialogDefaultStrings: ErrorDialogStrings;
 export type ErrorDialogState = {
   open: boolean;
   kind: ErrorDialogKind; // resolved; default 'error'
@@ -115,21 +115,23 @@ export function renderErrorDialog(state: ErrorDialogState): ReactElement;
 2. Error-like — `instanceof Error`, or an object whose `name` and `message` are strings →
    structured object `{ name, message, stack?, ...ownEnumerable }` where `name`/`message`/`stack`
    are not duplicated by the spread, serialized with `JSON.stringify(structured, replacer, 2)`.
-3. Any other value → the same replacer call; when the result is `undefined` (functions/symbols
-   without a mapping) → `String(error)`; a throw anywhere → `String(error)`.
+3. Any other value → the same replacer call; when the result is `undefined` (symbols and other
+   unmapped values) → `String(error)`; a throw anywhere → `String(error)`.
 4. Only if `String(error)` also throws, the serializer returns `undefined` and the hook maps
    that to the resolved `strings.noDetails` — the terminal guarantee, unreachable in practice.
 5. Replacer: `bigint` → `String(value)`; function → `"[Function]"`; an object seen before →
-   `"[Circular]"`. _Implementation note:_ one `WeakSet` of visited objects means a shared
-   (non-circular) reference also renders `"[Circular]"`; error payloads are trees in practice
-   and no criterion covers DAGs — the impl test pins this behavior.
+   `"[Circular]"`. _Implementation note:_ the replacer and its `WeakSet` are created per
+   `serializeError` call, so repeated serialization of the same value is stable (the impl test
+   pins this); within one call a shared (non-circular) reference still renders `"[Circular]"`;
+   error payloads are trees in practice and no criterion covers DAGs — the impl test pins that
+   within-call behavior.
 
 Implementation shape:
 
 ```ts
-const replacer = (() => {
+export function serializeError(error: unknown): string | undefined {
   const seen = new WeakSet<object>();
-  return (_key: string, value: unknown): unknown => {
+  const replacer = (_key: string, value: unknown): unknown => {
     if (typeof value === 'bigint') return String(value);
     if (typeof value === 'function') return '[Function]';
     if (typeof value === 'object' && value !== null) {
@@ -138,7 +140,9 @@ const replacer = (() => {
     }
     return value;
   };
-})();
+
+  // … the value paths 1–4 above, each wrapped by the fallback chain …
+}
 ```
 
 ### Copy state machine (`useErrorDialog`)
@@ -202,26 +206,26 @@ ErrorDialog.displayName = 'ErrorDialog';
 
 ## Error Handling
 
-| Error Case                                       | Handling Strategy                                               | Ref                                                      |
-| ------------------------------------------------ | --------------------------------------------------------------- | -------------------------------------------------------- |
-| Plain `Error`                                    | Structured JSON with name/message/stack + own enumerable fields | RD-01 §Details serialization · (feature register AR #10) |
-| Error-like object with throwing accessor         | Contained; falls back to `String(value)`                        | RD-01 AC 8                                               |
-| Circular data                                    | `"[Circular]"` via the replacer                                 | RD-01 AC 8                                               |
-| Unserializable / revoked Proxy                   | `String(value)` → `noDetails`; never throws                     | RD-01 AC 9                                               |
-| Empty payload (`undefined`/`null`) or empty text | `strings.noDetails`; empty `detailsText` renders blank          | RD-01 AC 6/10                                            |
-| Clipboard write rejects                          | Label unchanged; rejection contained                            | RD-01 AC 11                                              |
-| Untyped consumer omits a required callback       | Action renders and is inert (`undefined` handler); never throws | RD-01 AC 16                                              |
+| Error Case                                       | Handling Strategy                                               | Ref                                                  |
+| ------------------------------------------------ | --------------------------------------------------------------- | ---------------------------------------------------- |
+| Plain `Error`                                    | Structured JSON with name/message/stack + own enumerable fields | RD-01 §Details serialization · (requirements AR #10) |
+| Error-like object with throwing accessor         | Contained; falls back to `String(value)`                        | RD-01 AC 8                                           |
+| Circular data                                    | `"[Circular]"` via the replacer                                 | RD-01 AC 8                                           |
+| Unserializable / revoked Proxy                   | `String(value)` → `noDetails`; never throws                     | RD-01 AC 9                                           |
+| Empty payload (`undefined`/`null`) or empty text | `strings.noDetails`; empty `detailsText` renders blank          | RD-01 AC 6/10                                        |
+| Clipboard write rejects                          | Label unchanged; rejection contained                            | RD-01 AC 11                                          |
+| Untyped consumer omits a required callback       | Action renders and is inert (`undefined` handler); never throws | RD-01 AC 16                                          |
 
 > **Traceability:** behavior and criteria trace to RD-01; plan-local design decisions trace to
 > `AR #` (this plan's register). The feature's requirements register is cited as
-> "feature register AR #N".
+> "requirements AR #N".
 
 ## Testing Requirements
 
 - Specification tests: all ST cases in [07-testing-strategy.md](07-testing-strategy.md) —
   written before implementation (immutable oracle).
-- Implementation tests: serializer internals (shared-reference nuance, stack-absent errors, key
-  collisions), copy-timer mechanics, availability detection, and the class/token + 700 px
-  checks (RD-01 AC 17b/17c).
+- Implementation tests: serializer internals (shared-reference nuance within one call,
+  repeat-serialization stability, stack-absent errors, key collisions), copy-timer mechanics,
+  availability detection, and the class/token + 700 px checks (RD-01 AC 17b/17c).
 - Story/manual: the literal Tab-cycle focus path runs in Storybook with the a11y addon
   (RD-01 §Verification).

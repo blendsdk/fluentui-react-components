@@ -9,7 +9,7 @@
 `ErrorDialog`. Behavior, decisions and acceptance criteria are owned by
 [RD-02](../../requirements/RD-02-system-error-provider.md); this document owns the implementable
 signatures and the wiring. Design choices cite RD-02/RD-01; plan-local decisions cite this plan's
-register (`AR #`). The provider is delivered as **Phase 2** of this plan (the AR #15 route).
+register (`AR #`). The provider is delivered as **Phase 2** of this plan (the requirements AR #15 route).
 
 ## Architecture
 
@@ -59,12 +59,17 @@ export function useGlobalErrorCapture(enabled: boolean, onError: (error: unknown
 
 - State: `caught: CaughtErrorState | undefined`; `catchError` replaces it (last-wins),
   `clearError` resets it. The context value is memoized and both callbacks are stable.
-- The sign-out wrapper implements register AR #19 — clear first, then invoke:
+- The sign-out wrapper implements requirements AR #19 — clear first, then invoke. The wrapper
+  reads the latest host handler through a ref so it stays stable across renders (the same
+  latest-ref idiom as the capture hook; only the last committed value is read on click):
 
 ```tsx
+const onSignOutRef = useRef(onSignOut);
+onSignOutRef.current = onSignOut;
+
 const handleSignOut = useCallback(() => {
   clearError(); // close first — never trap; a re-entrant catchError still wins
-  onSignOutRef.current?.(); // a throwing handler propagates, the dialog stays closed
+  onSignOutRef.current?.(); // a throwing handler is reported as a window error; the dialog stays closed
 }, [clearError]);
 ```
 
@@ -92,7 +97,7 @@ caught?.kind === 'unauthorized' ? (
 ```ts
 export function useGlobalErrorCapture(enabled, onError) {
   const onErrorRef = useRef(onError);
-  onErrorRef.current = onError; // handlers stay stable across renders
+  onErrorRef.current = onError; // latest-ref idiom: the listener reads the current handler without re-registering
 
   useEffect(() => {
     if (!enabled || typeof window === 'undefined') return; // SSR-safe, effect-scoped
@@ -108,10 +113,11 @@ export function useGlobalErrorCapture(enabled, onError) {
 }
 ```
 
-- Always reported as `kind: 'error'` (no unauthorized inference — AR #4); never `preventDefault()`
+- Always reported as `kind: 'error'` (no unauthorized inference — requirements AR #4); never `preventDefault()`
   (RD-02 §Capture contract); bubble-phase `error` only (no resource-event capture);
   StrictMode-safe (setup/cleanup/setup leaves one listener pair); no window access at import or
-  render time.
+  render time. A throwing sign-out handler is therefore re-captured when capture is on (the
+  composition of non-suppression and last-wins); with capture off the dialog simply stays closed.
 
 ### Pattern exceptions (recorded)
 
@@ -122,19 +128,21 @@ receives the carve-out (it holds transient application state).
 
 ## Error Handling
 
-| Error Case                               | Handling Strategy                                                   | Ref                          |
-| ---------------------------------------- | ------------------------------------------------------------------- | ---------------------------- |
-| Provider has no `onSignOut`              | The click clears the dialog and calls nothing; never throws         | RD-02 AC 6 · register AR #19 |
-| `onSignOut` throws                       | Dialog stays closed; the error propagates normally                  | RD-02 AC 6                   |
-| Hook used outside the provider           | Throws an `Error` naming `useSystemError` and `SystemErrorProvider` | RD-02 AC 9                   |
-| Hostile captured values                  | RD-01's wrapped serialization fallback chain                        | RD-02 AC 15                  |
-| `error` event without an `error` payload | `event.message` fallback                                            | RD-02 AC 11                  |
-| Rejection with `reason: undefined`       | Default no-details text (RD-01 rule)                                | RD-02 AC 12                  |
+| Error Case                               | Handling Strategy                                                                                                                                                                                                                         | Ref                              |
+| ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| Provider has no `onSignOut`              | The click clears the dialog and calls nothing; never throws                                                                                                                                                                               | RD-02 AC 6 · requirements AR #19 |
+| `onSignOut` throws                       | Dialog stays closed (capture off); the error is reported through the window `error` channel, not rethrown to the click caller; with `captureGlobalErrors` the report is re-captured as `kind: 'error'` (last-wins) and the dialog reopens | RD-02 AC 6                       |
+| Hook used outside the provider           | Throws an `Error` naming `useSystemError` and `SystemErrorProvider`                                                                                                                                                                       | RD-02 AC 9                       |
+| Hostile captured values                  | RD-01's wrapped serialization fallback chain                                                                                                                                                                                              | RD-02 AC 15                      |
+| `error` event without an `error` payload | `event.message` fallback                                                                                                                                                                                                                  | RD-02 AC 11                      |
+| Rejection with `reason: undefined`       | Default no-details text (RD-01 rule)                                                                                                                                                                                                      | RD-02 AC 12                      |
 
 ## Testing Requirements
 
-- Specification tests: ST-33…ST-53 in [07-testing-strategy.md](07-testing-strategy.md) — written
-  before implementation (immutable oracle).
+- Specification tests: ST-33…ST-52 and ST-54 in [07-testing-strategy.md](07-testing-strategy.md) — written
+  before implementation (immutable oracle). ST-53's expectation is pinned in the same table
+  before implementation, but its SSR smoke file is authored in the hardening step (execution
+  task 2.3.2), per the spec/impl/SSR file allocation.
 - Implementation tests: capture-hook internals, listener attach/remove spies, memoization
   stability (`test/system-error-provider.impl.test.tsx`); node-environment SSR smoke
   (`test/system-error-provider.ssr.test.tsx`, ST-53).

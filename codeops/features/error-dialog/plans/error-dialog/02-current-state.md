@@ -40,16 +40,16 @@ Infrastructure relevant to this feature (verified):
 
 ### Relevant Files
 
-| File                                                                          | Purpose                | Changes Needed                                                          |
-| ----------------------------------------------------------------------------- | ---------------------- | ----------------------------------------------------------------------- |
-| `src/index.ts`                                                                | Package barrel         | Add `ErrorDialog` + its types, `SystemErrorProvider` + `useSystemError` |
-| `test/package-exports.spec.test.ts`                                           | Export contract        | Extend the exact list with the three new runtime exports                |
-| `README.md` (package root)                                                    | Package documentation  | ErrorDialog section + provider section and principles carve-out         |
-| `src/components/ErrorDialog/*`                                                | —                      | New component files (RD-01 anatomy / `03-01 §Files`)                    |
-| `src/components/SystemErrorProvider/*`                                        | —                      | New provider files (RD-02 anatomy / `03-02 §Implementation Details`)    |
-| `test/error-dialog.spec.test.tsx`, `.impl.test.tsx`                           | —                      | New contract/internal tests from the ST cases                           |
-| `test/system-error-provider.spec.test.tsx`, `.impl.test.tsx`, `.ssr.test.tsx` | —                      | New provider tests (contract, internals, SSR smoke)                     |
-| `.storybook/*`, `vitest.config.ts`, `tsconfig*.json`                          | Test/story/build infra | None — existing patterns already support the new components             |
+| File                                                                          | Purpose                | Changes Needed                                                            |
+| ----------------------------------------------------------------------------- | ---------------------- | ------------------------------------------------------------------------- |
+| `src/index.ts`                                                                | Package barrel         | Add `ErrorDialog` + its types, `SystemErrorProvider` + `useSystemError`   |
+| `test/package-exports.spec.test.ts`                                           | Export contract        | Extend the exact list with the three new runtime exports                  |
+| `README.md` (package root)                                                    | Package documentation  | ErrorDialog section + provider section and principles carve-out           |
+| `src/components/ErrorDialog/*`                                                | —                      | New component files (RD-01 anatomy / the `03-01 §Proposed Changes` table) |
+| `src/components/SystemErrorProvider/*`                                        | —                      | New provider files (RD-02 anatomy / `03-02 §Implementation Details`)      |
+| `test/error-dialog.spec.test.tsx`, `.impl.test.tsx`                           | —                      | New contract/internal tests from the ST cases                             |
+| `test/system-error-provider.spec.test.tsx`, `.impl.test.tsx`, `.ssr.test.tsx` | —                      | New provider tests (contract, internals, SSR smoke)                       |
+| `.storybook/*`, `vitest.config.ts`, `tsconfig*.json`                          | Test/story/build infra | None — existing patterns already support the new components               |
 
 ### Code Analysis
 
