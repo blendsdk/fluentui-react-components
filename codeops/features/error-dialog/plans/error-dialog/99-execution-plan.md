@@ -114,7 +114,7 @@ task-size criteria in `quality-checklist.md`).
 - [x] 1.3.1 Implementation tests: serializer internals, copy-timer mechanics, availability detection, class/token + 700 px checks (AC 17b/17c) — `test/error-dialog.impl.test.tsx` ✅ (completed: 2026-10-16 09:06)
 - [x] 1.3.2 Stories: standard variant, unauthorized variant, Dutch strings, long details, missing details — `src/components/ErrorDialog/ErrorDialog.stories.tsx` ✅ (completed: 2026-10-16 09:08)
 - [x] 1.3.3 README component section: description, props table, composition and localization notes — `README.md` ✅ (completed: 2026-10-16 09:09)
-- [ ] 1.3.4 Storybook keyboard/a11y pass (real focus path; a11y addon clean) — user-assisted; record the pass result with the task marks and fix anything found
+- [~] 1.3.4 Storybook keyboard/a11y pass (real focus path; a11y addon clean) — user-assisted; record the pass result with the task marks and fix anything found ⏳ (implemented: 2026-10-16 09:10 — story set and a11y addon ready; dialogs open from a trigger button (user-requested revision); isolated dev server on http://127.0.0.1:6007; checklist handed to the user; awaiting the pass result)
 - [ ] 1.3.5 Full verification — `pnpm verify` and `pnpm storybook:build`
 
 **Deliverables**:

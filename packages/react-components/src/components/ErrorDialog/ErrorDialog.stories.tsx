@@ -1,3 +1,4 @@
+import { Button } from '@fluentui/react-components';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 import type { ReactElement } from 'react';
@@ -27,22 +28,31 @@ function createSampleError(): Error {
 }
 
 /**
- * Renders a story's dialog with working visibility state.
+ * Renders a trigger button and the story's dialog.
  *
- * Stories start with the dialog open; dismissing or picking the offered
- * recovery action closes it. That mirrors how an application wires the
- * callbacks — without performing any real navigation or sign-out inside the
- * workbench.
+ * The dialog starts closed: pressing the trigger opens it, so the story
+ * mirrors how an application raises the dialog from an action — and the
+ * keyboard pass can watch focus move into the dialog the moment it opens.
+ * Dismissing or picking the offered recovery action closes it again, and the
+ * trigger brings it back.
  */
 function InteractiveDialog(args: Partial<ErrorDialogProps>): ReactElement {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
   const { kind, ...rest } = args;
 
-  if (kind === 'unauthorized') {
-    return <ErrorDialog {...rest} kind="unauthorized" open={open} onSignOut={close} />;
-  }
-  return <ErrorDialog {...rest} open={open} onDismiss={close} onReload={close} />;
+  return (
+    <>
+      <Button appearance="primary" onClick={() => setOpen(true)}>
+        Trigger error dialog
+      </Button>
+      {kind === 'unauthorized' ? (
+        <ErrorDialog {...rest} kind="unauthorized" open={open} onSignOut={close} />
+      ) : (
+        <ErrorDialog {...rest} open={open} onDismiss={close} onReload={close} />
+      )}
+    </>
+  );
 }
 
 /**
