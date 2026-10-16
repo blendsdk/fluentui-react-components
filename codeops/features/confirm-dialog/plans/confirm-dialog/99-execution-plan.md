@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-16 13:55
-> **Progress**: 3/27 tasks (11%)
+> **Last Updated**: 2026-10-16 13:59
+> **Progress**: 9/27 tasks (33%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -93,12 +93,22 @@ task-size criteria in the make-plan quality checklist).
 **Reference**: [03-01](03-01-confirm-dialog.md) §Public API, §Interfaces, §Danger styling, §Focus and accessibility machinery, §Behaviour details
 **Objective**: Implement the component so the frozen spec tests pass.
 
-- [ ] 1.2.1 Public types — `src/components/ConfirmDialog/ConfirmDialog.types.ts`
-- [ ] 1.2.2 Static Griffel classes: surface, message (`pre-line`), the guarded danger recipe — `src/components/ConfirmDialog/useConfirmDialogStyles.styles.ts`
-- [ ] 1.2.3 State hook: normalization, label resolution, ids, the outcome bridge, capture/restore and busy effects, merged ref — `src/components/ConfirmDialog/useConfirmDialog.ts`
-- [ ] 1.2.4 Pure render: alert Dialog, title/message wiring, action buttons, icon wrapping, native spread — `src/components/ConfirmDialog/renderConfirmDialog.tsx`
-- [ ] 1.2.5 Shell with the generic-preserving export assertion, folder barrel and package exports — `src/components/ConfirmDialog/ConfirmDialog.tsx`, `src/components/ConfirmDialog/index.ts`, `src/index.ts`
-- [ ] 1.2.6 Run the spec suite and verify the **green phase** — a failing spec test means the implementation is wrong, never edit the test — `pnpm test`
+- [x] 1.2.1 Public types — `src/components/ConfirmDialog/ConfirmDialog.types.ts` ✅ (completed: 2026-10-16 13:59)
+- [x] 1.2.2 Static Griffel classes: surface, message (`pre-line`), the guarded danger recipe — `src/components/ConfirmDialog/useConfirmDialogStyles.styles.ts` ✅ (completed: 2026-10-16 13:59)
+- [x] 1.2.3 State hook: normalization, label resolution, ids, the outcome bridge, capture/restore and busy effects, merged ref — `src/components/ConfirmDialog/useConfirmDialog.ts` ✅ (completed: 2026-10-16 13:59)
+- [x] 1.2.4 Pure render: alert Dialog, title/message wiring, action buttons, icon wrapping, native spread — `src/components/ConfirmDialog/renderConfirmDialog.tsx` ✅ (completed: 2026-10-16 13:59)
+- [x] 1.2.5 Shell with the generic-preserving export assertion, folder barrel and package exports — `src/components/ConfirmDialog/ConfirmDialog.tsx`, `src/components/ConfirmDialog/index.ts`, `src/index.ts` ✅ (completed: 2026-10-16 13:59)
+- [x] 1.2.6 Run the spec suite and verify the **green phase** — a failing spec test means the implementation is wrong, never edit the test — `pnpm test` ✅ (completed: 2026-10-16 13:59)
+
+> **Green-phase record (1.2.6):** 35/35 dialog spec tests pass; `pnpm type-check` is clean (the four
+> `@ts-expect-error` pins are engaged as errors — no unused directives); the full package suite
+> passes 129/129 across 9 files. One spec-technique adjustment was needed before green (recorded
+> for review; the expectation is unchanged): ST-10's "differs by exactly the danger class" cannot
+> be a single class token — Griffel emits atomic classes (one per declaration and pseudo-state),
+> and its development build adds a `___`-prefixed merge-sequence class that changes whenever the
+> merged class set changes. The technique now compares the added class set against the classes
+> whose stylesheet rules consume the danger tokens via `var(...)`, with Griffel debug classes
+> filtered out. No implementation defect was involved.
 
 **Deliverables**:
 

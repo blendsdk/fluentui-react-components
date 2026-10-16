@@ -63,6 +63,46 @@ function classTokens(element: Element): string[] {
   return [...element.classList].sort();
 }
 
+/**
+ * Class names whose stylesheet rules consume the danger tokens.
+ *
+ * Griffel compiles one style slot into atomic classes — one class per
+ * declaration and pseudo-state — so a flagged action's danger styling is a
+ * set of classes, not a single class name. The set is read back from the
+ * injected stylesheets: every class whose rule consumes one of the danger
+ * tokens through `var(...)` belongs to the danger recipe. (Rules that merely
+ * define the tokens, such as the theme provider's, are not styling.)
+ */
+function dangerTokenClasses(): Set<string> {
+  const names = new Set<string>();
+  for (const sheet of Array.from(document.styleSheets)) {
+    for (const rule of Array.from(sheet.cssRules)) {
+      if (!(rule instanceof CSSStyleRule)) {
+        continue;
+      }
+      if (!/var\(--colorStatusDanger(Background3|ForegroundInverted)/.test(rule.cssText)) {
+        continue;
+      }
+      for (const match of rule.selectorText.matchAll(/\.([A-Za-z0-9_-]+)/g)) {
+        names.add(match[1]);
+      }
+    }
+  }
+  return names;
+}
+
+/**
+ * Whether a class token is a Griffel development artifact.
+ *
+ * Griffel's development build adds `___`-prefixed merge-sequence classes that
+ * encode the order in which style classes were merged; they change whenever
+ * the merged set changes and carry no styling rules. Assertions about which
+ * styling a render adds therefore ignore them.
+ */
+function isGriffelDebugClass(token: string): boolean {
+  return token.startsWith('___');
+}
+
 /** Props of the invoker harness the focus-restoration tests share. */
 type InvokerHostProps = {
   /** Whether the invoker button is mounted next to the dialog. */
@@ -214,11 +254,13 @@ describe('ConfirmDialog', () => {
   });
 
   describe('danger intent', () => {
-    it('adds exactly one danger class to the confirm action and changes nothing else', () => {
+    it('adds exactly the danger styling to the confirm action and changes nothing else', () => {
       const plain = renderDialog(
         <ConfirmDialog open title="Delete this record?" onResolve={noop} />
       );
-      const plainConfirm = classTokens(screen.getByRole('button', { name: 'Confirm' }));
+      const plainConfirm = classTokens(screen.getByRole('button', { name: 'Confirm' })).filter(
+        token => !isGriffelDebugClass(token)
+      );
       const plainDecline = classTokens(screen.getByRole('button', { name: 'Cancel' }));
       const plainSurface = classTokens(screen.getByRole('alertdialog'));
       plain.unmount();
@@ -226,7 +268,9 @@ describe('ConfirmDialog', () => {
       renderDialog(
         <ConfirmDialog open title="Delete this record?" intent="danger" onResolve={noop} />
       );
-      const dangerConfirm = classTokens(screen.getByRole('button', { name: 'Confirm' }));
+      const dangerConfirm = classTokens(screen.getByRole('button', { name: 'Confirm' })).filter(
+        token => !isGriffelDebugClass(token)
+      );
 
       expect(classTokens(screen.getByRole('button', { name: 'Cancel' }))).toEqual(plainDecline);
       expect(classTokens(screen.getByRole('alertdialog'))).toEqual(plainSurface);
@@ -234,8 +278,11 @@ describe('ConfirmDialog', () => {
       const addedClasses = dangerConfirm.filter(token => !plainConfirm.includes(token));
       const removedClasses = plainConfirm.filter(token => !dangerConfirm.includes(token));
 
-      expect(addedClasses).toHaveLength(1);
       expect(removedClasses).toEqual([]);
+      expect(addedClasses.length).toBeGreaterThan(0);
+      // The danger slot arrives as atomic classes, so the added set must be
+      // exactly the classes whose rules carry the danger tokens.
+      expect(new Set(addedClasses)).toEqual(dangerTokenClasses());
     });
   });
 

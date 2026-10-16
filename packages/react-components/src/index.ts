@@ -9,6 +9,13 @@
  * @packageDocumentation
  */
 
+export { ConfirmDialog } from './components/ConfirmDialog';
+export type {
+  ConfirmAction,
+  ConfirmDialogProps,
+  ConfirmDialogStrings,
+  ConfirmIntent,
+} from './components/ConfirmDialog';
 export { DescriptionList } from './components/DescriptionList';
 export type { DescriptionListProps } from './components/DescriptionList';
 export { DescriptionListItem } from './components/DescriptionListItem';
