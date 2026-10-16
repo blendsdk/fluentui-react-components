@@ -2,15 +2,16 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-16 06:28
-> **Progress**: 0/15 tasks (0%)
+> **Last Updated**: 2026-10-16 07:31
+> **Progress**: 0/28 tasks (0%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
 
-Implements `error-dialog/RD-01`: one controlled Fluent UI v9 `ErrorDialog` with specification
-tests first, then the implementation, then implementation tests and hardening — the mandatory
-three-session ordering.
+Implements `error-dialog/RD-01` and `error-dialog/RD-02`: the controlled Fluent UI v9
+`ErrorDialog` (Phase 1) and its companion `SystemErrorProvider` (Phase 2), each with
+specification tests first, then the implementation, then implementation tests and hardening —
+the mandatory three-session ordering.
 
 **Paths:** relative to `packages/react-components/`.
 
@@ -23,8 +24,9 @@ three-session ordering.
 | Phase | Title                 | Tasks |
 | ----- | --------------------- | ----- |
 | 1     | ErrorDialog component | 15    |
+| 2     | SystemErrorProvider   | 13    |
 
-**Total: 15 tasks across 1 phase** (no fabricated hour estimates — scope is bounded by the
+**Total: 28 tasks across 2 phases** (no fabricated hour estimates — scope is bounded by the
 task-size criteria in `quality-checklist.md`).
 
 > **⚠️ EXECUTION RULE — APPLIES TO EVERY AGENT EXECUTING THIS PLAN:**
@@ -112,11 +114,75 @@ task-size criteria in `quality-checklist.md`).
 
 ---
 
+## Phase 2: SystemErrorProvider
+
+> **Phase baseline tree**: _(recorded by the exec-plan skill from a temporary-index snapshot of
+> committed, staged, unstaged, and untracked phase-start state)_
+> **Lenses**: api-surface (public provider + hook contract) · security (capture listener hygiene)
+> **Reasoning**: high — listener lifecycle, typed per-kind construction and the user-ruled sign-out
+> semantics (register AR #19)
+
+### Step 2.1: Specification Tests (before implementation)
+
+**Reference**: [07](07-testing-strategy.md) §Specification Test Cases (ST-33…ST-53) · [03-02](03-02-system-error-provider.md) §Interfaces · [RD-02](../../requirements/RD-02-system-error-provider.md) · requirements AR #19
+**Objective**: Pin the provider contract as executable tests before any implementation exists.
+
+- [ ] 2.1.1 [spec-author] Write the provider spec tests from the ST cases — `test/system-error-provider.spec.test.tsx`
+- [ ] 2.1.2 [spec-author] Extend the export-surface list with `SystemErrorProvider` + `useSystemError` (ST-52) — `test/package-exports.spec.test.ts`
+- [ ] 2.1.3 Run the spec suite and verify the **red phase** (import/export failures expected; document any case that passes pre-implementation with justification) — `pnpm test`
+
+**Deliverables**:
+
+- [ ] Spec file carrying ST-33…ST-51 with concrete assertions (including the sink-listener technique for negative dispatches)
+- [ ] Red-phase evidence recorded with the task marks
+
+**Verify**: `pnpm test` (expected failures documented; no other command)
+
+### Step 2.2: Implementation
+
+**Reference**: [03-02](03-02-system-error-provider.md) §Interfaces, §Provider state and construction, §Capture hook
+**Objective**: Implement the provider so the frozen spec tests pass.
+
+- [ ] 2.2.1 Public types and context — `src/components/SystemErrorProvider/SystemErrorProvider.types.ts`, `src/components/SystemErrorProvider/SystemErrorContext.ts`
+- [ ] 2.2.2 Opt-in capture hook (effect-scoped listeners, StrictMode/SSR-safe) — `src/components/SystemErrorProvider/useGlobalErrorCapture.ts`
+- [ ] 2.2.3 Provider state, per-variant dialog construction, sign-out wrapper, hook — `src/components/SystemErrorProvider/SystemErrorProvider.tsx`, `src/components/SystemErrorProvider/useSystemError.ts`
+- [ ] 2.2.4 Barrel and package exports — `src/components/SystemErrorProvider/index.ts`, `src/index.ts`
+- [ ] 2.2.5 Run the spec suite and verify the **green phase** — a failing spec test means the implementation is wrong, never edit the test — `pnpm test`
+
+**Deliverables**:
+
+- [ ] Provider per the `03-02` file table
+- [ ] All spec tests green
+
+**Verify**: `pnpm test`
+
+### Step 2.3: Implementation Tests & Hardening
+
+**Reference**: [03-02](03-02-system-error-provider.md) §Testing Requirements · [07](07-testing-strategy.md) §Test Data
+**Objective**: Cover internals and edge paths, add the SSR smoke, stories and documentation, and verify the whole gate.
+
+- [ ] 2.3.1 Implementation tests: capture-hook listener attach/remove spies, StrictMode-safe single pair, memoization stability — `test/system-error-provider.impl.test.tsx`
+- [ ] 2.3.2 SSR smoke test (node environment; import + `renderToString` must not throw) — `test/system-error-provider.ssr.test.tsx`
+- [ ] 2.3.3 Stories: both variants via `catchError`, a `detailsText` demo and a capture demo — `src/components/SystemErrorProvider/SystemErrorProvider.stories.tsx`
+- [ ] 2.3.4 README provider section and the principles carve-out — `README.md`
+- [ ] 2.3.5 Full verification — `pnpm verify` and `pnpm storybook:build`
+
+**Deliverables**:
+
+- [ ] Implementation tests and SSR smoke passing; story set present; README section written
+- [ ] All verification passing
+
+**Verify**: `pnpm verify`
+
+---
+
 ## Dependencies
 
 ```
-Phase 1 — single phase; steps run in strict order:
+Phase 1 ──▶ Phase 2 (the provider renders the Phase 1 dialog). Within each phase the steps run
+in strict order:
   1.1 (spec tests, red) ──▶ 1.2 (implementation, green) ──▶ 1.3 (impl tests & hardening)
+  2.1 (spec tests, red) ──▶ 2.2 (implementation, green) ──▶ 2.3 (impl tests & hardening)
 ```
 
 ---
@@ -130,7 +196,8 @@ Phase 1 — single phase; steps run in strict order:
 3. ✅ No warnings/errors
 4. ✅ No dead code — no unused parameters, functions, classes, or modules
 5. ✅ Security hardened — hostile error values contained (wrapped serialization fallback chain);
-   details render as text only (no HTML injection); clipboard failures contained
+   details render as text only (no HTML injection); clipboard failures contained; capture never
+   suppresses errors (`preventDefault` untouched) and the sign-out path cannot trap the user
 6. ✅ Documentation updated — README component section and API doc comments
 7. ✅ Code reviewed (if applicable)
 8. ✅ Post-completion project re-analysis (handled by the exec-plan skill)

@@ -10,19 +10,22 @@
 Coverage is expressed as "every criterion verified in its recorded channel" (AR #6) — the repo
 configures no numeric threshold:
 
-| Code type                                | Target                                                                        |
-| ---------------------------------------- | ----------------------------------------------------------------------------- |
-| Component contract (spec tests)          | every jsdom-observable RD-01 acceptance criterion (1–16, 17a, 19)             |
-| Serializer and copy state machine (impl) | every internal path of `03-01 §Serialization algorithm` / §Copy state machine |
-| Token/style checks                       | RD-01 AC 17b/17c via implementation checks plus review                        |
-| Focus-trap cycle and story set           | Storybook keyboard/a11y pass and review (RD-01 §Verification)                 |
+| Code type                                | Target                                                                                            |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Component contract (spec tests)          | every jsdom-observable RD-01 acceptance criterion (1–16, 17a, 19)                                 |
+| Serializer and copy state machine (impl) | every internal path of `03-01 §Serialization algorithm` / §Copy state machine                     |
+| Token/style checks                       | RD-01 AC 17b/17c via implementation checks plus review                                            |
+| Focus-trap cycle and story set           | Storybook keyboard/a11y pass and review (RD-01 §Verification)                                     |
+| Provider contract (spec tests)           | every jsdom-observable RD-02 acceptance criterion (ST-33…ST-52)                                   |
+| Provider internals and SSR safety        | capture-hook listener spies and memoization (RD-02 §Verification); node-environment smoke (ST-53) |
 
 - Test names state behavior: `should [expected behavior] when [condition]`.
 - **Integration tests**: N/A — the component has no integration surface beyond its own mount
   inside `FluentProvider`; there is nothing to integrate with.
 - **E2E tests**: N/A — the repository has no browser harness, and the single jsdom-blind aspect
   (the focus-trap cycle) uses the repository's prescribed Storybook/manual pass instead of new
-  infrastructure (RD-01 §Verification; preflight PF-001).
+  infrastructure (RD-01 §Verification; preflight PF-001); provider listener-removal mechanics use
+  implementation-test spies (RD-02 §Verification).
 
 ## 🚨 Specification Test Cases (MANDATORY — NON-NEGOTIABLE)
 
@@ -65,11 +68,38 @@ configures no numeric threshold:
 | ST-30 | Untyped consumer (cast) renders `kind="unauthorized"` without `onSignOut`; click `"Sign out"`           | Nothing throws; the action is inert                                                                                                                                  | RD-01 AC 16  |
 | ST-31 | Render under `webLightTheme` and under `webDarkTheme`                                                   | No errors; the `alertdialog` renders and remains accessible in both                                                                                                  | RD-01 AC 17a |
 | ST-32 | Pass `className`, `style`, `data-testid` and a ref                                                      | Class and style merge onto the dialog surface; the data attribute lands on it; the ref points at the surface element                                                 | RD-01 AC 19  |
+| ST-33 | Provider rendered with children                                                                         | Children render with no wrapper element around them; no `alertdialog` exists                                                                                         | RD-02 AC 1   |
+| ST-34 | `catchError(new Error("boom"))` from a descendant                                                       | Exactly one `alertdialog`; details contain `"name": "Error"` and `"message": "boom"` in 2-space JSON                                                                 | RD-02 AC 2   |
+| ST-35 | Activate `"Close"`; then `catchError` again                                                             | The dialog closes; the new call reopens it with the new value                                                                                                        | RD-02 AC 3   |
+| ST-36 | `clearError()` with a shown error; then with none                                                       | First closes and clears; the second is a no-op and does not throw                                                                                                    | RD-02 AC 4   |
+| ST-37 | Two `catchError` calls before interaction                                                               | Only the second error's details are shown                                                                                                                            | RD-02 AC 5   |
+| ST-38 | `catchError(e, { kind: "unauthorized" })` with provider `onSignOut`; click `"Sign out"`                 | Sign-out-only variant; `onSignOut` called exactly once; the dialog closes                                                                                            | RD-02 AC 6   |
+| ST-39 | The same without provider `onSignOut`; click `"Sign out"`                                               | The dialog closes; nothing throws                                                                                                                                    | RD-02 AC 6   |
+| ST-40 | Provider `onSignOut` throws; click `"Sign out"`                                                         | The click throws (the error propagates) and the dialog is closed                                                                                                     | RD-02 AC 6   |
+| ST-41 | `onSignOut` calls `catchError` synchronously                                                            | The dialog shows the re-entrant error (last-wins)                                                                                                                    | RD-02 AC 6   |
+| ST-42 | `catchError(e, { detailsText: "Support case 4711" })`; then a plain `catchError`                        | First shows exactly the override; the second shows serialized details again                                                                                          | RD-02 AC 7   |
+| ST-43 | Provider `strings` partial (Dutch sample)                                                               | Overridden texts everywhere; unset keys keep English defaults                                                                                                        | RD-02 AC 8   |
+| ST-44 | `useSystemError()` outside the provider                                                                 | Throws an `Error` naming `useSystemError` and `SystemErrorProvider`                                                                                                  | RD-02 AC 9   |
+| ST-45 | `captureGlobalErrors` omitted; dispatch `error` (sink listener / message-only) and `unhandledrejection` | Nothing opens                                                                                                                                                        | RD-02 AC 10  |
+| ST-46 | `captureGlobalErrors`; dispatch a `cancelable` `ErrorEvent` with `error`; then one with message only    | Dialog opens with the error serialized; the message-only event shows the message; variant is `"error"` (no `"Sign out"`)                                             | RD-02 AC 11  |
+| ST-47 | Dispatch `unhandledrejection` with a reason; then with `reason: undefined`                              | Reason serialized; the second shows the default no-details text                                                                                                      | RD-02 AC 12  |
+| ST-48 | After ST-46/ST-47                                                                                       | The dispatched (cancelable) events report `defaultPrevented === false`                                                                                               | RD-02 AC 13  |
+| ST-49 | Toggle `captureGlobalErrors` off; dispatch; back on; dispatch                                           | Off: nothing opens; on: the dialog opens again                                                                                                                       | RD-02 AC 14  |
+| ST-50 | Rejection reasons: revoked `Proxy`; an object with a throwing accessor                                  | Default no-details text; `String(value)` (e.g. `[object Object]`); nothing throws                                                                                    | RD-02 AC 15  |
+| ST-51 | Full flow with `location` and `fetch` stubs                                                             | `window.location.reload` never called; no `fetch` issued                                                                                                             | RD-02 AC 16  |
+| ST-52 | Import the package root                                                                                 | Runtime exports exactly the five names; `SystemErrorProviderProps` and `CatchErrorOptions` compile for import                                                        | RD-02 AC 17  |
+| ST-53 | Node environment (`// @vitest-environment node`): import + `renderToString`                             | Does not throw                                                                                                                                                       | RD-02 AC 18  |
 
 > ST-29's expectation is enforced by `pnpm type-check`, not the Vitest run; the directives live in
 > the spec file so the gate catches contract regressions. ST-03's Escape/backdrop clauses run in
 > jsdom; the literal Tab-cycle trap is **not** an ST case — it runs in the Storybook keyboard pass
 > (RD-01 §Verification).
+>
+> Provider cases: ST-45 and ST-49's negative dispatches use the recorded sink-listener or
+> message-only technique (Vitest's jsdom environment turns an unhandled `error` event into a
+> run-level failure); ST-53 lives in the node-environment file; provider listener-removal
+> mechanics are verified in the implementation test with `addEventListener` /
+> `removeEventListener` spies (RD-02 §Verification).
 
 ## Test Categories
 
@@ -78,10 +108,11 @@ configures no numeric threshold:
 > Written BEFORE implementation. Filed as `packages/react-components/test/error-dialog.spec.test.tsx`
 > (export-list case: `test/package-exports.spec.test.ts`, extended).
 
-| Test File                           | ST Cases Covered                          | Component      |
-| ----------------------------------- | ----------------------------------------- | -------------- |
-| `test/error-dialog.spec.test.tsx`   | ST-01 – ST-27, ST-29, ST-30, ST-31, ST-32 | `ErrorDialog`  |
-| `test/package-exports.spec.test.ts` | ST-28                                     | package barrel |
+| Test File                                  | ST Cases Covered                          | Component             |
+| ------------------------------------------ | ----------------------------------------- | --------------------- |
+| `test/error-dialog.spec.test.tsx`          | ST-01 – ST-27, ST-29, ST-30, ST-31, ST-32 | `ErrorDialog`         |
+| `test/system-error-provider.spec.test.tsx` | ST-33 – ST-51                             | `SystemErrorProvider` |
+| `test/package-exports.spec.test.ts`        | ST-28, ST-52                              | package barrel        |
 
 ### Implementation Tests (edge cases, internals)
 
@@ -90,6 +121,11 @@ configures no numeric threshold:
 | Test File                         | Description                                                                                                                                                                                                                                                                                                                                                                                                | Priority |
 | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
 | `test/error-dialog.impl.test.tsx` | Serializer internals: shared (non-circular) reference renders `"[Circular]"` per the chosen WeakSet behavior; stack-absent errors; key collisions between custom props and name/message/stack; nested bigint/function/circular values; copy-timer restart and unmount cleanup; clipboard availability detection; class/token assertion for the danger title and the computed 700 px max width (AC 17b/17c) | High     |
+
+| `test/system-error-provider.impl.test.tsx` | Capture-hook internals: `addEventListener`/`removeEventListener` spies (attach/detach on toggle and unmount), StrictMode-safe single listener pair, handler stability/memoization; no clipboard dependency | High |
+
+SSR smoke: `test/system-error-provider.ssr.test.tsx` (node environment; import + `renderToString`
+must not throw — ST-53).
 
 ### Integration Tests
 
@@ -120,6 +156,11 @@ cycle) is covered by the Storybook keyboard/a11y pass during task 1.3.4 (RD-01 �
 - **Timers**: `vi.useFakeTimers()` for the copy-feedback cases (ST-21, ST-24); restore real timers after.
 - **Themes**: wrap renders in `FluentProvider` with `webLightTheme` / `webDarkTheme`, mirroring
   the existing tests (`test/description-list.spec.test.tsx`).
+- **Global capture events**: construct `ErrorEvent` / `PromiseRejectionEvent` with
+  `{ cancelable: true }` for ST-46 – ST-48; negative dispatches (ST-45, ST-49) carry a test-owned
+  sink listener or message-only events (the Vitest jsdom `error` interceptor converts unhandled
+  dispatches into run-level failures — verified). The re-entrant case (ST-41) uses a helper
+  component that captures the hook API.
 - Real objects preferred otherwise; no component mocks.
 
 ## Verification Checklist

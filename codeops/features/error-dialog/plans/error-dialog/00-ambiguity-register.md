@@ -1,13 +1,15 @@
 # Ambiguity Register: error-dialog implementation plan
 
-> **Status**: ✅ GATE PASSED — all 7 items resolved
-> **Last Updated**: 2026-10-16 06:28
+> **Status**: ✅ GATE PASSED — all 9 items resolved
+> **Last Updated**: 2026-10-16 07:31
 
-Context: this plan implements `error-dialog/RD-01` (preflight **passed** at commit `ab4b134`;
-the audited blob `f114c27…` matches the current RD-01, so the pass is not stale). The feature's
-requirements register (`requirements/00-ambiguity-register.md`, AR #1–#14) is settled and is not
-re-opened here — only plan-local decisions appear below. AR-1 was ruled via the explicit
-plan-basis question; AR-2–AR-7 were accepted as a batch (bulk acceptance is an explicit decision).
+Context: this plan implements `error-dialog/RD-01` and `error-dialog/RD-02` (both preflights
+**passed** — RD-01 at commit `ab4b134`, blob `f114c27…`; RD-02 at commit `59a8c0e`, blob
+`c635c31…` — both current, so the passes are not stale). The feature's requirements register
+(`requirements/00-ambiguity-register.md`, AR #1–#19) is settled and is not re-opened here — only
+plan-local decisions appear below. AR-1 was ruled via the explicit plan-basis question; AR-2–AR-7
+were accepted as a batch (bulk acceptance is an explicit decision); AR-8–AR-9 extend
+already-accepted decisions mechanically (no new semantic surface).
 
 | #   | Category  | Ambiguity / Gap                                                              | Options Presented                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | User Decision                                                                                                           | Status      |
 | --- | --------- | ---------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ----------- |
@@ -18,12 +20,18 @@ plan-basis question; AR-2–AR-7 were accepted as a batch (bulk acceptance is an
 | 5   | Technical | Planned internal interfaces (the spec-test author receives these signatures) | (a) proposed: `serializeError(error: unknown): string`; `useErrorDialog(props, ref) → state` carrying resolved `strings`/`details`/`kind`, copy state (`copyAvailable`, `copied`, `onCopy`), `surfaceProps` (native pass-through with merged `className`/`style`) and the forwarded ref; `renderErrorDialog(state)`; `useErrorDialogStyles(state)` returning Griffel classes · (b) different shape                                                                                     | **Option (a)** — accepted recommendation                                                                                | ✅ Resolved |
 | 6   | Testing   | Spec/impl/story allocation and coverage                                      | (a) as mapped: spec file covers every jsdom-observable criterion (AC 1–16, 17a, 19) as ST cases including the `@ts-expect-error` compile cases; impl file covers serializer units, copy-timer mechanics, availability detection and the token/style checks (17b, 17c); the trap cycle runs as the story/manual keyboard pass; AC 18's story set is review-verified; the export-surface test is extended; no numeric coverage gate beyond all criteria verified · (b) a different split | **Option (a)** — accepted recommendation                                                                                | ✅ Resolved |
 | 7   | Structure | Component-spec documents                                                     | (a) one `03-01-error-dialog.md` owning interfaces, serialization algorithm, copy state machine and dialog structure · (b) split into component + internals documents                                                                                                                                                                                                                                                                                                                   | **Option (a)** — accepted recommendation                                                                                | ✅ Resolved |
+| 8   | Structure | RD-02 plan shape — a separate plan or an extension of this set?              | (a) extend this plan set with `03-02` + a Phase 2 (the requirements AR #15 route) · (b) a separate plan folder for RD-02                                                                                                                                                                                                                                                                                                                                                               | **Option (a)** — the recorded AR #15 route; no new user decision required                                               | ✅ Resolved |
+| 9   | Testing   | Provider verification allocation                                             | (a) new spec/impl/SSR test files with ST-33…ST-53 following the accepted AR #6 principle (spies for listener removal; node-environment SSR smoke) · (b) fold provider cases into the dialog's test files                                                                                                                                                                                                                                                                               | **Option (a)** — direct extension of the accepted AR #6 allocation                                                      | ✅ Resolved |
 
 ## Resolution Notes
 
 **AR-1:** User chose Option (a) — the plan implements `error-dialog/RD-01` in full.
 
 **AR-2–AR-7:** User accepted the recommendations in one batch (2026-10-16).
+
+**AR-8–AR-9:** Recorded 2026-10-16 when RD-02 joined the plan — the requirements AR #15 extension
+route and the accepted AR #6 allocation principle applied to the provider; mechanical extensions
+of already-accepted decisions (no new semantic surface, no new user decision required).
 
 **Approved complexity escalations:** None — the plan stays within the RD's minimal-support-surface
 baseline (no new dependencies, no harnesses, no infrastructure).

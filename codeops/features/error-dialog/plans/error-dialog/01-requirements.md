@@ -2,7 +2,8 @@
 
 > **Document**: 01-requirements.md
 > **Parent**: [Index](00-index.md)
-> **Source**: [RD-01](../../requirements/RD-01-error-dialog-component.md) — the OWNING requirements doc
+> **Source**: [RD-01](../../requirements/RD-01-error-dialog-component.md) and
+> [RD-02](../../requirements/RD-02-system-error-provider.md) — the OWNING requirements docs
 
 ## Scope of this plan (delta view)
 
@@ -11,6 +12,8 @@
 - RD-01 in full — Functional Requirements (all Must Have bullets), Technical Requirements, and
   Acceptance Criteria 1–19. The RD owns every behavior, decision and criterion; this plan adds no
   requirement of its own.
+- RD-02 in full — the provider, hook, capture contract and its Acceptance Criteria 1–18, with the
+  same verification-channel discipline.
 - The RD's verification channels are honored as recorded there: the spec oracle covers what jsdom
   can observe; the focus-trap cycle is verified in the Storybook story plus a manual keyboard
   pass; the token/source checks run as implementation checks with review; the story set is
@@ -18,9 +21,9 @@
 
 ### Deferred / out of this plan
 
-- None. RD-01's Won't Have list (capture/store/provider, error boundary, telemetry, mail-to,
-  reference ID, queue/history, i18n framework, status pages) is out of product scope — not
-  deferred work of this plan.
+- None. RD-01's Won't Have list minus the provider (now owned by RD-02: error boundary,
+  telemetry, mail-to, reference ID, queue/history, i18n framework, status pages) is out of
+  product scope — not deferred work of this plan.
 
 ## Plan-local decisions
 
@@ -35,11 +38,14 @@ Only decisions NOT already in the RD:
 | Internal interfaces               | Per `03-01-error-dialog.md` §Interfaces                                                                                   | AR #5  |
 | Spec / impl / story allocation    | Per `07-testing-strategy.md` (coverage: all criteria verified; no numeric coverage gate)                                  | AR #6  |
 | Component specification documents | Single `03-01-error-dialog.md`                                                                                            | AR #7  |
+| RD-02 plan shape                  | Extended this plan set with `03-02` + a Phase 2 (the requirements AR #15 route)                                           | AR #8  |
+| Provider interfaces               | Per `03-02-system-error-provider.md` §Interfaces                                                                          | AR #9  |
 
 ## Acceptance Criteria
 
 [Only plan-local criteria; the RD owns its own acceptance criteria]
 
-1. [ ] All RD-01 acceptance criteria (1–19) verified through their recorded channels.
+1. [ ] All RD-01 (1–19) and RD-02 (1–18) acceptance criteria verified through their recorded
+       channels.
 2. [ ] The plan's quality gates pass: the Phase 3 checklist, `pnpm verify`, and
        `pnpm storybook:build` at final verification.
