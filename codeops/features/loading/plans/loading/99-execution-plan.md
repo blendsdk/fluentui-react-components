@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-17 15:38
-> **Progress**: 39/49 tasks (80%)
+> **Last Updated**: 2026-10-17 15:45
+> **Progress**: 44/49 tasks (90%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -230,19 +230,19 @@ task-size criteria in the make-plan quality checklist).
 **Reference**: [07](07-testing-strategy.md) §Implementation Tests, §Integration Tests, §SSR Smoke Cases · [03-03](03-03-use-loading.md) §Label Policy · AR-7, AR-8, AR-10, AR-12
 **Objective**: Cover out-of-order labels and unmount safety, show the canonical integration and document the hook.
 
-- [ ] 3.3.1 Write the `useLoading` implementation tests (out-of-order id removal, immediate busy state, label stack, no stale entries) — `test/use-loading.impl.test.tsx`
-- [ ] 3.3.2 Add the async `useLoading` + `LoadingOverlay` story, including the `.catch(catchError)` pattern — `src/components/LoadingOverlay/LoadingOverlay.stories.tsx`
-- [ ] 3.3.3 Add the README `useLoading` section, decision table, migration note and error-handling guidance — `README.md`
-- [ ] 3.3.4 Extend the SSR smoke with an idle `useLoading` component (ST-48) — `test/loading.ssr.test.tsx`
-- [ ] 3.3.5 Full phase verification, including the Storybook build — `pnpm verify`, `pnpm storybook:build`
+- [x] 3.3.1 Write the `useLoading` implementation tests (out-of-order id removal, immediate busy state, label stack, no stale entries) — `test/use-loading.impl.test.tsx` ✅ (completed: 2026-10-17 15:41)
+- [x] 3.3.2 Add the async `useLoading` + `LoadingOverlay` story, including the `.catch(catchError)` pattern — `src/components/LoadingOverlay/LoadingOverlay.stories.tsx` ✅ (completed: 2026-10-17 15:42)
+- [x] 3.3.3 Add the README `useLoading` section, decision table, migration note and error-handling guidance — `README.md` ✅ (completed: 2026-10-17 15:43)
+- [x] 3.3.4 Extend the SSR smoke with an idle `useLoading` component (ST-48) — `test/loading.ssr.test.tsx` ✅ (completed: 2026-10-17 15:43)
+- [x] 3.3.5 Full phase verification, including the Storybook build — `pnpm verify`, `pnpm storybook:build` ✅ (completed: 2026-10-17 15:45)
 
 **Deliverables**:
 
-- [ ] `useLoading` is exported and its spec tests are green.
-- [ ] Ref-counting, labels, error propagation and unmount safety are covered.
-- [ ] The integration story and the complete SSR smoke exist.
-- [ ] The README documents the hook and the decision table.
-- [ ] All verification passing.
+- [x] `useLoading` is exported and its spec tests are green.
+- [x] Ref-counting, labels, error propagation and unmount safety are covered.
+- [x] The integration story and the complete SSR smoke exist.
+- [x] The README documents the hook and the decision table.
+- [x] All verification passing.
 
 **Verify**: `pnpm verify` and `pnpm storybook:build`
 

@@ -2,6 +2,8 @@ import { Button } from '@fluentui/react-components';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { ReactElement } from 'react';
 import { useState } from 'react';
+import { useLoading } from '../Loading';
+import { SystemErrorProvider, useSystemError } from '../SystemErrorProvider';
 import { LoadingOverlay } from './LoadingOverlay';
 
 const meta: Meta<typeof LoadingOverlay> = {
@@ -143,6 +145,44 @@ export const FastOperation: Story = {
 };
 
 /**
+ * The canonical integration: `useLoading` supplies the boolean and the label,
+ * the overlay renders them, and the returned promise is caught through the
+ * application's error handler. The failing case reports through the same
+ * `SystemErrorProvider` the application uses.
+ */
+function AsyncControllerDemo(): ReactElement {
+  const { isLoading, label, run } = useLoading({ label: 'Please wait…' });
+  const { catchError } = useSystemError();
+  const [message, setMessage] = useState('No save yet.');
+
+  const save = (): void => {
+    run(() => wait(1200), { label: 'Saving the actor…' })
+      .then(() => setMessage('Saved after 1.2 seconds.'))
+      .catch(catchError);
+  };
+
+  const fail = (): void => {
+    run(
+      () =>
+        wait(800).then(() => {
+          throw new Error('The actor could not be saved.');
+        }),
+      { label: 'Failing the save…' }
+    ).catch(catchError);
+  };
+
+  return (
+    <div style={{ display: 'grid', gap: 12 }}>
+      <LoadingOverlay loading={isLoading} label={label}>
+        <ActorCard onSave={save} />
+      </LoadingOverlay>
+      <span>{message}</span>
+      <Button onClick={fail}>Save and fail</Button>
+    </div>
+  );
+}
+
+/**
  * A translated label, shown immediately with `delay={0}`.
  */
 export const CustomLabel: Story = {
@@ -150,5 +190,17 @@ export const CustomLabel: Story = {
     <LoadingOverlay loading delay={0} label="Publishing the dataset…">
       <ActorCard onSave={() => {}} />
     </LoadingOverlay>
+  ),
+};
+
+/**
+ * The async controller and the overlay together, including the
+ * promise-and-error-handler pattern the README recommends.
+ */
+export const AsyncController: Story = {
+  render: () => (
+    <SystemErrorProvider>
+      <AsyncControllerDemo />
+    </SystemErrorProvider>
   ),
 };

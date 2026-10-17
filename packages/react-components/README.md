@@ -668,6 +668,107 @@ If a supported browser fails to expose `aria-busy` on that wrapper, the
 documented fallback is a normal wrapper with a recorded layout change; the
 status announcement stays outside the wrapper either way.
 
+### useLoading
+
+A local controller for arbitrary async work: it removes the repetitive
+`setBusy(true)` / `try` / `finally setBusy(false)` pattern, counts overlapping
+operations, carries a per-operation label, returns the operation's value and
+rethrows its error. It is a normal hook — it re-renders only the component that
+calls it and connects to the loading components through ordinary props.
+
+| Option  | Type     | Default | Description                                                                                                             |
+| ------- | -------- | ------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `label` | `string` | —       | Default message when no active operation supplies one. A blank value means no default; the consumer applies `Loading…`. |
+
+| Member      | Type                                                                                | Description                                                                                                                                                  |
+| ----------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `isLoading` | `boolean`                                                                           | True while at least one tracked operation is pending.                                                                                                        |
+| `label`     | `string \| undefined`                                                               | The most recently started active labeled operation's label, else the non-blank default, else `undefined`. The consumer applies the visible English fallback. |
+| `run`       | `<T>(operation: () => T \| Promise<T>, options?: { label?: string }) => Promise<T>` | Marks the operation active, invokes it, clears it in `finally`, resolves with its value and rejects with the same error. Stable across renders.              |
+
+```tsx
+function ActorDetails() {
+  const { isLoading, label, run } = useLoading({ label: 'Please wait…' });
+  const { catchError } = useSystemError();
+
+  const save = () => run(() => api.saveActor(actorId), { label: 'Saving…' }).catch(catchError);
+
+  return (
+    <>
+      <Button disabled={isLoading} onClick={save}>
+        Save
+      </Button>
+
+      <LoadingOverlay loading={isLoading} label={label}>
+        <ActorForm />
+      </LoadingOverlay>
+    </>
+  );
+}
+```
+
+#### Label policy
+
+The reported label is the most recently started active **labeled** operation.
+An unlabeled operation never suppresses a labeled one, even when it started
+later. A blank per-operation label counts as no label; when no active operation
+supplies one, the non-blank hook default applies; when that is also absent, the
+hook reports `undefined` and the loading component applies `Loading…`. Active
+operations are removed by id, so out-of-order settlement returns the label to
+the operation that is still running.
+
+#### Concurrency and lifecycle
+
+Overlapping `run` calls are ref-counted: `isLoading` stays true until the last
+one settles. A failed operation removes only its own entry, so a rejecting save
+cannot cancel a concurrent load. `run` is referentially stable and safe in
+dependency arrays. Calling it after unmount is safe: React ignores the state
+update and the returned promise still settles; the hook never cancels the
+operation.
+
+#### Error handling
+
+`run` never swallows an error. Return or catch the returned promise:
+
+```tsx
+const save = () => run(saveActor, { label: 'Saving…' }).catch(catchError);
+```
+
+or, inside an async handler:
+
+```tsx
+try {
+  await run(saveActor);
+} catch (error) {
+  catchError(error);
+}
+```
+
+A fire-and-forget call (`run(saveActor)` without `return` or `.catch`) can
+produce an unhandled rejection; that responsibility stays with the caller.
+Call `run` from event handlers or effects, not during render.
+
+#### Decision table
+
+| Situation                                                                                                      | Use                                                    |
+| -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| The application already owns a pending boolean (`useTransition`, `useActionState`, a store, a `fetching` flag) | `LoadingOverlay` with that boolean                     |
+| New async work needs busy state and optional labels, and no other state owner exists                           | `useLoading`, passing its pair to `LoadingOverlay`     |
+| A region has no content to cover                                                                               | `Loading`                                              |
+| A region has content that should stay mounted while busy                                                       | `LoadingOverlay`                                       |
+| A full-page or application-wide blocker                                                                        | Not provided by design; use a region-level composition |
+
+#### Migration note
+
+- `fetching ? <Loading /> : <Content />` becomes
+  `<LoadingOverlay loading={fetching}><Content /></LoadingOverlay>`: the content
+  stays mounted, keeps its scroll and form state, and becomes inert while busy.
+- `setBusy(true); try { … } finally { setBusy(false); }` becomes
+  `run(() => …)`, with the returned promise returned or caught.
+- The legacy v8 props (`backgroundColor`, `styles`, `theme`, `type`,
+  `ariaLive`) are intentionally not ported. The scrim and text follow the
+  `FluentProvider` theme; `label` is the only user-facing string.
+
 ## Development
 
 ```bash
