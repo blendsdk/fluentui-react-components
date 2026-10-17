@@ -1,6 +1,6 @@
 {
   "name": "@blendsdk/fluentui-react-components",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Custom React components built on Fluent UI v9 in the Fluent component pattern",
   "type": "module",
   "license": "MIT",
