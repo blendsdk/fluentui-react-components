@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-17 15:20
-> **Progress**: 27/49 tasks (55%)
+> **Last Updated**: 2026-10-17 15:26
+> **Progress**: 32/49 tasks (65%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -169,20 +169,20 @@ task-size criteria in the make-plan quality checklist).
 **Reference**: [07](07-testing-strategy.md) §Implementation Tests, §SSR Smoke Cases · [03-02](03-02-loading-overlay.md) §Focus Algorithm · AR-10, AR-11
 **Objective**: Cover the focus/timer internals, show the overlay variants and document the accessibility contract.
 
-- [ ] 2.3.1 Write the `LoadingOverlay` implementation tests (capture ordering, body-focus fallback, ownership restore, unmount-while-visible teardown, class merge, structure) — `test/loading-overlay.impl.test.tsx`
-- [ ] 2.3.2 Write the `LoadingOverlay` story with app-owned boolean, fast-operation and custom-label cases — `src/components/LoadingOverlay/LoadingOverlay.stories.tsx`
-- [ ] 2.3.3 Add the README `LoadingOverlay` section, props table, accessibility/focus notes, the region-scoped limitation and composition patterns — `README.md`
-- [ ] 2.3.4 Extend the SSR smoke with the overlay case (ST-47) — `test/loading.ssr.test.tsx`
-- [ ] 2.3.5 Full phase verification, including the Storybook build — `pnpm verify`, `pnpm storybook:build`
+- [x] 2.3.1 Write the `LoadingOverlay` implementation tests (capture ordering, body-focus fallback, ownership restore, unmount-while-visible teardown, class merge, structure) — `test/loading-overlay.impl.test.tsx` ✅ (completed: 2026-10-17 15:23)
+- [x] 2.3.2 Write the `LoadingOverlay` story with app-owned boolean, fast-operation and custom-label cases — `src/components/LoadingOverlay/LoadingOverlay.stories.tsx` ✅ (completed: 2026-10-17 15:23)
+- [x] 2.3.3 Add the README `LoadingOverlay` section, props table, accessibility/focus notes, the region-scoped limitation and composition patterns — `README.md` ✅ (completed: 2026-10-17 15:24)
+- [x] 2.3.4 Extend the SSR smoke with the overlay case (ST-47) — `test/loading.ssr.test.tsx` ✅ (completed: 2026-10-17 15:24)
+- [x] 2.3.5 Full phase verification, including the Storybook build — `pnpm verify`, `pnpm storybook:build` ✅ (completed: 2026-10-17 15:26)
 
 **Deliverables**:
 
-- [ ] `LoadingOverlay` is exported and its spec tests are green.
-- [ ] The delay/inert/status/focus contract is covered by spec and impl tests.
-- [ ] The story shows app-owned and fast-operation cases.
-- [ ] The SSR smoke covers the overlay's server render.
-- [ ] The README section documents focus, inert, announcement behavior and the portaled/fixed-content limitation.
-- [ ] All verification passing.
+- [x] `LoadingOverlay` is exported and its spec tests are green.
+- [x] The delay/inert/status/focus contract is covered by spec and impl tests.
+- [x] The story shows app-owned and fast-operation cases.
+- [x] The SSR smoke covers the overlay's server render.
+- [x] The README section documents focus, inert, announcement behavior and the portaled/fixed-content limitation.
+- [x] All verification passing.
 
 **Verify**: `pnpm verify` and `pnpm storybook:build`
 

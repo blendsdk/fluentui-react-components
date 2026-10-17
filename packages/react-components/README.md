@@ -599,6 +599,75 @@ so assistive technology hears the label once. The status node mounts before
 its text, and the delayed reveal changes the text in that existing region. The
 root is not focusable and adds no motion beyond Fluent's spinner.
 
+### LoadingOverlay
+
+A region-scoped blocking overlay that keeps its children mounted. While
+`loading` is true it waits for its delay (300 ms by default), then covers the
+region with the themed scrim and spinner, marks the content `inert` and
+announces the label once. A response that settles before the delay never
+flashes the overlay, and the content keeps its scroll position, form state and
+focus context across a save or refresh.
+
+The component is controlled: the application owns the boolean, the async work
+and every side effect. The boolean can come from `useLoading().isLoading`,
+`useTransition`, `useActionState`, a store or an existing `fetching` flag.
+
+| Prop       | Type                                                    | Default      | Description                                                                                                                                                                                                                                                          |
+| ---------- | ------------------------------------------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `loading`  | `boolean`                                               | — (required) | Whether the covered operation is pending.                                                                                                                                                                                                                            |
+| `children` | `ReactNode`                                             | — (required) | Content that stays mounted and becomes inert while the overlay is visible.                                                                                                                                                                                           |
+| `label`    | `string`                                                | `Loading…`   | Visible and announced message. A missing, empty or whitespace-only value falls back to the English default.                                                                                                                                                          |
+| `delay`    | `number`                                                | `300`        | Milliseconds before the scrim, spinner and status text appear. Negative, `NaN` and `Infinity` behave as `0`; a change applies to the next activation and never restarts a visible overlay.                                                                           |
+| …          | `ComponentPropsWithoutRef<'div'>` (minus managed attrs) | —            | Other native `div` props pass through; `className` and `style` merge and `ref` points at the root. `aria-busy`, `aria-label`, `aria-labelledby`, `aria-live`, `aria-atomic`, `role`, `inert`, `tabIndex` and `dangerouslySetInnerHTML` are managed by the component. |
+
+```tsx
+<LoadingOverlay loading={isFetching} label="Loading records…">
+  <DataGrid records={records} />
+</LoadingOverlay>
+```
+
+#### Composition patterns
+
+- **Existing state is enough.** Pass any boolean; the overlay does not know or
+  care where it comes from. `useLoading` is an optional convenience for new
+  async work, not a requirement.
+- **Fast operations never flash.** Keep the default delay for saves and
+  refreshes. Use `delay={0}` only when the operation is known to be slow, or
+  when an immediate visual response is wanted.
+- **The delay window is not blocked.** Interaction is blocked only while the
+  overlay is visible. An application that must prevent a second submission
+  disables its own trigger, for example with `isLoading` from `useLoading`.
+- **Content stays mounted.** The overlay covers the region instead of replacing
+  it, so a form keeps its values, a table keeps its scroll position and focus
+  restoration has a target.
+- **The guarantee is region-scoped.** Portaled descendants (for example a
+  Fluent `MenuPopover`), fixed-position elements and content in a higher
+  stacking context can paint and operate above the scrim. The overlay installs
+  no global blocker and no portal; record the escape in the manual checklist
+  when a region uses one.
+
+#### Accessibility
+
+The content wrapper carries `aria-busy` from the first render, including the
+delay window. The persistent polite status region is a sibling of that wrapper,
+not a descendant, so its text change is announced while the region is busy.
+The visual spinner is `aria-hidden`; the status is the single announcement.
+
+When the overlay becomes visible it sets `inert` on the content wrapper, which
+removes the covered content from the tab order and the accessibility tree, and
+the scrim blocks pointer interaction. The root has `tabIndex={-1}`, is named by
+the persistent status node, and shows no focus ring. Focus moves to the root
+only when it was inside the covered content (or the browser blurred that
+element to the body); focus outside is never moved. When loading ends, focus
+returns to the reveal-time element, then the loading-start element, only if the
+component moved it and the target is still connected and focus is still on the
+root or the body.
+
+The content wrapper uses `display: contents` so it introduces no layout box.
+If a supported browser fails to expose `aria-busy` on that wrapper, the
+documented fallback is a normal wrapper with a recorded layout change; the
+status announcement stays outside the wrapper either way.
+
 ## Development
 
 ```bash

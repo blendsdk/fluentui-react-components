@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { renderToString } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import { Loading } from '../src/index';
+import { Loading, LoadingOverlay } from '../src/index';
 
 describe('Loading server rendering', () => {
   it('renders the empty status root without browser access', () => {
@@ -14,6 +14,25 @@ describe('Loading server rendering', () => {
     expect(html).toContain('role="status"');
     expect(html).toContain('aria-live="polite"');
     expect(html).toContain('aria-atomic="true"');
+    expect(html).not.toContain('Loading…');
+  });
+});
+
+describe('LoadingOverlay server rendering', () => {
+  it('renders the mounted content and the busy wrapper without browser access', () => {
+    // The overlay must keep its children in the server HTML and mark the
+    // content busy immediately, while the status text and the scrim wait for
+    // the client effect. This is also the empty status node that hydration
+    // later turns into an announcement.
+    const html = renderToString(
+      <LoadingOverlay loading>
+        <span>server content</span>
+      </LoadingOverlay>
+    );
+
+    expect(html).toContain('server content');
+    expect(html).toContain('aria-busy="true"');
+    expect(html).toContain('role="status"');
     expect(html).not.toContain('Loading…');
   });
 });
