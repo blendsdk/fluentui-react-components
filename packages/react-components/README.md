@@ -799,9 +799,9 @@ pnpm storybook                                                  # component work
 Tests live in `test/`, next to the sources: `*.spec.test.tsx` covers the
 contract a consumer observes, `*.impl.test.tsx` covers internals such as the
 context wiring between a list and its items, and `package-exports.spec.test.ts`
-guards the package's public surface. Stories live beside the components
-(`*.stories.tsx`) and render in the repository's Storybook, which is published
-to GitHub Pages.
+guards the package's public surface. Stories live in each component's
+`stories/` folder (`*.stories.tsx`) and render in the repository's Storybook,
+which is published to GitHub Pages.
 
 New components follow the repository's component pattern. The local
 `fluentui-components` skill (`.opencode/skills/fluentui-components`) documents

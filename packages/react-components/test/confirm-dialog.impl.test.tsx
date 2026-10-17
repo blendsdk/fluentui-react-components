@@ -340,7 +340,7 @@ describe('ConfirmDialog internals', () => {
         '../src/components/ConfirmDialog/useConfirmDialog.ts',
         '../src/components/ConfirmDialog/useConfirmDialogStyles.styles.ts',
         '../src/components/ConfirmDialog/renderConfirmDialog.tsx',
-        '../src/components/ConfirmDialog/ConfirmDialog.stories.tsx',
+        '../src/components/ConfirmDialog/stories/ConfirmDialog.stories.tsx',
         '../src/components/ConfirmDialog/index.ts',
         '../src/index.ts',
         './confirm-dialog.spec.test.tsx',

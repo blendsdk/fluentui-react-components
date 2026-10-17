@@ -1,10 +1,10 @@
-// Template: src/components/<Name>/<Name>.stories.tsx
+// Template: src/components/<Name>/stories/<Name>.stories.tsx
 // Replace <Name>. One story per documented variant (see the README prop
 // table). Descriptions say WHEN to choose a variant, not what it looks like.
 // The FluentProvider wrapper comes from .storybook/preview.tsx — do not
 // repeat it here.
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { <Name> } from './<Name>';
+import { <Name> } from '../<Name>';
 
 const meta: Meta<typeof <Name>> = {
   title: 'Components/<Name>',

@@ -55,19 +55,20 @@ through a context, and an item that renders it.
 The short version — every component is a folder under
 `src/components/<Name>/` with:
 
-| File                        | Responsibility                                                |
-| --------------------------- | ------------------------------------------------------------- |
-| `<Name>.tsx`                | `forwardRef` shell: state hook → render function              |
-| `<Name>.types.ts`           | The props contract (`ComponentPropsWithoutRef` + owned props) |
-| `use<Name>.ts`              | Pure state hook: defaulting, contexts, style classes          |
-| `render<Name>.tsx`          | Pure state → elements                                         |
-| `use<Name>Styles.styles.ts` | Griffel `makeStyles` + tokens                                 |
-| `<Name>Context.ts`          | Optional container ↔ child contract                           |
-| `index.ts`                  | The folder's public exports                                   |
+| File                         | Responsibility                                                |
+| ---------------------------- | ------------------------------------------------------------- |
+| `<Name>.tsx`                 | `forwardRef` shell: state hook → render function              |
+| `<Name>.types.ts`            | The props contract (`ComponentPropsWithoutRef` + owned props) |
+| `use<Name>.ts`               | Pure state hook: defaulting, contexts, style classes          |
+| `render<Name>.tsx`           | Pure state → elements                                         |
+| `use<Name>Styles.styles.ts`  | Griffel `makeStyles` + tokens                                 |
+| `<Name>Context.ts`           | Optional container ↔ child contract                           |
+| `index.ts`                   | The folder's public exports                                   |
+| `stories/<Name>.stories.tsx` | Storybook examples and documented variants                    |
 
 Tests live in `test/` (`*.spec.test.tsx` for the contract,
-`*.impl.test.tsx` for internals), stories beside the component
-(`*.stories.tsx`).
+`*.impl.test.tsx` for internals), stories in each component's `stories/`
+folder (`*.stories.tsx`).
 
 ## Release flow
 

@@ -28,6 +28,7 @@ export default defineConfig({
         '**/*.d.ts',
         '**/*.config.{ts,js}',
         '**/*.stories.tsx',
+        '**/*.story.tsx',
         'test/setup.ts',
       ],
     },

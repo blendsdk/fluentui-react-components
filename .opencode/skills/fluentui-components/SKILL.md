@@ -94,8 +94,9 @@ contract and stay fixed while the implementation is written.
    the tests — a failing specification test means the implementation is wrong.
 10. **Write the implementation tests** (`test/<kebab-name>.impl.test.tsx`) for
     internals: context wiring, class composition, element structure.
-11. **Write the story** from `templates/Component.stories.tsx` — one story per
-    component, showing every documented variant.
+11. **Write the story** from `templates/Component.stories.tsx` into
+    `src/components/<Name>/stories/` — one story file per component, showing
+    every documented variant.
 12. **Document** the component: the README table row plus its props table,
     composition notes and localization notes where they apply. Read
     `references/documentation.md`.
@@ -185,7 +186,7 @@ replaced.
 | [templates/useComponentStyles.styles.ts](templates/useComponentStyles.styles.ts) | `src/components/<Name>/use<Name>Styles.styles.ts`                       |
 | [templates/ComponentContext.ts](templates/ComponentContext.ts)                   | `src/components/<Name>/<Name>Context.ts` (containers and children only) |
 | [templates/index.ts](templates/index.ts)                                         | `src/components/<Name>/index.ts`                                        |
-| [templates/Component.stories.tsx](templates/Component.stories.tsx)               | `src/components/<Name>/<Name>.stories.tsx`                              |
+| [templates/Component.stories.tsx](templates/Component.stories.tsx)               | `src/components/<Name>/stories/<Name>.stories.tsx`                      |
 | [templates/component.spec.test.tsx](templates/component.spec.test.tsx)           | `test/<kebab-case-name>.spec.test.tsx`                                  |
 | [templates/component.impl.test.tsx](templates/component.impl.test.tsx)           | `test/<kebab-case-name>.impl.test.tsx`                                  |
 

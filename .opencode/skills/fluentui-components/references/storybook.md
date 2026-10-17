@@ -7,14 +7,15 @@ component ships a story file; a component without a story is not done.
 
 ## Where stories live
 
-`src/components/<Name>/<Name>.stories.tsx` — beside the component, so a
-component and its story travel together. Stories are excluded from the built
-package (`tsconfig.build.json` and the `files` field), so nothing from
-Storybook reaches npm. Storybook's own config lives in
+`src/components/<Name>/stories/<Name>.stories.tsx` — in the component's
+`stories/` folder, so implementation sources stay separate while the story
+still belongs to the component. Stories are excluded from the built package
+(`tsconfig.build.json` and the `files` field), so nothing from Storybook
+reaches npm. Storybook's own config lives in
 `packages/react-components/.storybook/`:
 
-- `main.ts` — collects `../src/**/*.stories.@(ts|tsx)`, registers the docs and
-  a11y addons, and sets the asset base path for GitHub Pages.
+- `main.ts` — collects `../src/**/stories/*.stories.@(ts|tsx)`, registers the
+  docs and a11y addons, and sets the asset base path for GitHub Pages.
 - `preview.tsx` — wraps every story in `FluentProvider` with `webLightTheme`,
   so stories render the way applications mount them. Do not re-wrap a story in
   a provider.
@@ -24,7 +25,7 @@ Storybook reaches npm. Storybook's own config lives in
 ```tsx
 import { Badge } from '@fluentui/react-components';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { Example } from './Example';
+import { Example } from '../Example';
 
 const meta: Meta<typeof Example> = {
   title: 'Components/Example',
@@ -109,7 +110,7 @@ not set that variable.
 
 ## Review checklist
 
-- [ ] Story file exists beside the component with `autodocs`.
+- [ ] Story file exists in the component's `stories/` folder with `autodocs`.
 - [ ] Every documented prop variant is reachable; descriptions say when to use
       each one.
 - [ ] `pnpm storybook:build` succeeds and the a11y addon shows no violations.
