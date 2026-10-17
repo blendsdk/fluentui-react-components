@@ -133,6 +133,59 @@ describe('LoadingOverlay internals', () => {
     expect(screen.getByTestId('overlay')).not.toBe(document.activeElement);
   });
 
+  it('restores the reveal-time element when the browser blurs it to the body', () => {
+    vi.useFakeTimers();
+    const { rerender } = renderOverlay(
+      <LoadingOverlay loading={false} delay={300} data-testid="overlay">
+        <button>A</button>
+        <button>B</button>
+      </LoadingOverlay>
+    );
+
+    const first = screen.getByRole('button', { name: 'A' });
+    const second = screen.getByRole('button', { name: 'B' });
+
+    act(() => {
+      first.focus();
+    });
+
+    rerender(
+      wrap(
+        <LoadingOverlay loading delay={300} data-testid="overlay">
+          <button>A</button>
+          <button>B</button>
+        </LoadingOverlay>
+      )
+    );
+
+    act(() => {
+      vi.advanceTimersByTime(100);
+      second.focus();
+    });
+
+    // A browser that blurs inert content moves focus to the body before the
+    // reveal effect runs. The last focused element inside the content is the
+    // reveal-time target, not the loading-start element.
+    act(() => {
+      second.blur();
+      vi.advanceTimersByTime(200);
+    });
+
+    expect(document.activeElement).toBe(screen.getByTestId('overlay'));
+
+    rerender(
+      wrap(
+        <LoadingOverlay loading={false} delay={300} data-testid="overlay">
+          <button>A</button>
+          <button>B</button>
+        </LoadingOverlay>
+      )
+    );
+
+    expect(document.activeElement).toBe(second);
+    expect(document.activeElement).not.toBe(first);
+  });
+
   it('does not steal focus back after the user moved it outside', () => {
     const { rerender } = renderOverlay(
       <>

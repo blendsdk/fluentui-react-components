@@ -38,16 +38,7 @@ import { useLoadingOverlay } from './useLoadingOverlay';
  */
 export const LoadingOverlay = React.forwardRef<HTMLDivElement, LoadingOverlayProps>(
   (props, forwardedRef) => {
-    const state = useLoadingOverlay(props);
-
-    // The focus algorithm owns the internal root ref; the application's ref
-    // must point at the same node. Mirroring it through useImperativeHandle
-    // keeps one element owner and avoids a second ref object.
-    React.useImperativeHandle<HTMLDivElement | null, HTMLDivElement | null>(
-      forwardedRef,
-      () => state.rootRef.current,
-      [state.rootRef]
-    );
+    const state = useLoadingOverlay(props, forwardedRef);
 
     return renderLoadingOverlay(state);
   }

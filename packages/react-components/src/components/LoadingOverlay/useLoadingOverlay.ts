@@ -1,5 +1,5 @@
-import { useId, useRef } from 'react';
-import type { ReactNode, RefObject } from 'react';
+import { useCallback, useId, useRef } from 'react';
+import type { ForwardedRef, ReactNode, Ref, RefObject } from 'react';
 import { resolveLoadingLabel } from '../Loading/loadingLabel';
 import { useDelayedVisibility } from '../Loading/useDelayedVisibility';
 import type { LoadingOverlayProps } from './LoadingOverlay.types';
@@ -21,8 +21,11 @@ export type LoadingOverlayState = {
   children: ReactNode;
   /** Stable id shared by the root's `aria-labelledby` and the persistent status node. */
   statusId: string;
-  /** Ref for the focusable overlay root. */
-  rootRef: RefObject<HTMLDivElement | null>;
+  /**
+   * Merged root ref. The render function attaches it, the focus algorithm
+   * keeps the same element, and the caller's forwarded ref receives the node.
+   */
+  rootRef: Ref<HTMLDivElement>;
   /** Ref for the content wrapper that becomes inert. */
   contentRef: RefObject<HTMLDivElement | null>;
   /** Griffel class names for root, content, scrim, indicator wrapper and hidden status. */
@@ -41,19 +44,41 @@ export type LoadingOverlayState = {
  * the instance, so the root's accessible name always points at the persistent
  * status node.
  *
+ * The forwarded ref is merged here, following the component pattern: the
+ * caller's ref and the focus algorithm must point at the same root element,
+ * so the hook owns one internal element ref and returns a callback that
+ * updates both.
+ *
  * @param props - props from this instance of the overlay
+ * @param forwardedRef - ref passed to `forwardRef`, targeting the root
  * @returns the state consumed by `renderLoadingOverlay`
  */
-export function useLoadingOverlay(props: LoadingOverlayProps): LoadingOverlayState {
+export function useLoadingOverlay(
+  props: LoadingOverlayProps,
+  forwardedRef: ForwardedRef<HTMLDivElement>
+): LoadingOverlayState {
   const { loading, label, delay = 300, children, ...rootProps } = props;
 
   const visible = useDelayedVisibility(loading, delay);
   const statusId = useId();
-  const rootRef = useRef<HTMLDivElement | null>(null);
+  const rootElementRef = useRef<HTMLDivElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
   const classes = useLoadingOverlayStyles();
 
-  useLoadingOverlayFocus({ rootRef, contentRef, loading, visible });
+  const rootRef = useCallback(
+    (element: HTMLDivElement | null) => {
+      rootElementRef.current = element;
+
+      if (typeof forwardedRef === 'function') {
+        forwardedRef(element);
+      } else if (forwardedRef !== null && forwardedRef !== undefined) {
+        forwardedRef.current = element;
+      }
+    },
+    [forwardedRef]
+  );
+
+  useLoadingOverlayFocus({ rootRef: rootElementRef, contentRef, loading, visible });
 
   return {
     loading,

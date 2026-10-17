@@ -39,7 +39,7 @@ Create `packages/react-components/src/components/LoadingOverlay/`:
 ### New Types/Interfaces
 
 ```ts
-import type { ComponentPropsWithoutRef, ReactNode, RefObject } from 'react';
+import type { ComponentPropsWithoutRef, ReactNode, Ref, RefObject } from 'react';
 
 export type LoadingOverlayProps = Omit<
   ComponentPropsWithoutRef<'div'>,
@@ -87,8 +87,11 @@ export type LoadingOverlayState = {
   children: ReactNode;
   /** Stable id shared by the root's `aria-labelledby` and the persistent status node. */
   statusId: string;
-  /** Ref for the focusable overlay root. */
-  rootRef: RefObject<HTMLDivElement | null>;
+  /**
+   * Merged root ref: the render function attaches it, the focus algorithm
+   * keeps the same element, and the caller's forwarded ref receives the node.
+   */
+  rootRef: Ref<HTMLDivElement>;
   /** Ref for the content wrapper that becomes inert. */
   contentRef: RefObject<HTMLDivElement | null>;
   /** Griffel class names for root, content, scrim, indicator wrapper and hidden status. */
@@ -244,9 +247,11 @@ hides or re-reveals an already visible overlay, which would churn `inert` and fo
 2. When `visible` becomes true:
    - Read the current active element (call it B).
    - If B is inside the content wrapper, remember B and focus the overlay root.
-   - Otherwise, if B is `document.body`, A is still connected and A is inside the content, remember
-     A and focus the overlay root. This covers browsers that blur an inert focused element to
-     `body`; jsdom does not reproduce that blur, so the fallback is tested explicitly.
+   - Otherwise, if B is `document.body`, use the last element that received focus inside the
+     content while the overlay waited (the loading-start element when focus never moved), provided
+     it is still connected; remember it and focus the overlay root. This covers browsers that blur
+     an inert focused element to `body`, including a focus move the user made during the delay;
+     jsdom does not reproduce that blur, so the fallback is tested explicitly.
    - Otherwise, leave focus alone and remember that this component did not move it.
 3. When `visible` becomes false:
    - Clear the status text and remove `inert`/`aria-busy` in the render.

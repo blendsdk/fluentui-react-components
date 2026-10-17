@@ -6,13 +6,17 @@ import type { RefObject } from 'react';
  *
  * The algorithm has three moments:
  *
- * 1. When `loading` becomes true, capture the focused element. This happens
- *    before the overlay is visible, so the content is not inert yet and the
- *    browser has not blurred the element.
+ * 1. When `loading` becomes true, capture the focused element and start
+ *    tracking every element that receives focus while the overlay waits.
+ *    This happens before the overlay is visible, so the content is not inert
+ *    yet and the browser has not blurred the element.
  * 2. When the overlay becomes visible, move focus to the overlay root only
  *    when focus was inside the covered content — or when the browser already
- *    blurred that element to `document.body` and the captured element was
- *    inside and is still connected. Focus outside the content is never moved.
+ *    blurred that element to `document.body` and the last element focused
+ *    inside the content is still connected. Tracking the last focused element
+ *    is what preserves a focus move that happened during the delay even when
+ *    the browser blurs the content before the effect runs. Focus that was
+ *    outside the content is never moved.
  * 3. When the overlay hides, restore focus only if this hook moved it and
  *    focus is still on the root or the body. The element focused at reveal
  *    time wins over the loading-start element, because the user may have
@@ -40,6 +44,8 @@ export function useLoadingOverlayFocus(params: {
 
   /** The element focused when loading started; the fallback restore target. */
   const capturedRef = useRef<HTMLElement | null>(null);
+  /** The last element that received focus while the overlay waited. */
+  const lastFocusedRef = useRef<HTMLElement | null>(null);
   /** The element focused when the overlay became visible; the preferred restore target. */
   const revealTargetRef = useRef<HTMLElement | null>(null);
   /** Whether this hook moved focus and therefore owns the restoration. */
@@ -50,15 +56,44 @@ export function useLoadingOverlayFocus(params: {
   useEffect(() => {
     if (loading && !wasLoadingRef.current) {
       const active = document.activeElement;
-      capturedRef.current = active instanceof HTMLElement ? active : null;
+      const element = active instanceof HTMLElement ? active : null;
+      capturedRef.current = element;
+      lastFocusedRef.current = element;
     } else if (!loading && !wasVisibleRef.current) {
       // Loading ended before the overlay appeared: there is nothing to
       // restore, and keeping the capture would leak a stale reference.
       capturedRef.current = null;
+      lastFocusedRef.current = null;
     }
 
     wasLoadingRef.current = loading;
   }, [loading]);
+
+  useEffect(() => {
+    // Track focus only during the delay. Once the overlay is visible the
+    // content is inert and focus belongs to the root; listening further would
+    // overwrite the last inside target with the root itself.
+    if (!loading || visible) {
+      return;
+    }
+
+    const content = contentRef.current;
+    if (content === null) {
+      return;
+    }
+
+    const handleFocusIn = (event: FocusEvent): void => {
+      if (event.target instanceof HTMLElement) {
+        lastFocusedRef.current = event.target;
+      }
+    };
+
+    document.addEventListener('focusin', handleFocusIn);
+
+    return () => {
+      document.removeEventListener('focusin', handleFocusIn);
+    };
+  }, [loading, visible, contentRef]);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -73,11 +108,12 @@ export function useLoadingOverlayFocus(params: {
           target = active;
         } else if (active === document.body) {
           // Chromium may blur an element that just became inert to the body
-          // before this effect runs; jsdom does not reproduce that blur, so
-          // both environments are handled here.
-          const captured = capturedRef.current;
-          if (captured !== null && captured.isConnected && content.contains(captured)) {
-            target = captured;
+          // before this effect runs; jsdom does not reproduce that blur. The
+          // last element focused inside the content covers both the
+          // loading-start element and a move the user made during the delay.
+          const lastFocused = lastFocusedRef.current;
+          if (lastFocused !== null && lastFocused.isConnected && content.contains(lastFocused)) {
+            target = lastFocused;
           }
         }
 
@@ -105,6 +141,7 @@ export function useLoadingOverlayFocus(params: {
       movedRef.current = false;
       revealTargetRef.current = null;
       capturedRef.current = null;
+      lastFocusedRef.current = null;
     }
 
     wasVisibleRef.current = visible;
@@ -113,6 +150,7 @@ export function useLoadingOverlayFocus(params: {
   useEffect(() => {
     return () => {
       capturedRef.current = null;
+      lastFocusedRef.current = null;
       revealTargetRef.current = null;
       movedRef.current = false;
     };
