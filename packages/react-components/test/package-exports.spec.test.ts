@@ -21,6 +21,7 @@ import type {
   ErrorDialogKind,
   ErrorDialogProps,
   ErrorDialogStrings,
+  LoadingOverlayProps,
   LoadingProps,
   SystemErrorProviderProps,
 } from '../src/index';
@@ -44,6 +45,7 @@ describe('package export surface', () => {
       'DescriptionListItem',
       'ErrorDialog',
       'Loading',
+      'LoadingOverlay',
       'SystemErrorProvider',
       'useConfirm',
       'useSystemError',
@@ -133,6 +135,67 @@ describe('package export surface', () => {
 
     expect(loadingProps.label).toBe('Loading records');
     expect([rolePin, livePin, atomicPin, htmlPin]).toHaveLength(4);
+  });
+
+  it('exports the public LoadingOverlay types', () => {
+    // The type imports above only compile when the package root exports them;
+    // the values below keep the file local-usage clean under noUnusedLocals.
+    const overlayProps: LoadingOverlayProps = {
+      loading: true,
+      label: 'Saving…',
+      delay: 0,
+      children: null,
+    };
+
+    // The component owns the busy, announcement and focus contract and the
+    // accessible name of its root, so callers may not override them.
+    // @ts-expect-error The busy state is managed by the component.
+    const busyPin: LoadingOverlayProps = { loading: true, children: null, 'aria-busy': 'false' };
+    // @ts-expect-error The root name comes from the persistent status node.
+    const labelPin: LoadingOverlayProps = { loading: true, children: null, 'aria-label': 'Busy' };
+    const labelledByPin: LoadingOverlayProps = {
+      loading: true,
+      children: null,
+      // @ts-expect-error The root name comes from the persistent status node.
+      'aria-labelledby': 'somewhere',
+    };
+    const livePin: LoadingOverlayProps = {
+      loading: true,
+      children: null,
+      // @ts-expect-error The live-region politeness is managed by the component.
+      'aria-live': 'assertive',
+    };
+    const atomicPin: LoadingOverlayProps = {
+      loading: true,
+      children: null,
+      // @ts-expect-error The live-region atomicity is managed by the component.
+      'aria-atomic': 'false',
+    };
+    // @ts-expect-error The region role is managed by the component.
+    const rolePin: LoadingOverlayProps = { loading: true, children: null, role: 'group' };
+    // @ts-expect-error Inert is managed by the visibility state.
+    const inertPin: LoadingOverlayProps = { loading: true, children: null, inert: true };
+    // @ts-expect-error The focus target is managed by the component.
+    const tabIndexPin: LoadingOverlayProps = { loading: true, children: null, tabIndex: 0 };
+    const htmlPin: LoadingOverlayProps = {
+      loading: true,
+      children: null,
+      // @ts-expect-error The component owns its rendered content and never parses HTML.
+      dangerouslySetInnerHTML: { __html: '<b>busy</b>' },
+    };
+
+    expect(overlayProps.loading).toBe(true);
+    expect([
+      busyPin,
+      labelPin,
+      labelledByPin,
+      livePin,
+      atomicPin,
+      rolePin,
+      inertPin,
+      tabIndexPin,
+      htmlPin,
+    ]).toHaveLength(9);
   });
 
   it('exports the public AppLauncher block types', () => {

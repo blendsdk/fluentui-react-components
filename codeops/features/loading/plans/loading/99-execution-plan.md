@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-17 15:04
-> **Progress**: 16/49 tasks (33%)
+> **Last Updated**: 2026-10-17 15:20
+> **Progress**: 27/49 tasks (55%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -123,7 +123,7 @@ task-size criteria in the make-plan quality checklist).
 
 ## Phase 2: LoadingOverlay shim
 
-> **Phase baseline tree**: _(recorded by the exec-plan skill at phase start)_
+> **Phase baseline tree**: de23539ec898a7d7b16bd94dc3088a2a9c643100
 > **Scope mode**: strict · **Expected modification set** (`packages/react-components/`-relative):
 > `test/loading-overlay.spec.test.tsx` · `test/loading.ssr.test.tsx` · `test/package-exports.spec.test.ts` ·
 > `test/loading-overlay.impl.test.tsx` · `src/components/LoadingOverlay/**` ·
@@ -139,26 +139,30 @@ task-size criteria in the make-plan quality checklist).
 **Reference**: [07](07-testing-strategy.md) §LoadingOverlay (ST-11…ST-27) · [03-02](03-02-loading-overlay.md) §State Machine, §Focus Algorithm · AR-4, AR-5, AR-6, AR-9
 **Objective**: Pin the overlay contract, including delay, inert, status and focus behavior, before implementation.
 
-- [ ] 2.1.1 [spec-author] Write the `LoadingOverlay` contract spec tests from ST-11…ST-27, including ST-19a and ST-24a — `test/loading-overlay.spec.test.tsx`
-- [ ] 2.1.2 [spec-author] Extend the export-surface pin with `LoadingOverlay` and the `LoadingOverlayProps` type pin (partial pin; the cumulative list is reached in Phase 3) — `test/package-exports.spec.test.ts`
-- [ ] 2.1.3 Run the spec suite and `pnpm type-check`, and verify the **red phase** — `pnpm test`, `pnpm type-check`
+- [x] 2.1.1 [spec-author] Write the `LoadingOverlay` contract spec tests from ST-11…ST-27, including ST-19a and ST-24a — `test/loading-overlay.spec.test.tsx` ✅ (completed: 2026-10-17 15:13)
+- [x] 2.1.2 [spec-author] Extend the export-surface pin with `LoadingOverlay` and the `LoadingOverlayProps` type pin (partial pin; the cumulative list is reached in Phase 3) — `test/package-exports.spec.test.ts` ✅ (completed: 2026-10-17 15:13)
+- [x] 2.1.3 Run the spec suite and `pnpm type-check`, and verify the **red phase** — `pnpm test`, `pnpm type-check` ✅ (completed: 2026-10-17 15:13)
 
-> **Red-phase record (2.1.3):** _(filled by the executing session — failing test names/counts, the
-> `pnpm type-check` result and the expected missing implementation reason)_
+> **Red-phase record (2.1.3):** 19/19 `loading-overlay.spec.test.tsx` cases failed because the
+> package root does not export `LoadingOverlay` (`Element type is invalid ... got: undefined`);
+> `pnpm type-check` failed with `TS2305` (missing `LoadingOverlay`/`LoadingOverlayProps` export) and
+> nine `TS2578` unused `@ts-expect-error` directives caused by the unresolved props type. One
+> test-authoring type error in the local scrim helper was corrected before implementation (a
+> mechanical fix with no expectation change). No case passed pre-implementation.
 
 ### Step 2.2: Implementation
 
 **Reference**: [03-02](03-02-loading-overlay.md) §Implementation Details · AR-4, AR-5, AR-6, AR-9
 **Objective**: Deliver the controlled overlay with the persistent status, scrim, inert and focus contract.
 
-- [ ] 2.2.1 Add the `LoadingOverlayProps` contract and managed-attribute omissions — `src/components/LoadingOverlay/LoadingOverlay.types.ts`
-- [ ] 2.2.2 Add the overlay styles (root, content, scrim, indicator wrapper, focus-ring suppression) and import the shared `visuallyHidden` class — `src/components/LoadingOverlay/useLoadingOverlayStyles.styles.ts`
-- [ ] 2.2.3 Add the internal focus capture/move/restore hook taking `rootRef`, `contentRef`, `loading` and `visible` — `src/components/LoadingOverlay/useLoadingOverlayFocus.ts`
-- [ ] 2.2.4 Add the state hook returning `LoadingOverlayState` with delay, label, `useId` status id, refs, focus wiring and classes — `src/components/LoadingOverlay/useLoadingOverlay.ts`
-- [ ] 2.2.5 Add the pure overlay renderer over `LoadingOverlayState` with persistent status, content wrapper, scrim and indicator — `src/components/LoadingOverlay/renderLoadingOverlay.tsx`
-- [ ] 2.2.6 Add the forward-ref shell and barrel — `src/components/LoadingOverlay/LoadingOverlay.tsx`, `src/components/LoadingOverlay/index.ts`
-- [ ] 2.2.7 Export `LoadingOverlay` and its props from the package root — `src/index.ts`
-- [ ] 2.2.8 Run the spec suite and verify the **green phase** — `pnpm test`
+- [x] 2.2.1 Add the `LoadingOverlayProps` contract and managed-attribute omissions — `src/components/LoadingOverlay/LoadingOverlay.types.ts` ✅ (completed: 2026-10-17 15:20)
+- [x] 2.2.2 Add the overlay styles (root, content, scrim, indicator wrapper, focus-ring suppression) and import the shared `visuallyHidden` class — `src/components/LoadingOverlay/useLoadingOverlayStyles.styles.ts` ✅ (completed: 2026-10-17 15:20)
+- [x] 2.2.3 Add the internal focus capture/move/restore hook taking `rootRef`, `contentRef`, `loading` and `visible` — `src/components/LoadingOverlay/useLoadingOverlayFocus.ts` ✅ (completed: 2026-10-17 15:20)
+- [x] 2.2.4 Add the state hook returning `LoadingOverlayState` with delay, label, `useId` status id, refs, focus wiring and classes — `src/components/LoadingOverlay/useLoadingOverlay.ts` ✅ (completed: 2026-10-17 15:20)
+- [x] 2.2.5 Add the pure overlay renderer over `LoadingOverlayState` with persistent status, content wrapper, scrim and indicator — `src/components/LoadingOverlay/renderLoadingOverlay.tsx` ✅ (completed: 2026-10-17 15:20)
+- [x] 2.2.6 Add the forward-ref shell and barrel — `src/components/LoadingOverlay/LoadingOverlay.tsx`, `src/components/LoadingOverlay/index.ts` ✅ (completed: 2026-10-17 15:20)
+- [x] 2.2.7 Export `LoadingOverlay` and its props from the package root — `src/index.ts` ✅ (completed: 2026-10-17 15:20)
+- [x] 2.2.8 Run the spec suite and verify the **green phase** — `pnpm test` ✅ (completed: 2026-10-17 15:20)
 
 ### Step 2.3: Implementation Tests, Story, SSR Smoke and Documentation
 

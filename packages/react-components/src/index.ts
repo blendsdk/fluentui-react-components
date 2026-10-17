@@ -51,6 +51,8 @@ export type {
 } from './components/ErrorDialog';
 export { Loading } from './components/Loading';
 export type { LoadingProps } from './components/Loading';
+export { LoadingOverlay } from './components/LoadingOverlay';
+export type { LoadingOverlayProps } from './components/LoadingOverlay';
 export { SystemErrorProvider } from './components/SystemErrorProvider';
 export { useSystemError } from './components/SystemErrorProvider';
 export type { CatchErrorOptions, SystemErrorProviderProps } from './components/SystemErrorProvider';
