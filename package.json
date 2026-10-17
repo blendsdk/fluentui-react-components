@@ -1,6 +1,6 @@
 {
   "name": "fluentui-react-components-monorepo",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "description": "Monorepo for custom React components built on Fluent UI v9",
   "type": "module",
