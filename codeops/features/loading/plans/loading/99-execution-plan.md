@@ -178,7 +178,7 @@ task-size criteria in the make-plan quality checklist).
 - [ ] The story shows app-owned and fast-operation cases.
 - [ ] The SSR smoke covers the overlay's server render.
 - [ ] The README section documents focus, inert, announcement behavior and the portaled/fixed-content limitation.
-- [x] All verification passing.
+- [ ] All verification passing.
 
 **Verify**: `pnpm verify` and `pnpm storybook:build`
 
@@ -236,7 +236,7 @@ task-size criteria in the make-plan quality checklist).
 - [ ] Ref-counting, labels, error propagation and unmount safety are covered.
 - [ ] The integration story and the complete SSR smoke exist.
 - [ ] The README documents the hook and the decision table.
-- [x] All verification passing.
+- [ ] All verification passing.
 
 **Verify**: `pnpm verify` and `pnpm storybook:build`
 

@@ -23,6 +23,14 @@ afterEach(() => {
 });
 
 describe('Loading internals', () => {
+  it('keeps the root out of the tab order', () => {
+    renderLoader(<Loading />);
+
+    // A plain div reports -1; the explicit assertion rejects a regression to
+    // tabIndex={0}, which would make the filler a tab stop.
+    expect(screen.getByRole('status').tabIndex).toBe(-1);
+  });
+
   it('merges the caller class with the component class', () => {
     renderLoader(<Loading className="caller" />);
 

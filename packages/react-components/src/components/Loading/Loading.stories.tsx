@@ -56,11 +56,14 @@ export const Default: Story = {
 export const Sizes: Story = {
   render: () => {
     const sizes: Array<NonNullable<SpinnerProps['size']>> = [
+      'extra-tiny',
+      'tiny',
       'extra-small',
       'small',
       'medium',
       'large',
       'extra-large',
+      'huge',
     ];
 
     return (

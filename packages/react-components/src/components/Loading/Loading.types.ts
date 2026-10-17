@@ -48,7 +48,8 @@ export type LoadingProps = Omit<
 
   /**
    * Milliseconds to wait before showing both the status text and the visual
-   * indicator, so a fast response never flashes a loader. Defaults to `0`.
+   * indicator, so a fast response never flashes a loader. Defaults to `0`; a
+   * negative, `NaN` or `Infinity` value is treated as `0`.
    */
   delay?: number;
 
