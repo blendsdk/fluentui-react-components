@@ -1,7 +1,7 @@
 ## Ambiguity Register: Loading Plan (v1)
 
 > **Status**: ✅ GATE PASSED — all 17 items resolved (15 planning + 2 runtime)
-> **Last Updated**: 2026-10-17 15:30
+> **Last Updated**: 2026-10-17 15:19
 > **Runtime additions**: AR-16 and AR-17 were recorded during Phase 2 execution.
 
 | #     | Category                             | Ambiguity / Gap                                                                                                                                                  | Options Presented                                                                                                                                                                                                                                      | Resolution                                                                            | Status      |

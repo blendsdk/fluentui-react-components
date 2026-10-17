@@ -1,7 +1,7 @@
 # Loading Implementation Plan
 
 > **Feature**: Region-level Fluent UI v9 loading primitives — a standalone `Loading` filler, a `LoadingOverlay` shim that keeps content mounted and inert, and a local `useLoading()` controller with `run()` and ref-counted operations
-> **Status**: Plan Preflighted
+> **Status**: Blocked
 > **Created**: 2026-10-17
 > **Implements**: loading/RD-01
 > **CodeOps Artifact Schema**: 1

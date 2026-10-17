@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-17 15:45
-> **Progress**: 44/49 tasks (90%)
+> **Last Updated**: 2026-10-17 15:36
+> **Progress**: 48/49 tasks (98%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -88,25 +88,25 @@ task-size criteria in the make-plan quality checklist).
 **Reference**: [03-01](03-01-loading.md) §Implementation Details · AR-2, AR-3, AR-5, AR-7, AR-9
 **Objective**: Deliver the filler with the status, delay, defaults and pass-through contract.
 
-- [x] 1.2.1 Add the internal label resolver (`resolveLoadingLabel`, `normalizeLabel`) and delayed-visibility hook — `src/components/Loading/loadingLabel.ts`, `src/components/Loading/useDelayedVisibility.ts` ✅ (completed: 2026-10-17 15:00)
-- [x] 1.2.2 Add the `LoadingProps` contract and managed-attribute omissions — `src/components/Loading/Loading.types.ts` ✅ (completed: 2026-10-17 15:00)
-- [x] 1.2.3 Add the `Loading` styles, including the exported shared visually-hidden class and the indicator wrapper — `src/components/Loading/useLoadingStyles.styles.ts` ✅ (completed: 2026-10-17 15:00)
-- [x] 1.2.4 Add the internal visual indicator renderer with its own `aria-hidden` wrapper — `src/components/Loading/renderLoadingIndicator.tsx` ✅ (completed: 2026-10-17 15:00)
-- [x] 1.2.5 Add the state hook returning `LoadingBaseState` with defaults, visibility and classes — `src/components/Loading/useLoadingBase.ts` ✅ (completed: 2026-10-17 15:00)
-- [x] 1.2.6 Add the render function (`renderLoading(state, ref)`), forward-ref shell and barrel — `src/components/Loading/renderLoading.tsx`, `src/components/Loading/Loading.tsx`, `src/components/Loading/index.ts` ✅ (completed: 2026-10-17 15:00)
-- [x] 1.2.7 Export `Loading` and its props from the package root — `src/index.ts` ✅ (completed: 2026-10-17 15:00)
-- [x] 1.2.8 Run the spec suite and verify the **green phase** — `pnpm test` ✅ (completed: 2026-10-17 15:00)
+- [x] 1.2.1 Add the internal label resolver (`resolveLoadingLabel`, `normalizeLabel`) and delayed-visibility hook — `src/components/Loading/loadingLabel.ts`, `src/components/Loading/useDelayedVisibility.ts` ✅ (completed: 2026-10-17 14:55)
+- [x] 1.2.2 Add the `LoadingProps` contract and managed-attribute omissions — `src/components/Loading/Loading.types.ts` ✅ (completed: 2026-10-17 14:55)
+- [x] 1.2.3 Add the `Loading` styles, including the exported shared visually-hidden class and the indicator wrapper — `src/components/Loading/useLoadingStyles.styles.ts` ✅ (completed: 2026-10-17 14:55)
+- [x] 1.2.4 Add the internal visual indicator renderer with its own `aria-hidden` wrapper — `src/components/Loading/renderLoadingIndicator.tsx` ✅ (completed: 2026-10-17 14:55)
+- [x] 1.2.5 Add the state hook returning `LoadingBaseState` with defaults, visibility and classes — `src/components/Loading/useLoadingBase.ts` ✅ (completed: 2026-10-17 14:55)
+- [x] 1.2.6 Add the render function (`renderLoading(state, ref)`), forward-ref shell and barrel — `src/components/Loading/renderLoading.tsx`, `src/components/Loading/Loading.tsx`, `src/components/Loading/index.ts` ✅ (completed: 2026-10-17 14:55)
+- [x] 1.2.7 Export `Loading` and its props from the package root — `src/index.ts` ✅ (completed: 2026-10-17 14:55)
+- [x] 1.2.8 Run the spec suite and verify the **green phase** — `pnpm test` ✅ (completed: 2026-10-17 14:55)
 
 ### Step 1.3: Implementation Tests, Story, SSR Smoke and Documentation
 
 **Reference**: [07](07-testing-strategy.md) §Implementation Tests, §SSR Smoke Cases · [03-01](03-01-loading.md) §Styles · AR-10, AR-11
 **Objective**: Cover the internals, show every variant, add the early node smoke and document the filler.
 
-- [x] 1.3.1 Write the `Loading` implementation tests (class merge, structure, indicator `aria-hidden` ownership, timer cleanup and delay normalization) — `test/loading.impl.test.tsx` ✅ (completed: 2026-10-17 15:02)
-- [x] 1.3.2 Write the `Loading` story (default, sizes, label positions, fixed-height parent, delayed reveal) — `src/components/Loading/Loading.stories.tsx` ✅ (completed: 2026-10-17 15:02)
-- [x] 1.3.3 Add the README `Loading` section, props table, accessibility note and composition patterns — `README.md` ✅ (completed: 2026-10-17 15:02)
-- [x] 1.3.4 Add the `Loading` SSR smoke case (ST-46) — `test/loading.ssr.test.tsx` ✅ (completed: 2026-10-17 15:02)
-- [x] 1.3.5 Full phase verification, including the Storybook build — `pnpm verify`, `pnpm storybook:build` ✅ (completed: 2026-10-17 15:04)
+- [x] 1.3.1 Write the `Loading` implementation tests (class merge, structure, indicator `aria-hidden` ownership, timer cleanup and delay normalization) — `test/loading.impl.test.tsx` ✅ (completed: 2026-10-17 14:58)
+- [x] 1.3.2 Write the `Loading` story (default, sizes, label positions, fixed-height parent, delayed reveal) — `src/components/Loading/Loading.stories.tsx` ✅ (completed: 2026-10-17 14:58)
+- [x] 1.3.3 Add the README `Loading` section, props table, accessibility note and composition patterns — `README.md` ✅ (completed: 2026-10-17 14:58)
+- [x] 1.3.4 Add the `Loading` SSR smoke case (ST-46) — `test/loading.ssr.test.tsx` ✅ (completed: 2026-10-17 14:58)
+- [x] 1.3.5 Full phase verification, including the Storybook build — `pnpm verify`, `pnpm storybook:build` ✅ (completed: 2026-10-17 14:58)
 
 **Deliverables**:
 
@@ -139,9 +139,9 @@ task-size criteria in the make-plan quality checklist).
 **Reference**: [07](07-testing-strategy.md) §LoadingOverlay (ST-11…ST-27) · [03-02](03-02-loading-overlay.md) §State Machine, §Focus Algorithm · AR-4, AR-5, AR-6, AR-9
 **Objective**: Pin the overlay contract, including delay, inert, status and focus behavior, before implementation.
 
-- [x] 2.1.1 [spec-author] Write the `LoadingOverlay` contract spec tests from ST-11…ST-27, including ST-19a and ST-24a — `test/loading-overlay.spec.test.tsx` ✅ (completed: 2026-10-17 15:13)
-- [x] 2.1.2 [spec-author] Extend the export-surface pin with `LoadingOverlay` and the `LoadingOverlayProps` type pin (partial pin; the cumulative list is reached in Phase 3) — `test/package-exports.spec.test.ts` ✅ (completed: 2026-10-17 15:13)
-- [x] 2.1.3 Run the spec suite and `pnpm type-check`, and verify the **red phase** — `pnpm test`, `pnpm type-check` ✅ (completed: 2026-10-17 15:13)
+- [x] 2.1.1 [spec-author] Write the `LoadingOverlay` contract spec tests from ST-11…ST-27, including ST-19a and ST-24a — `test/loading-overlay.spec.test.tsx` ✅ (completed: 2026-10-17 15:08)
+- [x] 2.1.2 [spec-author] Extend the export-surface pin with `LoadingOverlay` and the `LoadingOverlayProps` type pin (partial pin; the cumulative list is reached in Phase 3) — `test/package-exports.spec.test.ts` ✅ (completed: 2026-10-17 15:08)
+- [x] 2.1.3 Run the spec suite and `pnpm type-check`, and verify the **red phase** — `pnpm test`, `pnpm type-check` ✅ (completed: 2026-10-17 15:08)
 
 > **Red-phase record (2.1.3):** 19/19 `loading-overlay.spec.test.tsx` cases failed because the
 > package root does not export `LoadingOverlay` (`Element type is invalid ... got: undefined`);
@@ -155,25 +155,25 @@ task-size criteria in the make-plan quality checklist).
 **Reference**: [03-02](03-02-loading-overlay.md) §Implementation Details · AR-4, AR-5, AR-6, AR-9
 **Objective**: Deliver the controlled overlay with the persistent status, scrim, inert and focus contract.
 
-- [x] 2.2.1 Add the `LoadingOverlayProps` contract and managed-attribute omissions — `src/components/LoadingOverlay/LoadingOverlay.types.ts` ✅ (completed: 2026-10-17 15:20)
-- [x] 2.2.2 Add the overlay styles (root, content, scrim, indicator wrapper, focus-ring suppression) and import the shared `visuallyHidden` class — `src/components/LoadingOverlay/useLoadingOverlayStyles.styles.ts` ✅ (completed: 2026-10-17 15:20)
-- [x] 2.2.3 Add the internal focus capture/move/restore hook taking `rootRef`, `contentRef`, `loading` and `visible` — `src/components/LoadingOverlay/useLoadingOverlayFocus.ts` ✅ (completed: 2026-10-17 15:20)
-- [x] 2.2.4 Add the state hook returning `LoadingOverlayState` with delay, label, `useId` status id, refs, focus wiring and classes — `src/components/LoadingOverlay/useLoadingOverlay.ts` ✅ (completed: 2026-10-17 15:20)
-- [x] 2.2.5 Add the pure overlay renderer over `LoadingOverlayState` with persistent status, content wrapper, scrim and indicator — `src/components/LoadingOverlay/renderLoadingOverlay.tsx` ✅ (completed: 2026-10-17 15:20)
-- [x] 2.2.6 Add the forward-ref shell and barrel — `src/components/LoadingOverlay/LoadingOverlay.tsx`, `src/components/LoadingOverlay/index.ts` ✅ (completed: 2026-10-17 15:20)
-- [x] 2.2.7 Export `LoadingOverlay` and its props from the package root — `src/index.ts` ✅ (completed: 2026-10-17 15:20)
-- [x] 2.2.8 Run the spec suite and verify the **green phase** — `pnpm test` ✅ (completed: 2026-10-17 15:20)
+- [x] 2.2.1 Add the `LoadingOverlayProps` contract and managed-attribute omissions — `src/components/LoadingOverlay/LoadingOverlay.types.ts` ✅ (completed: 2026-10-17 15:08)
+- [x] 2.2.2 Add the overlay styles (root, content, scrim, indicator wrapper, focus-ring suppression) and import the shared `visuallyHidden` class — `src/components/LoadingOverlay/useLoadingOverlayStyles.styles.ts` ✅ (completed: 2026-10-17 15:08)
+- [x] 2.2.3 Add the internal focus capture/move/restore hook taking `rootRef`, `contentRef`, `loading` and `visible` — `src/components/LoadingOverlay/useLoadingOverlayFocus.ts` ✅ (completed: 2026-10-17 15:08)
+- [x] 2.2.4 Add the state hook returning `LoadingOverlayState` with delay, label, `useId` status id, refs, focus wiring and classes — `src/components/LoadingOverlay/useLoadingOverlay.ts` ✅ (completed: 2026-10-17 15:08)
+- [x] 2.2.5 Add the pure overlay renderer over `LoadingOverlayState` with persistent status, content wrapper, scrim and indicator — `src/components/LoadingOverlay/renderLoadingOverlay.tsx` ✅ (completed: 2026-10-17 15:08)
+- [x] 2.2.6 Add the forward-ref shell and barrel — `src/components/LoadingOverlay/LoadingOverlay.tsx`, `src/components/LoadingOverlay/index.ts` ✅ (completed: 2026-10-17 15:08)
+- [x] 2.2.7 Export `LoadingOverlay` and its props from the package root — `src/index.ts` ✅ (completed: 2026-10-17 15:08)
+- [x] 2.2.8 Run the spec suite and verify the **green phase** — `pnpm test` ✅ (completed: 2026-10-17 15:08)
 
 ### Step 2.3: Implementation Tests, Story, SSR Smoke and Documentation
 
 **Reference**: [07](07-testing-strategy.md) §Implementation Tests, §SSR Smoke Cases · [03-02](03-02-loading-overlay.md) §Focus Algorithm · AR-10, AR-11
 **Objective**: Cover the focus/timer internals, show the overlay variants and document the accessibility contract.
 
-- [x] 2.3.1 Write the `LoadingOverlay` implementation tests (capture ordering, body-focus fallback, ownership restore, unmount-while-visible teardown, class merge, structure) — `test/loading-overlay.impl.test.tsx` ✅ (completed: 2026-10-17 15:23)
-- [x] 2.3.2 Write the `LoadingOverlay` story with app-owned boolean, fast-operation and custom-label cases — `src/components/LoadingOverlay/LoadingOverlay.stories.tsx` ✅ (completed: 2026-10-17 15:23)
-- [x] 2.3.3 Add the README `LoadingOverlay` section, props table, accessibility/focus notes, the region-scoped limitation and composition patterns — `README.md` ✅ (completed: 2026-10-17 15:24)
-- [x] 2.3.4 Extend the SSR smoke with the overlay case (ST-47) — `test/loading.ssr.test.tsx` ✅ (completed: 2026-10-17 15:24)
-- [x] 2.3.5 Full phase verification, including the Storybook build — `pnpm verify`, `pnpm storybook:build` ✅ (completed: 2026-10-17 15:26)
+- [x] 2.3.1 Write the `LoadingOverlay` implementation tests (capture ordering, body-focus fallback, ownership restore, unmount-while-visible teardown, class merge, structure) — `test/loading-overlay.impl.test.tsx` ✅ (completed: 2026-10-17 15:12)
+- [x] 2.3.2 Write the `LoadingOverlay` story with app-owned boolean, fast-operation and custom-label cases — `src/components/LoadingOverlay/LoadingOverlay.stories.tsx` ✅ (completed: 2026-10-17 15:12)
+- [x] 2.3.3 Add the README `LoadingOverlay` section, props table, accessibility/focus notes, the region-scoped limitation and composition patterns — `README.md` ✅ (completed: 2026-10-17 15:12)
+- [x] 2.3.4 Extend the SSR smoke with the overlay case (ST-47) — `test/loading.ssr.test.tsx` ✅ (completed: 2026-10-17 15:12)
+- [x] 2.3.5 Full phase verification, including the Storybook build — `pnpm verify`, `pnpm storybook:build` ✅ (completed: 2026-10-17 15:12)
 
 **Deliverables**:
 
@@ -206,9 +206,9 @@ task-size criteria in the make-plan quality checklist).
 **Reference**: [07](07-testing-strategy.md) §useLoading (ST-28…ST-43) · [03-03](03-03-use-loading.md) §State Model, §Label Policy, §`run` Algorithm · AR-7, AR-8
 **Objective**: Pin the controller contract, ref-counting, labels and error behavior before implementation.
 
-- [x] 3.1.1 [spec-author] Write the `useLoading` contract spec tests from ST-28…ST-43, including ST-31a, ST-32a, ST-33a and ST-41a — `test/use-loading.spec.test.tsx` ✅ (completed: 2026-10-17 15:35)
-- [x] 3.1.2 [spec-author] Extend the export-surface pin with `useLoading` and the `LoadingOptions`/`LoadingController` type pins (final cumulative list, ST-44/ST-45) — `test/package-exports.spec.test.ts` ✅ (completed: 2026-10-17 15:35)
-- [x] 3.1.3 Run the spec suite and `pnpm type-check`, and verify the **red phase** — `pnpm test`, `pnpm type-check` ✅ (completed: 2026-10-17 15:35)
+- [x] 3.1.1 [spec-author] Write the `useLoading` contract spec tests from ST-28…ST-43, including ST-31a, ST-32a, ST-33a and ST-41a — `test/use-loading.spec.test.tsx` ✅ (completed: 2026-10-17 15:20)
+- [x] 3.1.2 [spec-author] Extend the export-surface pin with `useLoading` and the `LoadingOptions`/`LoadingController` type pins (final cumulative list, ST-44/ST-45) — `test/package-exports.spec.test.ts` ✅ (completed: 2026-10-17 15:20)
+- [x] 3.1.3 Run the spec suite and `pnpm type-check`, and verify the **red phase** — `pnpm test`, `pnpm type-check` ✅ (completed: 2026-10-17 15:20)
 
 > **Red-phase record (3.1.3):** 20/20 `use-loading.spec.test.tsx` cases failed with
 > `TypeError: useLoading is not a function`; the export surface failed with 17 runtime symbols
@@ -220,21 +220,21 @@ task-size criteria in the make-plan quality checklist).
 **Reference**: [03-03](03-03-use-loading.md) §Implementation Details · AR-7, AR-8
 **Objective**: Deliver the local controller with `run`, active-operation ids and the label policy.
 
-- [x] 3.2.1 Add `LoadingOptions` and `LoadingController` — `src/components/Loading/useLoading.types.ts` ✅ (completed: 2026-10-17 15:38)
-- [x] 3.2.2 Add the reducer, ids, label normalization/resolution and the public hook — `src/components/Loading/useLoading.ts` ✅ (completed: 2026-10-17 15:38)
-- [x] 3.2.3 Export `useLoading` and its types from the Loading barrel and the package root — `src/components/Loading/index.ts`, `src/index.ts` ✅ (completed: 2026-10-17 15:38)
-- [x] 3.2.4 Run the spec suite and verify the **green phase** — `pnpm test` ✅ (completed: 2026-10-17 15:38)
+- [x] 3.2.1 Add `LoadingOptions` and `LoadingController` — `src/components/Loading/useLoading.types.ts` ✅ (completed: 2026-10-17 15:20)
+- [x] 3.2.2 Add the reducer, ids, label normalization/resolution and the public hook — `src/components/Loading/useLoading.ts` ✅ (completed: 2026-10-17 15:20)
+- [x] 3.2.3 Export `useLoading` and its types from the Loading barrel and the package root — `src/components/Loading/index.ts`, `src/index.ts` ✅ (completed: 2026-10-17 15:20)
+- [x] 3.2.4 Run the spec suite and verify the **green phase** — `pnpm test` ✅ (completed: 2026-10-17 15:20)
 
 ### Step 3.3: Implementation Tests, Integration Story and Documentation
 
 **Reference**: [07](07-testing-strategy.md) §Implementation Tests, §Integration Tests, §SSR Smoke Cases · [03-03](03-03-use-loading.md) §Label Policy · AR-7, AR-8, AR-10, AR-12
 **Objective**: Cover out-of-order labels and unmount safety, show the canonical integration and document the hook.
 
-- [x] 3.3.1 Write the `useLoading` implementation tests (out-of-order id removal, immediate busy state, label stack, no stale entries) — `test/use-loading.impl.test.tsx` ✅ (completed: 2026-10-17 15:41)
-- [x] 3.3.2 Add the async `useLoading` + `LoadingOverlay` story, including the `.catch(catchError)` pattern — `src/components/LoadingOverlay/LoadingOverlay.stories.tsx` ✅ (completed: 2026-10-17 15:42)
-- [x] 3.3.3 Add the README `useLoading` section, decision table, migration note and error-handling guidance — `README.md` ✅ (completed: 2026-10-17 15:43)
-- [x] 3.3.4 Extend the SSR smoke with an idle `useLoading` component (ST-48) — `test/loading.ssr.test.tsx` ✅ (completed: 2026-10-17 15:43)
-- [x] 3.3.5 Full phase verification, including the Storybook build — `pnpm verify`, `pnpm storybook:build` ✅ (completed: 2026-10-17 15:45)
+- [x] 3.3.1 Write the `useLoading` implementation tests (out-of-order id removal, immediate busy state, label stack, no stale entries) — `test/use-loading.impl.test.tsx` ✅ (completed: 2026-10-17 15:23)
+- [x] 3.3.2 Add the async `useLoading` + `LoadingOverlay` story, including the `.catch(catchError)` pattern — `src/components/LoadingOverlay/LoadingOverlay.stories.tsx` ✅ (completed: 2026-10-17 15:23)
+- [x] 3.3.3 Add the README `useLoading` section, decision table, migration note and error-handling guidance — `README.md` ✅ (completed: 2026-10-17 15:23)
+- [x] 3.3.4 Extend the SSR smoke with an idle `useLoading` component (ST-48) — `test/loading.ssr.test.tsx` ✅ (completed: 2026-10-17 15:23)
+- [x] 3.3.5 Full phase verification, including the Storybook build — `pnpm verify`, `pnpm storybook:build` ✅ (completed: 2026-10-17 15:23)
 
 **Deliverables**:
 
@@ -250,7 +250,7 @@ task-size criteria in the make-plan quality checklist).
 
 ## Phase 4: Integration and hardening
 
-> **Phase baseline tree**: _(recorded by the exec-plan skill at phase start)_
+> **Phase baseline tree**: ed011b392bf1a707a796a7b43f52b236879446b1
 > **Scope mode**: strict · **Expected modification set** (`packages/react-components/`-relative):
 > `src/components/Loading/**` · `src/components/LoadingOverlay/**` · `README.md` ·
 > `test/package-exports.spec.test.ts` — plus the plan/roadmap bookkeeping in this repository's
@@ -263,11 +263,11 @@ task-size criteria in the make-plan quality checklist).
 **Reference**: [03-01](03-01-loading.md), [03-02](03-02-loading-overlay.md), [03-03](03-03-use-loading.md) · AR-9, AR-10, AR-11, AR-13, AR-14
 **Objective**: Confirm the public surface, documentation and manual accessibility checks match the plan, then run the full gate.
 
-- [ ] 4.1.1 Audit every public symbol, prop, hook member and exported type for documentation completeness; remove any planning/RD/task references from code comments — `src/components/Loading/**`, `src/components/LoadingOverlay/**`
-- [ ] 4.1.2 Verify README links, props tables, decision table and export pins agree with the implemented surface — `README.md`, `src/index.ts`, `test/package-exports.spec.test.ts`
-- [ ] 4.1.3 Build Storybook and verify the stories compile — `pnpm storybook:build`
-- [ ] 4.1.4 Run the full repository gate — `pnpm verify`
-- [ ] 4.1.5 Complete the manual accessibility checklist below in a real browser, then record the observed result and pass/fail in the table — this document (table below)
+- [x] 4.1.1 Audit every public symbol, prop, hook member and exported type for documentation completeness; remove any planning/RD/task references from code comments — `src/components/Loading/**`, `src/components/LoadingOverlay/**` ✅ (completed: 2026-10-17 15:33)
+- [x] 4.1.2 Verify README links, props tables, decision table and export pins agree with the implemented surface — `README.md`, `src/index.ts`, `test/package-exports.spec.test.ts` ✅ (completed: 2026-10-17 15:33)
+- [x] 4.1.3 Build Storybook and verify the stories compile — `pnpm storybook:build` ✅ (completed: 2026-10-17 15:33)
+- [x] 4.1.4 Run the full repository gate — `pnpm verify` ✅ (completed: 2026-10-17 15:33)
+- [!] 4.1.5 Complete the manual accessibility checklist below in a real browser, then record the observed result and pass/fail in the table — this document (table below) Blocked: requires a real browser and assistive technology (user-owned)
 
 **Manual accessibility checklist (4.1.5):**
 
@@ -287,11 +287,18 @@ task-size criteria in the make-plan quality checklist).
 | M-8 |         |               | Dark theme, forced colors and reduced motion                         | Scrim and spinner remain legible; no extra motion beyond Fluent's spinner              |                 |           |
 | M-9 |         |               | Busy semantics: inspect the content wrapper while `loading` is true  | `aria-busy` is exposed on the `display: contents` wrapper; if not, record the fallback |                 |           |
 
+> **Audit record (4.1.1–4.1.4):** every public component, prop, hook member and exported type
+> carries a teaching-tone doc comment; non-trivial internals (delayed visibility, label resolution,
+> focus algorithm, shared indicator) are documented too. No planning, requirement or task reference
+> appears in shipped code or comments. The README props tables match the exported types, the
+> decision table and migration note cover the three pieces, and the export pin is exact. Storybook
+> compiles, and `pnpm verify` passes (28 test files, 288 tests).
+
 **Deliverables**:
 
-- [ ] The public surface matches RD-01 R14 and the export pin.
-- [ ] Documentation is complete and free of planning references.
-- [ ] Storybook and `pnpm verify` pass.
+- [x] The public surface matches RD-01 R14 and the export pin.
+- [x] Documentation is complete and free of planning references.
+- [x] Storybook and `pnpm verify` pass.
 - [ ] The manual accessibility checklist table is completed with observed results.
 
 **Verify**: `pnpm verify` and `pnpm storybook:build`
@@ -320,14 +327,14 @@ and the review boundary explicit.
 
 **Feature is complete when:**
 
-1. ✅ All 49 tasks are checked `[x]` with timestamps.
+1. [ ] All 49 tasks are checked `[x]` — 48/49 done; 4.1.5 waits on DEF-01 (manual accessibility pass).
 2. ✅ All verification passing (`pnpm verify`).
-3. ✅ `pnpm storybook:build` succeeds and the manual checklist table is completed.
+3. [ ] `pnpm storybook:build` succeeds — done; the manual checklist table waits on DEF-01.
 4. ✅ No warnings or errors.
 5. ✅ No dead code — no unused parameters, helpers, modules or exports.
 6. ✅ Security surface is N/A and documented: UI-only, no user input path, no network/storage, no
    HTML parsing, no auth or rate-limit surface.
 7. ✅ Documentation updated: JSDoc, README sections, props tables, decision table and stories.
-8. ✅ Code reviewed through the repository's quality profile.
-9. ✅ Post-completion project re-analysis and roadmap sync (handled by the exec-plan skill).
+8. ✅ Code reviewed through the repository's quality profile — phase reviews 1–4 recorded, including the fix-diff re-review.
+9. [ ] Post-completion project re-analysis and roadmap sync (handled by the exec-plan skill).
 10. ✅ `--auto-commit` execution mode applied by exec-plan (commit and push after each verified task).

@@ -13,6 +13,11 @@
 | RV-002  | 2     | MINOR    | component shell   | fixed  |
 | RV-001  | 3     | MINOR    | controller docs   | fixed  |
 | RV-002  | 3     | MINOR    | overlay stories   | fixed  |
+| RV-001  | 4     | MAJOR    | timestamps        | fixed  |
+| RV-002  | 4     | MINOR    | success criteria  | fixed  |
+| RV-003  | 4     | MINOR    | plan index        | fixed  |
+| RV-004  | 4     | MINOR    | roadmap header    | fixed  |
+| RV-005  | 4     | MINOR    | findings ledger   | fixed  |
 
 **RV-001** — the oracle's tab-order assertion accepted `tabIndex={0}`. The spec test stays
 unchanged; the stricter `-1` assertion was added to the implementation test instead.
@@ -31,6 +36,16 @@ preference.
 **RV-002 (phase 3)** — the async story did not disable its trigger during the delay. Every demo
 story now disables its action while pending; the static idle story was removed and the
 always-loading label story explains its disabled action.
+
+**RV-001 (phase 4)** — several task completion timestamps were ahead of the measured clock. Every
+batch was re-stamped from its recorded Git commit time, Phase 4 from the measured clock, and the
+plan, roadmap and register headers were aligned.
+
+**RV-002…RV-004 (phase 4)** — the Success Criteria no longer claim completion, the plan index is
+`Blocked`, and the feature roadmap header is `In Progress`.
+
+**RV-005 (phase 4 re-review)** — the Phase 4 findings were missing from this ledger; they are now
+recorded, closing the single fix-diff re-review.
 
 **Parent correction** — the Phase 1 deliverable update briefly checked the identical
 "All verification passing." line in Phases 2 and 3. Both were reverted; no other phase state was
