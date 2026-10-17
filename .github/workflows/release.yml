@@ -80,6 +80,9 @@ jobs:
       - name: Test
         run: pnpm test
 
+      - name: Verify the publish artifact
+        run: pnpm pack:check
+
       - name: Configure git identity
         run: |
           git config user.name "github-actions[bot]"

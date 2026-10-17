@@ -48,6 +48,4 @@ jobs:
         run: pnpm storybook:build
 
       - name: Verify the publish artifact
-        run: |
-          cd packages/react-components
-          npm pack --dry-run
+        run: pnpm pack:check

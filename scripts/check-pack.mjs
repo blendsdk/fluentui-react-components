@@ -1,0 +1,102 @@
+#!/usr/bin/env node
+/**
+ * Publish artifact guard.
+ *
+ * Runs `npm pack --dry-run --json` for the publishable package and inspects
+ * the file list npm would actually publish. The package publishes only its
+ * `dist/` output, so this guard fails if source, Storybook configuration, or
+ * story files ever enter the tarball.
+ *
+ * The guard requires a completed build: it also fails when the pack list has
+ * no `dist/` entries, which catches an accidentally empty artifact.
+ *
+ * Usage:
+ *
+ * ```bash
+ * pnpm build
+ * pnpm pack:check
+ * ```
+ */
+
+import { execFileSync } from 'node:child_process';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+/** Repository root, derived from this script's location (`<root>/scripts/`). */
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+
+/** Directory of the only publishable workspace package. */
+const PACKAGE_DIR = join(ROOT, 'packages', 'react-components');
+
+/** Paths that must never be published. */
+const FORBIDDEN_PREFIXES = ['src/', 'storybook-static/', '.storybook/'];
+
+/** Directory name that must never appear in a published path. */
+const FORBIDDEN_SEGMENT = 'stories';
+
+/** Filename fragments that identify a story or scenario file. */
+const FORBIDDEN_FILENAME_PARTS = ['.stories.', '.story.'];
+
+/**
+ * Reports whether a path from the pack list is source or story material.
+ *
+ * @param {string} filePath - path relative to the package root
+ * @returns {boolean} `true` when the path must not be published
+ */
+function isForbidden(filePath) {
+  return (
+    FORBIDDEN_PREFIXES.some(prefix => filePath.startsWith(prefix)) ||
+    filePath.split('/').includes(FORBIDDEN_SEGMENT) ||
+    FORBIDDEN_FILENAME_PARTS.some(part => filePath.includes(part))
+  );
+}
+
+/**
+ * Reads the file list npm would publish, failing with a clear message when
+ * npm does not produce the expected JSON.
+ *
+ * @returns {string[]} published paths relative to the package root
+ */
+function readPublishedPaths() {
+  const output = execFileSync('npm', ['pack', '--dry-run', '--json'], {
+    cwd: PACKAGE_DIR,
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'inherit'],
+  });
+
+  let manifest;
+
+  try {
+    [manifest] = JSON.parse(output);
+  } catch {
+    console.error('Could not parse the output of `npm pack --dry-run --json`.');
+    process.exit(1);
+  }
+
+  if (!Array.isArray(manifest?.files)) {
+    console.error('The npm pack manifest does not contain a file list.');
+    process.exit(1);
+  }
+
+  return manifest.files.map(entry => entry.path);
+}
+
+const paths = readPublishedPaths();
+const forbidden = paths.filter(isForbidden);
+
+if (forbidden.length > 0) {
+  console.error('The publish artifact contains source or story files:');
+
+  for (const filePath of forbidden) {
+    console.error(`  ${filePath}`);
+  }
+
+  process.exit(1);
+}
+
+if (!paths.some(filePath => filePath.startsWith('dist/'))) {
+  console.error('The publish artifact has no dist/ files. Run `pnpm build` first.');
+  process.exit(1);
+}
+
+console.log(`Publish artifact verified: ${paths.length} files, no source or story files.`);

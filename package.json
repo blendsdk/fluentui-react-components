@@ -22,6 +22,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "skill:check": "node scripts/check-skill.mjs",
+    "pack:check": "node scripts/check-pack.mjs",
     "verify": "pnpm format:check && pnpm skill:check && pnpm type-check && pnpm build && pnpm test",
     "lockstep": "lockstep",
     "lockstep:sync": "lockstep sync",
