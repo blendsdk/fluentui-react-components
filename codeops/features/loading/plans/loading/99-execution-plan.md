@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-17 14:53
-> **Progress**: 3/49 tasks (6%)
+> **Last Updated**: 2026-10-17 15:00
+> **Progress**: 11/49 tasks (22%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -88,14 +88,14 @@ task-size criteria in the make-plan quality checklist).
 **Reference**: [03-01](03-01-loading.md) §Implementation Details · AR-2, AR-3, AR-5, AR-7, AR-9
 **Objective**: Deliver the filler with the status, delay, defaults and pass-through contract.
 
-- [ ] 1.2.1 Add the internal label resolver (`resolveLoadingLabel`, `normalizeLabel`) and delayed-visibility hook — `src/components/Loading/loadingLabel.ts`, `src/components/Loading/useDelayedVisibility.ts`
-- [ ] 1.2.2 Add the `LoadingProps` contract and managed-attribute omissions — `src/components/Loading/Loading.types.ts`
-- [ ] 1.2.3 Add the `Loading` styles, including the exported shared visually-hidden class and the indicator wrapper — `src/components/Loading/useLoadingStyles.styles.ts`
-- [ ] 1.2.4 Add the internal visual indicator renderer with its own `aria-hidden` wrapper — `src/components/Loading/renderLoadingIndicator.tsx`
-- [ ] 1.2.5 Add the state hook returning `LoadingBaseState` with defaults, visibility and classes — `src/components/Loading/useLoadingBase.ts`
-- [ ] 1.2.6 Add the render function (`renderLoading(state, ref)`), forward-ref shell and barrel — `src/components/Loading/renderLoading.tsx`, `src/components/Loading/Loading.tsx`, `src/components/Loading/index.ts`
-- [ ] 1.2.7 Export `Loading` and its props from the package root — `src/index.ts`
-- [ ] 1.2.8 Run the spec suite and verify the **green phase** — `pnpm test`
+- [x] 1.2.1 Add the internal label resolver (`resolveLoadingLabel`, `normalizeLabel`) and delayed-visibility hook — `src/components/Loading/loadingLabel.ts`, `src/components/Loading/useDelayedVisibility.ts` ✅ (completed: 2026-10-17 15:00)
+- [x] 1.2.2 Add the `LoadingProps` contract and managed-attribute omissions — `src/components/Loading/Loading.types.ts` ✅ (completed: 2026-10-17 15:00)
+- [x] 1.2.3 Add the `Loading` styles, including the exported shared visually-hidden class and the indicator wrapper — `src/components/Loading/useLoadingStyles.styles.ts` ✅ (completed: 2026-10-17 15:00)
+- [x] 1.2.4 Add the internal visual indicator renderer with its own `aria-hidden` wrapper — `src/components/Loading/renderLoadingIndicator.tsx` ✅ (completed: 2026-10-17 15:00)
+- [x] 1.2.5 Add the state hook returning `LoadingBaseState` with defaults, visibility and classes — `src/components/Loading/useLoadingBase.ts` ✅ (completed: 2026-10-17 15:00)
+- [x] 1.2.6 Add the render function (`renderLoading(state, ref)`), forward-ref shell and barrel — `src/components/Loading/renderLoading.tsx`, `src/components/Loading/Loading.tsx`, `src/components/Loading/index.ts` ✅ (completed: 2026-10-17 15:00)
+- [x] 1.2.7 Export `Loading` and its props from the package root — `src/index.ts` ✅ (completed: 2026-10-17 15:00)
+- [x] 1.2.8 Run the spec suite and verify the **green phase** — `pnpm test` ✅ (completed: 2026-10-17 15:00)
 
 ### Step 1.3: Implementation Tests, Story, SSR Smoke and Documentation
 

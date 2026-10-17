@@ -13,9 +13,9 @@
 
 ## Tracker
 
-| ID    | Title              | RD                                                | Plan                                 | Stage            | Status | Last Updated | Depends-on / Blocker |
-| ----- | ------------------ | ------------------------------------------------- | ------------------------------------ | ---------------- | ------ | ------------ | -------------------- |
-| RD-01 | Loading primitives | [RD-01](requirements/RD-01-loading-primitives.md) | [loading](plans/loading/00-index.md) | Executing        | 🔄     | 2026-10-17   | —                    |
+| ID    | Title              | RD                                                | Plan                                 | Stage     | Status | Last Updated | Depends-on / Blocker |
+| ----- | ------------------ | ------------------------------------------------- | ------------------------------------ | --------- | ------ | ------------ | -------------------- |
+| RD-01 | Loading primitives | [RD-01](requirements/RD-01-loading-primitives.md) | [loading](plans/loading/00-index.md) | Executing | 🔄     | 2026-10-17   | —                    |
 
 ## Notes
 

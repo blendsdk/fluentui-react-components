@@ -65,9 +65,7 @@ describe('Loading', () => {
   });
 
   it('forwards native props while keeping the single status region', () => {
-    renderLoader(
-      <Loading data-testid="loader" className="caller" aria-label="Busy" />
-    );
+    renderLoader(<Loading data-testid="loader" className="caller" aria-label="Busy" />);
 
     const status = screen.getByTestId('loader');
 
