@@ -1,4 +1,4 @@
-import { Spinner } from '@fluentui/react-components';
+import { Spinner, tokens } from '@fluentui/react-components';
 import type { SpinnerProps } from '@fluentui/react-components';
 import type { ReactElement } from 'react';
 
@@ -10,6 +10,12 @@ import type { ReactElement } from 'react';
  * supplies the single announced copy of the label; this renderer only draws
  * the decorative part. Keeping the wrapper here means neither primitive can
  * forget the attribute or repeat the reasoning.
+ *
+ * Fluent's spinner label is statically inverted (white) because the spinner is
+ * designed for dark or brand-colored surfaces. On a page background or the
+ * overlay's light veil that white text is unreadable, so the shared renderer
+ * overrides it with the theme's normal foreground color. Both loading
+ * primitives therefore show a label that follows light and dark themes.
  *
  * @param props - resolved label, Fluent spinner options and the wrapper class
  * @returns the hidden wrapper with the visible spinner and label
@@ -29,7 +35,10 @@ export function renderLoadingIndicator(props: {
   return (
     <div className={props.className} aria-hidden="true">
       <Spinner
-        label={props.label}
+        label={{
+          children: props.label,
+          style: { color: tokens.colorNeutralForeground1 },
+        }}
         size={props.size}
         appearance={props.appearance}
         labelPosition={props.labelPosition}

@@ -10,6 +10,13 @@ import { useVisuallyHiddenClass } from '../Loading/useLoadingStyles.styles';
  * their place in the parent layout while the wrapper still carries the busy
  * and inert state. The scrim covers the region and centers the indicator.
  *
+ * The scrim is a theme-aware translucent veil rather than a dark dim: white
+ * at 80% in the light theme and dark gray at 70% in the dark theme. The
+ * shared indicator draws its label in the theme foreground color, so the text
+ * keeps a readable contrast on the veil in both themes. The darker Fluent
+ * overlay token produced medium gray over light content, where the spinner's
+ * static white label fell below the normal-text contrast requirement.
+ *
  * The root is programmatically focusable but deliberately shows no focus
  * ring: it is a landing point for focus that was inside the covered region,
  * not a control the user operates.
@@ -32,7 +39,7 @@ const useStyles = makeStyles({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: tokens.colorBackgroundOverlay,
+    backgroundColor: tokens.colorNeutralBackgroundAlpha2,
     borderRadius: 'inherit',
     zIndex: 1,
   },

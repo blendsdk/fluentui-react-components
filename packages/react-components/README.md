@@ -595,18 +595,23 @@ render it.
 The root is a single `role="status"` region with `aria-live="polite"` and
 `aria-atomic="true"`. The announced text is a visually hidden copy of the
 label; the visible spinner and its own label sit in an `aria-hidden` wrapper,
-so assistive technology hears the label once. The status node mounts before
-its text, and the delayed reveal changes the text in that existing region. The
-root is not focusable and adds no motion beyond Fluent's spinner.
+so assistive technology hears the label once. The visible label uses the theme
+foreground color (`colorNeutralForeground1`), so it is readable on the page in
+both light and dark themes. The status node mounts before its text, and the
+delayed reveal changes the text in that existing region. The root is not
+focusable and adds no motion beyond Fluent's spinner.
 
 ### LoadingOverlay
 
 A region-scoped blocking overlay that keeps its children mounted. While
 `loading` is true it waits for its delay (300 ms by default), then covers the
-region with the themed scrim and spinner, marks the content `inert` and
-announces the label once. A response that settles before the delay never
-flashes the overlay, and the content keeps its scroll position, form state and
-focus context across a save or refresh.
+region with a theme-aware translucent veil and spinner, marks the content
+`inert` and announces the label once. The veil uses
+`colorNeutralBackgroundAlpha2` — white at 80% in the light theme, dark gray at
+70% in the dark theme — and the visible label uses `colorNeutralForeground1`,
+so the text stays readable on light and dark content. A response that settles
+before the delay never flashes the overlay, and the content keeps its scroll
+position, form state and focus context across a save or refresh.
 
 The component is controlled: the application owns the boolean, the async work
 and every side effect. The boolean can come from `useLoading().isLoading`,
@@ -645,6 +650,17 @@ and every side effect. The boolean can come from `useLoading().isLoading`,
   stacking context can paint and operate above the scrim. The overlay installs
   no global blocker and no portal; record the escape in the manual checklist
   when a region uses one.
+- **Scope is the overlay root's box.** A 200×200 wrapper limits the scrim to
+  200×200. The overlay root follows its content's height, so give it the
+  container height when the content is shorter:
+
+  ```tsx
+  <div style={{ width: 200, height: 200 }}>
+    <LoadingOverlay loading={loading} style={{ height: '100%' }}>
+      <ShortContent />
+    </LoadingOverlay>
+  </div>
+  ```
 
 #### Accessibility
 
@@ -655,8 +671,10 @@ The visual spinner is `aria-hidden`; the status is the single announcement.
 
 When the overlay becomes visible it sets `inert` on the content wrapper, which
 removes the covered content from the tab order and the accessibility tree, and
-the scrim blocks pointer interaction. The root has `tabIndex={-1}`, is named by
-the persistent status node, and shows no focus ring. Focus moves to the root
+the scrim blocks pointer interaction. The scrim is a theme-aware translucent
+veil rather than a dark dim; the visible label uses the theme foreground color,
+which keeps normal-text contrast in both themes. The root has `tabIndex={-1}`,
+is named by the persistent status node, and shows no focus ring. Focus moves to the root
 only when it was inside the covered content (or the browser blurred that
 element to the body); focus outside is never moved. When loading ends, focus
 returns to the reveal-time element, then the loading-start element, only if the

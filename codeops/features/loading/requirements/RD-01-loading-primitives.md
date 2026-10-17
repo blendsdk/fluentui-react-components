@@ -80,7 +80,7 @@ The design keeps the legacy convention — one consistent loading state per regi
 - React 19 and Fluent UI v9 are peer dependencies supplied by the application; the repository already uses them.
 - `inert` is a React 19 native attribute. The overlay falls back to a normal content wrapper if `display: contents` is unavailable; no browser polyfill is planned.
 - Server rendering must not access `document`, `window`, `HTMLElement` or timers during render.
-- The component follows the active `FluentProvider` theme, including dark and custom themes; the scrim uses `tokens.colorBackgroundOverlay`.
+- The component follows the active `FluentProvider` theme, including dark and custom themes; the scrim uses the theme-aware `tokens.colorNeutralBackgroundAlpha2` veil, and the visible label uses `tokens.colorNeutralForeground1`.
 
 ### Security
 
@@ -92,6 +92,7 @@ The design keeps the legacy convention — one consistent loading state per regi
 
 - The loading state has a single polite announcement source (`role="status"`, `aria-live="polite"`, `aria-atomic="true"`). The visual spinner is `aria-hidden`.
 - `LoadingOverlay` marks the region busy with `aria-busy`, removes covered content from the tab order and accessibility tree with `inert`, and blocks pointer interaction with the scrim while visible.
+- Visible labels use the theme foreground color, and the scrim is a theme-aware translucent veil, so the text keeps a readable contrast in light and dark themes; Fluent's static white spinner label is not used.
 - Focus moves only when it was inside the covered region; it is restored only when the component moved it and the target is still connected.
 - The label is always non-empty through the English default and blank fallback.
 - The components add no custom animation; the Fluent spinner is the only motion. No fade or scale transition is added, so there is no extra reduced-motion concern.

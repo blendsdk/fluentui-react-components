@@ -18,7 +18,7 @@ const meta: Meta<typeof Loading> = {
           '1. Announcement — reload a story: the label is announced once; the spinner is silent.',
           '2. Delay — in the Delayed reveal story, the status text and spinner appear together after the delay.',
           '3. Empty parent — the fixture shows the loader centered in the full parent height.',
-          '4. Dark theme and forced colors — the spinner and label stay legible.',
+          '4. Light and dark theme, forced colors — the spinner and label stay legible.',
           '5. Reduced motion — the Fluent spinner is the only motion; no extra animation is added.',
         ].join('\n'),
       },

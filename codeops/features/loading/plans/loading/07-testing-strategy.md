@@ -142,7 +142,7 @@ check.
 
 | Test File                            | Description                                                                                                                                                 | Priority |
 | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
-| `test/loading.impl.test.tsx`         | Class merge, root/indicator structure, indicator `aria-hidden` ownership, timer cleanup and delay normalization on unmount                                  | High     |
+| `test/loading.impl.test.tsx`         | Class merge, root/indicator structure, indicator `aria-hidden` ownership, theme label color, timer cleanup and delay normalization on unmount               | High     |
 | `test/loading-overlay.impl.test.tsx` | Capture-before-inert ordering with `loading`/`visible`, body-focus fallback, ownership-guarded restore, unmount-while-visible, class merge, scrim structure | High     |
 | `test/use-loading.impl.test.tsx`     | Out-of-order id removal, label stack fallback, immediate `isLoading`, no stale active entries                                                               | High     |
 
@@ -192,5 +192,6 @@ check.
 - [ ] `pnpm verify` passes.
 - [ ] `pnpm storybook:build` succeeds in each implementation phase and in Phase 4.
 - [ ] The manual story checklist in `99-execution-plan.md` task 4.1.5 covers real-browser
-      inert/focus, focus target name, busy exposure, dark theme, forced colors, reduced motion, no
-      double announcement and the portaled `Menu`/sticky-header limitation.
+      inert/focus, focus target name, busy exposure, light and dark label contrast, fixed-region
+      scope, forced colors, reduced motion, no double announcement and the portaled
+      `Menu`/sticky-header limitation.

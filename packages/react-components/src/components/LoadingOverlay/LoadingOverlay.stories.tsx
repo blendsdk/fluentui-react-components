@@ -26,7 +26,8 @@ const meta: Meta<typeof LoadingOverlay> = {
           '6. Focus ring — focus the overlay root: no visible ring, as designed.',
           '7. Busy semantics — inspect the content wrapper while loading: `aria-busy` is exposed on the `display: contents` wrapper; if a browser drops it, record the normal-wrapper fallback.',
           '8. Portaled and fixed content — open a Fluent `Menu` in the content: record whether the popover escapes the scrim (known region-scoped limitation).',
-          '9. Dark theme, forced colors and reduced motion — the scrim and spinner stay legible; no extra motion beyond Fluent’s spinner.',
+          '9. Light and dark theme, forced colors and reduced motion — the scrim and label stay legible; no extra motion beyond Fluent’s spinner.',
+          '10. Region scope — in the Fixed size region story, only the 200×200 box is covered and the rest of the page stays interactive.',
         ].join('\n'),
       },
     },
@@ -135,6 +136,13 @@ export const FastOperation: Story = {
 };
 
 /**
+ * A fixed-size region: the scrim stops at the 200 × 200 box.
+ */
+export const FixedSizeRegion: Story = {
+  render: () => <FixedSizeRegionDemo />,
+};
+
+/**
  * The canonical integration: `useLoading` supplies the boolean and the label,
  * the overlay renders them, and the returned promise is caught through the
  * application's error handler. The failing case reports through the same
@@ -169,6 +177,28 @@ function AsyncControllerDemo(): ReactElement {
       <span>{message}</span>
       <Button onClick={fail} disabled={isLoading}>
         Save and fail
+      </Button>
+    </div>
+  );
+}
+
+/**
+ * The overlay is region-scoped: only this 200 × 200 box is covered. The root
+ * receives the box height so the scrim covers the whole box even though the
+ * content is shorter; the rest of the page stays interactive.
+ */
+function FixedSizeRegionDemo(): ReactElement {
+  const [loading, setLoading] = useState(true);
+
+  return (
+    <div style={{ display: 'grid', gap: 12 }}>
+      <div style={{ width: 200, height: 200, border: '1px solid #d1d1d1', borderRadius: 8 }}>
+        <LoadingOverlay loading={loading} style={{ height: '100%' }} label="Loading the region…">
+          <div style={{ padding: 16 }}>A 200 × 200 region. Only this box is covered.</div>
+        </LoadingOverlay>
+      </div>
+      <Button onClick={() => setLoading(value => !value)}>
+        {loading ? 'Stop loading' : 'Start loading'}
       </Button>
     </div>
   );

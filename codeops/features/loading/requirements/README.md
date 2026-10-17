@@ -56,7 +56,7 @@ The design keeps the legacy convention — one consistent loading state per regi
 | Active operation     | An operation that has started and not yet settled; its id is used for removal and label resolution.                              |
 | Ref-counting         | `isLoading` is true while the active-operation array is non-empty; overlapping operations do not hide the loader early.          |
 | Delay                | Milliseconds before the overlay/filler becomes visible; prevents a flash for fast operations.                                    |
-| Scrim                | The translucent themed layer (`tokens.colorBackgroundOverlay`) between the content and the spinner.                              |
+| Scrim                | The theme-aware translucent veil (`tokens.colorNeutralBackgroundAlpha2`) between the content and the spinner.                    |
 | Inert                | The React 19/HTML attribute that removes covered content from the tab order and accessibility tree while the overlay is visible. |
 | Status region        | A `role="status"` polite live region containing the label; the single announcement source.                                       |
 | Decorative indicator | The visual Fluent `Spinner`, marked `aria-hidden` because the status text carries the meaning for assistive technology.          |

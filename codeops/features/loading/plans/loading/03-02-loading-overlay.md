@@ -206,7 +206,8 @@ const {
 - The status node is always mounted and is visually hidden. Its text changes from empty to the label
   when the overlay appears; this is the announcement. The visual indicator is `aria-hidden`; the
   shared renderer owns that wrapper.
-- The scrim is absolute `inset: 0`, uses `tokens.colorBackgroundOverlay`, `borderRadius: inherit`,
+- The scrim is absolute `inset: 0`, uses `tokens.colorNeutralBackgroundAlpha2` (white at 80% in the
+  light theme, dark gray at 70% in the dark theme), `borderRadius: inherit`,
   `zIndex: 1`, and centers the indicator. It blocks pointer interaction for in-flow content because
   it covers the region.
 - **Test lookup:** the scrim is the root's only direct child that is neither the content wrapper nor
@@ -272,16 +273,19 @@ it is not portaled (AR-6).
 
 ### Styles
 
-| Class            | Purpose                                                                                                                  |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| `root`           | `position: relative`, `isolation: isolate`, `minWidth: 0`, `:focus { outline: none }`                                    |
-| `content`        | `display: contents`; no box; carries `aria-busy` while `loading` is true and `inert` while visible                       |
-| `scrim`          | absolute `inset: 0`, flex center, `backgroundColor: tokens.colorBackgroundOverlay`, `zIndex: 1`, `borderRadius: inherit` |
-| `indicator`      | the wrapper class passed to `renderLoadingIndicator`; no background, no extra spacing                                    |
-| `visuallyHidden` | the shared one-pixel/`clip` screen-reader-only recipe, imported from the `Loading` styles module                         |
+| Class            | Purpose                                                                                                                        |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `root`           | `position: relative`, `isolation: isolate`, `minWidth: 0`, `:focus { outline: none }`                                          |
+| `content`        | `display: contents`; no box; carries `aria-busy` while `loading` is true and `inert` while visible                             |
+| `scrim`          | absolute `inset: 0`, flex center, `backgroundColor: tokens.colorNeutralBackgroundAlpha2`, `zIndex: 1`, `borderRadius: inherit` |
+| `indicator`      | the wrapper class passed to `renderLoadingIndicator`; no background, no extra spacing                                          |
+| `visuallyHidden` | the shared one-pixel/`clip` screen-reader-only recipe, imported from the `Loading` styles module                               |
 
 No background, border, spacing or animation is added to the root. The scrim color comes from the
-theme; dark and custom themes follow automatically. The spinner is the only motion; no fade or scale
+theme; dark and custom themes follow automatically. The shared indicator draws its visible label in
+`tokens.colorNeutralForeground1`, so the text stays readable on the light veil and on a page
+background in both themes; Fluent's static white spinner label would fall below the normal-text
+contrast requirement on light content (AR-18). The spinner is the only motion; no fade or scale
 transition is added, so reduced-motion behavior is unchanged from Fluent's spinner.
 
 `visuallyHidden` is exported by `Loading/useLoadingStyles.styles.ts`; the overlay imports it and does

@@ -2,7 +2,7 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-17 15:36
+> **Last Updated**: 2026-10-17 15:53
 > **Progress**: 48/49 tasks (98%)
 > **CodeOps Artifact Schema**: 1
 
@@ -275,17 +275,18 @@ task-size criteria in the make-plan quality checklist).
 > when the observed result matches the expected result. The table must be complete before Phase 4 is
 > marked done; browser and screen-reader execution remains user-owned.
 
-| #   | Browser | Screen reader | Scenario                                                             | Expected result                                                                        | Observed result | Pass/Fail |
-| --- | ------- | ------------- | -------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | --------------- | --------- |
-| M-1 |         |               | Inert blur: focus a control inside the content, start loading        | Focus moves to the named overlay root; no focus is lost to the document                |                 |           |
-| M-2 |         |               | Focus restore: end loading after M-1                                 | Focus returns to the reveal-time element (or the loading-start element)                |                 |           |
-| M-3 |         |               | Pointer blocking: click or tap covered in-flow content while visible | No click, navigation or control activation occurs                                      |                 |           |
-| M-4 |         |               | Idle state: `loading={false}`                                        | No scrim, no status text and the content is interactive                                |                 |           |
-| M-5 |         |               | Announcement: reveal the overlay                                     | The label is announced once; the root name does not double-announce                    |                 |           |
-| M-6 |         |               | Focus ring: focus the overlay root                                   | No visible ring on the root, as designed, without confusing the user                   |                 |           |
-| M-7 |         |               | Portaled `Menu` and sticky header inside the content                 | Record whether either escapes the scrim; the known region-scoped limitation            |                 |           |
-| M-8 |         |               | Dark theme, forced colors and reduced motion                         | Scrim and spinner remain legible; no extra motion beyond Fluent's spinner              |                 |           |
-| M-9 |         |               | Busy semantics: inspect the content wrapper while `loading` is true  | `aria-busy` is exposed on the `display: contents` wrapper; if not, record the fallback |                 |           |
+| #    | Browser | Screen reader | Scenario                                                             | Expected result                                                                        | Observed result | Pass/Fail |
+| ---- | ------- | ------------- | -------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | --------------- | --------- |
+| M-1  |         |               | Inert blur: focus a control inside the content, start loading        | Focus moves to the named overlay root; no focus is lost to the document                |                 |           |
+| M-2  |         |               | Focus restore: end loading after M-1                                 | Focus returns to the reveal-time element (or the loading-start element)                |                 |           |
+| M-3  |         |               | Pointer blocking: click or tap covered in-flow content while visible | No click, navigation or control activation occurs                                      |                 |           |
+| M-4  |         |               | Idle state: `loading={false}`                                        | No scrim, no status text and the content is interactive                                |                 |           |
+| M-5  |         |               | Announcement: reveal the overlay                                     | The label is announced once; the root name does not double-announce                    |                 |           |
+| M-6  |         |               | Focus ring: focus the overlay root                                   | No visible ring on the root, as designed, without confusing the user                   |                 |           |
+| M-7  |         |               | Portaled `Menu` and sticky header inside the content                 | Record whether either escapes the scrim; the known region-scoped limitation            |                 |           |
+| M-8  |         |               | Light and dark theme, forced colors and reduced motion               | Scrim and label remain legible in both themes; no extra motion beyond Fluent's spinner |                 |           |
+| M-9  |         |               | Busy semantics: inspect the content wrapper while `loading` is true  | `aria-busy` is exposed on the `display: contents` wrapper; if not, record the fallback |                 |           |
+| M-10 |         |               | Region scope: a 200×200 container with short content                 | The scrim covers the entire 200×200 box; the rest of the page stays interactive        |                 |           |
 
 > **Audit record (4.1.1–4.1.4):** every public component, prop, hook member and exported type
 > carries a teaching-tone doc comment; non-trivial internals (delayed visibility, label resolution,

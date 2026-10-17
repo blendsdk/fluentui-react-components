@@ -175,7 +175,9 @@ When `minHeight` is `undefined`, the resolver must not write the key: spreading
 - `renderLoadingIndicator` renders the Fluent `Spinner` and its visible label inside an
   `aria-hidden` wrapper that the renderer itself owns, so the visible label and progressbar cannot
   produce a second announcement (AR-3). The caller passes the wrapper class (the `indicator` class
-  from the styles hook) so the renderer stays layout-agnostic.
+  from the styles hook) so the renderer stays layout-agnostic. The visible label uses
+  `tokens.colorNeutralForeground1` instead of Fluent's static white, so it stays readable on the
+  page background in both themes (AR-18).
 - The root is not focusable and is not in the tab order.
 - `Loading` does not set `aria-busy`: it is a status indicator, not a content region that is updating.
   `LoadingOverlay` owns `aria-busy` for its region.
@@ -206,7 +208,10 @@ root: {
   re-declaring the class (see Integration Points).
 - The Fluent `Spinner` owns the ring animation, label typography and label spacing. The component
   does not add motion, so there is no extra reduced-motion concern.
-- The root's colors inherit from the theme; the spinner uses Fluent's brand stroke and label color.
+- The root's colors inherit from the theme; the spinner uses Fluent's brand stroke, and the shared
+  renderer draws the visible label in `tokens.colorNeutralForeground1`. Fluent's own spinner label
+  is statically white, which would be unreadable on a light page; the theme foreground keeps the
+  label readable in light and dark themes (AR-18).
 
 ### Integration Points
 
@@ -267,8 +272,8 @@ When the `minHeight` prop is omitted, `style.minHeight` passes through unchanged
   delay with fake timers, native props, ref, `minHeight` precedence (prop and caller style), single
   status region and no tab stop.
 - Implementation tests (`test/loading.impl.test.tsx`): class merge, root structure, indicator
-  `aria-hidden` ownership, default size/label position mapping where observable, timer cleanup on
-  unmount and delay normalization.
+  `aria-hidden` ownership, theme label color, default size/label position mapping where observable,
+  timer cleanup on unmount and delay normalization.
 - Story (`Loading.stories.tsx`): default, sizes, label positions, fixed-height parent, delayed reveal.
 - SSR smoke (`test/loading.ssr.test.tsx`): render to string without browser access; the status root
   is present and empty before hydration.

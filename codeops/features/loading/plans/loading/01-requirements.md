@@ -27,6 +27,7 @@
 | Hook file placement and naming             | Public `Loading/useLoading.ts`; internal component state hook `Loading/useLoadingBase.ts`                                                                     | AR-2   |
 | Announcement structure                     | `role="status"` root with visually hidden label; status sibling of the `aria-busy` content wrapper; visual spinner wrapped in `aria-hidden`                   | AR-3   |
 | Overlay DOM                                | Relative root + `display: contents` content wrapper carrying `aria-busy`/`inert` + absolute scrim + persistent status; no portal                              | AR-4   |
+| Visual contrast                            | Theme-aware translucent veil (`colorNeutralBackgroundAlpha2`); visible label in `colorNeutralForeground1`                                                     | AR-18  |
 | Delay and live-region timing               | Shared `useDelayedVisibility(active, delay)`; status node mounted before its text; a delay change applies to the next activation                              | AR-5   |
 | Focus algorithm                            | Capture at loading start; move only if focus was inside or blurred to body; restore the reveal-time element first, then the captured one                      | AR-6   |
 | Label resolution                           | English default, blank fallback, most recently started active labeled operation, removal by operation id                                                      | AR-7   |

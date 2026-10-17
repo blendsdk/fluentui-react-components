@@ -63,6 +63,15 @@ describe('Loading internals', () => {
     expect(screen.queryByRole('progressbar')).toBeNull();
   });
 
+  it('draws the visible label in the theme foreground color', () => {
+    renderLoader(<Loading />);
+
+    const label = indicator(screen.getByRole('status')).querySelector('label');
+
+    expect(label).not.toBeNull();
+    expect(label?.style.color).toBe('var(--colorNeutralForeground1)');
+  });
+
   it('normalizes a non-positive delay to an immediate reveal', () => {
     const view = renderLoader(<Loading delay={-25} />);
 
