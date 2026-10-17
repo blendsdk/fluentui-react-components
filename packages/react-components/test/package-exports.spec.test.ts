@@ -21,6 +21,7 @@ import type {
   ErrorDialogKind,
   ErrorDialogProps,
   ErrorDialogStrings,
+  LoadingProps,
   SystemErrorProviderProps,
 } from '../src/index';
 
@@ -42,6 +43,7 @@ describe('package export surface', () => {
       'DescriptionList',
       'DescriptionListItem',
       'ErrorDialog',
+      'Loading',
       'SystemErrorProvider',
       'useConfirm',
       'useSystemError',
@@ -111,6 +113,26 @@ describe('package export surface', () => {
     expect(options.title).toBe('Delete this record?');
     expect(actions.actions).toHaveLength(3);
     expect(providerProps.strings?.confirm).toBe('Yes');
+  });
+
+  it('exports the public Loading types', () => {
+    // The type imports above only compile when the package root exports them;
+    // the values below keep the file local-usage clean under noUnusedLocals.
+    const loadingProps: LoadingProps = { label: 'Loading records', delay: 300 };
+
+    // The component owns the announcement attributes and the indicator, so
+    // callers may not override them through the props type.
+    // @ts-expect-error The status role is managed by the component.
+    const rolePin: LoadingProps = { role: 'status' };
+    // @ts-expect-error The live-region politeness is managed by the component.
+    const livePin: LoadingProps = { 'aria-live': 'assertive' };
+    // @ts-expect-error The live-region atomicity is managed by the component.
+    const atomicPin: LoadingProps = { 'aria-atomic': 'false' };
+    // @ts-expect-error The component owns its rendered content and never parses HTML.
+    const htmlPin: LoadingProps = { dangerouslySetInnerHTML: { __html: '<b>busy</b>' } };
+
+    expect(loadingProps.label).toBe('Loading records');
+    expect([rolePin, livePin, atomicPin, htmlPin]).toHaveLength(4);
   });
 
   it('exports the public AppLauncher block types', () => {
