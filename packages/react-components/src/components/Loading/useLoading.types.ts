@@ -3,10 +3,10 @@
  */
 export type LoadingOptions = {
   /**
-   * Default message reported while an operation is active and supplies no
-   * label of its own. A blank or missing value means "no default"; the
-   * consumer (`LoadingOverlay` or `Loading`) then applies the English
-   * `Loading…` fallback.
+   * Default message reported whenever no active operation supplies a label of
+   * its own, including while the controller is idle. A blank or missing value
+   * means "no default"; the consumer (`LoadingOverlay` or `Loading`) then
+   * applies the English `Loading…` fallback.
    */
   label?: string;
 };
@@ -36,9 +36,10 @@ export type LoadingController = {
   readonly isLoading: boolean;
 
   /**
-   * The most recently started active operation's non-blank label, else the
-   * non-blank default label, else `undefined`. The consumer applies the
-   * visible English fallback.
+   * The most recently started active **labeled** operation's label, else the
+   * non-blank default label, else `undefined`. An unlabeled operation never
+   * suppresses a labeled one. The consumer applies the visible English
+   * fallback.
    */
   readonly label: string | undefined;
 

@@ -45,7 +45,7 @@ function wait(milliseconds: number): Promise<void> {
 }
 
 /** The card the overlay covers in every story. */
-function ActorCard(props: { onSave: () => void }): ReactElement {
+function ActorCard(props: { onSave: () => void; disabled?: boolean }): ReactElement {
   return (
     <div
       style={{
@@ -60,7 +60,7 @@ function ActorCard(props: { onSave: () => void }): ReactElement {
       <strong>Actor record</strong>
       <span>Name: Ada Lovelace</span>
       <span>Status: active</span>
-      <Button appearance="primary" onClick={props.onSave}>
+      <Button appearance="primary" onClick={props.onSave} disabled={props.disabled}>
         Save
       </Button>
     </div>
@@ -85,7 +85,7 @@ function AppOwnedDemo(): ReactElement {
   return (
     <div style={{ display: 'grid', gap: 12 }}>
       <LoadingOverlay loading={loading} label="Saving the actor…">
-        <ActorCard onSave={() => void save()} />
+        <ActorCard onSave={() => void save()} disabled={loading} />
       </LoadingOverlay>
       <span>{message}</span>
     </div>
@@ -110,7 +110,7 @@ function FastOperationDemo(): ReactElement {
   return (
     <div style={{ display: 'grid', gap: 12 }}>
       <LoadingOverlay loading={loading} label="Saving the actor…">
-        <ActorCard onSave={() => void save()} />
+        <ActorCard onSave={() => void save()} disabled={loading} />
       </LoadingOverlay>
       <span>{message}</span>
     </div>
@@ -118,19 +118,9 @@ function FastOperationDemo(): ReactElement {
 }
 
 /**
- * The idle state: the content is fully interactive and no scrim, status text
- * or inert state is present.
- */
-export const Idle: Story = {
-  render: () => (
-    <LoadingOverlay loading={false}>
-      <ActorCard onSave={() => {}} />
-    </LoadingOverlay>
-  ),
-};
-
-/**
- * An application-owned boolean, driven by the Save button.
+ * An application-owned boolean, driven by the Save button. The trigger is
+ * disabled while the operation is pending, so a second click cannot start a
+ * second save during the delay window.
  */
 export const AppOwnedBoolean: Story = {
   render: () => <AppOwnedDemo />,
@@ -174,22 +164,28 @@ function AsyncControllerDemo(): ReactElement {
   return (
     <div style={{ display: 'grid', gap: 12 }}>
       <LoadingOverlay loading={isLoading} label={label}>
-        <ActorCard onSave={save} />
+        <ActorCard onSave={save} disabled={isLoading} />
       </LoadingOverlay>
       <span>{message}</span>
-      <Button onClick={fail}>Save and fail</Button>
+      <Button onClick={fail} disabled={isLoading}>
+        Save and fail
+      </Button>
     </div>
   );
 }
 
 /**
- * A translated label, shown immediately with `delay={0}`.
+ * A translated label, shown immediately with `delay={0}`. The overlay starts
+ * visible, so the covered content is inert and its demo action is disabled.
  */
 export const CustomLabel: Story = {
   render: () => (
-    <LoadingOverlay loading delay={0} label="Publishing the dataset…">
-      <ActorCard onSave={() => {}} />
-    </LoadingOverlay>
+    <div style={{ display: 'grid', gap: 12 }}>
+      <LoadingOverlay loading delay={0} label="Publishing the dataset…">
+        <ActorCard onSave={() => {}} disabled />
+      </LoadingOverlay>
+      <span>The content is inert while the overlay is visible; the action is disabled.</span>
+    </div>
   ),
 };
 
