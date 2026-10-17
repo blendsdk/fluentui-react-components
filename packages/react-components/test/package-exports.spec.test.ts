@@ -21,6 +21,8 @@ import type {
   ErrorDialogKind,
   ErrorDialogProps,
   ErrorDialogStrings,
+  LoadingController,
+  LoadingOptions,
   LoadingOverlayProps,
   LoadingProps,
   SystemErrorProviderProps,
@@ -48,6 +50,7 @@ describe('package export surface', () => {
       'LoadingOverlay',
       'SystemErrorProvider',
       'useConfirm',
+      'useLoading',
       'useSystemError',
     ]);
   });
@@ -196,6 +199,23 @@ describe('package export surface', () => {
       tabIndexPin,
       htmlPin,
     ]).toHaveLength(9);
+  });
+
+  it('exports the public useLoading types', () => {
+    // The type imports above only compile when the package root exports them;
+    // the values below keep the file local-usage clean under noUnusedLocals.
+    const options: LoadingOptions = { label: 'Working…' };
+
+    async function runOperation<T>(operation: () => T | Promise<T>): Promise<T> {
+      return operation();
+    }
+
+    const run: LoadingController['run'] = runOperation;
+    const controller: LoadingController = { isLoading: false, label: undefined, run };
+
+    expect(options.label).toBe('Working…');
+    expect(controller.isLoading).toBe(false);
+    expect(typeof controller.run).toBe('function');
   });
 
   it('exports the public AppLauncher block types', () => {

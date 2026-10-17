@@ -49,8 +49,8 @@ export type {
   ErrorDialogProps,
   ErrorDialogStrings,
 } from './components/ErrorDialog';
-export { Loading } from './components/Loading';
-export type { LoadingProps } from './components/Loading';
+export { Loading, useLoading } from './components/Loading';
+export type { LoadingController, LoadingOptions, LoadingProps } from './components/Loading';
 export { LoadingOverlay } from './components/LoadingOverlay';
 export type { LoadingOverlayProps } from './components/LoadingOverlay';
 export { SystemErrorProvider } from './components/SystemErrorProvider';

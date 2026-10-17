@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-17 15:26
-> **Progress**: 32/49 tasks (65%)
+> **Last Updated**: 2026-10-17 15:38
+> **Progress**: 39/49 tasks (80%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -190,7 +190,7 @@ task-size criteria in the make-plan quality checklist).
 
 ## Phase 3: useLoading controller
 
-> **Phase baseline tree**: _(recorded by the exec-plan skill at phase start)_
+> **Phase baseline tree**: 07c7d02fa22c1126170ad19b674f357236935f53
 > **Scope mode**: strict · **Expected modification set** (`packages/react-components/`-relative):
 > `test/use-loading.spec.test.tsx` · `test/package-exports.spec.test.ts` ·
 > `test/use-loading.impl.test.tsx` · `test/loading.ssr.test.tsx` ·
@@ -206,22 +206,24 @@ task-size criteria in the make-plan quality checklist).
 **Reference**: [07](07-testing-strategy.md) §useLoading (ST-28…ST-43) · [03-03](03-03-use-loading.md) §State Model, §Label Policy, §`run` Algorithm · AR-7, AR-8
 **Objective**: Pin the controller contract, ref-counting, labels and error behavior before implementation.
 
-- [ ] 3.1.1 [spec-author] Write the `useLoading` contract spec tests from ST-28…ST-43, including ST-31a, ST-32a, ST-33a and ST-41a — `test/use-loading.spec.test.tsx`
-- [ ] 3.1.2 [spec-author] Extend the export-surface pin with `useLoading` and the `LoadingOptions`/`LoadingController` type pins (final cumulative list, ST-44/ST-45) — `test/package-exports.spec.test.ts`
-- [ ] 3.1.3 Run the spec suite and `pnpm type-check`, and verify the **red phase** — `pnpm test`, `pnpm type-check`
+- [x] 3.1.1 [spec-author] Write the `useLoading` contract spec tests from ST-28…ST-43, including ST-31a, ST-32a, ST-33a and ST-41a — `test/use-loading.spec.test.tsx` ✅ (completed: 2026-10-17 15:35)
+- [x] 3.1.2 [spec-author] Extend the export-surface pin with `useLoading` and the `LoadingOptions`/`LoadingController` type pins (final cumulative list, ST-44/ST-45) — `test/package-exports.spec.test.ts` ✅ (completed: 2026-10-17 15:35)
+- [x] 3.1.3 Run the spec suite and `pnpm type-check`, and verify the **red phase** — `pnpm test`, `pnpm type-check` ✅ (completed: 2026-10-17 15:35)
 
-> **Red-phase record (3.1.3):** _(filled by the executing session — failing test names/counts, the
-> `pnpm type-check` result and the expected missing implementation reason)_
+> **Red-phase record (3.1.3):** 20/20 `use-loading.spec.test.tsx` cases failed with
+> `TypeError: useLoading is not a function`; the export surface failed with 17 runtime symbols
+> instead of the expected 18. `pnpm type-check` failed with `TS2305` for the missing
+> `useLoading`, `LoadingOptions` and `LoadingController` exports. No case passed pre-implementation.
 
 ### Step 3.2: Implementation
 
 **Reference**: [03-03](03-03-use-loading.md) §Implementation Details · AR-7, AR-8
 **Objective**: Deliver the local controller with `run`, active-operation ids and the label policy.
 
-- [ ] 3.2.1 Add `LoadingOptions` and `LoadingController` — `src/components/Loading/useLoading.types.ts`
-- [ ] 3.2.2 Add the reducer, ids, label normalization/resolution and the public hook — `src/components/Loading/useLoading.ts`
-- [ ] 3.2.3 Export `useLoading` and its types from the Loading barrel and the package root — `src/components/Loading/index.ts`, `src/index.ts`
-- [ ] 3.2.4 Run the spec suite and verify the **green phase** — `pnpm test`
+- [x] 3.2.1 Add `LoadingOptions` and `LoadingController` — `src/components/Loading/useLoading.types.ts` ✅ (completed: 2026-10-17 15:38)
+- [x] 3.2.2 Add the reducer, ids, label normalization/resolution and the public hook — `src/components/Loading/useLoading.ts` ✅ (completed: 2026-10-17 15:38)
+- [x] 3.2.3 Export `useLoading` and its types from the Loading barrel and the package root — `src/components/Loading/index.ts`, `src/index.ts` ✅ (completed: 2026-10-17 15:38)
+- [x] 3.2.4 Run the spec suite and verify the **green phase** — `pnpm test` ✅ (completed: 2026-10-17 15:38)
 
 ### Step 3.3: Implementation Tests, Integration Story and Documentation
 
