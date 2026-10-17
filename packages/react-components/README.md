@@ -550,6 +550,55 @@ standalone it falls back to the tile layout.
   keyboard navigation; `disabledFocusable` keeps a disabled app reachable for
   keyboard users. Both never activate.
 
+### Loading
+
+A transparent, centered filler for a region that has no content to cover: a
+list that is still empty, a detail pane that is waiting for its record. The
+filler draws a Fluent `Spinner` with a visible label, fills the available width
+and height of its parent, and announces the label through a polite status
+region. It holds no data and performs no I/O; the application decides when to
+render it.
+
+| Prop            | Type                                                    | Default     | Description                                                                                                                                                                                           |
+| --------------- | ------------------------------------------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `label`         | `string`                                                | `Loading…`  | Visible and announced message. A missing, empty or whitespace-only value falls back to the English default.                                                                                           |
+| `size`          | `SpinnerProps['size']`                                  | `'large'`   | Fluent spinner size.                                                                                                                                                                                  |
+| `appearance`    | `SpinnerProps['appearance']`                            | `'primary'` | Fluent spinner appearance.                                                                                                                                                                            |
+| `labelPosition` | `SpinnerProps['labelPosition']`                         | `'below'`   | Placement of the visible label relative to the ring.                                                                                                                                                  |
+| `delay`         | `number`                                                | `0`         | Milliseconds before both the status text and the indicator appear, so a fast response never flashes a loader. Negative, `NaN` and `Infinity` behave as `0`.                                           |
+| `minHeight`     | `number \| string`                                      | —           | Minimum block size for an otherwise empty parent. When defined it wins over `style.minHeight`; when omitted the caller's style passes through untouched.                                              |
+| …               | `ComponentPropsWithoutRef<'div'>` (minus managed attrs) | —           | All other native `div` props pass through; `className` and `style` merge and `ref` points at the root. `role`, `aria-live`, `aria-atomic` and `dangerouslySetInnerHTML` are managed by the component. |
+
+```tsx
+<Loading label="Loading the record…" />
+
+<div style={{ height: 240 }}>
+  <Loading label="Saving…" delay={300} minHeight={240} />
+</div>
+```
+
+#### Composition patterns
+
+- **Use it when there is nothing to cover.** When content already exists, use
+  `LoadingOverlay` instead, so the content stays mounted and becomes inert
+  rather than disappearing.
+- **Let the parent own the height.** The root fills 100% of its parent; pass
+  `minHeight` when an empty parent would otherwise collapse to zero height.
+- **Delay fast operations.** A positive `delay` postpones the announcement as
+  well as the visual, so neither flashes for a response that arrives quickly.
+- **Localization is a prop.** `label` is a plain string; the package ships no
+  resource files and only the English `Loading…` default. Pass a translated
+  label at the call site.
+
+#### Accessibility
+
+The root is a single `role="status"` region with `aria-live="polite"` and
+`aria-atomic="true"`. The announced text is a visually hidden copy of the
+label; the visible spinner and its own label sit in an `aria-hidden` wrapper,
+so assistive technology hears the label once. The status node mounts before
+its text, and the delayed reveal changes the text in that existing region. The
+root is not focusable and adds no motion beyond Fluent's spinner.
+
 ## Development
 
 ```bash

@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-17 15:00
-> **Progress**: 11/49 tasks (22%)
+> **Last Updated**: 2026-10-17 15:04
+> **Progress**: 16/49 tasks (33%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -102,20 +102,20 @@ task-size criteria in the make-plan quality checklist).
 **Reference**: [07](07-testing-strategy.md) §Implementation Tests, §SSR Smoke Cases · [03-01](03-01-loading.md) §Styles · AR-10, AR-11
 **Objective**: Cover the internals, show every variant, add the early node smoke and document the filler.
 
-- [ ] 1.3.1 Write the `Loading` implementation tests (class merge, structure, indicator `aria-hidden` ownership, timer cleanup and delay normalization) — `test/loading.impl.test.tsx`
-- [ ] 1.3.2 Write the `Loading` story (default, sizes, label positions, fixed-height parent, delayed reveal) — `src/components/Loading/Loading.stories.tsx`
-- [ ] 1.3.3 Add the README `Loading` section, props table, accessibility note and composition patterns — `README.md`
-- [ ] 1.3.4 Add the `Loading` SSR smoke case (ST-46) — `test/loading.ssr.test.tsx`
-- [ ] 1.3.5 Full phase verification, including the Storybook build — `pnpm verify`, `pnpm storybook:build`
+- [x] 1.3.1 Write the `Loading` implementation tests (class merge, structure, indicator `aria-hidden` ownership, timer cleanup and delay normalization) — `test/loading.impl.test.tsx` ✅ (completed: 2026-10-17 15:02)
+- [x] 1.3.2 Write the `Loading` story (default, sizes, label positions, fixed-height parent, delayed reveal) — `src/components/Loading/Loading.stories.tsx` ✅ (completed: 2026-10-17 15:02)
+- [x] 1.3.3 Add the README `Loading` section, props table, accessibility note and composition patterns — `README.md` ✅ (completed: 2026-10-17 15:02)
+- [x] 1.3.4 Add the `Loading` SSR smoke case (ST-46) — `test/loading.ssr.test.tsx` ✅ (completed: 2026-10-17 15:02)
+- [x] 1.3.5 Full phase verification, including the Storybook build — `pnpm verify`, `pnpm storybook:build` ✅ (completed: 2026-10-17 15:04)
 
 **Deliverables**:
 
-- [ ] `Loading` is exported and its spec tests are green.
-- [ ] The status/delay/native-prop contract is covered by spec and impl tests.
-- [ ] The story shows every documented variant.
-- [ ] The SSR smoke covers the server render.
-- [ ] The README section is complete.
-- [ ] All verification passing.
+- [x] `Loading` is exported and its spec tests are green.
+- [x] The status/delay/native-prop contract is covered by spec and impl tests.
+- [x] The story shows every documented variant.
+- [x] The SSR smoke covers the server render.
+- [x] The README section is complete.
+- [x] All verification passing.
 
 **Verify**: `pnpm verify` and `pnpm storybook:build`
 
@@ -178,7 +178,7 @@ task-size criteria in the make-plan quality checklist).
 - [ ] The story shows app-owned and fast-operation cases.
 - [ ] The SSR smoke covers the overlay's server render.
 - [ ] The README section documents focus, inert, announcement behavior and the portaled/fixed-content limitation.
-- [ ] All verification passing.
+- [x] All verification passing.
 
 **Verify**: `pnpm verify` and `pnpm storybook:build`
 
@@ -236,7 +236,7 @@ task-size criteria in the make-plan quality checklist).
 - [ ] Ref-counting, labels, error propagation and unmount safety are covered.
 - [ ] The integration story and the complete SSR smoke exist.
 - [ ] The README documents the hook and the decision table.
-- [ ] All verification passing.
+- [x] All verification passing.
 
 **Verify**: `pnpm verify` and `pnpm storybook:build`
 
