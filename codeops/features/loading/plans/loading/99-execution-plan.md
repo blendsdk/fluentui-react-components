@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-17 15:53
-> **Progress**: 48/49 tasks (98%)
+> **Last Updated**: 2026-10-18 13:24
+> **Progress**: 49/49 tasks (100%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -267,7 +267,7 @@ task-size criteria in the make-plan quality checklist).
 - [x] 4.1.2 Verify README links, props tables, decision table and export pins agree with the implemented surface — `README.md`, `src/index.ts`, `test/package-exports.spec.test.ts` ✅ (completed: 2026-10-17 15:33)
 - [x] 4.1.3 Build Storybook and verify the stories compile — `pnpm storybook:build` ✅ (completed: 2026-10-17 15:33)
 - [x] 4.1.4 Run the full repository gate — `pnpm verify` ✅ (completed: 2026-10-17 15:33)
-- [!] 4.1.5 Complete the manual accessibility checklist below in a real browser, then record the observed result and pass/fail in the table — this document (table below) Blocked: requires a real browser and assistive technology (user-owned)
+- [x] 4.1.5 Complete the manual accessibility checklist below in a real browser, then record the observed result and pass/fail in the table — this document (table below) ✅ (completed: 2026-10-18 13:24; user-reported all ten checks pass)
 
 **Manual accessibility checklist (4.1.5):**
 
@@ -275,32 +275,36 @@ task-size criteria in the make-plan quality checklist).
 > when the observed result matches the expected result. The table must be complete before Phase 4 is
 > marked done; browser and screen-reader execution remains user-owned.
 
-| #    | Browser | Screen reader | Scenario                                                             | Expected result                                                                        | Observed result | Pass/Fail |
-| ---- | ------- | ------------- | -------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | --------------- | --------- |
-| M-1  |         |               | Inert blur: focus a control inside the content, start loading        | Focus moves to the named overlay root; no focus is lost to the document                |                 |           |
-| M-2  |         |               | Focus restore: end loading after M-1                                 | Focus returns to the reveal-time element (or the loading-start element)                |                 |           |
-| M-3  |         |               | Pointer blocking: click or tap covered in-flow content while visible | No click, navigation or control activation occurs                                      |                 |           |
-| M-4  |         |               | Idle state: `loading={false}`                                        | No scrim, no status text and the content is interactive                                |                 |           |
-| M-5  |         |               | Announcement: reveal the overlay                                     | The label is announced once; the root name does not double-announce                    |                 |           |
-| M-6  |         |               | Focus ring: focus the overlay root                                   | No visible ring on the root, as designed, without confusing the user                   |                 |           |
-| M-7  |         |               | Portaled `Menu` and sticky header inside the content                 | Record whether either escapes the scrim; the known region-scoped limitation            |                 |           |
-| M-8  |         |               | Light and dark theme, forced colors and reduced motion               | Scrim and label remain legible in both themes; no extra motion beyond Fluent's spinner |                 |           |
-| M-9  |         |               | Busy semantics: inspect the content wrapper while `loading` is true  | `aria-busy` is exposed on the `display: contents` wrapper; if not, record the fallback |                 |           |
-| M-10 |         |               | Region scope: a 200×200 container with short content                 | The scrim covers the entire 200×200 box; the rest of the page stays interactive        |                 |           |
+| #    | Browser       | Screen reader | Scenario                                                             | Expected result                                                                        | Observed result                 | Pass/Fail |
+| ---- | ------------- | ------------- | -------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | ------------------------------- | --------- |
+| M-1  | User-reported | User-reported | Inert blur: focus a control inside the content, start loading        | Focus moves to the named overlay root; no focus is lost to the document                | Pass — user-reported 2026-10-18 | Pass      |
+| M-2  | User-reported | User-reported | Focus restore: end loading after M-1                                 | Focus returns to the reveal-time element (or the loading-start element)                | Pass — user-reported 2026-10-18 | Pass      |
+| M-3  | User-reported | User-reported | Pointer blocking: click or tap covered in-flow content while visible | No click, navigation or control activation occurs                                      | Pass — user-reported 2026-10-18 | Pass      |
+| M-4  | User-reported | User-reported | Idle state: `loading={false}`                                        | No scrim, no status text and the content is interactive                                | Pass — user-reported 2026-10-18 | Pass      |
+| M-5  | User-reported | User-reported | Announcement: reveal the overlay                                     | The label is announced once; the root name does not double-announce                    | Pass — user-reported 2026-10-18 | Pass      |
+| M-6  | User-reported | User-reported | Focus ring: focus the overlay root                                   | No visible ring on the root, as designed, without confusing the user                   | Pass — user-reported 2026-10-18 | Pass      |
+| M-7  | User-reported | User-reported | Portaled `Menu` and sticky header inside the content                 | Record whether either escapes the scrim; the known region-scoped limitation            | Pass — user-reported 2026-10-18 | Pass      |
+| M-8  | User-reported | User-reported | Light and dark theme, forced colors and reduced motion               | Scrim and label remain legible in both themes; no extra motion beyond Fluent's spinner | Pass — user-reported 2026-10-18 | Pass      |
+| M-9  | User-reported | User-reported | Busy semantics: inspect the content wrapper while `loading` is true  | `aria-busy` is exposed on the `display: contents` wrapper; if not, record the fallback | Pass — user-reported 2026-10-18 | Pass      |
+| M-10 | User-reported | User-reported | Region scope: a 200×200 container with short content                 | The scrim covers the entire 200×200 box; the rest of the page stays interactive        | Pass — user-reported 2026-10-18 | Pass      |
 
+> **Manual pass record (2026-10-18):** the user reported that all ten checks passed in a real
+> browser and assistive-technology session. The specific browser and AT versions were not
+> recorded; the rows above are user-reported observations, not an independent agent run.
+>
 > **Audit record (4.1.1–4.1.4):** every public component, prop, hook member and exported type
 > carries a teaching-tone doc comment; non-trivial internals (delayed visibility, label resolution,
 > focus algorithm, shared indicator) are documented too. No planning, requirement or task reference
 > appears in shipped code or comments. The README props tables match the exported types, the
 > decision table and migration note cover the three pieces, and the export pin is exact. Storybook
-> compiles, and `pnpm verify` passes (28 test files, 288 tests).
+> compiles, and `pnpm verify` passes (28 test files, 289 tests).
 
 **Deliverables**:
 
 - [x] The public surface matches RD-01 R14 and the export pin.
 - [x] Documentation is complete and free of planning references.
 - [x] Storybook and `pnpm verify` pass.
-- [ ] The manual accessibility checklist table is completed with observed results.
+- [x] The manual accessibility checklist table is completed with user-reported results (2026-10-18).
 
 **Verify**: `pnpm verify` and `pnpm storybook:build`
 
@@ -324,18 +328,29 @@ and the review boundary explicit.
 
 ---
 
+## Closure Record
+
+**Closed**: 2026-10-18 13:24
+
+- All 49 tasks are complete. Task 4.1.5 records the user's report that all ten manual
+  accessibility checks passed; the browser and AT versions were not recorded.
+- Package `0.2.1` contains the loading primitives and the contrast/story changes. This
+  closure changes repository documents only; no additional release is required.
+- If independent accessibility evidence is required later, re-run the checklist and record
+  the browser and AT versions.
+
 ## Success Criteria
 
 **Feature is complete when:**
 
-1. [ ] All 49 tasks are checked `[x]` — 48/49 done; 4.1.5 waits on DEF-01 (manual accessibility pass).
+1. [x] All 49 tasks are checked `[x]` — 49/49 done; 4.1.5 is user-reported pass on 2026-10-18.
 2. ✅ All verification passing (`pnpm verify`).
-3. [ ] `pnpm storybook:build` succeeds — done; the manual checklist table waits on DEF-01.
+3. [x] `pnpm storybook:build` succeeds — done; manual checklist recorded as user-reported pass.
 4. ✅ No warnings or errors.
 5. ✅ No dead code — no unused parameters, helpers, modules or exports.
 6. ✅ Security surface is N/A and documented: UI-only, no user input path, no network/storage, no
    HTML parsing, no auth or rate-limit surface.
 7. ✅ Documentation updated: JSDoc, README sections, props tables, decision table and stories.
 8. ✅ Code reviewed through the repository's quality profile — phase reviews 1–4 recorded, including the fix-diff re-review.
-9. [ ] Post-completion project re-analysis and roadmap sync (handled by the exec-plan skill).
+9. [x] Post-completion project re-analysis and roadmap sync (handled by the exec-plan skill).
 10. ✅ `--auto-commit` execution mode applied by exec-plan (commit and push after each verified task).
