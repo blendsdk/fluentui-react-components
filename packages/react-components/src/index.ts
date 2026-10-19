@@ -53,6 +53,8 @@ export { FormCheckboxField } from './components/FormCheckboxField';
 export type { FormCheckboxFieldProps } from './components/FormCheckboxField';
 export { FormComboboxField } from './components/FormComboboxField';
 export type { FormComboboxFieldProps } from './components/FormComboboxField';
+export { FormDatePickerField } from './components/FormDatePickerField';
+export type { FormDatePickerFieldProps } from './components/FormDatePickerField';
 export { FormDropdownField } from './components/FormDropdownField';
 export type { FormDropdownFieldProps } from './components/FormDropdownField';
 export { FormRadioGroupField } from './components/FormRadioGroupField';
