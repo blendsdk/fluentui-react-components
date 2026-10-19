@@ -38,15 +38,15 @@ export type FormDropdownFieldProps<
     SelectionFieldValue
   >,
 > = Omit<
-    DropdownProps,
-    | 'value'
-    | 'defaultValue'
-    | 'selectedOptions'
-    | 'defaultSelectedOptions'
-    | 'onOptionSelect'
-    | 'multiselect'
-    | 'name'
-  > &
+  DropdownProps,
+  | 'value'
+  | 'defaultValue'
+  | 'selectedOptions'
+  | 'defaultSelectedOptions'
+  | 'onOptionSelect'
+  | 'multiselect'
+  | 'name'
+> &
   FormFieldBaseProps<TFieldValues, TName> & {
     /**
      * Resolves the visible text for a stored option value.

@@ -1,12 +1,13 @@
 import { mergeCallbacks, useMergedRefs } from '@fluentui/react-components';
-import type { DropdownProps, OptionOnSelectData, SelectionEvents } from '@fluentui/react-components';
+import type {
+  DropdownProps,
+  OptionOnSelectData,
+  SelectionEvents,
+} from '@fluentui/react-components';
 import type { FocusEventHandler, ReactNode, Ref } from 'react';
 import type { FieldPathByValue, FieldValues } from 'react-hook-form';
 import type { SelectionFieldValue } from '../../forms/FormField.types';
-import {
-  resolveOptionText,
-  toSelectedOptions,
-} from '../../forms/formFieldValues';
+import { resolveOptionText, toSelectedOptions } from '../../forms/formFieldValues';
 import { useFormField } from '../../forms/useFormField';
 import type { FormDropdownFieldProps } from './FormDropdownField.types';
 

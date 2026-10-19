@@ -151,11 +151,7 @@ export const WithError: Story = {
       error={{ name: 'color', message: 'Pick a color' }}
     >
       {form => (
-        <FormDropdownField<StoryValues, 'color'>
-          control={form.control}
-          name="color"
-          label="Color"
-        >
+        <FormDropdownField<StoryValues, 'color'> control={form.control} name="color" label="Color">
           <ColorOptions />
         </FormDropdownField>
       )}

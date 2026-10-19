@@ -29,7 +29,12 @@ function ColorOptions() {
 describe('FormDropdownField', () => {
   it('renders the label and the placeholder when there is no value', () => {
     renderWithForm<Values>({ defaultValues: { color: undefined } }, form => (
-      <FormDropdownField control={form.control} name="color" label="Color" placeholder="Pick a color">
+      <FormDropdownField
+        control={form.control}
+        name="color"
+        label="Color"
+        placeholder="Pick a color"
+      >
         <ColorOptions />
       </FormDropdownField>
     ));
