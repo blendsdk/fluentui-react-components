@@ -49,6 +49,10 @@ export type {
   ErrorDialogProps,
   ErrorDialogStrings,
 } from './components/ErrorDialog';
+export { FormCheckboxField } from './components/FormCheckboxField';
+export type { FormCheckboxFieldProps } from './components/FormCheckboxField';
+export { FormSwitchField } from './components/FormSwitchField';
+export type { FormSwitchFieldProps } from './components/FormSwitchField';
 export { FormTextField } from './components/FormTextField';
 export type { FormTextFieldProps } from './components/FormTextField';
 export { FormTextareaField } from './components/FormTextareaField';
