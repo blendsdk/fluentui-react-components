@@ -100,9 +100,20 @@ describe('FormRadioGroupField', () => {
     expect(label).toHaveTextContent('*');
   });
 
-  it('disables every radio in the group', () => {
-    renderWithForm<Values>({ defaultValues: { plan: '' } }, form => (
+  it('disables every radio through the prop and the form-level state', () => {
+    const first = renderWithForm<Values>({ defaultValues: { plan: '' } }, form => (
       <FormRadioGroupField control={form.control} name="plan" label="Plan" disabled>
+        <Radio value="free" label="Free" />
+        <Radio value="pro" label="Pro" />
+      </FormRadioGroupField>
+    ));
+
+    expect(screen.getByRole('radio', { name: 'Free' })).toBeDisabled();
+    expect(screen.getByRole('radio', { name: 'Pro' })).toBeDisabled();
+    first.unmount();
+
+    renderWithForm<Values>({ defaultValues: { plan: '' }, disabled: true }, form => (
+      <FormRadioGroupField control={form.control} name="plan" label="Plan">
         <Radio value="free" label="Free" />
         <Radio value="pro" label="Pro" />
       </FormRadioGroupField>

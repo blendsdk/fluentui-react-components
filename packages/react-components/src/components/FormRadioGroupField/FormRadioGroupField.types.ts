@@ -1,6 +1,6 @@
 import type { RadioGroupProps } from '@fluentui/react-components';
 import type { FieldPathByValue, FieldValues } from 'react-hook-form';
-import type { FormFieldBaseProps } from '../../forms/FormField.types';
+import type { FormFieldBaseProps, SelectionFieldValue } from '../../forms/FormField.types';
 
 /**
  * Props of the radio group field bound to React Hook Form.
@@ -11,6 +11,10 @@ import type { FormFieldBaseProps } from '../../forms/FormField.types';
  * The wrapper omits `value`, `defaultValue`, `onChange`, `name`, and
  * `required`; every other `RadioGroup` prop passes through, including
  * `disabled` and `layout`.
+ *
+ * An empty string represents no selection. The group root is a `div`, so
+ * React Hook Form's focus-on-error cannot focus it; the error is associated
+ * and announced instead.
  *
  * @typeParam TFieldValues - the shape of the form values
  * @typeParam TName - a string field path inside `TFieldValues`
@@ -25,9 +29,9 @@ import type { FormFieldBaseProps } from '../../forms/FormField.types';
  */
 export type FormRadioGroupFieldProps<
   TFieldValues extends FieldValues = FieldValues,
-  TName extends FieldPathByValue<TFieldValues, string | undefined> = FieldPathByValue<
+  TName extends FieldPathByValue<TFieldValues, SelectionFieldValue> = FieldPathByValue<
     TFieldValues,
-    string | undefined
+    SelectionFieldValue
   >,
 > = Omit<RadioGroupProps, 'value' | 'defaultValue' | 'onChange' | 'name' | 'required'> &
   FormFieldBaseProps<TFieldValues, TName>;

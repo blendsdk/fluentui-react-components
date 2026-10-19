@@ -2,6 +2,7 @@ import { mergeCallbacks, useMergedRefs } from '@fluentui/react-components';
 import type { RadioGroupOnChangeData, RadioGroupProps } from '@fluentui/react-components';
 import type { FocusEventHandler, FormEvent, ReactNode, Ref } from 'react';
 import type { FieldPathByValue, FieldValues } from 'react-hook-form';
+import type { SelectionFieldValue } from '../../forms/FormField.types';
 import { useFormField } from '../../forms/useFormField';
 import type { FormRadioGroupFieldProps } from './FormRadioGroupField.types';
 
@@ -48,7 +49,7 @@ export type FormRadioGroupFieldState = {
  */
 export function useFormRadioGroupField<
   TFieldValues extends FieldValues,
-  TName extends FieldPathByValue<TFieldValues, string | undefined>,
+  TName extends FieldPathByValue<TFieldValues, SelectionFieldValue>,
 >(
   props: FormRadioGroupFieldProps<TFieldValues, TName>,
   ref: Ref<HTMLDivElement>
