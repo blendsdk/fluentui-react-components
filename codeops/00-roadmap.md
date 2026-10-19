@@ -1,8 +1,8 @@
 # Portfolio Roadmap: Fluent UI React Components
 
 > **Status**: Active
-> **Last Updated**: 2026-10-18
-> **Features**: 4 / 4 done
+> **Last Updated**: 2026-10-19 14:00
+> **Features**: 5 / 5 done
 > **CodeOps Artifact Schema**: 1
 
 ## Legend
@@ -17,6 +17,7 @@
 | confirm-dialog | [→](features/confirm-dialog/00-roadmap.md) | 1 plan done · 2 RDs done | 2/2 RDs  | ✅     | 2026-10-16   |
 | app-launcher   | [→](features/app-launcher/00-roadmap.md)   | 1 plan done · 2 RDs done | 2/2 RDs  | ✅     | 2026-10-16   |
 | loading        | [→](features/loading/00-roadmap.md)        | 1 plan done · 1 RD done  | 1/1 RDs  | ✅     | 2026-10-18   |
+| form-fields    | [→](features/form-fields/00-roadmap.md)    | 1 plan done · 1 RD done  | 1/1 RDs  | ✅     | 2026-10-19   |
 
 ## Archived
 
