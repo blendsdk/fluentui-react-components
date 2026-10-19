@@ -5,6 +5,7 @@ import { FormTextareaField } from '../FormTextareaField';
 
 type StoryValues = {
   notes: string;
+  count?: number;
 };
 
 const meta: Meta<typeof FormTextareaField> = {
@@ -143,6 +144,26 @@ export const ReadOnly: Story = {
           name="notes"
           label="Notes"
           readOnly
+        />
+      )}
+    </StoryForm>
+  ),
+};
+
+/**
+ * A numeric field whose raw keystrokes stay visible while the form stores a
+ * number.
+ */
+export const Numeric: Story = {
+  render: (): ReactElement => (
+    <StoryForm<StoryValues> defaultValues={{ count: 5 }}>
+      {form => (
+        <FormTextareaField<StoryValues, 'count'>
+          control={form.control}
+          name="count"
+          label="Count"
+          hint="Whole units"
+          parse={value => (value === '' ? undefined : Number(value))}
         />
       )}
     </StoryForm>

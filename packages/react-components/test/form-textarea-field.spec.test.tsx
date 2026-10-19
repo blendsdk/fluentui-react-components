@@ -5,6 +5,7 @@ import { renderWithForm } from './form-test-utils';
 
 type Values = {
   notes: string;
+  count?: number;
 };
 
 describe('FormTextareaField', () => {
@@ -27,6 +28,31 @@ describe('FormTextareaField', () => {
 
     expect(form.getValues('notes')).toBe('World');
     expect(screen.getByRole('textbox', { name: 'Notes' })).toHaveValue('World');
+  });
+
+  it('parses numeric input while keeping partial text visible', () => {
+    const { form } = renderWithForm<Values>({ defaultValues: { count: 5 } }, form => (
+      <FormTextareaField
+        control={form.control}
+        name="count"
+        label="Count"
+        parse={value => (value === '' ? undefined : Number(value))}
+      />
+    ));
+
+    const textarea = screen.getByRole('textbox', { name: 'Count' });
+
+    fireEvent.change(textarea, { target: { value: '42' } });
+    expect(form.getValues('count')).toBe(42);
+    expect(textarea).toHaveValue('42');
+
+    fireEvent.change(textarea, { target: { value: '1.' } });
+    expect(form.getValues('count')).toBe(1);
+    expect(textarea).toHaveValue('1.');
+
+    fireEvent.change(textarea, { target: { value: '-' } });
+    expect(form.getValues('count')).toBeNaN();
+    expect(textarea).toHaveValue('-');
   });
 
   it('marks the field touched on blur and calls a caller onBlur', () => {
