@@ -44,8 +44,9 @@ export function App() {
 
 Eight field wrappers bind the Fluent UI v9 primitives to React Hook Form. Each
 wrapper calls `useController` once, reads the value from `field.value`, writes
-through `field.onChange`, and renders label, hint, required state and the
-validation message through Fluent's `Field`.
+through `field.onChange`, and composes Fluent's `Field` for the hint, required
+state and validation message. Text, selection and date fields also render their
+label through `Field`; Checkbox and Switch keep the primitive's own label.
 
 | Component             | Fluent UI primitive                                   |
 | --------------------- | ----------------------------------------------------- |
@@ -65,6 +66,7 @@ import { useForm } from 'react-hook-form';
 import {
   FormTextField,
   FormCheckboxField,
+  FormDatePickerField,
   FormDropdownField,
 } from '@blendsdk/fluentui-react-components';
 import { Option } from '@fluentui/react-components';
@@ -74,6 +76,7 @@ type Values = {
   height?: number;
   active: boolean;
   color?: string;
+  startDate?: Date | null;
 };
 
 const optionLabels: Record<string, string> = { red: 'Red', blue: 'Blue' };
@@ -122,8 +125,8 @@ const form = useForm<Values>({
   read-only state.
 - Checkbox and Switch render their own labels; `Field` supplies only the hint,
   validation message and required state for them.
-- Zod and `@hookform/resolvers` stay application dependencies. The component
-  package only declares React Hook Form as a peer.
+- Zod and `@hookform/resolvers` stay application dependencies. Of the
+  validation libraries, the package declares only React Hook Form as a peer.
 
 ### Selection fields
 
