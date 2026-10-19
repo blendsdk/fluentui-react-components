@@ -93,9 +93,7 @@ export function useFormComboboxField<
 
   const { field, errorMessage, isDisabled } = useFormField(control, name, disabled);
   const controlRef = useMergedRefs(ref, field.ref);
-  const [inputText, setInputText] = useState(() =>
-    resolveOptionText(field.value, getOptionText)
-  );
+  const [inputText, setInputText] = useState(() => resolveOptionText(field.value, getOptionText));
   const lastEmitted = useRef<string>(String(field.value ?? ''));
 
   useLayoutEffect(() => {

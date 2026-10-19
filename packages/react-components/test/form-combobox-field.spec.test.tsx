@@ -195,14 +195,28 @@ describe('FormComboboxField', () => {
     expect(label).toHaveTextContent('*');
   });
 
-  it('disables the input', () => {
-    renderWithForm<Values>({ defaultValues: { color: 'blue' } }, form => (
+  it('disables the input through the prop and the form-level state', () => {
+    const first = renderWithForm<Values>({ defaultValues: { color: 'blue' } }, form => (
       <FormComboboxField
         control={form.control}
         name="color"
         label="Color"
         getOptionText={getOptionText}
         disabled
+      >
+        <ColorOptions />
+      </FormComboboxField>
+    ));
+
+    expect(screen.getByRole('combobox', { name: 'Color' })).toBeDisabled();
+    first.unmount();
+
+    renderWithForm<Values>({ defaultValues: { color: 'blue' }, disabled: true }, form => (
+      <FormComboboxField
+        control={form.control}
+        name="color"
+        label="Color"
+        getOptionText={getOptionText}
       >
         <ColorOptions />
       </FormComboboxField>

@@ -39,18 +39,18 @@ export type FormComboboxFieldProps<
     SelectionFieldValue
   >,
 > = Omit<
-    ComboboxProps,
-    | 'value'
-    | 'defaultValue'
-    | 'selectedOptions'
-    | 'defaultSelectedOptions'
-    | 'onOptionSelect'
-    | 'onInput'
-    | 'onChange'
-    | 'multiselect'
-    | 'freeform'
-    | 'name'
-  > &
+  ComboboxProps,
+  | 'value'
+  | 'defaultValue'
+  | 'selectedOptions'
+  | 'defaultSelectedOptions'
+  | 'onOptionSelect'
+  | 'onInput'
+  | 'onChange'
+  | 'multiselect'
+  | 'freeform'
+  | 'name'
+> &
   FormFieldBaseProps<TFieldValues, TName> & {
     /**
      * Resolves the visible text for a stored option value.

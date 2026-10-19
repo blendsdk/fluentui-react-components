@@ -23,6 +23,7 @@ import type {
   ErrorDialogProps,
   ErrorDialogStrings,
   FormCheckboxFieldProps,
+  FormComboboxFieldProps,
   FormDropdownFieldProps,
   FormRadioGroupFieldProps,
   FormSwitchFieldProps,
@@ -54,6 +55,7 @@ describe('package export surface', () => {
       'DescriptionListItem',
       'ErrorDialog',
       'FormCheckboxField',
+      'FormComboboxField',
       'FormDropdownField',
       'FormRadioGroupField',
       'FormSwitchField',
@@ -348,6 +350,19 @@ describe('package export surface', () => {
     type FormValues = { color?: string };
     const control = {} as Control<FormValues>;
     const props: FormDropdownFieldProps<FormValues, 'color'> = {
+      control,
+      name: 'color',
+      label: 'Color',
+      getOptionText: value => value.toUpperCase(),
+    };
+
+    expect(props.getOptionText?.('blue')).toBe('BLUE');
+  });
+
+  it('exports the public FormComboboxField type', () => {
+    type FormValues = { color?: string };
+    const control = {} as Control<FormValues>;
+    const props: FormComboboxFieldProps<FormValues, 'color'> = {
       control,
       name: 'color',
       label: 'Color',
