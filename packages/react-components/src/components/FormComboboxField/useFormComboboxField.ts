@@ -125,7 +125,7 @@ export function useFormComboboxField<
     const next = data.optionValue ?? '';
     lastEmitted.current = next;
     field.onChange(next);
-    setInputText(data.optionText ?? resolveOptionText(next, getOptionText));
+    setInputText(next === '' ? '' : (data.optionText ?? resolveOptionText(next, getOptionText)));
   };
 
   const handleBlur = mergeCallbacks(onBlur, () => {

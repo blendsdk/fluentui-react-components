@@ -18,7 +18,8 @@ import type { FormFieldBaseProps, SelectionFieldValue } from '../../forms/FormFi
  *
  * Fluent's clear affordance is pointer-only. For a keyboard-accessible clear,
  * include an option with an empty value (for example
- * `<Option value="">None</Option>`); selecting it stores the empty string.
+ * `<Option value="">None</Option>`); selecting it stores the empty string and
+ * clears the input.
  *
  * @typeParam TFieldValues - the shape of the form values
  * @typeParam TName - a string field path inside `TFieldValues`

@@ -29,7 +29,8 @@ FormComboboxFieldBase.displayName = 'FormComboboxField';
  *
  * Fluent's clear affordance is pointer-only. For a keyboard-accessible clear,
  * include an option with an empty value, such as
- * `<Option value="">None</Option>`; selecting it stores the empty string.
+ * `<Option value="">None</Option>`; selecting it stores the empty string and
+ * clears the input.
  *
  * @example
  * ```tsx
