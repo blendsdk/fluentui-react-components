@@ -23,6 +23,7 @@ import type {
   ErrorDialogProps,
   ErrorDialogStrings,
   FormCheckboxFieldProps,
+  FormRadioGroupFieldProps,
   FormSwitchFieldProps,
   FormTextFieldProps,
   FormTextareaFieldProps,
@@ -52,6 +53,7 @@ describe('package export surface', () => {
       'DescriptionListItem',
       'ErrorDialog',
       'FormCheckboxField',
+      'FormRadioGroupField',
       'FormSwitchField',
       'FormTextField',
       'FormTextareaField',
@@ -326,5 +328,17 @@ describe('package export surface', () => {
     };
 
     expect(props.label).toBe('Enable feature');
+  });
+
+  it('exports the public FormRadioGroupField type', () => {
+    type FormValues = { plan: 'free' | 'pro' };
+    const control = {} as Control<FormValues>;
+    const props: FormRadioGroupFieldProps<FormValues, 'plan'> = {
+      control,
+      name: 'plan',
+      label: 'Plan',
+    };
+
+    expect(props.label).toBe('Plan');
   });
 });

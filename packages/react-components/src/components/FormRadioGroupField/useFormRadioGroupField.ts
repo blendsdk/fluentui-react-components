@@ -58,10 +58,7 @@ export function useFormRadioGroupField<
   const { field, errorMessage, isDisabled } = useFormField(control, name, disabled);
   const controlRef = useMergedRefs(ref, field.ref);
 
-  const handleChange = (
-    _event: FormEvent<HTMLDivElement>,
-    data: RadioGroupOnChangeData
-  ): void => {
+  const handleChange = (_event: FormEvent<HTMLDivElement>, data: RadioGroupOnChangeData): void => {
     field.onChange(data.value);
   };
 

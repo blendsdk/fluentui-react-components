@@ -58,11 +58,7 @@ export const Default: Story = {
   render: (): ReactElement => (
     <StoryForm<StoryValues> defaultValues={{ plan: '' }}>
       {form => (
-        <FormRadioGroupField<StoryValues, 'plan'>
-          control={form.control}
-          name="plan"
-          label="Plan"
-        >
+        <FormRadioGroupField<StoryValues, 'plan'> control={form.control} name="plan" label="Plan">
           <PlanOptions />
         </FormRadioGroupField>
       )}
@@ -77,11 +73,7 @@ export const Selected: Story = {
   render: (): ReactElement => (
     <StoryForm<StoryValues> defaultValues={{ plan: 'pro' }}>
       {form => (
-        <FormRadioGroupField<StoryValues, 'plan'>
-          control={form.control}
-          name="plan"
-          label="Plan"
-        >
+        <FormRadioGroupField<StoryValues, 'plan'> control={form.control} name="plan" label="Plan">
           <PlanOptions />
         </FormRadioGroupField>
       )}
@@ -139,11 +131,7 @@ export const WithError: Story = {
       error={{ name: 'plan', message: 'Choose a plan' }}
     >
       {form => (
-        <FormRadioGroupField<StoryValues, 'plan'>
-          control={form.control}
-          name="plan"
-          label="Plan"
-        >
+        <FormRadioGroupField<StoryValues, 'plan'> control={form.control} name="plan" label="Plan">
           <PlanOptions />
         </FormRadioGroupField>
       )}
