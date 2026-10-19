@@ -23,6 +23,7 @@ import type {
   ErrorDialogProps,
   ErrorDialogStrings,
   FormTextFieldProps,
+  FormTextareaFieldProps,
   LoadingController,
   LoadingOptions,
   LoadingOverlayProps,
@@ -49,6 +50,7 @@ describe('package export surface', () => {
       'DescriptionListItem',
       'ErrorDialog',
       'FormTextField',
+      'FormTextareaField',
       'Loading',
       'LoadingOverlay',
       'SystemErrorProvider',
@@ -284,5 +286,17 @@ describe('package export surface', () => {
     expect(textProps.label).toBe('Name');
     expect(numberProps.parse?.('42')).toBe(42);
     expect(dateProps.name).toBe('when');
+  });
+
+  it('exports the public FormTextareaField type', () => {
+    type FormValues = { notes: string };
+    const control = {} as Control<FormValues>;
+    const props: FormTextareaFieldProps<FormValues, 'notes'> = {
+      control,
+      name: 'notes',
+      label: 'Notes',
+    };
+
+    expect(props.label).toBe('Notes');
   });
 });
