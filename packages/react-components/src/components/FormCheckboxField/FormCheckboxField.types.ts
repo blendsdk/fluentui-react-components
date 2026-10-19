@@ -33,7 +33,7 @@ export type FormCheckboxFieldProps<
     CheckboxFieldValue
   >,
 > = Omit<
-    CheckboxProps,
-    'checked' | 'defaultChecked' | 'onChange' | 'label' | 'children' | 'name' | 'value'
-  > &
+  CheckboxProps,
+  'checked' | 'defaultChecked' | 'onChange' | 'label' | 'children' | 'name' | 'value'
+> &
   FormFieldBaseProps<TFieldValues, TName>;

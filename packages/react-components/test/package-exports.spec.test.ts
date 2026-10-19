@@ -22,6 +22,8 @@ import type {
   ErrorDialogKind,
   ErrorDialogProps,
   ErrorDialogStrings,
+  FormCheckboxFieldProps,
+  FormSwitchFieldProps,
   FormTextFieldProps,
   FormTextareaFieldProps,
   LoadingController,
@@ -49,6 +51,8 @@ describe('package export surface', () => {
       'DescriptionList',
       'DescriptionListItem',
       'ErrorDialog',
+      'FormCheckboxField',
+      'FormSwitchField',
       'FormTextField',
       'FormTextareaField',
       'Loading',
@@ -298,5 +302,29 @@ describe('package export surface', () => {
     };
 
     expect(props.label).toBe('Notes');
+  });
+
+  it('exports the public FormCheckboxField type', () => {
+    type FormValues = { active: boolean; mixed?: 'mixed' };
+    const control = {} as Control<FormValues>;
+    const props: FormCheckboxFieldProps<FormValues, 'active'> = {
+      control,
+      name: 'active',
+      label: 'Enable feature',
+    };
+
+    expect(props.label).toBe('Enable feature');
+  });
+
+  it('exports the public FormSwitchField type', () => {
+    type FormValues = { enabled: boolean };
+    const control = {} as Control<FormValues>;
+    const props: FormSwitchFieldProps<FormValues, 'enabled'> = {
+      control,
+      name: 'enabled',
+      label: 'Enable feature',
+    };
+
+    expect(props.label).toBe('Enable feature');
   });
 });

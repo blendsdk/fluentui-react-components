@@ -58,10 +58,7 @@ export function useFormSwitchField<
   const { field, errorMessage, isDisabled } = useFormField(control, name, disabled);
   const controlRef = useMergedRefs(ref, field.ref);
 
-  const handleChange = (
-    _event: ChangeEvent<HTMLInputElement>,
-    data: SwitchOnChangeData
-  ): void => {
+  const handleChange = (_event: ChangeEvent<HTMLInputElement>, data: SwitchOnChangeData): void => {
     field.onChange(data.checked);
   };
 

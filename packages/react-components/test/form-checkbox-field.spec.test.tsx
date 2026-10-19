@@ -82,12 +82,7 @@ describe('FormCheckboxField', () => {
 
   it('disables the checkbox', () => {
     renderWithForm<Values>({ defaultValues: { active: false } }, form => (
-      <FormCheckboxField
-        control={form.control}
-        name="active"
-        label="Enable feature"
-        disabled
-      />
+      <FormCheckboxField control={form.control} name="active" label="Enable feature" disabled />
     ));
 
     const checkbox = screen.getByRole('checkbox', { name: 'Enable feature' });

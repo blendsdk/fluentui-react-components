@@ -14,11 +14,7 @@ import type { FormCheckboxFieldState } from './useFormCheckboxField';
  */
 export function renderFormCheckboxField(state: FormCheckboxFieldState): ReactElement {
   return (
-    <Field
-      hint={state.hint}
-      required={state.required}
-      validationMessage={state.errorMessage}
-    >
+    <Field hint={state.hint} required={state.required} validationMessage={state.errorMessage}>
       <Checkbox {...state.checkboxProps} label={state.label} ref={state.controlRef} />
     </Field>
   );

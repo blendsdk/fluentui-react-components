@@ -14,11 +14,7 @@ import type { FormSwitchFieldState } from './useFormSwitchField';
  */
 export function renderFormSwitchField(state: FormSwitchFieldState): ReactElement {
   return (
-    <Field
-      hint={state.hint}
-      required={state.required}
-      validationMessage={state.errorMessage}
-    >
+    <Field hint={state.hint} required={state.required} validationMessage={state.errorMessage}>
       <Switch {...state.switchProps} label={state.label} ref={state.controlRef} />
     </Field>
   );

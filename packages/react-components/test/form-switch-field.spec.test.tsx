@@ -81,12 +81,7 @@ describe('FormSwitchField', () => {
 
   it('supports disabled and disabledFocusable', () => {
     const first = renderWithForm<Values>({ defaultValues: { enabled: false } }, form => (
-      <FormSwitchField
-        control={form.control}
-        name="enabled"
-        label="Enable feature"
-        disabled
-      />
+      <FormSwitchField control={form.control} name="enabled" label="Enable feature" disabled />
     ));
 
     expect(screen.getByRole('switch', { name: 'Enable feature' })).toBeDisabled();
