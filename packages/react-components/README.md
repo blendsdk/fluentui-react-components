@@ -13,8 +13,13 @@ instance and one Griffel style sheet — the single-instance setup that makes
 `FluentProvider` theming work.
 
 ```bash
-pnpm add @blendsdk/fluentui-react-components @fluentui/react-components @fluentui/react-icons react react-dom
+pnpm add @blendsdk/fluentui-react-components @fluentui/react-components @fluentui/react-icons @fluentui/react-datepicker-compat react react-dom react-hook-form
 ```
+
+`react-hook-form` and `@fluentui/react-datepicker-compat` are required peers
+because the package root exports the form field wrappers. The DatePicker
+wrapper uses the compat package's 0.6.x line; pin it in the application when
+you need a reproducible calendar implementation.
 
 Wrap the application in `FluentProvider` as usual; the components follow the
 active theme.
@@ -33,6 +38,138 @@ export function App() {
     </FluentProvider>
   );
 }
+```
+
+## Form fields (React Hook Form)
+
+Eight field wrappers bind the Fluent UI v9 primitives to React Hook Form. Each
+wrapper calls `useController` once, reads the value from `field.value`, writes
+through `field.onChange`, and renders label, hint, required state and the
+validation message through Fluent's `Field`.
+
+| Component             | Fluent UI primitive                                   |
+| --------------------- | ----------------------------------------------------- |
+| `FormTextField`       | `Input`                                               |
+| `FormTextareaField`   | `Textarea`                                            |
+| `FormCheckboxField`   | `Checkbox`                                            |
+| `FormSwitchField`     | `Switch`                                              |
+| `FormRadioGroupField` | `RadioGroup`                                          |
+| `FormDropdownField`   | `Dropdown`                                            |
+| `FormComboboxField`   | `Combobox`                                            |
+| `FormDatePickerField` | `DatePicker` from `@fluentui/react-datepicker-compat` |
+
+### Basic usage
+
+```tsx
+import { useForm } from 'react-hook-form';
+import {
+  FormTextField,
+  FormCheckboxField,
+  FormDropdownField,
+} from '@blendsdk/fluentui-react-components';
+import { Option } from '@fluentui/react-components';
+
+type Values = {
+  name: string;
+  height?: number;
+  active: boolean;
+  color?: string;
+};
+
+const optionLabels: Record<string, string> = { red: 'Red', blue: 'Blue' };
+
+const form = useForm<Values>({
+  defaultValues: { name: '', active: false, color: '' },
+});
+
+<FormTextField control={form.control} name="name" label="Name" required />
+<FormTextField
+  control={form.control}
+  name="height"
+  label="Height"
+  hint="Whole centimeters"
+  parse={value => (value === '' ? undefined : Number(value))}
+/>
+<FormCheckboxField
+  control={form.control}
+  name="active"
+  label="Enable feature"
+/>
+<FormDropdownField
+  control={form.control}
+  name="color"
+  label="Color"
+  getOptionText={value => optionLabels[value]}
+>
+  <Option value="red">Red</Option>
+  <Option value="blue">Blue</Option>
+</FormDropdownField>
+```
+
+### Contract
+
+- `control` and `name` are required. The application owns `useForm`, the
+  validation resolver, the schema, DTO mapping and business rules.
+- `label` and `hint` are strings. The package ships no string resources;
+  pass translated text from the call site.
+- `required` marks the control and exposes the required state to assistive
+  technology. It does not validate the field; the resolver does.
+- Errors render from `fieldState.error?.message`. Set server errors with
+  `form.setError(name, { message })`; no second error format is supported.
+- `disabled` works per field and through `useForm({ disabled: true })`.
+- `readOnly` is available on `FormTextField` and `FormTextareaField`.
+  `FormDatePickerField` follows `allowTextInput`; the other fields have no
+  read-only state.
+- Checkbox and Switch render their own labels; `Field` supplies only the hint,
+  validation message and required state for them.
+- Zod and `@hookform/resolvers` stay application dependencies. The component
+  package only declares React Hook Form as a peer.
+
+### Selection fields
+
+`FormDropdownField` and `FormComboboxField` store the selected option value,
+not its display text. The empty string means no selection. When an option's
+value differs from its text, pass `getOptionText` so `reset`, `setValue` and
+the collapsed display show the correct text:
+
+```tsx
+const optionText: Record<string, string> = { red: 'Red', blue: 'Blue' };
+
+const getOptionText = (value: string) => optionText[value];
+
+<FormDropdownField control={form.control} name="color" label="Color" getOptionText={getOptionText}>
+  <Option value="red">Red</Option>
+  <Option value="blue">Blue</Option>
+</FormDropdownField>;
+```
+
+Combobox typing filters the list but does not change the form value until an
+option is selected. Fluent's clear affordance is pointer-only; for a
+keyboard-accessible clear, include an option with an empty value:
+
+```tsx
+<FormComboboxField control={form.control} name="color" label="Color">
+  <Option value="red">Red</Option>
+  <Option value="blue">Blue</Option>
+  <Option value="">None</Option>
+</FormComboboxField>
+```
+
+### Date picker
+
+`FormDatePickerField` stores a `Date | null`. The input is read-only by default;
+set `allowTextInput` to accept typed dates, and pass `formatDate` and
+`parseDateFromString` so the input and the form agree on the format. The
+calendar strings, minimum and maximum dates and validation callback pass
+through to the compat component.
+
+```tsx
+<FormDatePickerField
+  control={form.control}
+  name="startDate"
+  label="Start date"
+  formatDate={date => date?.toLocaleDateString() ?? ''}
+/>
 ```
 
 ## Principles

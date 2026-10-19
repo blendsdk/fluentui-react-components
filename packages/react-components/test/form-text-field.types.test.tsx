@@ -27,12 +27,15 @@ describe('FormTextField type contract', () => {
 
     // @ts-expect-error A Date path is not a text field.
     const InvalidPathField = FormTextField<Values, 'when'>;
+    // @ts-expect-error A missing field path is rejected.
+    const MissingPathField = FormTextField<Values, 'missing'>;
     // @ts-expect-error A text parse cannot return a string for a numeric path.
     const invalidParse: HeightParse = value => value;
 
     expect(validText).toBeTruthy();
     expect(validNumber).toBeTruthy();
     expect(InvalidPathField).toBeTruthy();
+    expect(MissingPathField).toBeTruthy();
     expect(invalidParse).toBeTruthy();
   });
 });
