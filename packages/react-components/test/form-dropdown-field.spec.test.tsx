@@ -171,14 +171,28 @@ describe('FormDropdownField', () => {
     expect(label).toHaveTextContent('*');
   });
 
-  it('disables the trigger', () => {
-    renderWithForm<Values>({ defaultValues: { color: 'blue' } }, form => (
+  it('disables the trigger through the prop and the form-level state', () => {
+    const first = renderWithForm<Values>({ defaultValues: { color: 'blue' } }, form => (
       <FormDropdownField
         control={form.control}
         name="color"
         label="Color"
         getOptionText={getOptionText}
         disabled
+      >
+        <ColorOptions />
+      </FormDropdownField>
+    ));
+
+    expect(screen.getByRole('combobox', { name: 'Color' })).toBeDisabled();
+    first.unmount();
+
+    renderWithForm<Values>({ defaultValues: { color: 'blue' }, disabled: true }, form => (
+      <FormDropdownField
+        control={form.control}
+        name="color"
+        label="Color"
+        getOptionText={getOptionText}
       >
         <ColorOptions />
       </FormDropdownField>
