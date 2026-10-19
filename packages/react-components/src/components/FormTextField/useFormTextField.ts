@@ -22,10 +22,7 @@ export type FormTextFieldState = {
   /** Size shared by the Field label and the Input. */
   fieldSize: InputProps['size'];
   /** Input props with the wrapper-owned value and handlers applied. */
-  inputProps: Omit<
-    InputProps,
-    'value' | 'defaultValue' | 'onChange' | 'name' | 'children'
-  > & {
+  inputProps: Omit<InputProps, 'value' | 'defaultValue' | 'onChange' | 'name' | 'children'> & {
     /** Raw text shown by the input. */
     value: string;
     /** Commits the input's string value to the form. */
@@ -60,10 +57,7 @@ export function useFormTextField<
   const controlRef = useMergedRefs(ref, field.ref);
   const { text, commit } = useTextValueState(field.value, parse, field.onChange);
 
-  const handleChange = (
-    _event: ChangeEvent<HTMLInputElement>,
-    data: InputOnChangeData
-  ): void => {
+  const handleChange = (_event: ChangeEvent<HTMLInputElement>, data: InputOnChangeData): void => {
     commit(data.value);
   };
 

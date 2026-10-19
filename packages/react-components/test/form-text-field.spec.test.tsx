@@ -154,20 +154,17 @@ describe('FormTextField', () => {
   });
 
   it('updates the displayed value after reset', () => {
-    const { form } = renderWithForm<Values>(
-      { defaultValues: { name: 'Ada', height: 5 } },
-      form => (
-        <>
-          <FormTextField control={form.control} name="name" label="Name" />
-          <FormTextField
-            control={form.control}
-            name="height"
-            label="Height"
-            parse={value => (value === '' ? undefined : Number(value))}
-          />
-        </>
-      )
-    );
+    const { form } = renderWithForm<Values>({ defaultValues: { name: 'Ada', height: 5 } }, form => (
+      <>
+        <FormTextField control={form.control} name="name" label="Name" />
+        <FormTextField
+          control={form.control}
+          name="height"
+          label="Height"
+          parse={value => (value === '' ? undefined : Number(value))}
+        />
+      </>
+    ));
 
     act(() => {
       form.reset({ name: 'Grace', height: 12 });

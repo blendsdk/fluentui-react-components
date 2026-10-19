@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import type { Control } from 'react-hook-form';
 import * as api from '../src/index';
 import type {
   AppLauncherDocking,
@@ -21,6 +22,7 @@ import type {
   ErrorDialogKind,
   ErrorDialogProps,
   ErrorDialogStrings,
+  FormTextFieldProps,
   LoadingController,
   LoadingOptions,
   LoadingOverlayProps,
@@ -46,6 +48,7 @@ describe('package export surface', () => {
       'DescriptionList',
       'DescriptionListItem',
       'ErrorDialog',
+      'FormTextField',
       'Loading',
       'LoadingOverlay',
       'SystemErrorProvider',
@@ -250,5 +253,36 @@ describe('package export surface', () => {
     expect(docking).toBe('full');
     expect(launcherProps.children).toBeNull();
     expect(triggerProps.label).toBe('App launcher');
+  });
+
+  it('exports the public FormTextField type', () => {
+    // The control is a typed stand-in: this test checks the exported props
+    // types at compile time and never executes a form.
+    type FormValues = { name: string; height?: number };
+    const control = {} as Control<FormValues>;
+    const textProps: FormTextFieldProps<FormValues, 'name'> = {
+      control,
+      name: 'name',
+      label: 'Name',
+    };
+    const numberProps: FormTextFieldProps<FormValues, 'height'> = {
+      control,
+      name: 'height',
+      label: 'Height',
+      parse: value => (value === '' ? undefined : Number(value)),
+    };
+
+    type DateValues = { when: Date };
+    const dateControl = {} as Control<DateValues>;
+    // @ts-expect-error A Date path is not a text field.
+    const dateProps: FormTextFieldProps<DateValues, 'when'> = {
+      control: dateControl,
+      name: 'when',
+      label: 'When',
+    };
+
+    expect(textProps.label).toBe('Name');
+    expect(numberProps.parse?.('42')).toBe(42);
+    expect(dateProps.name).toBe('when');
   });
 });
