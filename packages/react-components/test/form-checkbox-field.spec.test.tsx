@@ -5,7 +5,7 @@ import { renderWithForm } from './form-test-utils';
 
 type Values = {
   active: boolean;
-  mixed?: 'mixed';
+  mixed?: boolean | 'mixed';
 };
 
 describe('FormCheckboxField', () => {
@@ -80,14 +80,19 @@ describe('FormCheckboxField', () => {
     expect(screen.getAllByText('Enable feature')).toHaveLength(1);
   });
 
-  it('disables the checkbox', () => {
-    renderWithForm<Values>({ defaultValues: { active: false } }, form => (
+  it('disables the checkbox through the prop and the form-level state', () => {
+    const first = renderWithForm<Values>({ defaultValues: { active: false } }, form => (
       <FormCheckboxField control={form.control} name="active" label="Enable feature" disabled />
     ));
 
-    const checkbox = screen.getByRole('checkbox', { name: 'Enable feature' });
+    expect(screen.getByRole('checkbox', { name: 'Enable feature' })).toBeDisabled();
+    first.unmount();
 
-    expect(checkbox).toBeDisabled();
+    renderWithForm<Values>({ defaultValues: { active: false }, disabled: true }, form => (
+      <FormCheckboxField control={form.control} name="active" label="Enable feature" />
+    ));
+
+    expect(screen.getByRole('checkbox', { name: 'Enable feature' })).toBeDisabled();
   });
 
   it('renders the hint as the accessible description', () => {
@@ -128,8 +133,8 @@ describe('FormCheckboxField', () => {
     expect(screen.getByRole('checkbox', { name: 'Enable feature' })).toBeChecked();
   });
 
-  it('renders the mixed state as indeterminate', async () => {
-    renderWithForm<Values>({ defaultValues: { mixed: 'mixed' } }, form => (
+  it('renders and clears the mixed state', async () => {
+    const { form } = renderWithForm<Values>({ defaultValues: { mixed: 'mixed' } }, form => (
       <FormCheckboxField control={form.control} name="mixed" label="Partially selected" />
     ));
 
@@ -138,5 +143,12 @@ describe('FormCheckboxField', () => {
     }) as HTMLInputElement;
 
     await waitFor(() => expect(checkbox.indeterminate).toBe(true));
+
+    fireEvent.click(checkbox);
+    expect(form.getValues('mixed')).toBe(true);
+    await waitFor(() => expect(checkbox.indeterminate).toBe(false));
+
+    fireEvent.click(checkbox);
+    expect(form.getValues('mixed')).toBe(false);
   });
 });

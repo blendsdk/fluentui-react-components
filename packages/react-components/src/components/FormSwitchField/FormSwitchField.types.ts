@@ -9,8 +9,8 @@ import type { FormFieldBaseProps, SwitchFieldValue } from '../../forms/FormField
  * rather than to `Field`; `Field` adds the hint, validation message, and
  * required state. The form owns the checked value.
  *
- * The wrapper omits `checked`, `defaultChecked`, `onChange`, and `label`;
- * every other `Switch` prop passes through, including `disabled`,
+ * The wrapper omits `checked`, `defaultChecked`, `onChange`, `label`, `name`,
+ * and `value`; every other `Switch` prop passes through, including `disabled`,
  * `disabledFocusable`, `labelPosition`, and `size`.
  *
  * @typeParam TFieldValues - the shape of the form values

@@ -9,9 +9,9 @@ import type { CheckboxFieldValue, FormFieldBaseProps } from '../../forms/FormFie
  * rather than to `Field`; `Field` adds the hint, validation message, and
  * required state. The form owns the checked value.
  *
- * The wrapper omits `checked`, `defaultChecked`, `onChange`, and `label`; every
- * other `Checkbox` prop passes through, including `disabled`, `labelPosition`,
- * `shape`, and `size`.
+ * The wrapper omits `checked`, `defaultChecked`, `onChange`, `label`,
+ * `children`, `name`, and `value`; every other `Checkbox` prop passes through,
+ * including `disabled`, `labelPosition`, `shape`, and `size`.
  *
  * @typeParam TFieldValues - the shape of the form values
  * @typeParam TName - a boolean or `'mixed'` field path inside `TFieldValues`

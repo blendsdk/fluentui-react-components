@@ -5,7 +5,7 @@ import { FormCheckboxField } from '../FormCheckboxField';
 
 type StoryValues = {
   active: boolean;
-  mixed?: 'mixed';
+  mixed?: boolean | 'mixed';
 };
 
 const meta: Meta<typeof FormCheckboxField> = {

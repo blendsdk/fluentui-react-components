@@ -87,7 +87,7 @@ describe('FormSwitchField', () => {
     expect(screen.getByRole('switch', { name: 'Enable feature' })).toBeDisabled();
     first.unmount();
 
-    renderWithForm<Values>({ defaultValues: { enabled: false } }, form => (
+    const focusable = renderWithForm<Values>({ defaultValues: { enabled: false } }, form => (
       <FormSwitchField
         control={form.control}
         name="enabled"
@@ -102,6 +102,13 @@ describe('FormSwitchField', () => {
     expect(control).not.toBeDisabled();
     control.focus();
     expect(control).toHaveFocus();
+    focusable.unmount();
+
+    renderWithForm<Values>({ defaultValues: { enabled: false }, disabled: true }, form => (
+      <FormSwitchField control={form.control} name="enabled" label="Enable feature" />
+    ));
+
+    expect(screen.getByRole('switch', { name: 'Enable feature' })).toBeDisabled();
   });
 
   it('renders the hint as the accessible description', () => {
