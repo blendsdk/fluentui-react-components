@@ -51,6 +51,8 @@ export type {
 } from './components/ErrorDialog';
 export { FormTextField } from './components/FormTextField';
 export type { FormTextFieldProps } from './components/FormTextField';
+export { FormTextareaField } from './components/FormTextareaField';
+export type { FormTextareaFieldProps } from './components/FormTextareaField';
 export { Loading, useLoading } from './components/Loading';
 export type { LoadingController, LoadingOptions, LoadingProps } from './components/Loading';
 export { LoadingOverlay } from './components/LoadingOverlay';
