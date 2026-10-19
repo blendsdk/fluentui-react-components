@@ -64,8 +64,12 @@ export type FormComboboxFieldState = {
  *
  * The input text is local presentation state: typing filters the list but
  * does not change the form value. Selecting an option commits its value and
- * sets the text to its display text. Blur reverts uncommitted text to the
- * selected value's text.
+ * sets the text to its display text. Blur or closing the popup reverts
+ * uncommitted text to the selected value's text.
+ *
+ * An external update to the exact same stored value does not reformat
+ * different raw text (for example `Blue` typed as `blue`); the form value did
+ * not change. A different value syncs normally.
  *
  * @param props - props from this instance of the field
  * @param ref - ref forwarded by the component shell
@@ -86,6 +90,7 @@ export function useFormComboboxField<
     required,
     getOptionText,
     onBlur,
+    onOpenChange,
     disabled,
     children,
     ...comboboxProps
@@ -128,6 +133,14 @@ export function useFormComboboxField<
     setInputText(resolveOptionText(field.value, getOptionText));
   });
 
+  const handleOpenChange: NonNullable<ComboboxProps['onOpenChange']> = (event, data) => {
+    onOpenChange?.(event, data);
+
+    if (!data.open) {
+      setInputText(resolveOptionText(lastEmitted.current, getOptionText));
+    }
+  };
+
   return {
     label,
     hint,
@@ -142,6 +155,7 @@ export function useFormComboboxField<
       onChange: handleChange,
       onOptionSelect: handleOptionSelect,
       onBlur: handleBlur,
+      onOpenChange: handleOpenChange,
       disabled: isDisabled,
     },
     controlRef,

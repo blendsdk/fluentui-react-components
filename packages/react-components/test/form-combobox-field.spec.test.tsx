@@ -137,6 +137,28 @@ describe('FormComboboxField', () => {
     expect(input).toHaveValue('');
   });
 
+  it('clears through an explicit empty-value option', () => {
+    const { form } = renderWithForm<Values>({ defaultValues: { color: 'blue' } }, form => (
+      <FormComboboxField
+        control={form.control}
+        name="color"
+        label="Color"
+        getOptionText={getOptionText}
+        inlinePopup
+      >
+        <ColorOptions />
+        <Option value="">None</Option>
+      </FormComboboxField>
+    ));
+
+    const input = screen.getByRole('combobox', { name: 'Color' });
+    fireEvent.click(input);
+    fireEvent.click(screen.getByRole('option', { name: 'None' }));
+
+    expect(form.getValues('color')).toBe('');
+    expect(input).toHaveValue('');
+  });
+
   it('marks the field touched on blur and calls a caller onBlur', () => {
     const onBlur = vi.fn();
     const { form } = renderWithForm<Values>({ defaultValues: { color: 'blue' } }, form => (

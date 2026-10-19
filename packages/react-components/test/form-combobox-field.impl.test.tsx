@@ -116,4 +116,28 @@ describe('FormComboboxField internals', () => {
     expect(input).toHaveValue('blu');
     expect(form.getValues('color')).toBe('blue');
   });
+
+  it('reverts typed text when the popup closes without a selection', () => {
+    const { form } = renderWithForm<Values>({ defaultValues: { color: 'blue' } }, form => (
+      <FormComboboxField
+        control={form.control}
+        name="color"
+        label="Color"
+        getOptionText={getOptionText}
+        inlinePopup
+      >
+        <ColorOptions />
+      </FormComboboxField>
+    ));
+
+    const input = screen.getByRole('combobox', { name: 'Color' });
+    fireEvent.click(input);
+    fireEvent.change(input, { target: { value: 'xyz' } });
+    expect(input).toHaveValue('xyz');
+
+    fireEvent.keyDown(input, { key: 'Escape' });
+
+    expect(input).toHaveValue('Blue');
+    expect(form.getValues('color')).toBe('blue');
+  });
 });

@@ -46,11 +46,11 @@ const meta: Meta<typeof FormComboboxField> = {
           '3. Required — the asterisk is visible and the input exposes the required state.',
           '4. Typing — typing filters the list; the form value stays the previous selection until an option is chosen.',
           '5. Revert — type a non-matching string and blur: the input returns to the selected text.',
-          '6. Clear — the clear affordance returns to the empty string and clears the input.',
-          '7. Keyboard — ArrowDown opens the list, arrows move, Enter selects, Escape closes and returns focus.',
+          '6. Clear — the pointer clear works; the ClearableWithEmptyOption story shows the keyboard-accessible empty option.',
+          '7. Keyboard — ArrowDown opens the list, arrows move, Enter selects, Escape closes and returns focus. Escape also reverts typed text to the selected value.',
           '8. Disabled — the input is not focusable and does not open.',
           '9. Light and dark theme — the input, listbox, hint, and error stay legible.',
-          '10. Accessibility addon — no violations. The Fluent clear affordance is decorative; note whether the keyboard clear path is discoverable.',
+          '10. Accessibility addon — no violations. The Fluent clear affordance is pointer-only; use the empty option for keyboard users.',
         ].join('\n'),
       },
     },
@@ -220,6 +220,31 @@ export const Clearable: Story = {
           inlinePopup
         >
           <ColorOptions />
+        </FormComboboxField>
+      )}
+    </StoryForm>
+  ),
+};
+
+/**
+ * A pointer-clearable combobox with an explicit empty option for keyboard
+ * users.
+ */
+export const ClearableWithEmptyOption: Story = {
+  render: (): ReactElement => (
+    <StoryForm<StoryValues> defaultValues={{ color: 'blue' }}>
+      {form => (
+        <FormComboboxField<StoryValues, 'color'>
+          control={form.control}
+          name="color"
+          label="Color"
+          placeholder="Pick a color"
+          getOptionText={getOptionText}
+          clearable
+          inlinePopup
+        >
+          <ColorOptions />
+          <Option value="">None</Option>
         </FormComboboxField>
       )}
     </StoryForm>

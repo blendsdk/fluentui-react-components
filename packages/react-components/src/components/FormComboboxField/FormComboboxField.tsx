@@ -27,6 +27,10 @@ FormComboboxFieldBase.displayName = 'FormComboboxField';
  * selected. `getOptionText` resolves the text for a stored value after
  * `reset` or `setValue`. The wrapper is not freeform or multiselect.
  *
+ * Fluent's clear affordance is pointer-only. For a keyboard-accessible clear,
+ * include an option with an empty value, such as
+ * `<Option value="">None</Option>`; selecting it stores the empty string.
+ *
  * @example
  * ```tsx
  * <FormComboboxField
