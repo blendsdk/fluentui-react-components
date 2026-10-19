@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import type { TextFieldValue } from './FormField.types';
 import { formatInputValue } from './formFieldValues';
 
@@ -44,7 +44,7 @@ export function useTextValueState(
   const [text, setText] = useState(() => formatInputValue(value));
   const lastEmitted = useRef(value);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!Object.is(value, lastEmitted.current)) {
       setText(formatInputValue(value));
       lastEmitted.current = value;

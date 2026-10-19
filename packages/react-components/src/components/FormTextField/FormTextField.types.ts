@@ -5,9 +5,10 @@ import type { FormFieldBaseProps, TextFieldValue } from '../../forms/FormField.t
 /**
  * Props of the text field bound to React Hook Form.
  *
- * The wrapper owns the value, change handler, name, and default value. Every
- * other `Input` prop passes through, including `readOnly`, `disabled`, `type`,
- * `size`, `appearance`, `contentBefore`, and `contentAfter`.
+ * The form owns the value and the default value; the wrapper binds the field
+ * name and the change handler. Every other `Input` prop passes through,
+ * including `readOnly`, `disabled`, `type`, `size`, `appearance`,
+ * `contentBefore`, and `contentAfter`.
  *
  * `parse` converts the primitive's string value before it reaches the form.
  * Use it when the field stores a number or another non-string value; return

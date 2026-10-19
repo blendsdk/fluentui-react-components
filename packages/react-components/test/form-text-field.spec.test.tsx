@@ -151,6 +151,10 @@ describe('FormTextField', () => {
     fireEvent.change(input, { target: { value: '1.' } });
     expect(form.getValues('height')).toBe(1);
     expect(input).toHaveValue('1.');
+
+    fireEvent.change(input, { target: { value: '-' } });
+    expect(form.getValues('height')).toBeNaN();
+    expect(input).toHaveValue('-');
   });
 
   it('updates the displayed value after reset', () => {
