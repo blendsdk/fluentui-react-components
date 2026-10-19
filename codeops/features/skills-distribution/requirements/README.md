@@ -64,5 +64,4 @@ form-fields/RD-01 (implemented field API)
 
 Implemented and verified. The two skills are discoverable from the local source,
 the package carries a generated copy, and the local-package listing finds both
-skills. The issue remains open until the owner closes it; no GitHub closure was
-authorized by the implementation request.
+skills. GitHub issue #2 was closed as completed on 2026-10-19.

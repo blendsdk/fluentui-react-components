@@ -4,7 +4,7 @@
 > **Implements**: `skills-distribution/RD-01`
 > **Source**: [RD-01](../../requirements/RD-01-rhf-zod-forms-and-distribution.md)
 > **CodeOps Artifact Schema**: 1
-> **Progress**: 19/19 tasks (100%)
+> **Progress**: 20/20 tasks (100%)
 > **Reasoning**: medium — packaging, local CLI behavior and documentation; no runtime component change.
 
 ## How to execute
@@ -86,6 +86,8 @@ copy.
       verified result. ✅ (completed: 2026-10-19)
 - [x] **P5-T6 — Record the roadmap.** Add the feature RD, plan, findings and
       acceptance evidence; update the portfolio. ✅ (completed: 2026-10-19)
+- [x] **P5-T7 — Close the issue.** Close GitHub issue #2 as completed after
+      verification and owner authorization. ✅ (completed: 2026-10-19)
 
 ---
 

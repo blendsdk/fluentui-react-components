@@ -38,6 +38,6 @@
 
 ## Deferred and open items
 
-- The GitHub issue #2 is left open because closing it was not part of the
-  implementation authorization. The feature work is complete.
+- GitHub issue #2 was closed as completed on 2026-10-19. The feature work is
+  complete and no follow-up task is open.
 - App-specific DTOs, business rules and app-local skills remain out of scope.
