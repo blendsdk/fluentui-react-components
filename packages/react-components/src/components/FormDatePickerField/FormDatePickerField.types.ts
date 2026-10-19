@@ -35,7 +35,7 @@ export type FormDatePickerFieldProps<
     DatePickerFieldValue
   >,
 > = Omit<
-    DatePickerProps,
-    'value' | 'defaultValue' | 'onSelectDate' | 'name' | 'id' | 'required' | 'readOnly'
-  > &
+  DatePickerProps,
+  'value' | 'defaultValue' | 'onSelectDate' | 'name' | 'id' | 'required' | 'readOnly'
+> &
   FormFieldBaseProps<TFieldValues, TName>;

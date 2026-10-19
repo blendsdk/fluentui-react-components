@@ -24,6 +24,7 @@ import type {
   ErrorDialogStrings,
   FormCheckboxFieldProps,
   FormComboboxFieldProps,
+  FormDatePickerFieldProps,
   FormDropdownFieldProps,
   FormRadioGroupFieldProps,
   FormSwitchFieldProps,
@@ -56,6 +57,7 @@ describe('package export surface', () => {
       'ErrorDialog',
       'FormCheckboxField',
       'FormComboboxField',
+      'FormDatePickerField',
       'FormDropdownField',
       'FormRadioGroupField',
       'FormSwitchField',
@@ -370,5 +372,17 @@ describe('package export surface', () => {
     };
 
     expect(props.getOptionText?.('blue')).toBe('BLUE');
+  });
+
+  it('exports the public FormDatePickerField type', () => {
+    type FormValues = { startDate?: Date | null };
+    const control = {} as Control<FormValues>;
+    const props: FormDatePickerFieldProps<FormValues, 'startDate'> = {
+      control,
+      name: 'startDate',
+      label: 'Start date',
+    };
+
+    expect(props.label).toBe('Start date');
   });
 });

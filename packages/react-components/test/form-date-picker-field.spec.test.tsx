@@ -39,17 +39,14 @@ describe('FormDatePickerField', () => {
   });
 
   it('displays the selected date with the supplied formatter', () => {
-    renderWithForm<Values>(
-      { defaultValues: { startDate: new Date(2026, 0, 15) } },
-      form => (
-        <FormDatePickerField
-          control={form.control}
-          name="startDate"
-          label="Start date"
-          formatDate={formatDate}
-        />
-      )
-    );
+    renderWithForm<Values>({ defaultValues: { startDate: new Date(2026, 0, 15) } }, form => (
+      <FormDatePickerField
+        control={form.control}
+        name="startDate"
+        label="Start date"
+        formatDate={formatDate}
+      />
+    ));
 
     expect(screen.getByRole('combobox', { name: 'Start date' })).toHaveValue('2026-01-15');
   });
@@ -151,12 +148,7 @@ describe('FormDatePickerField', () => {
 
   it('exposes the required state', () => {
     renderWithForm<Values>({ defaultValues: { startDate: null } }, form => (
-      <FormDatePickerField
-        control={form.control}
-        name="startDate"
-        label="Start date"
-        required
-      />
+      <FormDatePickerField control={form.control} name="startDate" label="Start date" required />
     ));
 
     const input = screen.getByRole('combobox', { name: 'Start date' });
@@ -166,8 +158,8 @@ describe('FormDatePickerField', () => {
     expect(label).toHaveTextContent('*');
   });
 
-  it('disables the input', () => {
-    renderWithForm<Values>(
+  it('disables the input through the prop and the form-level state', () => {
+    const first = renderWithForm<Values>(
       { defaultValues: { startDate: new Date(2026, 0, 15) } },
       form => (
         <FormDatePickerField
@@ -176,6 +168,21 @@ describe('FormDatePickerField', () => {
           label="Start date"
           formatDate={formatDate}
           disabled
+        />
+      )
+    );
+
+    expect(screen.getByRole('combobox', { name: 'Start date' })).toBeDisabled();
+    first.unmount();
+
+    renderWithForm<Values>(
+      { defaultValues: { startDate: new Date(2026, 0, 15) }, disabled: true },
+      form => (
+        <FormDatePickerField
+          control={form.control}
+          name="startDate"
+          label="Start date"
+          formatDate={formatDate}
         />
       )
     );
