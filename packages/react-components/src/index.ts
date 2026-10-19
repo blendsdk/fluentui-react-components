@@ -49,6 +49,8 @@ export type {
   ErrorDialogProps,
   ErrorDialogStrings,
 } from './components/ErrorDialog';
+export { FormTextField } from './components/FormTextField';
+export type { FormTextFieldProps } from './components/FormTextField';
 export { Loading, useLoading } from './components/Loading';
 export type { LoadingController, LoadingOptions, LoadingProps } from './components/Loading';
 export { LoadingOverlay } from './components/LoadingOverlay';
