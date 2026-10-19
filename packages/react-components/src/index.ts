@@ -51,6 +51,8 @@ export type {
 } from './components/ErrorDialog';
 export { FormCheckboxField } from './components/FormCheckboxField';
 export type { FormCheckboxFieldProps } from './components/FormCheckboxField';
+export { FormRadioGroupField } from './components/FormRadioGroupField';
+export type { FormRadioGroupFieldProps } from './components/FormRadioGroupField';
 export { FormSwitchField } from './components/FormSwitchField';
 export type { FormSwitchFieldProps } from './components/FormSwitchField';
 export { FormTextField } from './components/FormTextField';
