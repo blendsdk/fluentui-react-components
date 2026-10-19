@@ -1,5 +1,5 @@
 ---
-name: Fluent UI v9 components
+name: fluentui-components
 description: Create, extend, or review custom React components in this repository following the house Fluent UI v9 component pattern — a typed props contract, a state hook, a render function, Griffel styles with design tokens, parent/child contexts, accessibility, spec and impl tests, and Storybook stories. Use when adding a component, wrapping a Fluent UI primitive, changing an existing component, or auditing one against the pattern.
 ---
 

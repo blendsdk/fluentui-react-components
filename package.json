@@ -22,6 +22,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "skill:check": "node scripts/check-skill.mjs",
+    "skills:sync": "node scripts/sync-skills.mjs",
+    "skills:check": "node scripts/sync-skills.mjs && skills add ./packages/react-components --list",
     "pack:check": "node scripts/check-pack.mjs",
     "verify": "pnpm format:check && pnpm skill:check && pnpm type-check && pnpm build && pnpm test",
     "lockstep": "lockstep",
@@ -36,6 +38,7 @@
   "devDependencies": {
     "@blendsdk/lockstep": "^1.3.0",
     "prettier": "^3.9.10",
+    "skills": "1.7.2",
     "turbo": "^2.11.8"
   },
   "repository": {

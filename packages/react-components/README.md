@@ -927,10 +927,57 @@ Call `run` from event handlers or effects, not during render.
   `ariaLive`) are intentionally not ported. The scrim and text follow the
   `FluentProvider` theme; `label` is the only user-facing string.
 
+## Agent skills
+
+The package ships two distributable skills in the published `skills/`
+directory:
+
+- `fluentui-components` — how to author a component in the house Fluent UI v9
+  pattern.
+- `rhf-zod-forms` — how to compose application forms with React Hook Form 7,
+  Zod 4 and the `Form*Field` wrappers.
+
+Install them with the standard `npx skills` CLI:
+
+```bash
+# Latest from GitHub
+npx skills add blendsdk/fluentui-react-components \
+  --skill fluentui-components \
+  --skill rhf-zod-forms \
+  --agent opencode \
+  -y
+
+# Exact version from the installed package
+npx skills add ./node_modules/@blendsdk/fluentui-react-components/skills \
+  --skill fluentui-components \
+  --skill rhf-zod-forms \
+  --agent opencode \
+  -y
+```
+
+Manual fallback:
+
+```bash
+mkdir -p .agents/skills
+cp -R node_modules/@blendsdk/fluentui-react-components/skills/fluentui-components .agents/skills/
+cp -R node_modules/@blendsdk/fluentui-react-components/skills/rhf-zod-forms .agents/skills/
+```
+
+- `--global` installs for the current user; omit it for a project install that
+  is committed with the application.
+- `npx skills update` updates installed skills. Use the local package path to
+  pin an exact release.
+- OpenCode discovers project skills under `.opencode/skills` and
+  `.agents/skills`. The CLI installs into the selected agent's directory.
+- The CLI is a third-party tool; the manual copy is the offline fallback.
+- The package copy under `packages/react-components/skills/` is generated from
+  the repository's top-level `skills/` source at build and before packing. Do
+  not edit the generated copy.
+
 ## Development
 
 ```bash
-pnpm --filter @blendsdk/fluentui-react-components build         # Vite bundle + declaration files
+pnpm --filter @blendsdk/fluentui-react-components build         # skills sync + Vite bundle + declarations
 pnpm --filter @blendsdk/fluentui-react-components test          # Vitest, jsdom
 pnpm --filter @blendsdk/fluentui-react-components type-check    # tsc --noEmit
 pnpm storybook                                                  # component workbench on :6006
@@ -943,10 +990,10 @@ guards the package's public surface. Stories live in each component's
 `stories/` folder (`*.stories.tsx`) and render in the repository's Storybook,
 which is published to GitHub Pages.
 
-New components follow the repository's component pattern. The local
-`fluentui-components` skill (`.opencode/skills/fluentui-components`) documents
-the pattern, the workflow and the definition of done, with templates for every
-file.
+New components follow the repository's component pattern. The distributable
+`fluentui-components` skill (`skills/fluentui-components` in the repository, and
+`skills/fluentui-components` in the installed package) documents the pattern,
+the workflow and the definition of done, with templates for every file.
 
 ## License
 

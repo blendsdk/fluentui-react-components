@@ -16,7 +16,8 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "skills"
   ],
   "publishConfig": {
     "access": "public"
@@ -27,7 +28,9 @@
     "directory": "packages/react-components"
   },
   "scripts": {
-    "build": "vite build && tsc -p tsconfig.build.json",
+    "build": "node ../../scripts/sync-skills.mjs && vite build && tsc -p tsconfig.build.json",
+    "skills:sync": "node ../../scripts/sync-skills.mjs",
+    "prepack": "node ../../scripts/sync-skills.mjs",
     "dev": "vite build --watch",
     "clean": "rm -rf dist storybook-static",
     "test": "vitest run --reporter=verbose",

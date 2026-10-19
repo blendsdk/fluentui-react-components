@@ -8,7 +8,12 @@ pnpm-lock.yaml
 # Skill templates contain placeholders such as <Name> that are not valid
 # TypeScript until the coding agent replaces them, so they are excluded from
 # formatting checks.
+skills/*/templates
 .opencode/skills/*/templates
+
+# Generated copy of the distributable skills; the top-level `skills/` source is
+# formatted instead.
+packages/react-components/skills
 
 # CodeOps skills, agents, and shared references installed into `.opencode/` by
 # `opencode-codeops install --project` (recorded in

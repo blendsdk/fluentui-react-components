@@ -8,7 +8,9 @@
  * story files ever enter the tarball.
  *
  * The guard requires a completed build: it also fails when the pack list has
- * no `dist/` entries, which catches an accidentally empty artifact.
+ * no `dist/` entries, which catches an accidentally empty artifact. The two
+ * distributable skills must also be present, because consumers install them
+ * from the published package.
  *
  * Usage:
  *
@@ -37,13 +39,28 @@ const FORBIDDEN_SEGMENT = 'stories';
 /** Filename fragments that identify a story or scenario file. */
 const FORBIDDEN_FILENAME_PARTS = ['.stories.', '.story.'];
 
+/** Skill entry files that every published artifact must contain. */
+const REQUIRED_SKILL_FILES = [
+  'skills/fluentui-components/SKILL.md',
+  'skills/rhf-zod-forms/SKILL.md',
+];
+
 /**
  * Reports whether a path from the pack list is source or story material.
+ *
+ * The generated `skills/` payload is intentionally allowed to contain skill
+ * templates with names such as `Component.stories.tsx` and
+ * `form.spec.test.tsx`. Those files are documentation assets, not compiled
+ * component sources or Storybook stories.
  *
  * @param {string} filePath - path relative to the package root
  * @returns {boolean} `true` when the path must not be published
  */
 function isForbidden(filePath) {
+  if (filePath.startsWith('skills/')) {
+    return false;
+  }
+
   return (
     FORBIDDEN_PREFIXES.some(prefix => filePath.startsWith(prefix)) ||
     filePath.split('/').includes(FORBIDDEN_SEGMENT) ||
@@ -64,10 +81,15 @@ function readPublishedPaths() {
     stdio: ['ignore', 'pipe', 'inherit'],
   });
 
+  // The package's `prepack` script prints a sync line to stdout before npm
+  // writes the JSON manifest. Keep the manifest, ignore the lifecycle output.
+  const jsonStart = output.search(/^\[/m);
+  const jsonText = jsonStart >= 0 ? output.slice(jsonStart) : output;
+
   let manifest;
 
   try {
-    [manifest] = JSON.parse(output);
+    [manifest] = JSON.parse(jsonText);
   } catch {
     console.error('Could not parse the output of `npm pack --dry-run --json`.');
     process.exit(1);
@@ -99,4 +121,18 @@ if (!paths.some(filePath => filePath.startsWith('dist/'))) {
   process.exit(1);
 }
 
-console.log(`Publish artifact verified: ${paths.length} files, no source or story files.`);
+const missingSkillFiles = REQUIRED_SKILL_FILES.filter(filePath => !paths.includes(filePath));
+
+if (missingSkillFiles.length > 0) {
+  console.error('The publish artifact is missing required skill files:');
+
+  for (const filePath of missingSkillFiles) {
+    console.error(`  ${filePath}`);
+  }
+
+  process.exit(1);
+}
+
+console.log(
+  `Publish artifact verified: ${paths.length} files, both skills present, no source or story files.`
+);

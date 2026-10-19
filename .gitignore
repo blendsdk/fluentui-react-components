@@ -8,6 +8,9 @@ coverage/
 .turbo/
 *.tsbuildinfo
 
+# Generated package copy of the distributable skills
+packages/react-components/skills/
+
 # npm pack output
 *.tgz
 

@@ -11,14 +11,16 @@
 ## Structure
 
 - `packages/react-components/` — the only publishable package, `@blendsdk/fluentui-react-components`. Component sources live in `src/components/<Name>/`, tests in `test/`, stories in each component's `stories/` folder, Storybook configuration in `.storybook/`.
-- `.opencode/skills/fluentui-components/` — the component-authoring skill (pattern, references, templates). Load it before creating, changing or reviewing a component.
-- `scripts/check-skill.mjs` — validates the repo-authored skills under `.opencode/skills`: ID shape, frontmatter, and relative links outside code fences.
+- `skills/` — the distributable agent skills: `fluentui-components` (component pattern, references, templates) and `rhf-zod-forms` (RHF + Zod form workflow). `opencode.json` registers `./skills` as an extra source.
+- `scripts/check-skill.mjs` — validates the distributable skills under `skills/` and the CodeOps skills under `.opencode/skills`: ID shape, frontmatter, duplicate IDs, and relative links outside code fences.
+- `scripts/sync-skills.mjs` — mirrors `skills/` into `packages/react-components/skills/` at build and before packing; the package copy is generated and gitignored.
 - `.github/workflows/` — CI (`ci.yml`), manual npm release via OIDC trusted publishing (`release.yml`), Storybook to GitHub Pages (`pages.yml`; live at `https://blendsdk.github.io/fluentui-react-components/`).
 
 ## Commands
 
 - Install exactly from the lockfile: `pnpm install --frozen-lockfile`.
 - Full gate: `pnpm verify` (format check, skill check, type-check, build, tests).
+- Skill distribution: `pnpm skills:sync` mirrors the source into the package; `pnpm skills:check` lists the packaged skills through the local `skills` CLI.
 - Repository-wide: `pnpm build`, `pnpm test`, `pnpm type-check`, `pnpm storybook:build`.
 - One package: `pnpm --filter @blendsdk/fluentui-react-components <script>`.
 - Storybook workbench: `pnpm storybook` (port 6006).
@@ -34,7 +36,7 @@
 - Hooks and render functions stay pure; styling uses `makeStyles` with `tokens` only, and class names merge with `mergeClasses`; native props of the root element pass through.
 - Documentation comments are mandatory for public and non-trivial internal symbols. Never reference plans, requirements or task identifiers in code or comments.
 - Conventional Commits (`feat(scope): ...`); Prettier is the only formatter — there is no ESLint.
-- `dist/` and `storybook-static/` are generated; never edit them. The CodeOps payload under `.opencode/` (the CodeOps `skills/` directories, `agents/`, `_shared/`, `references/`) is installer-managed and replaced on upgrade — never edit it; `fluentui-components` is the repo-authored skill.
+- `dist/`, `storybook-static/` and `packages/react-components/skills/` are generated; never edit them. Edit the top-level `skills/` source instead. The CodeOps payload under `.opencode/` (the CodeOps `skills/` directories, `agents/`, `_shared/`, `references/`) is installer-managed and replaced on upgrade — never edit it; `fluentui-components` and `rhf-zod-forms` are the repo-authored distributable skills.
 
 ## Verification
 
@@ -44,7 +46,7 @@
 ## CodeOps
 
 - Nested layout: `codeops/.codeops.yml` is the marker (`integrationBranch: main`), `codeops/codeops.json` holds the strict quality policy, and `codeops/00-roadmap.md` is the portfolio roadmap. Feature artifacts live under `codeops/features/<feature>/` and appear lazily with the first requirement or plan.
-- Project skills and agents come from `opencode-codeops@2.2.1` (`install --project`): 17 CodeOps skills recorded in `.opencode/skills/.opencode-codeops.json` plus 12 hidden dispatch agents in `.opencode/agents/`. Restart OpenCode after an install or upgrade so they load.
+- Project skills and agents come from `opencode-codeops@2.2.1` (`install --project`): 17 CodeOps skills recorded in `.opencode/skills/.opencode-codeops.json` plus 12 hidden dispatch agents in `.opencode/agents/`. Restart OpenCode after an install or upgrade so they load. The two distributable skills live under the top-level `skills/` directory and are not part of the CodeOps payload.
 - Specialist coverage: up to date (2026-10-16) — no specialist is warranted; `make-plan` re-runs the check with phase evidence.
 
 <!-- CODEOPS-PROJECT:END -->

@@ -2,7 +2,8 @@
 /**
  * Repository skill guard.
  *
- * Validates the project-local skills under `.opencode/skills` so a skill
+ * Validates the distributable skills under the top-level `skills/` directory
+ * and the project-local CodeOps skills under `.opencode/skills`, so a skill
  * cannot silently rot: every skill directory must be a lowercase kebab-case
  * ID with a `SKILL.md` whose frontmatter carries a `name` and a
  * `description`, and every relative Markdown link inside a skill must
@@ -17,7 +18,9 @@
  *
  * The script prints one line per problem and exits with code 1 when any
  * problem was found, so CI fails on a broken skill. It exits with code 0 —
- * with a note — when the repository has no skills directory at all.
+ * with a note — when neither skills directory exists. Duplicate skill IDs
+ * across the two roots are reported, because one copy would silently win at
+ * runtime.
  *
  * Usage:
  *
@@ -33,8 +36,15 @@ import { fileURLToPath } from 'node:url';
 /** Repository root, derived from this script's location (`<root>/scripts/`). */
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
-/** Directory that holds every project-local skill. */
-const SKILLS_DIR = join(ROOT, '.opencode', 'skills');
+/**
+ * Directories that hold skills, in validation order.
+ *
+ * The top-level `skills/` directory is the distributable source of truth.
+ * `.opencode/skills/` holds the installer-managed CodeOps skills and remains
+ * project-local. Both are validated, and duplicate IDs across the two roots
+ * are rejected.
+ */
+const SKILLS_ROOTS = [join(ROOT, 'skills'), join(ROOT, '.opencode', 'skills')];
 
 /**
  * Recommended skill ID shape: lowercase kebab-case, used for the directory
@@ -223,20 +233,42 @@ function checkSkill(skillId, skillPath) {
 
 /**
  * Entry point: validates every skill directory and reports the result.
+ *
+ * The two roots are scanned independently. A duplicate ID is reported because
+ * the later source would silently override the earlier one in OpenCode.
  */
 function main() {
-  if (!existsSync(SKILLS_DIR) || !statSync(SKILLS_DIR).isDirectory()) {
-    console.log('skill:check — no .opencode/skills directory, nothing to validate');
+  const roots = SKILLS_ROOTS.filter(root => existsSync(root) && statSync(root).isDirectory());
+
+  if (roots.length === 0) {
+    console.log('skill:check — no skills directory, nothing to validate');
     return;
   }
 
-  const skillIds = readdirSync(SKILLS_DIR, { withFileTypes: true })
-    .filter(entry => entry.isDirectory())
-    .map(entry => entry.name)
-    .sort();
+  /** @type {Map<string, string>} skill ID to the path that defined it first */
+  const seenIds = new Map();
+  let validated = 0;
 
-  for (const skillId of skillIds) {
-    checkSkill(skillId, join(SKILLS_DIR, skillId));
+  for (const root of roots) {
+    const skillIds = readdirSync(root, { withFileTypes: true })
+      .filter(entry => entry.isDirectory())
+      .map(entry => entry.name)
+      .sort();
+
+    for (const skillId of skillIds) {
+      const skillPath = join(root, skillId);
+
+      if (seenIds.has(skillId)) {
+        problems.push(
+          `${skillPath}: duplicate skill ID "${skillId}" is already defined at ${seenIds.get(skillId)}`
+        );
+      } else {
+        seenIds.set(skillId, skillPath);
+      }
+
+      checkSkill(skillId, skillPath);
+      validated += 1;
+    }
   }
 
   if (problems.length > 0) {
@@ -250,7 +282,7 @@ function main() {
     return;
   }
 
-  console.log(`skill:check — ${skillIds.length} skill(s) validated`);
+  console.log(`skill:check — ${validated} skill(s) validated across ${roots.length} root(s)`);
 }
 
 main();
