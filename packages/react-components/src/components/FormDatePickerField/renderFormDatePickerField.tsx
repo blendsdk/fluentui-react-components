@@ -21,6 +21,7 @@ export function renderFormDatePickerField(state: FormDatePickerFieldState): Reac
       label={state.label}
       hint={state.hint}
       required={state.required}
+      size={state.fieldSize}
       validationMessage={state.errorMessage}
     >
       {({ id }) => <DatePicker {...state.datePickerProps} id={id} ref={state.controlRef} />}

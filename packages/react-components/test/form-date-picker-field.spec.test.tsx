@@ -100,6 +100,26 @@ describe('FormDatePickerField', () => {
     expect(formatDate(form.getValues('startDate') ?? undefined)).toBe('2026-01-15');
   });
 
+  it('is read-only by default and editable with allowTextInput', () => {
+    const first = renderWithForm<Values>({ defaultValues: { startDate: null } }, form => (
+      <FormDatePickerField control={form.control} name="startDate" label="Start date" />
+    ));
+
+    expect(screen.getByRole('combobox', { name: 'Start date' })).toHaveAttribute('readonly');
+    first.unmount();
+
+    renderWithForm<Values>({ defaultValues: { startDate: null } }, form => (
+      <FormDatePickerField
+        control={form.control}
+        name="startDate"
+        label="Start date"
+        allowTextInput
+      />
+    ));
+
+    expect(screen.getByRole('combobox', { name: 'Start date' })).not.toHaveAttribute('readonly');
+  });
+
   it('marks the field touched on blur and calls a caller onBlur', () => {
     const onBlur = vi.fn();
     const { form } = renderWithForm<Values>(

@@ -18,6 +18,8 @@ export type FormDatePickerFieldState = {
   required?: boolean;
   /** Validation message, or `undefined` when there is no message. */
   errorMessage?: string;
+  /** Size shared by the Field label and the DatePicker. */
+  fieldSize: DatePickerProps['size'];
   /** DatePicker props with the wrapper-owned value and handlers applied. */
   datePickerProps: Omit<
     DatePickerProps,
@@ -70,6 +72,7 @@ export function useFormDatePickerField<
     hint,
     required,
     errorMessage,
+    fieldSize: datePickerProps.size,
     datePickerProps: {
       ...datePickerProps,
       value: field.value ?? null,
