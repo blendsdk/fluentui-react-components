@@ -22,12 +22,13 @@ manifest, not reconstructed from the script output.
 the component skill instructs an agent to copy. The pack guard's story-file rule
 is designed for compiled component stories and rejected the template.
 
-**Resolution:** the guard allows the `skills/` payload and continues to reject
-`src/`, `.storybook/`, `storybook-static/` and story-named files elsewhere in the
-package. The exception is documented in the guard.
+**Resolution:** the guard allows only `skills/<skill>/templates/` paths. Every
+other path keeps the normal checks for `src/`, `.storybook/`,
+`storybook-static/` and story-named files. The exception is documented in the
+guard.
 
 **Status:** fixed and verified by `pnpm pack:check`; the package still rejects
-source and Storybook story files outside the skill payload.
+source and Storybook story files outside the skill template directories.
 
 ## F-03 — `--skill <id>` did not match the frontmatter display name
 

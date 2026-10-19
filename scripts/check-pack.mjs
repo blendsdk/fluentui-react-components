@@ -45,19 +45,23 @@ const REQUIRED_SKILL_FILES = [
   'skills/rhf-zod-forms/SKILL.md',
 ];
 
+/** Generated skill templates that may legitimately carry story/test names. */
+const SKILL_TEMPLATE_PATTERN = /^skills\/[^/]+\/templates\//;
+
 /**
  * Reports whether a path from the pack list is source or story material.
  *
- * The generated `skills/` payload is intentionally allowed to contain skill
- * templates with names such as `Component.stories.tsx` and
- * `form.spec.test.tsx`. Those files are documentation assets, not compiled
- * component sources or Storybook stories.
+ * The generated `skills/` payload intentionally contains templates with names
+ * such as `Component.stories.tsx` and `form.spec.test.tsx` under each skill's
+ * `templates/` directory. Those files are documentation assets, not compiled
+ * component sources or Storybook stories. Every other path keeps the normal
+ * source/story checks.
  *
  * @param {string} filePath - path relative to the package root
  * @returns {boolean} `true` when the path must not be published
  */
 function isForbidden(filePath) {
-  if (filePath.startsWith('skills/')) {
+  if (SKILL_TEMPLATE_PATTERN.test(filePath)) {
     return false;
   }
 

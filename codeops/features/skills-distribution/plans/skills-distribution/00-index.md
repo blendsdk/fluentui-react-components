@@ -29,7 +29,7 @@ hand-edited copy.
 4. **Validation.** `scripts/check-skill.mjs` validates both roots and rejects
    duplicate IDs. `scripts/check-pack.mjs` requires both `SKILL.md` files in the
    npm pack list and still rejects component source and story files outside the
-   skill payload.
+   skill template directories.
 5. **Offline listing.** Add the pinned `skills@1.7.2` dev dependency and run
    `skills add ./packages/react-components --list` after a sync. The local path
    avoids GitHub and makes the CI smoke test deterministic.

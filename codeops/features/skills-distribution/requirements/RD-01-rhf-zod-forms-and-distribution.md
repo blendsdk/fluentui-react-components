@@ -69,7 +69,7 @@ and [`../plans/skills-distribution/08-acceptance.md`](../plans/skills-distributi
 - [x] **R9 — Pack validation.** `scripts/check-pack.mjs` requires both
       `skills/fluentui-components/SKILL.md` and `skills/rhf-zod-forms/SKILL.md` in
       the npm pack list, and still rejects component source and Storybook story
-      files outside the skill payload.
+      files outside the skill template directories.
 - [x] **R10 — Offline CI smoke.** The CI smoke test lists the packaged skills
       from the local package path through the pinned `skills` CLI dev dependency.
       It does not contact GitHub.

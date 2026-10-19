@@ -34,7 +34,7 @@
   advertised both skills.
 - The published pack includes the two `SKILL.md` entry files and the skill
   references/templates, with no component source or story files outside the
-  skill payload.
+  skill template directories.
 
 ## Deferred and open items
 
