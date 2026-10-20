@@ -329,7 +329,7 @@ Update the package README with an **internal Phase A** `TileGrid` section:
 
 ## Testing requirements
 
-- Public layout spec: list/listitem semantics, empty state, `strings.emptyMessage`, `ariaLabel`/`aria-labelledby`, duplicate IDs, invalid numeric warnings, render args, and hostile text/URL/no-ID-logging rendering (ST-44).
+- Public layout spec: list/listitem semantics, empty state, `strings.emptyMessage`, `ariaLabel`/`aria-labelledby`, duplicate IDs, invalid numeric warnings, render args, and hostile text rendering (ST-44). The spec is the immutable oracle; the ST-44 no-ID-logging/no-fetch half is asserted in `test/tile-grid-layout.impl.test.tsx`.
 - Public selection spec: controlled/uncontrolled, click mapping, hidden IDs, no mount callback, handle methods, interactive guard.
 - Node import smoke: import the package/`TileGrid` in `test/tile-grid-ssr.spec.test.ts` with `// @vitest-environment node`; no `renderToString` (ST-46).
 - Browser: four layouts, 20K mounted count, anchor preservation, scrollToSelected, image count; renderer DOM-read/offscreen (ST-48); 20K public selection proxy (ST-47).

@@ -95,20 +95,20 @@ The geometry types are internal, not exported from the package root. `TileGridLa
 
 `normalize.ts` owns every defensive rule. The component calls it before geometry and emits development warnings for the cases marked **warn**; the pure engine never warns.
 
-| Value                       | Rule                                                                                     | Warning                                |
-| --------------------------- | ---------------------------------------------------------------------------------------- | -------------------------------------- |
-| `items` / `getItemId`       | Keep the first occurrence of each ID; drop later duplicates and report the duplicate IDs | Warn in development                    |
-| `containerWidth`            | Non-finite or negative → `0`; geometry returns empty rectangles until measured           | No                                     |
-| `tileSize`                  | Missing → `160`; non-finite → `160`; clamp to `[minTileSize, maxTileSize]`               | No                                     |
-| `minTileSize`               | Missing → `120`; non-finite → `120`; clamp to `[1, maxTileSize]`                         | If supplied greater than `maxTileSize` |
-| `maxTileSize`               | Missing → `320`; non-finite → `320`; clamp to `>= 1`                                     | No                                     |
-| `gap`                       | Missing → `8`; non-finite or negative → `0`                                              | No                                     |
-| `columns`                   | Missing or non-finite → automatic formula; otherwise `max(1, trunc(value))`              | If supplied for `justified`            |
-| `tileAspectRatio`           | Missing → `1`; non-finite or `<= 0` → `1`                                                | No                                     |
-| `fallbackAspectRatio`       | Missing → `1`; non-finite or `<= 0` → `1`                                                | No                                     |
-| `getItemAspectRatio` result | Non-finite (including `Infinity`), `undefined`, `null`, `<= 0` → `fallbackAspectRatio`   | No                                     |
-| `getItemSpan` result        | Only mosaic; columns/rows clamp to `1..2` and to available columns; invalid → `1×1`      | No                                     |
-| Scroll offsets              | Finite, clamped to `[0, maxScroll]` by the scroll helper                                 | No                                     |
+| Value                       | Rule                                                                                                                                                                      | Warning                                |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
+| `items` / `getItemId`       | Keep the first occurrence of each ID; drop later duplicates and report the duplicate IDs                                                                                  | Warn in development                    |
+| `containerWidth`            | Non-finite or negative → `0`; geometry returns empty rectangles until measured                                                                                            | No                                     |
+| `tileSize`                  | Missing → `160`; non-finite → `160`; clamp to `[minTileSize, maxTileSize]`                                                                                                | No                                     |
+| `minTileSize`               | Missing → `120`; non-finite → `120`; clamp to `[1, maxTileSize]`                                                                                                          | If supplied greater than `maxTileSize` |
+| `maxTileSize`               | Missing → `320`; non-finite → `320`; clamp to `>= 1`                                                                                                                      | No                                     |
+| `gap`                       | Missing → `8`; non-finite or negative → `0`                                                                                                                               | No                                     |
+| `columns`                   | Missing or non-finite → automatic formula; otherwise `max(1, trunc(value))`, capped at `floor(containerWidth / gap) + 1` when `gap > 0` so no column is narrower than `0` | If supplied for `justified`            |
+| `tileAspectRatio`           | Missing → `1`; non-finite or `<= 0` → `1`                                                                                                                                 | No                                     |
+| `fallbackAspectRatio`       | Missing → `1`; non-finite or `<= 0` → `1`                                                                                                                                 | No                                     |
+| `getItemAspectRatio` result | Non-finite (including `Infinity`), `undefined`, `null`, `<= 0` → `fallbackAspectRatio`                                                                                    | No                                     |
+| `getItemSpan` result        | Only mosaic; columns/rows clamp to `1..2` and to available columns; invalid → `1×1`                                                                                       | No                                     |
+| Scroll offsets              | Finite, clamped to `[0, maxScroll]` by the scroll helper                                                                                                                  | No                                     |
 
 `normalizeItems` returns the unique items in source order and the duplicate IDs. The component renders and selects only the unique items; `aria-setsize` uses the unique count.
 
@@ -180,7 +180,7 @@ Hand-computed example: 3 lanes, column width `100`, `gap=0`, four items with asp
 ### Shared result helpers
 
 - `indexAtPoint(x, y)`: return the item index whose rectangle contains the point; if several (should not happen), the highest index. Return `undefined` outside all rectangles.
-- `firstVisibleItem(scrollTop)`: among items whose rectangle intersects the 1px line at `scrollTop`, choose the smallest `y`, then `x`, then `index`; for band layouts this is normally the first item in the first visible band, and for mosaic it can be a span that started in an earlier band.
+- `firstVisibleItem(scrollTop)`: return the first item at or below `scrollTop`; choose the smallest `y`, then `x`, then `index`, including an item whose rectangle starts above the line but extends below it. If `scrollTop` falls in a row gap, return the next row's first item. For mosaic this can be a span that started in an earlier band.
 - `offsetForItem(id)`: the item's `y`; `undefined` for an unknown ID.
 - `itemsInRange(startY, endY)`: all item indices whose vertical span intersects the range; include spans. The band layouts may scan bands; masonry scans rectangles. The result is sorted by index.
 

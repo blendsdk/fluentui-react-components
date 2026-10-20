@@ -61,7 +61,7 @@ const virtualizer = useVirtualizer(
   count: geometry.bands.length,
   getScrollElement,
   estimateSize: index => geometry.bands[index].height,
-  getItemKey: index => `${geometry.bands[index].firstIndex}:${geometry.bands[index].lastIndex}`,
+  getItemKey: index => `${index}:${geometry.bands[index].firstIndex}:${geometry.bands[index].lastIndex}`,
   gap: normalizedGap,
   overscan: 2,
 }

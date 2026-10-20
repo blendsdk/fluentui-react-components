@@ -214,7 +214,7 @@ idle ──pointerdown──▶ pending ──4px──▶ active ──pointeru
   - `x = clientX - containerRect.left`
   - `y = clientY - containerRect.top + geometry.getScrollOffset()`
   - The rect is the normalized rectangle from the start point to the current point.
-- On every active move or auto-scroll frame, the controller obtains `geometry.getVisibleItemIds()`, reads each `geometry.getItemRect(id)`, and intersects it with the marquee rect. It filters by `isSelectable(id)`. Plain mode uses the intersecting set; additive mode unions it with the pre-marquee selection.
+- On every active move or auto-scroll frame, the controller obtains `geometry.getVisibleItemIds()`, reads each `geometry.getItemRect(id)`, and intersects it with the marquee rect. It filters by `isSelectable(id)`. Plain mode uses the intersecting set; additive mode unions it with the pre-marquee selection. Hit testing must use this visible-ID path, not the O(n) `indexAtPoint` helper, so a 20K grid does not scan every rectangle per pointer move.
 - The controller calls `onPreview(preview)` only when the preview set changes. It never commits during the drag.
 - Auto-scroll starts when the pointer is within `edgeThreshold` of the container's top or bottom. The speed is proportional to the edge distance, capped at `maxScrollSpeed` pixels per frame. Each frame calls `geometry.scrollBy(delta)` and recomputes the rect/preview. It stops when the pointer leaves the edge zone, the gesture ends, or the controller is disposed.
 - `pointerup` in the pending state is a background click: reset to idle, release capture, no selection callback. This implements RD-01's shorter-gesture no-op.

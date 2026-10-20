@@ -103,29 +103,29 @@
 
 ### Specification Tests
 
-| Test file                                           | ST cases                         | Component                                    |
-| --------------------------------------------------- | -------------------------------- | -------------------------------------------- |
-| `test/tile-grid-geometry.spec.test.ts`              | ST-1–ST-12                       | Geometry engine (pure)                       |
-| `test/tile-grid-layout.spec.test.tsx`               | ST-16–ST-20, ST-44               | Public TileGrid layout/empty/list/security   |
-| `test/tile-grid-selection.spec.test.tsx`            | ST-23–ST-32                      | Public selection/click/handle                |
-| `test/tile-grid-marquee.spec.test.ts`               | ST-35–ST-42                      | Marquee controller                           |
-| `test/package-exports.spec.test.ts`                 | ST-43                            | Package surface                              |
-| `test/tile-grid-ssr.spec.test.ts`                   | ST-46                            | Node import/module-evaluation smoke          |
-| `test/browser/tile-grid-harness.browser.test.tsx`   | ST-45                            | Browser harness smoke                        |
-| `test/perf/tile-grid-harness.perf.test.tsx`         | ST-45                            | Performance harness smoke                    |
-| `test/browser/tile-grid-layout.browser.test.tsx`    | ST-13–ST-15, ST-21, ST-22, ST-48 | Browser measurement/virtualization/DOM reads |
-| `test/browser/tile-grid-selection.browser.test.tsx` | ST-34, ST-47, ST-49              | Browser selection/perf/render count          |
-| `test/perf/tile-grid.perf.test.tsx`                 | ST-13, ST-33 (supplement)        | Geometry/mounted/scroll budgets              |
+| Test file                                           | ST cases                          | Component                                    |
+| --------------------------------------------------- | --------------------------------- | -------------------------------------------- |
+| `test/tile-grid-geometry.spec.test.ts`              | ST-1–ST-12                        | Geometry engine (pure)                       |
+| `test/tile-grid-layout.spec.test.tsx`               | ST-16–ST-20, ST-44 (hostile text) | Public TileGrid layout/empty/list/security   |
+| `test/tile-grid-selection.spec.test.tsx`            | ST-23–ST-32                       | Public selection/click/handle                |
+| `test/tile-grid-marquee.spec.test.ts`               | ST-35–ST-42                       | Marquee controller                           |
+| `test/package-exports.spec.test.ts`                 | ST-43                             | Package surface                              |
+| `test/tile-grid-ssr.spec.test.ts`                   | ST-46                             | Node import/module-evaluation smoke          |
+| `test/browser/tile-grid-harness.browser.test.tsx`   | ST-45                             | Browser harness smoke                        |
+| `test/perf/tile-grid-harness.perf.test.tsx`         | ST-45                             | Performance harness smoke                    |
+| `test/browser/tile-grid-layout.browser.test.tsx`    | ST-13–ST-15, ST-21, ST-22, ST-48  | Browser measurement/virtualization/DOM reads |
+| `test/browser/tile-grid-selection.browser.test.tsx` | ST-34, ST-47, ST-49               | Browser selection/perf/render count          |
+| `test/perf/tile-grid.perf.test.tsx`                 | ST-13, ST-33 (supplement)         | Geometry/mounted/scroll budgets              |
 
 ### Implementation Tests
 
-| Test file                                  | Description                                                               | Priority |
-| ------------------------------------------ | ------------------------------------------------------------------------- | -------- |
-| `test/tile-grid-geometry.impl.test.ts`     | Normalization edge cases, extra invariants, band/range helpers            | High     |
-| `test/tile-grid-layout.impl.test.tsx`      | Zero width, duplicates, warnings, memoized cell props/stable callbacks    | High     |
-| `test/tile-grid-selection.impl.test.tsx`   | Store transition table, controlled/uncontrolled, anchor, warnings         | High     |
-| `test/tile-grid-marquee.impl.test.ts`      | Capture unavailable, dispose, boundary clamps, additive hidden IDs        | Medium   |
-| `test/tile-grid-virtualizer.impl.test.tsx` | Band starts/total parity; masonry lane/start parity; scroll helper clamps | High     |
+| Test file                                  | Description                                                                                   | Priority |
+| ------------------------------------------ | --------------------------------------------------------------------------------------------- | -------- |
+| `test/tile-grid-geometry.impl.test.ts`     | Normalization edge cases, extra invariants, band/range helpers                                | High     |
+| `test/tile-grid-layout.impl.test.tsx`      | Zero width, duplicates, warnings, memoized cell props/stable callbacks, ST-44 no-log/no-fetch | High     |
+| `test/tile-grid-selection.impl.test.tsx`   | Store transition table, controlled/uncontrolled, anchor, warnings                             | High     |
+| `test/tile-grid-marquee.impl.test.ts`      | Capture unavailable, dispose, boundary clamps, additive hidden IDs                            | Medium   |
+| `test/tile-grid-virtualizer.impl.test.tsx` | Band starts/total parity; masonry lane/start parity; scroll helper clamps                     | High     |
 
 ### Integration / Browser Tests
 

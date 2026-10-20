@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-20 22:06
-> **Progress**: 10/69 tasks (14%)
+> **Last Updated**: 2026-10-20 23:48
+> **Progress**: 26/69 tasks (38%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -101,7 +101,7 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 
 ## Phase 2: Geometry engine and core TileGrid
 
-> **Phase baseline tree**: _(recorded by the exec-plan skill from a temporary-index snapshot of committed, staged, unstaged, and untracked phase-start state)_
+> **Phase baseline tree**: `448a46210f7690039a2289db8e3b530dd01d2635`
 > **Lenses**: `api-surface`, `perf`
 > **Reasoning**: high — geometry correctness and the public component contract; small errors cascade through every later phase.
 
@@ -110,51 +110,51 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 **Reference**: 03-01 §Types–§Layout algorithms; 03-04 §Public types–§DOM; ST-1–ST-12, ST-16–ST-20, ST-44, ST-46; AR #6, AR #13, AR #19, PF-002.
 **Objective**: Write the pure geometry oracle, the core public component contract, and the node import smoke before implementation.
 
-- [ ] 2.1.1 [spec-author] Write `test/tile-grid-geometry.spec.test.ts` covering ST-1–ST-12 — 03-01
-- [ ] 2.1.2 [spec-author] Write `test/tile-grid-layout.spec.test.tsx` covering ST-16–ST-20/ST-44 and `test/tile-grid-ssr.spec.test.ts` covering ST-46 (core layout/empty/list/warnings/security and node import; selection cases deferred) — 03-04; PF-002
-- [ ] 2.1.3 Run `pnpm --filter @blendsdk/fluentui-react-components test -- test/tile-grid-geometry.spec.test.ts test/tile-grid-layout.spec.test.tsx test/tile-grid-ssr.spec.test.ts`; verify the tests fail because the geometry/component do not exist (red phase)
+- [x] 2.1.1 [spec-author] Write `test/tile-grid-geometry.spec.test.ts` covering ST-1–ST-12 — 03-01 ✅ (completed: 2026-10-20 22:33)
+- [x] 2.1.2 [spec-author] Write `test/tile-grid-layout.spec.test.tsx` covering ST-16–ST-20/ST-44 and `test/tile-grid-ssr.spec.test.ts` covering ST-46 (core layout/empty/list/warnings/security and node import; selection cases deferred) — 03-04; PF-002 ✅ (completed: 2026-10-20 22:33)
+- [x] 2.1.3 Run `pnpm --filter @blendsdk/fluentui-react-components test -- test/tile-grid-geometry.spec.test.ts test/tile-grid-layout.spec.test.tsx test/tile-grid-ssr.spec.test.ts`; verify the tests fail because the geometry/component do not exist (red phase) ✅ (completed: 2026-10-20 22:34)
 
 **Deliverables**:
 
-- [ ] Hand-computed geometry cases, component contract cases, and the node import smoke exist.
-- [ ] The red-phase result is recorded.
+- [x] Hand-computed geometry cases, component contract cases, and the node import smoke exist.
+- [x] The red-phase result is recorded.
 
 ### Step 2.2: Geometry engine and core component implementation
 
 **Reference**: 03-01; 03-04 §Public types–§Styles; AR #6, AR #13, AR #19.
 **Objective**: Implement the pure geometry engine, the Phase A core types, the `TileGrid` shell, measurement, and small-fixture rendering.
 
-- [ ] 2.2.1 Add `geometry/types.ts`, `geometry/columnCount.ts`, and `geometry/normalize.ts` — 03-01 §Types, §Normalization, §Column count
-- [ ] 2.2.2 Add `geometry/fixedLayout.ts` and `geometry/masonryLayout.ts` — 03-01 §Fixed, §Masonry
-- [ ] 2.2.3 Add `geometry/justifiedLayout.ts` and `geometry/mosaicLayout.ts` — 03-01 §Justified, §Mosaic
-- [ ] 2.2.4 Add `geometry/computeGeometry.ts`, `geometry/geometryPort.ts`, and `geometry/index.ts` — 03-01 §Shared result helpers, §Integration points
-- [ ] 2.2.5 Add the Phase A core types in `TileGrid.types.ts` (selection props and `TileGridHandle` are added in Phase 4) — 03-04 §Public types
-- [ ] 2.2.6 Add `TileGrid.tsx` and `TileGrid/index.ts` with the generic component shell (the `forwardRef`/handle layer is added in Phase 4) — 03-04 §Component files
-- [ ] 2.2.7 Update `src/index.ts` and `test/package-exports.spec.test.ts` for the Phase A core runtime/type exports — 03-04 §Package surface
-- [ ] 2.2.8 Add `devWarnings.ts` and the core `useTileGrid.ts` state hook (normalization, defaults, geometry, warnings) — 03-04 §State hook, §Dev warnings
-- [ ] 2.2.9 Add `virtualization/useContainerSize.ts`, `TileGridItemView.tsx` (internal memoized cell), `renderTileGrid.tsx`, and `useTileGridStyles.styles.ts` — 03-02 §Container measurement; 03-04 §DOM, §Styles; PF-005
-- [ ] 2.2.10 Run the Phase 2 spec tests; verify they pass (green phase); fix the implementation, not the tests
+- [x] 2.2.1 Add `geometry/types.ts`, `geometry/columnCount.ts`, and `geometry/normalize.ts` — 03-01 §Types, §Normalization, §Column count ✅ (completed: 2026-10-20 22:39)
+- [x] 2.2.2 Add `geometry/fixedLayout.ts` and `geometry/masonryLayout.ts` — 03-01 §Fixed, §Masonry ✅ (completed: 2026-10-20 22:39)
+- [x] 2.2.3 Add `geometry/justifiedLayout.ts` and `geometry/mosaicLayout.ts` — 03-01 §Justified, §Mosaic ✅ (completed: 2026-10-20 22:39)
+- [x] 2.2.4 Add `geometry/computeGeometry.ts`, `geometry/geometryPort.ts`, and `geometry/index.ts` — 03-01 §Shared result helpers, §Integration points ✅ (completed: 2026-10-20 22:39)
+- [x] 2.2.5 Add the Phase A core types in `TileGrid.types.ts` (selection props and `TileGridHandle` are added in Phase 4) — 03-04 §Public types ✅ (completed: 2026-10-20 22:50)
+- [x] 2.2.6 Add `TileGrid.tsx` and `TileGrid/index.ts` with the generic component shell (the `forwardRef`/handle layer is added in Phase 4) — 03-04 §Component files ✅ (completed: 2026-10-20 22:53)
+- [x] 2.2.7 Update `src/index.ts` and `test/package-exports.spec.test.ts` for the Phase A core runtime/type exports — 03-04 §Package surface ✅ (completed: 2026-10-20 22:53)
+- [x] 2.2.8 Add `devWarnings.ts` and the core `useTileGrid.ts` state hook (normalization, defaults, geometry, warnings) — 03-04 §State hook, §Dev warnings ✅ (completed: 2026-10-20 22:51)
+- [x] 2.2.9 Add `virtualization/useContainerSize.ts`, `TileGridItemView.tsx` (internal memoized cell), `renderTileGrid.tsx`, and `useTileGridStyles.styles.ts` — 03-02 §Container measurement; 03-04 §DOM, §Styles; PF-005 ✅ (completed: 2026-10-20 22:52)
+- [x] 2.2.10 Run the Phase 2 spec tests; verify they pass (green phase); fix the implementation, not the tests ✅ (completed: 2026-10-20 22:53)
 
 **Deliverables**:
 
-- [ ] The pure geometry engine returns the hand-computed rectangles and invariants.
-- [ ] The public TileGrid renders fixed/masonry/justified/mosaic small fixtures, the empty state, list semantics, and the internal memoized cell.
-- [ ] Duplicate IDs and invalid numeric props warn in development and behave deterministically.
-- [ ] The node import smoke passes without accessing `window`/`document` at module evaluation.
+- [x] The pure geometry engine returns the hand-computed rectangles and invariants.
+- [x] The public TileGrid renders fixed/masonry/justified/mosaic small fixtures, the empty state, list semantics, and the internal memoized cell.
+- [x] Duplicate IDs and invalid numeric props warn in development and behave deterministically.
+- [x] The node import smoke passes without accessing `window`/`document` at module evaluation.
 
 ### Step 2.3: Geometry/core implementation tests and hardening
 
 **Reference**: 03-01 §Testing requirements; 03-04 §Testing requirements; ST-1–ST-20.
 **Objective**: Add internals/edge-case coverage and run the phase gate.
 
-- [ ] 2.3.1 Add `test/tile-grid-geometry.impl.test.ts` for normalization edge cases, extra invariants, and result helpers — 03-01 §Testing requirements
-- [ ] 2.3.2 Add `test/tile-grid-layout.impl.test.tsx` for zero width, duplicate IDs, warning deduplication, empty/list edge cases, and memoized-cell stable props — 03-04 §Error handling; PF-005
-- [ ] 2.3.3 Run `pnpm verify && pnpm test:browser && pnpm test:perf`; phase gate
+- [x] 2.3.1 Add `test/tile-grid-geometry.impl.test.ts` for normalization edge cases, extra invariants, and result helpers — 03-01 §Testing requirements ✅ (completed: 2026-10-20 22:54)
+- [x] 2.3.2 Add `test/tile-grid-layout.impl.test.tsx` for zero width, duplicate IDs, warning deduplication, empty/list edge cases, and memoized-cell stable props — 03-04 §Error handling; PF-005 ✅ (completed: 2026-10-20 22:55)
+- [x] 2.3.3 Run `pnpm verify && pnpm test:browser && pnpm test:perf`; phase gate ✅ (completed: 2026-10-20 23:47)
 
 **Deliverables**:
 
-- [ ] All Phase 2 tests pass; no regressions in the existing suite.
-- [ ] The Phase 2 browser/perf smoke remains green.
+- [x] All Phase 2 tests pass; no regressions in the existing suite.
+- [x] The Phase 2 browser/perf smoke remains green.
 
 **Verify**: `pnpm verify && pnpm test:browser && pnpm test:perf`
 
