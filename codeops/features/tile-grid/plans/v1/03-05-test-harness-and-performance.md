@@ -75,7 +75,7 @@ The package scripts above invoke Vitest directly; the root wrappers keep the com
 Keep the jsdom environment, setup file, and `test/**/*.{test,spec}.{ts,tsx}` include. Add:
 
 ```ts
-exclude: ['node_modules', 'dist', 'storybook-static', '.turbo', 'test/browser/**', 'test/perf/**']
+exclude: ['node_modules', 'dist', 'storybook-static', '.turbo', 'test/browser/**', 'test/perf/**'];
 ```
 
 `pnpm test` remains the fast unit gate and does not require Playwright.
@@ -116,7 +116,7 @@ Same React plugin and setup file as the browser config; `include: ['test/perf/**
 
 `test/setup.ts` keeps `@testing-library/jest-dom/vitest` and `cleanup()`. It imports `installJsdomStubs()` from `test/jsdomStubs.ts`, which installs only when the API is missing:
 
-- **`ResizeObserverStub`** — records observed elements, exposes a controllable `setSize(element, width, height)` helper that defines `clientWidth`/`clientHeight` and invokes the registered callbacks with a `contentRect`. A `resetResizeObserverStub()` clears instances between tests.
+- **`ResizeObserverStub`** — records observed elements, exposes a controllable `setElementSize(element, width, height)` helper that defines `clientWidth`/`clientHeight` and invokes the registered callbacks with a `contentRect`. `resetJsdomStubs()` clears instances between tests.
 - **Pointer capture** — defines `setPointerCapture`, `releasePointerCapture`, and `hasPointerCapture` on `Element.prototype` when jsdom lacks them. The stubs are inert unless a test uses pointer events.
 
 jsdom component tests that need item wrappers call `setElementSize(root, 800, 600)` (or another explicit size) before asserting. Without a measured width the component intentionally renders the spacer at height `0` and no items. The selection tests use the same helper; selection state does not depend on geometry, but the clickable wrappers do.

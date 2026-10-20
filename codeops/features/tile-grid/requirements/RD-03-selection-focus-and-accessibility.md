@@ -44,10 +44,9 @@ operable actions.
       More than one produces a development warning; the first ID in `selectedIds` iteration order is
       treated as selected; no callback is fired.
 - [ ] **Interaction mode.** `interactionMode` accepts `'browse' | 'select'` and defaults to
-      `'select'`.
-      - `'select'`: single click selects; double-click or Enter activates.
-      - `'browse'`: single click activates; Ctrl/Cmd-click toggles selection; Shift-click selects a
-        range.
+      `'select'`. In `'select'`, a single click selects and a double-click or Enter activates. In
+      `'browse'`, a single click activates, Ctrl/Cmd-click toggles selection, and Shift-click selects
+      a range.
 - [ ] **Activation callback.** `onItemActivate(item)` fires for double-click/Enter in `'select'`
       mode, for single-click/Enter in `'browse'` mode, and for click/Enter in `'none'` mode, when
       the tile is not disabled.

@@ -211,8 +211,10 @@ interface TileGridDragHandleProps {
   label: string;
 }
 
-interface TileGridItemProps<T>
-  extends Omit<React.ComponentPropsWithoutRef<'div'>, 'children' | 'aria-disabled'> {
+interface TileGridItemProps<T> extends Omit<
+  React.ComponentPropsWithoutRef<'div'>,
+  'children' | 'aria-disabled'
+> {
   item: T;
   media?: React.ReactNode;
   title?: React.ReactNode;

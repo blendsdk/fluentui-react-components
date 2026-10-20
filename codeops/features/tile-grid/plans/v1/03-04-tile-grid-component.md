@@ -37,11 +37,10 @@ interface TileGridHandle {
   scrollToSelected(): void;
 }
 
-interface TileGridProps<T>
-  extends Omit<
-    React.ComponentPropsWithoutRef<'div'>,
-    'children' | 'role' | 'aria-label' | 'dangerouslySetInnerHTML'
-  > {
+interface TileGridProps<T> extends Omit<
+  React.ComponentPropsWithoutRef<'div'>,
+  'children' | 'role' | 'aria-label' | 'dangerouslySetInnerHTML'
+> {
   items: readonly T[];
   getItemId: (item: T) => string;
   getItemLabel: (item: T) => string;
@@ -147,7 +146,11 @@ The hook should be split into the internal hooks listed above so no file grows p
   style={{ ...componentStyle, ...rootProps.style }}
 >
   {empty ? (
-    renderEmpty ? renderEmpty() : <div className={classes.empty}>{strings.emptyMessage}</div>
+    renderEmpty ? (
+      renderEmpty()
+    ) : (
+      <div className={classes.empty}>{strings.emptyMessage}</div>
+    )
   ) : (
     <>
       <div className={classes.spacer} style={{ height: geometry.totalHeight }} aria-hidden="true" />
@@ -310,19 +313,19 @@ Update the package README with an **internal Phase A** `TileGrid` section:
 
 ## Error handling
 
-| Error case                                  | Handling strategy                                          | AR Ref        |
-| ------------------------------------------- | ---------------------------------------------------------- | ------------- |
-| No `ariaLabel` and no `aria-labelledby`     | Development warning; root still renders                    | RD-02, AR #13 |
-| `renderItem` throws                         | Do not catch; the application error surfaces through React | Standards     |
-| `getItemId`/`getItemLabel` throws           | Do not catch; application callback error                   | Standards     |
-| Duplicate IDs                               | First occurrence wins; development warning                 | RD-02         |
-| Empty items                                 | `renderEmpty()` or `strings.emptyMessage`                  | RD-02         |
-| Root not measured                           | Spacer `0`, no items; wait for observer                    | AR #6         |
-| Caller overrides the scroll container style | Caller owns the override; README documents the contract    | AR #6         |
-| Selection click on interactive content      | Ignore selection                                           | AR #3         |
-| `selectAll` in single/none                  | No-op + development warning                                | AR #23        |
-| Module evaluation accesses `window`/`document` | ST-46 node import smoke fails; keep module scope DOM-free | RD-02 AC 16, PF-002 |
-| Selection change re-renders all visible cells | ST-49 fails; inspect `TileGridItemView` memoization/props | RD-03 performance, PF-005 |
+| Error case                                     | Handling strategy                                          | AR Ref                    |
+| ---------------------------------------------- | ---------------------------------------------------------- | ------------------------- |
+| No `ariaLabel` and no `aria-labelledby`        | Development warning; root still renders                    | RD-02, AR #13             |
+| `renderItem` throws                            | Do not catch; the application error surfaces through React | Standards                 |
+| `getItemId`/`getItemLabel` throws              | Do not catch; application callback error                   | Standards                 |
+| Duplicate IDs                                  | First occurrence wins; development warning                 | RD-02                     |
+| Empty items                                    | `renderEmpty()` or `strings.emptyMessage`                  | RD-02                     |
+| Root not measured                              | Spacer `0`, no items; wait for observer                    | AR #6                     |
+| Caller overrides the scroll container style    | Caller owns the override; README documents the contract    | AR #6                     |
+| Selection click on interactive content         | Ignore selection                                           | AR #3                     |
+| `selectAll` in single/none                     | No-op + development warning                                | AR #23                    |
+| Module evaluation accesses `window`/`document` | ST-46 node import smoke fails; keep module scope DOM-free  | RD-02 AC 16, PF-002       |
+| Selection change re-renders all visible cells  | ST-49 fails; inspect `TileGridItemView` memoization/props  | RD-03 performance, PF-005 |
 
 ## Testing requirements
 

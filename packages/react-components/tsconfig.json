@@ -3,5 +3,14 @@
   "compilerOptions": {
     "noEmit": true
   },
-  "include": ["src", "test", ".storybook", "vite.config.ts", "vitest.config.ts"]
+  "include": [
+    "src",
+    "test",
+    ".storybook",
+    "vite.config.ts",
+    "vitest.config.ts",
+    "vitest.browser.config.ts",
+    "vitest.browser-matrix.config.ts",
+    "vitest.perf.config.ts"
+  ]
 }

@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-20 21:05
-> **Progress**: 0/69 tasks (0%)
+> **Last Updated**: 2026-10-20 22:06
+> **Progress**: 10/69 tasks (14%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -47,7 +47,7 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 
 ## Phase 1: Test harness and dependency foundation
 
-> **Phase baseline tree**: _(recorded by the exec-plan skill from a temporary-index snapshot of committed, staged, unstaged, and untracked phase-start state)_
+> **Phase baseline tree**: `a457b37a4a4ece10fd86ff83ecca721642f8d7b2`
 > **Lenses**: `api-surface` (package/test surface)
 > **Reasoning**: medium — bounded infrastructure work using existing repository patterns; no product behavior.
 
@@ -56,41 +56,44 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 **Reference**: 03-05 §Harness architecture, §Test data; ST-45; AR #9, AR #10, AR #18.
 **Objective**: Define the browser and performance harness behavior before the configs exist.
 
-- [ ] 1.1.1 [spec-author] Write harness smoke tests: `test/browser/tile-grid-harness.browser.test.tsx` and `test/perf/tile-grid-harness.perf.test.tsx` — ST-45
-- [ ] 1.1.2 Run `pnpm test:browser` and `pnpm test:perf`; verify they fail because the scripts/configs/fixture do not exist (red phase)
+- [x] 1.1.1 [spec-author] Write harness smoke tests: `test/browser/tile-grid-harness.browser.test.tsx` and `test/perf/tile-grid-harness.perf.test.tsx` — ST-45 ✅ (completed: 2026-10-20 21:48)
+- [x] 1.1.2 Run `pnpm test:browser` and `pnpm test:perf`; verify they fail because the scripts/configs/fixture do not exist (red phase) ✅ (completed: 2026-10-20 21:49)
 
 **Deliverables**:
-- [ ] The two harness smoke test files exist and import the planned fixture/API.
-- [ ] The red-phase result is recorded in the execution log.
+
+- [x] The two harness smoke test files exist and import the planned fixture/API.
+- [x] The red-phase result: both commands were absent (exit 1); recorded in task 1.1.2.
 
 ### Step 1.2: Harness implementation and smoke green
 
 **Reference**: 03-05 §Dependencies and scripts, §Vitest configurations, §jsdom stubs, §Shared fixture; AR #9, AR #10, AR #18, AR #20.
 **Objective**: Add the pinned dependencies, configs, setup stubs, scripts, and shared fixture.
 
-- [ ] 1.2.1 Update the root `package.json` with browser/perf command wrappers and `packages/react-components/package.json` with `@tanstack/react-virtual`, `vitest` pinned to `5.0.5`, the browser/perf dev dependencies, and the package scripts; run `pnpm install` to update `pnpm-lock.yaml` — 03-05 §Dependencies; PF-008
-- [ ] 1.2.2 Add `vitest.browser.config.ts` and `vitest.browser-matrix.config.ts` — 03-05 §Vitest configurations
-- [ ] 1.2.3 Add `vitest.perf.config.ts`, update `vitest.config.ts` to exclude `test/browser/**`/`test/perf/**`, and add the new config files to `tsconfig.json` — 03-05 §Vitest configurations
-- [ ] 1.2.4 Add `test/jsdomStubs.ts`, update `test/setup.ts`, and add `test/fixtures/tileGridFixture.ts` — 03-05 §jsdom stubs, §Shared 20K fixture
-- [ ] 1.2.5 Install Chromium if needed (`pnpm --filter @blendsdk/fluentui-react-components exec playwright install chromium`), then run `pnpm test:browser` and `pnpm test:perf`; verify the smoke tests pass (green phase)
+- [x] 1.2.1 Update the root `package.json` with browser/perf command wrappers and `packages/react-components/package.json` with `@tanstack/react-virtual`, `vitest` pinned to `5.0.5`, the browser/perf dev dependencies, and the package scripts; run `pnpm install` to update `pnpm-lock.yaml` — 03-05 §Dependencies; PF-008 ✅ (completed: 2026-10-20 21:50)
+- [x] 1.2.2 Add `vitest.browser.config.ts` and `vitest.browser-matrix.config.ts` — 03-05 §Vitest configurations ✅ (completed: 2026-10-20 21:50)
+- [x] 1.2.3 Add `vitest.perf.config.ts`, update `vitest.config.ts` to exclude `test/browser/**`/`test/perf/**`, and add the new config files to `tsconfig.json` — 03-05 §Vitest configurations ✅ (completed: 2026-10-20 21:50)
+- [x] 1.2.4 Add `test/jsdomStubs.ts`, update `test/setup.ts`, and add `test/fixtures/tileGridFixture.ts` — 03-05 §jsdom stubs, §Shared 20K fixture ✅ (completed: 2026-10-20 21:51)
+- [x] 1.2.5 Install Chromium if needed (`pnpm --filter @blendsdk/fluentui-react-components exec playwright install chromium`), then run `pnpm test:browser` and `pnpm test:perf`; verify the smoke tests pass (green phase) ✅ (completed: 2026-10-20 21:53)
 
 **Deliverables**:
-- [ ] `pnpm test:browser` runs Chromium and passes the browser smoke.
-- [ ] `pnpm test:perf` runs Chromium and passes the performance smoke.
-- [ ] `pnpm test` remains jsdom-only and passes.
+
+- [x] `pnpm test:browser` runs Chromium and passes the browser smoke.
+- [x] `pnpm test:perf` runs Chromium and passes the performance smoke.
+- [x] `pnpm test` remains jsdom-only and passes.
 
 ### Step 1.3: Build and CI wiring
 
 **Reference**: 03-05 §CI jobs; AR #9, AR #18, AR #24.
 **Objective**: Externalize TanStack, wire Turbo inputs, and add the CI browser-matrix/performance jobs.
 
-- [ ] 1.3.1 Update `packages/react-components/vite.config.ts` to externalize `/^@tanstack\//`; update `turbo.json` test/Storybook/type-check inputs for fixtures, browser/perf tests, and the new Vitest configs — 03-05 §Dependencies, §CI jobs
-- [ ] 1.3.2 Add the `browser-matrix` and `performance` jobs to `.github/workflows/ci.yml` — 03-05 §CI jobs
-- [ ] 1.3.3 Run `pnpm format` (it also formats these plan documents), then `pnpm verify && pnpm test:browser && pnpm test:perf`; phase gate
+- [x] 1.3.1 Update `packages/react-components/vite.config.ts` to externalize `/^@tanstack\//`; update `turbo.json` test/Storybook/type-check inputs for fixtures, browser/perf tests, and the new Vitest configs — 03-05 §Dependencies, §CI jobs ✅ (completed: 2026-10-20 21:53)
+- [x] 1.3.2 Add the `browser-matrix` and `performance` jobs to `.github/workflows/ci.yml` — 03-05 §CI jobs ✅ (completed: 2026-10-20 21:54)
+- [x] 1.3.3 Run `pnpm format` (it also formats these plan documents), then `pnpm verify && pnpm test:browser && pnpm test:perf`; phase gate ✅ (completed: 2026-10-20 21:58)
 
 **Deliverables**:
-- [ ] The manifest, lockfile, configs, Vite external, Turbo inputs, and CI jobs are consistent.
-- [ ] All Phase 1 verification passes.
+
+- [x] The manifest, lockfile, configs, Vite external, Turbo inputs, and CI jobs are consistent.
+- [x] All Phase 1 verification passes.
 
 **Verify**: `pnpm verify && pnpm test:browser && pnpm test:perf`
 
@@ -112,6 +115,7 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 - [ ] 2.1.3 Run `pnpm --filter @blendsdk/fluentui-react-components test -- test/tile-grid-geometry.spec.test.ts test/tile-grid-layout.spec.test.tsx test/tile-grid-ssr.spec.test.ts`; verify the tests fail because the geometry/component do not exist (red phase)
 
 **Deliverables**:
+
 - [ ] Hand-computed geometry cases, component contract cases, and the node import smoke exist.
 - [ ] The red-phase result is recorded.
 
@@ -132,6 +136,7 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 - [ ] 2.2.10 Run the Phase 2 spec tests; verify they pass (green phase); fix the implementation, not the tests
 
 **Deliverables**:
+
 - [ ] The pure geometry engine returns the hand-computed rectangles and invariants.
 - [ ] The public TileGrid renders fixed/masonry/justified/mosaic small fixtures, the empty state, list semantics, and the internal memoized cell.
 - [ ] Duplicate IDs and invalid numeric props warn in development and behave deterministically.
@@ -147,6 +152,7 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 - [ ] 2.3.3 Run `pnpm verify && pnpm test:browser && pnpm test:perf`; phase gate
 
 **Deliverables**:
+
 - [ ] All Phase 2 tests pass; no regressions in the existing suite.
 - [ ] The Phase 2 browser/perf smoke remains green.
 
@@ -169,6 +175,7 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 - [ ] 3.1.2 Run `pnpm test:browser`; verify the 20K/layout cases fail because the component still renders all items and has no anchor/scroll behavior (red phase)
 
 **Deliverables**:
+
 - [ ] The browser layout spec exists with the 20K fixture.
 - [ ] The red-phase result is recorded.
 
@@ -188,6 +195,7 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 - [ ] 3.2.9 Run the browser spec; verify it passes (green phase)
 
 **Deliverables**:
+
 - [ ] All four layouts mount under 120 wrappers at 20K.
 - [ ] Masonry does not mount whole columns; fixed/justified/mosaic virtualize bands.
 - [ ] Changing `tileSize` preserves the first visible item and offset.
@@ -204,6 +212,7 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 - [ ] 3.3.3 Run `pnpm verify && pnpm test:browser && pnpm test:perf`; phase gate
 
 **Deliverables**:
+
 - [ ] Parity tests pass; no whole-column masonry mounting.
 - [ ] Anchor and scroll helpers are covered.
 - [ ] No regressions.
@@ -228,6 +237,7 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 - [ ] 4.1.3 Run the jsdom and browser selection specs; verify they fail because the selection props/store/handle/renderer proxy do not exist (red phase)
 
 **Deliverables**:
+
 - [ ] Controlled/uncontrolled, click-modifier, hidden-ID, handle, interactive-guard, 20K selection proxy, and render-count cases exist.
 - [ ] The red-phase result is recorded.
 
@@ -245,6 +255,7 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 - [ ] 4.2.7 Run the selection spec tests; verify they pass (green phase); fix the implementation, not the tests
 
 **Deliverables**:
+
 - [ ] Controlled/uncontrolled selection, hidden IDs, single/multiselect click mapping, and handle methods work.
 - [ ] `onSelectionChange` never fires on mount/prop/items changes.
 - [ ] Interactive content does not trigger selection.
@@ -259,6 +270,7 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 - [ ] 4.3.2 Run `pnpm verify && pnpm test:browser && pnpm test:perf`; phase gate
 
 **Deliverables**:
+
 - [ ] All Phase 4 tests pass; no regressions.
 - [ ] The browser selection spec passes in Chromium, including the 20K public selection proxy and affected-cell render count.
 
@@ -281,6 +293,7 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 - [ ] 5.1.2 Run the marquee spec; verify it fails because the controller does not exist (red phase)
 
 **Deliverables**:
+
 - [ ] The synthetic pointer/geometry harness exists.
 - [ ] The red-phase result is recorded.
 
@@ -295,6 +308,7 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 - [ ] 5.2.4 Run the marquee spec; verify it passes (green phase)
 
 **Deliverables**:
+
 - [ ] The controller is internal, not exported, and not mounted in `TileGrid`.
 - [ ] Background clicks, additive selection, cancel, commit-once, and auto-scroll behave per RD-01.
 
@@ -307,6 +321,7 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 - [ ] 5.3.2 Run `pnpm verify && pnpm test:browser && pnpm test:perf`; phase gate
 
 **Deliverables**:
+
 - [ ] All marquee tests pass; no public export.
 - [ ] The staged-internal-code exception is documented in the plan/review.
 
@@ -329,6 +344,7 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 - [ ] 6.1.2 Run `pnpm test:perf`; record the measured values. If a budget already passes before any Phase 6 change, document that baseline as a pre-implementation pass with justification.
 
 **Deliverables**:
+
 - [ ] The performance test records/asserts the geometry/mounted/scroll budgets and the pure selection supplement.
 - [ ] The baseline or red result is recorded.
 
@@ -338,11 +354,12 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 **Objective**: Fix any performance regression, finish the package docs, and review the stories/CI.
 
 - [ ] 6.2.1 If the perf test fails, profile and fix the hot path in `geometry/`, `virtualization/`, or `selection/transitions.ts`; do not relax the RD budgets — 03-05 §Performance test
-- [ ] 6.2.2 Add the internal “Phase A — unreleased” `TileGrid` section to `packages/react-components/README.md` (install, scroll contract, layouts, controlled `tileSize`, selection, empty state, strings, Phase A limitations) and add the browser/perf commands to the root `README.md` commands table — 03-04 §Package surface; 03-05 §CI jobs; PF-001
+- [ ] 6.2.2 Add the internal “Phase A — unreleased” `TileGrid` section to `packages/react-components/README.md` (install, scroll contract, layouts, controlled `tileSize`, selection, empty state, strings, Phase A limitations), add the browser/perf commands to the root `README.md` commands table, and add the three commands plus the browser-matrix/performance jobs to `AGENTS.md` — 03-04 §Package surface; 03-05 §CI jobs; PF-001
 - [ ] 6.2.3 Update `TileGrid.stories.tsx` docs/manual checklist and verify the story a11y addon reports no violations for the Phase A stories — 03-04 §Stories
 - [ ] 6.2.4 Verify the final `package.json` (`vitest` pinned 5.0.5), `vite.config.ts`, `turbo.json`, and CI workflow match 03-05; run `pnpm test:browser` and, when the browsers are installed, `pnpm test:browser:all` — PF-008
 
 **Deliverables**:
+
 - [ ] Performance budgets pass.
 - [ ] The internal Phase A package README is marked unreleased and documents the surface and limitations.
 - [ ] The Phase A story set is documented and accessible.
@@ -358,6 +375,7 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 - [ ] 6.3.3 Verify the release/contract-freeze gate: no publish/tag/release dispatch includes the TileGrid surface until RD-03/RD-04 complete and the final composed contract/export pin/dependency set is frozen; the package README is marked unreleased — PF-001
 
 **Deliverables**:
+
 - [ ] All Phase A acceptance criteria in `01-requirements.md` are satisfied.
 - [ ] No regressions; no exported dead code; the marquee controller is documented as staged for RD-03.
 - [ ] The release/contract-freeze gate is recorded; Phase A is internal, not a partial public release.

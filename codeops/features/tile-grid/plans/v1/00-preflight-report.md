@@ -22,22 +22,22 @@
 
 **Key files examined:**
 
-| File | Verified fact |
-| --- | --- |
-| `packages/react-components/package.json` | No `dependencies` block; `vitest ^5.0.5`; no browser/perf deps or scripts; peer deps Fluent/React/RHF/DatePicker |
-| `packages/react-components/tsconfig.json` | `include` is `src`, `test`, `.storybook`, `vite.config.ts`, `vitest.config.ts`; new configs need adding |
-| `packages/react-components/tsconfig.build.json` | Emits declarations from `src/**/*.ts`/`tsx`; excludes story files |
-| `packages/react-components/vite.config.ts` | Externalizes React/ReactDOM/RHF/`@fluentui/*`; no TanStack |
-| `packages/react-components/vitest.config.ts` | jsdom, `test/**/*.{test,spec}.{ts,tsx}`; browser/perf dirs would match unless excluded |
-| `packages/react-components/test/setup.ts` | Only jest-dom + `cleanup()`; no `ResizeObserver`/pointer-capture stubs |
-| `packages/react-components/test/package-exports.spec.test.ts` | Exact sorted runtime export list; type-import assertions; no `TileGrid` |
-| `packages/react-components/.storybook/main.ts` | Stories glob `../src/**/stories/*.stories.@(ts\|tsx)` |
-| `turbo.json` | Test inputs already include `test/**/*.ts`/`tsx`; type-check inputs lack the new Vitest configs; Storybook inputs lack test fixtures |
-| `.github/workflows/ci.yml` | One `verify` job; no browser matrix or performance job |
-| `README.md` | Root command table has no `test:browser`/`test:perf` |
-| `pnpm-lock.yaml` | `vitest@5.0.5`; `@vitest/browser`/`@vitest/browser-playwright` are optional peers of Vitest, not installed dev deps; no `playwright` package |
-| `test/loading.ssr.test.tsx` | Existing node-environment SSR smoke pattern (`// @vitest-environment node`) |
-| Existing components | House pattern confirmed; `FormTextField` generic `forwardRef` pattern exists |
+| File                                                          | Verified fact                                                                                                                                |
+| ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `packages/react-components/package.json`                      | No `dependencies` block; `vitest ^5.0.5`; no browser/perf deps or scripts; peer deps Fluent/React/RHF/DatePicker                             |
+| `packages/react-components/tsconfig.json`                     | `include` is `src`, `test`, `.storybook`, `vite.config.ts`, `vitest.config.ts`; new configs need adding                                      |
+| `packages/react-components/tsconfig.build.json`               | Emits declarations from `src/**/*.ts`/`tsx`; excludes story files                                                                            |
+| `packages/react-components/vite.config.ts`                    | Externalizes React/ReactDOM/RHF/`@fluentui/*`; no TanStack                                                                                   |
+| `packages/react-components/vitest.config.ts`                  | jsdom, `test/**/*.{test,spec}.{ts,tsx}`; browser/perf dirs would match unless excluded                                                       |
+| `packages/react-components/test/setup.ts`                     | Only jest-dom + `cleanup()`; no `ResizeObserver`/pointer-capture stubs                                                                       |
+| `packages/react-components/test/package-exports.spec.test.ts` | Exact sorted runtime export list; type-import assertions; no `TileGrid`                                                                      |
+| `packages/react-components/.storybook/main.ts`                | Stories glob `../src/**/stories/*.stories.@(ts\|tsx)`                                                                                        |
+| `turbo.json`                                                  | Test inputs already include `test/**/*.ts`/`tsx`; type-check inputs lack the new Vitest configs; Storybook inputs lack test fixtures         |
+| `.github/workflows/ci.yml`                                    | One `verify` job; no browser matrix or performance job                                                                                       |
+| `README.md`                                                   | Root command table has no `test:browser`/`test:perf`                                                                                         |
+| `pnpm-lock.yaml`                                              | `vitest@5.0.5`; `@vitest/browser`/`@vitest/browser-playwright` are optional peers of Vitest, not installed dev deps; no `playwright` package |
+| `test/loading.ssr.test.tsx`                                   | Existing node-environment SSR smoke pattern (`// @vitest-environment node`)                                                                  |
+| Existing components                                           | House pattern confirmed; `FormTextField` generic `forwardRef` pattern exists                                                                 |
 
 **Reference verification:** existing package, test, build, CI, Storybook, Vite, Turbo, manifest, export-pin, README, and component-pattern references are verified. The plan’s new `TileGrid`/geometry/selection/marquee/browser/perf files do not exist yet and were not treated as phantom references. The requirements README selects **Web application** and **Data and migration** lenses; iteration 2 records both and the compatibility boundary (PF-006).
 
@@ -47,30 +47,30 @@
 
 Findings are counted by their primary dimension; several inform more than one dimension.
 
-| # | Dimension | Findings | Highest Severity |
-| --- | --- | --- | --- |
-| 1 | Ambiguities | 0 | — |
-| 2 | Implicit Assumptions | 1 | 🟡 MINOR |
-| 3 | Logical Contradictions | 2 | 🟠 MAJOR |
-| 4 | Completeness Gaps | 0 | — |
-| 5 | Dependency Issues | 1 | 🟡 MINOR |
-| 6 | Feasibility Concerns | 1 | 🟠 MAJOR |
-| 7 | Testability | 3 | 🟠 MAJOR |
-| 8 | Security Blind Spots | 1 | 🟡 MINOR |
-| 9 | Edge Cases | 0 | — |
-| 10 | Scope Creep Indicators | 0 | — |
-| 11 | Ordering & Sequencing | 0 | — |
-| 12 | Consistency | 1 | 🟡 MINOR |
-| 13 | Codebase Alignment | 0 | — |
+| #   | Dimension              | Findings | Highest Severity |
+| --- | ---------------------- | -------- | ---------------- |
+| 1   | Ambiguities            | 0        | —                |
+| 2   | Implicit Assumptions   | 1        | 🟡 MINOR         |
+| 3   | Logical Contradictions | 2        | 🟠 MAJOR         |
+| 4   | Completeness Gaps      | 0        | —                |
+| 5   | Dependency Issues      | 1        | 🟡 MINOR         |
+| 6   | Feasibility Concerns   | 1        | 🟠 MAJOR         |
+| 7   | Testability            | 3        | 🟠 MAJOR         |
+| 8   | Security Blind Spots   | 1        | 🟡 MINOR         |
+| 9   | Edge Cases             | 0        | —                |
+| 10  | Scope Creep Indicators | 0        | —                |
+| 11  | Ordering & Sequencing  | 0        | —                |
+| 12  | Consistency            | 1        | 🟡 MINOR         |
+| 13  | Codebase Alignment     | 0        | —                |
 
 ### Summary by Severity
 
-| Severity | Count | Status |
-| --- | --- | --- |
-| 🔴 CRITICAL | 0 | — |
-| 🟠 MAJOR | 5 | All fixed and verified in iteration 2 |
-| 🟡 MINOR | 4 | All fixed and verified in iteration 2 |
-| 🔵 OBSERVATION | 1 | Accepted and verified in iteration 2 |
+| Severity       | Count | Status                                |
+| -------------- | ----- | ------------------------------------- |
+| 🔴 CRITICAL    | 0     | —                                     |
+| 🟠 MAJOR       | 5     | All fixed and verified in iteration 2 |
+| 🟡 MINOR       | 4     | All fixed and verified in iteration 2 |
+| 🔵 OBSERVATION | 1     | Accepted and verified in iteration 2  |
 
 ---
 
@@ -86,11 +86,11 @@ Findings are counted by their primary dimension; several inform more than one di
 
 **Options:**
 
-| Option | Description | Pros | Cons |
-| --- | --- | --- | --- |
-| A | Add a release/contract-freeze gate: Phase A is internal; no npm publish/tag until RD-03/RD-04 complete and the final composed `TileGridProps`/full export pin/dependencies pass; change “shipped surface” to “internal Phase A surface”; label the package README section unreleased or defer the public README update | Preserves the confirmed Phase A scope; satisfies the requirements’ release gate; no dead API | Adds explicit release discipline and wording changes; Phase A cannot be published alone |
-| B | Reopen the requirements README/PF-002 to authorize a staged public API and a Phase A package release, with versioning/compatibility rules and a migration note | Allows an intentional partial release | Reverses the prior requirements decision; needs a requirements revision; consumers see an incomplete component |
-| C | Implement the full final composed type and both runtime dependencies in Phase A without the later behavior | Public type is complete early | Dead public props and an unused `@dnd-kit/core` dependency; does not implement RD-03/RD-04 behavior; violates minimum-sufficient design |
+| Option | Description                                                                                                                                                                                                                                                                                                            | Pros                                                                                         | Cons                                                                                                                                    |
+| ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| A      | Add a release/contract-freeze gate: Phase A is internal; no npm publish/tag until RD-03/RD-04 complete and the final composed `TileGridProps`/full export pin/dependencies pass; change “shipped surface” to “internal Phase A surface”; label the package README section unreleased or defer the public README update | Preserves the confirmed Phase A scope; satisfies the requirements’ release gate; no dead API | Adds explicit release discipline and wording changes; Phase A cannot be published alone                                                 |
+| B      | Reopen the requirements README/PF-002 to authorize a staged public API and a Phase A package release, with versioning/compatibility rules and a migration note                                                                                                                                                         | Allows an intentional partial release                                                        | Reverses the prior requirements decision; needs a requirements revision; consumers see an incomplete component                          |
+| C      | Implement the full final composed type and both runtime dependencies in Phase A without the later behavior                                                                                                                                                                                                             | Public type is complete early                                                                | Dead public props and an unused `@dnd-kit/core` dependency; does not implement RD-03/RD-04 behavior; violates minimum-sufficient design |
 
 **Recommendation:** Option A — add a no-release/contract-freeze gate and correct the “shipped surface” wording. This keeps Phase A exactly as scoped while honoring the requirements’ v1 release boundary.
 **Confidence:** High that the gate is missing; Medium on whether the user’s earlier AR #2 approval was intended to authorize a staged public surface.
@@ -111,11 +111,11 @@ Findings are counted by their primary dimension; several inform more than one di
 
 **Options:**
 
-| Option | Description | Pros | Cons |
-| --- | --- | --- | --- |
-| A | Add a minimal node-environment import smoke (no rendering) that imports `../src/index` and `TileGrid`; update `07`, `99`, `01`, `03-04`, and AR #21’s note | Satisfies AC 16 with minimal cost; uses the existing test pattern; no SSR rendering machinery | Adds one small test/task |
-| B | Reopen RD-02 AC 16 to remove the module-evaluation requirement | Avoids the test | Weakens an explicit package-safety criterion; not recommended |
-| C | Add a full SSR render smoke | Stronger coverage | More machinery than required; the grid needs browser measurement and SSR rendering is explicitly excluded |
+| Option | Description                                                                                                                                                | Pros                                                                                          | Cons                                                                                                      |
+| ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| A      | Add a minimal node-environment import smoke (no rendering) that imports `../src/index` and `TileGrid`; update `07`, `99`, `01`, `03-04`, and AR #21’s note | Satisfies AC 16 with minimal cost; uses the existing test pattern; no SSR rendering machinery | Adds one small test/task                                                                                  |
+| B      | Reopen RD-02 AC 16 to remove the module-evaluation requirement                                                                                             | Avoids the test                                                                               | Weakens an explicit package-safety criterion; not recommended                                             |
+| C      | Add a full SSR render smoke                                                                                                                                | Stronger coverage                                                                             | More machinery than required; the grid needs browser measurement and SSR rendering is explicitly excluded |
 
 **Recommendation:** Option A — add the node import smoke; keep full SSR rendering out of scope.
 **Confidence:** High
@@ -136,11 +136,11 @@ Findings are counted by their primary dimension; several inform more than one di
 
 **Options:**
 
-| Option | Description | Pros | Cons |
-| --- | --- | --- | --- |
-| A | Add a 20K public-path selection test in Phase 4: render the grid, select/clear/read, 200 toggles, p95 under 16ms, mounted wrapper count unchanged; keep the pure transition microbenchmark as a supplement; update `07`/`03-05`/`99` | Directly proves RD-01 AC 13; catches regressions when selection lands; supports the render-counter work in PF-005 | Adds a browser test and a Phase 4 perf task |
-| B | Explicitly accept the pure set-copy proxy as the budget and document the observable proxy as untested | No new test | Does not satisfy RD-01 AC 13; a public regression can pass |
-| C | Measure a `renderHook`/store harness only | Easier than a full grid test | Does not test mounted wrappers or the public component; still misses the proxy |
+| Option | Description                                                                                                                                                                                                                          | Pros                                                                                                              | Cons                                                                           |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| A      | Add a 20K public-path selection test in Phase 4: render the grid, select/clear/read, 200 toggles, p95 under 16ms, mounted wrapper count unchanged; keep the pure transition microbenchmark as a supplement; update `07`/`03-05`/`99` | Directly proves RD-01 AC 13; catches regressions when selection lands; supports the render-counter work in PF-005 | Adds a browser test and a Phase 4 perf task                                    |
+| B      | Explicitly accept the pure set-copy proxy as the budget and document the observable proxy as untested                                                                                                                                | No new test                                                                                                       | Does not satisfy RD-01 AC 13; a public regression can pass                     |
+| C      | Measure a `renderHook`/store harness only                                                                                                                                                                                            | Easier than a full grid test                                                                                      | Does not test mounted wrappers or the public component; still misses the proxy |
 
 **Recommendation:** Option A — move the 20K public selection test into Phase 4 and keep the pure microbenchmark as a supplement.
 **Confidence:** High
@@ -161,11 +161,11 @@ Findings are counted by their primary dimension; several inform more than one di
 
 **Options:**
 
-| Option | Description | Pros | Cons |
-| --- | --- | --- | --- |
-| A | Add a browser test that spies on `Element.prototype.getBoundingClientRect`, counts calls whose `this` is a `[data-tile-grid-item]`, asserts zero during 20K scroll for all four layouts; add offscreen index assertions against the visible-plus-overscan window | Directly proves AC 12; covers all layouts; catches accidental DOM reads | Adds a browser test and ST cases |
-| B | Accept the design claim and document the missing test as risk | No work | Leaves an explicit AC unverified |
-| C | Add test-only instrumentation to the component | Counts reads without a spy | Production-only test hooks are unnecessary and add surface |
+| Option | Description                                                                                                                                                                                                                                                      | Pros                                                                    | Cons                                                       |
+| ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------------- |
+| A      | Add a browser test that spies on `Element.prototype.getBoundingClientRect`, counts calls whose `this` is a `[data-tile-grid-item]`, asserts zero during 20K scroll for all four layouts; add offscreen index assertions against the visible-plus-overscan window | Directly proves AC 12; covers all layouts; catches accidental DOM reads | Adds a browser test and ST cases                           |
+| B      | Accept the design claim and document the missing test as risk                                                                                                                                                                                                    | No work                                                                 | Leaves an explicit AC unverified                           |
+| C      | Add test-only instrumentation to the component                                                                                                                                                                                                                   | Counts reads without a spy                                              | Production-only test hooks are unnecessary and add surface |
 
 **Recommendation:** Option A — add the DOM-read spy and per-layout scroll/offscreen assertions. Define “offscreen” as outside the visible-plus-overscan virtual window, since overscan is intentionally offscreen.
 **Confidence:** High that the tests are missing; High that the design likely complies.
@@ -186,11 +186,11 @@ Findings are counted by their primary dimension; several inform more than one di
 
 **Options:**
 
-| Option | Description | Pros | Cons |
-| --- | --- | --- | --- |
-| A | Extract an internal memoized item wrapper in Phase 2/4 (memoized on `id`, rect, `selected`, `selectable`, `disabled`; stable `renderItem` via a ref; stable click handler); add a render-count test that one selection change calls `renderItem` only for the affected mounted item | Keeps RD-03’s render-counter criterion achievable; avoids later renderer rework; bounded visible item count | Adds a component/extraction and a memoization test; needs careful stable callbacks |
-| B | Define the RD-03 render counter as DOM-output only and defer memoization to RD-03 | Simpler Phase A | Requires a requirements clarification; the current RD-03 text explicitly says render counter around `renderItem`; the Phase A renderer remains re-render-heavy |
-| C | Accept re-rendering all visible items (under 120) and change the RD-03 acceptance criterion | No Phase A work | Weakens an explicit performance criterion; the RD-03 plan inherits the rework |
+| Option | Description                                                                                                                                                                                                                                                                         | Pros                                                                                                        | Cons                                                                                                                                                           |
+| ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A      | Extract an internal memoized item wrapper in Phase 2/4 (memoized on `id`, rect, `selected`, `selectable`, `disabled`; stable `renderItem` via a ref; stable click handler); add a render-count test that one selection change calls `renderItem` only for the affected mounted item | Keeps RD-03’s render-counter criterion achievable; avoids later renderer rework; bounded visible item count | Adds a component/extraction and a memoization test; needs careful stable callbacks                                                                             |
+| B      | Define the RD-03 render counter as DOM-output only and defer memoization to RD-03                                                                                                                                                                                                   | Simpler Phase A                                                                                             | Requires a requirements clarification; the current RD-03 text explicitly says render counter around `renderItem`; the Phase A renderer remains re-render-heavy |
+| C      | Accept re-rendering all visible items (under 120) and change the RD-03 acceptance criterion                                                                                                                                                                                         | No Phase A work                                                                                             | Weakens an explicit performance criterion; the RD-03 plan inherits the rework                                                                                  |
 
 **Recommendation:** Option A — add the memoized item wrapper and render-count test now.
 **Confidence:** High that the current architecture re-renders all visible items; High that RD-03’s text requires the affected-tile render counter.
@@ -211,11 +211,11 @@ Findings are counted by their primary dimension; several inform more than one di
 
 **Options:**
 
-| Option | Description | Pros | Cons |
-| --- | --- | --- | --- |
-| A | Add a `## Domain Lenses` section to `00-index` (Web application + Data and migration, evidence) and a `## Compatibility Boundary` note covering the no-persistent-data/app-owned-v8/no-v8-layer/public-API boundary; add a line to `01`, `03-04`, `99` | Restores the requirements’ lens coverage; connects to PF-001; no behavior change | Documentation only |
-| B | Reopen the requirements README to remove the Data and migration lens | Avoids the boundary | Contradicts the requirements evidence (v8 replacement, seeded selection/order, new public API) |
-| C | Add a v8 migration layer inside the package | Full migration support | Explicitly excluded by the requirements; large scope expansion |
+| Option | Description                                                                                                                                                                                                                                            | Pros                                                                             | Cons                                                                                           |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| A      | Add a `## Domain Lenses` section to `00-index` (Web application + Data and migration, evidence) and a `## Compatibility Boundary` note covering the no-persistent-data/app-owned-v8/no-v8-layer/public-API boundary; add a line to `01`, `03-04`, `99` | Restores the requirements’ lens coverage; connects to PF-001; no behavior change | Documentation only                                                                             |
+| B      | Reopen the requirements README to remove the Data and migration lens                                                                                                                                                                                   | Avoids the boundary                                                              | Contradicts the requirements evidence (v8 replacement, seeded selection/order, new public API) |
+| C      | Add a v8 migration layer inside the package                                                                                                                                                                                                            | Full migration support                                                           | Explicitly excluded by the requirements; large scope expansion                                 |
 
 **Recommendation:** Option A — add the lens and boundary sections; keep the package out of v8 migration.
 **Confidence:** High
@@ -235,11 +235,11 @@ Findings are counted by their primary dimension; several inform more than one di
 
 **Options:**
 
-| Option | Description | Pros | Cons |
-| --- | --- | --- | --- |
-| A | Add a one-line “Partial coverage” note/table to `00-index` (RD-02 AC 14/17 deferred; RD-03 selection subset implemented; RD-03 focus/keyboard/a11y remains preflighted) and a roadmap note | Accurate summary; no scope change | Slightly longer plan header |
-| B | Add `tile-grid/RD-03` to the `Implements` line and mark RD-03 “Plan Created (partial)” | Makes RD-03 visible | Partial-RD convention is not supported by the roadmap; may imply full planning |
-| C | Leave as is and rely on `01`/the roadmap note | No edit | The one-line fields remain ambiguous |
+| Option | Description                                                                                                                                                                                | Pros                              | Cons                                                                           |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------- | ------------------------------------------------------------------------------ |
+| A      | Add a one-line “Partial coverage” note/table to `00-index` (RD-02 AC 14/17 deferred; RD-03 selection subset implemented; RD-03 focus/keyboard/a11y remains preflighted) and a roadmap note | Accurate summary; no scope change | Slightly longer plan header                                                    |
+| B      | Add `tile-grid/RD-03` to the `Implements` line and mark RD-03 “Plan Created (partial)”                                                                                                     | Makes RD-03 visible               | Partial-RD convention is not supported by the roadmap; may imply full planning |
+| C      | Leave as is and rely on `01`/the roadmap note                                                                                                                                              | No edit                           | The one-line fields remain ambiguous                                           |
 
 **Recommendation:** Option A — add the partial-coverage note; keep the `Implements` line for fully planned RDs.
 **Confidence:** High
@@ -259,11 +259,11 @@ Findings are counted by their primary dimension; several inform more than one di
 
 **Options:**
 
-| Option | Description | Pros | Cons |
-| --- | --- | --- | --- |
-| A | Pin `vitest` to `5.0.5` (or the exact matching version) in the package manifest and note the browser-provider lockstep in `03-05`/`99` | Removes future drift; matches the exact peer | Slightly tighter dependency update policy |
-| B | Keep `^5.0.5`, rely on the lockfile, and document the constraint | No manifest change | Future lockfile updates can break; CI `--frozen-lockfile` protects only the current lock |
-| C | Use a newer browser-provider version with a range peer | Avoids the exact pin | Not needed; current versions are verified |
+| Option | Description                                                                                                                            | Pros                                         | Cons                                                                                     |
+| ------ | -------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| A      | Pin `vitest` to `5.0.5` (or the exact matching version) in the package manifest and note the browser-provider lockstep in `03-05`/`99` | Removes future drift; matches the exact peer | Slightly tighter dependency update policy                                                |
+| B      | Keep `^5.0.5`, rely on the lockfile, and document the constraint                                                                       | No manifest change                           | Future lockfile updates can break; CI `--frozen-lockfile` protects only the current lock |
+| C      | Use a newer browser-provider version with a range peer                                                                                 | Avoids the exact pin                         | Not needed; current versions are verified                                                |
 
 **Recommendation:** Option A — pin `vitest` to `5.0.5` or document and enforce the exact lockstep.
 **Confidence:** High
@@ -283,11 +283,11 @@ Findings are counted by their primary dimension; several inform more than one di
 
 **Options:**
 
-| Option | Description | Pros | Cons |
-| --- | --- | --- | --- |
-| A | Update the no-logging rule to “no item labels, image URLs, item IDs, or selected IDs in messages”; use a generic duplicate warning; add ST-44 assertion | Satisfies RD-01/RD-02 security; simple | Slightly less diagnostic detail in dev warnings |
-| B | Prohibit selected IDs only, allow item IDs in duplicate warnings | Keeps more diagnostic detail | Item IDs may still be sensitive; RD-02 says no item content; weaker |
-| C | Remove dev warnings | Avoids logging | Loses useful diagnostics; not necessary |
+| Option | Description                                                                                                                                             | Pros                                   | Cons                                                                |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- | ------------------------------------------------------------------- |
+| A      | Update the no-logging rule to “no item labels, image URLs, item IDs, or selected IDs in messages”; use a generic duplicate warning; add ST-44 assertion | Satisfies RD-01/RD-02 security; simple | Slightly less diagnostic detail in dev warnings                     |
+| B      | Prohibit selected IDs only, allow item IDs in duplicate warnings                                                                                        | Keeps more diagnostic detail           | Item IDs may still be sensitive; RD-02 says no item content; weaker |
+| C      | Remove dev warnings                                                                                                                                     | Avoids logging                         | Loses useful diagnostics; not necessary                             |
 
 **Recommendation:** Option A — prohibit IDs as well as labels/URLs and test it.
 **Confidence:** High
@@ -318,18 +318,18 @@ Findings are counted by their primary dimension; several inform more than one di
 
 **Fixes applied (current locations):**
 
-| Finding | Fix applied | Current location |
-| --- | --- | --- |
-| PF-001 | Added the internal Phase A release/contract-freeze gate; removed “shipped surface” wording; package README is marked unreleased; added Phase 6 task 6.3.3 | `00-index.md` §Release and Contract Freeze; `01-requirements.md` §Release; `03-04` §Package surface; `99` 6.3.3 |
-| PF-002 | Added the node-environment import smoke; refined AR #21; no full SSR render | `07` ST-46; `03-04` §Testing; `03-05` §Harness; `99` 2.1.2; AR #21 refinement |
-| PF-003 | Added the 20K public selection proxy and moved it to Phase 4; pure transition test kept as a supplement | `03-03` §Performance; `03-05` §Browser/§Performance; `07` ST-47; `99` 4.1.2/6.1.1 |
-| PF-004 | Added renderer DOM-read spy and per-layout offscreen scroll assertions | `03-02` §Performance/§Testing; `03-05` §Browser; `07` ST-48; `99` 3.1.1 |
-| PF-005 | Added internal memoized `TileGridItemView`, stable `renderItem` contract, render-count test; updated the usage example to `useCallback` | `03-04` §Memoized item cell/§DOM/§State; `00-index` usage; `07` ST-49; `99` 2.2.9/4.2.4; `01` Renderer |
-| PF-006 | Added Web application + Data and migration lenses and the compatibility boundary | `00-index` §Domain Lenses/§Compatibility; `01` §Domain Lenses and Compatibility Boundary |
-| PF-007 | Added the Partial RD Coverage table and roadmap note | `00-index` §Partial RD Coverage; `01` §Partial RD Coverage; roadmap notes |
-| PF-008 | Pinned `vitest` 5.0.5 to match the browser-provider peer | `03-05` §Dependencies; `02` external deps; `01` Vitest pin; `99` 1.2.1/6.2.4 |
-| PF-009 | Extended the no-logging rule to item and selected IDs; generic duplicate warning | `03-04` §Dev warnings; `03-03` §Performance/logging; `07` ST-44 |
-| PF-010 | Documented the early `test:perf` harness-smoke gate; the public selection proxy is now Phase 4 | `99` execution rule; `03-05` §Performance; `01` acceptance 4; `07` ST-47/ST-49 |
+| Finding | Fix applied                                                                                                                                               | Current location                                                                                                |
+| ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| PF-001  | Added the internal Phase A release/contract-freeze gate; removed “shipped surface” wording; package README is marked unreleased; added Phase 6 task 6.3.3 | `00-index.md` §Release and Contract Freeze; `01-requirements.md` §Release; `03-04` §Package surface; `99` 6.3.3 |
+| PF-002  | Added the node-environment import smoke; refined AR #21; no full SSR render                                                                               | `07` ST-46; `03-04` §Testing; `03-05` §Harness; `99` 2.1.2; AR #21 refinement                                   |
+| PF-003  | Added the 20K public selection proxy and moved it to Phase 4; pure transition test kept as a supplement                                                   | `03-03` §Performance; `03-05` §Browser/§Performance; `07` ST-47; `99` 4.1.2/6.1.1                               |
+| PF-004  | Added renderer DOM-read spy and per-layout offscreen scroll assertions                                                                                    | `03-02` §Performance/§Testing; `03-05` §Browser; `07` ST-48; `99` 3.1.1                                         |
+| PF-005  | Added internal memoized `TileGridItemView`, stable `renderItem` contract, render-count test; updated the usage example to `useCallback`                   | `03-04` §Memoized item cell/§DOM/§State; `00-index` usage; `07` ST-49; `99` 2.2.9/4.2.4; `01` Renderer          |
+| PF-006  | Added Web application + Data and migration lenses and the compatibility boundary                                                                          | `00-index` §Domain Lenses/§Compatibility; `01` §Domain Lenses and Compatibility Boundary                        |
+| PF-007  | Added the Partial RD Coverage table and roadmap note                                                                                                      | `00-index` §Partial RD Coverage; `01` §Partial RD Coverage; roadmap notes                                       |
+| PF-008  | Pinned `vitest` 5.0.5 to match the browser-provider peer                                                                                                  | `03-05` §Dependencies; `02` external deps; `01` Vitest pin; `99` 1.2.1/6.2.4                                    |
+| PF-009  | Extended the no-logging rule to item and selected IDs; generic duplicate warning                                                                          | `03-04` §Dev warnings; `03-03` §Performance/logging; `07` ST-44                                                 |
+| PF-010  | Documented the early `test:perf` harness-smoke gate; the public selection proxy is now Phase 4                                                            | `99` execution rule; `03-05` §Performance; `01` acceptance 4; `07` ST-47/ST-49                                  |
 
 **Re-scan result:** 0 new root-cause findings; 0 carried forward. The stable-`renderItem` contract is a PF-005 refinement (needed for the memoized-cell correctness), not an independent root cause.
 
@@ -343,16 +343,16 @@ Findings are counted by their primary dimension; several inform more than one di
 
 These are recorded, not re-opened. They do not block the pass if the findings above are resolved.
 
-| Item | Decision | Handling |
-| --- | --- | --- |
-| AR #16 | Frame timing logs the 60fps target and asserts p95 under 50ms as a clear-regression threshold | Accepted risk; the 60fps target remains the logged metric; no re-litigation |
-| AR #21 | No full SSR render harness; browser tests are the E2E | Partially invalidated by RD-02 AC 16 for module-evaluation only; PF-002 adds a node import smoke, not a full SSR render |
-| AR #4 | Marquee controller is internal, tested, and staged for RD-03 | Accepted; no package-root export; not public dead code |
-| AR #5 | `zoomable`/`onTileSizeChange` deferred to RD-03 | Accepted; PF-007 records the partial RD-02 coverage |
-| AR #8 | `@dnd-kit/core` deferred to RD-04 | Accepted; PF-001 adds the release/contract gate so the package is not published without it |
-| AR #1 / AR #3 | Minimal RD-03 selection wiring in Phase A | Accepted; PF-007 records the partial RD-03 coverage; PF-001 prevents a partial public release |
-| Requirements PF-002 | One composed `TileGridProps<T>` and full export pin | The basis of PF-001; the plan’s Phase A subset is internal until the final contract is frozen |
-| AR #7 / AR #9 / AR #10 / AR #18 | TanStack, browser matrix, separate browser/perf configs, pinned dependencies | Approved complexity; no scope-creep finding |
+| Item                            | Decision                                                                                      | Handling                                                                                                                |
+| ------------------------------- | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| AR #16                          | Frame timing logs the 60fps target and asserts p95 under 50ms as a clear-regression threshold | Accepted risk; the 60fps target remains the logged metric; no re-litigation                                             |
+| AR #21                          | No full SSR render harness; browser tests are the E2E                                         | Partially invalidated by RD-02 AC 16 for module-evaluation only; PF-002 adds a node import smoke, not a full SSR render |
+| AR #4                           | Marquee controller is internal, tested, and staged for RD-03                                  | Accepted; no package-root export; not public dead code                                                                  |
+| AR #5                           | `zoomable`/`onTileSizeChange` deferred to RD-03                                               | Accepted; PF-007 records the partial RD-02 coverage                                                                     |
+| AR #8                           | `@dnd-kit/core` deferred to RD-04                                                             | Accepted; PF-001 adds the release/contract gate so the package is not published without it                              |
+| AR #1 / AR #3                   | Minimal RD-03 selection wiring in Phase A                                                     | Accepted; PF-007 records the partial RD-03 coverage; PF-001 prevents a partial public release                           |
+| Requirements PF-002             | One composed `TileGridProps<T>` and full export pin                                           | The basis of PF-001; the plan’s Phase A subset is internal until the final contract is frozen                           |
+| AR #7 / AR #9 / AR #10 / AR #18 | TanStack, browser matrix, separate browser/perf configs, pinned dependencies                  | Approved complexity; no scope-creep finding                                                                             |
 
 ## Scan Notes
 

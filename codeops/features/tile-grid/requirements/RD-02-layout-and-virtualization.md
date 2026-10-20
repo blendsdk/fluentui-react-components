@@ -181,11 +181,10 @@ interface TileGridHandle {
   scrollToSelected(): void;
 }
 
-interface TileGridProps<T>
-  extends Omit<
-    React.ComponentPropsWithoutRef<'div'>,
-    'children' | 'role' | 'aria-label' | 'dangerouslySetInnerHTML'
-  > {
+interface TileGridProps<T> extends Omit<
+  React.ComponentPropsWithoutRef<'div'>,
+  'children' | 'role' | 'aria-label' | 'dangerouslySetInnerHTML'
+> {
   items: readonly T[];
   getItemId: (item: T) => string;
   getItemLabel: (item: T) => string;

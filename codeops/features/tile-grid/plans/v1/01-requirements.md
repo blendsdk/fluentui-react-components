@@ -46,17 +46,17 @@
 
 ### Deferred / out of this plan
 
-| Source     | Deferred item                                                                                                                                                                                                                                                     | Why                                                                               |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| RD-02      | `zoomable` and `onTileSizeChange`                                                                                                                                                                                                                                 | Keyboard zoom is RD-03; Phase A has controlled `tileSize` only (AR #5).           |
-| RD-02      | Full final `TileGridProps<T>`, `TileGridItem`, `TileGridItemProps`, `TileGridAction`, `TileGridReorderArgs`, `TileGridDragHandleProps`, `TileGridInteractionMode`, full export pin                                                                                | RD-03/RD-04 complete the public surface (AR #2, AR #13).                          |
-| RD-02      | Full photo-library recipe, toolbar, filter, actions, lightbox, arranging                                                                                                                                                                                          | RD-04. Phase A builds the layout/zoom/empty/20K benchmark stories only (AR #8).   |
-| RD-03      | Selection controls, roving focus, keyboard navigation, live announcements, `isSelectable`/`isDisabled`, `interactionMode`, `enableMarquee`, marquee overlay, `onItemActivate`, `scrollResetKey`, filtering persistence, disabled focusability, full accessibility | RD-03 plan. Phase A carries only the minimal selection wiring (AR #1, AR #3).     |
-| RD-04      | Tile shell, actions, overflow menu, drag/reorder, `@dnd-kit/core`, photo-library recipe, action announcements                                                                                                                                                     | RD-04 plan (AR #8).                                                               |
-| Plan-local | Marquee overlay and pointer host                                                                                                                                                                                                                                  | RD-03. The Phase A controller is internal, tested, and staged (AR #4).            |
+| Source     | Deferred item                                                                                                                                                                                                                                                     | Why                                                                                                                |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| RD-02      | `zoomable` and `onTileSizeChange`                                                                                                                                                                                                                                 | Keyboard zoom is RD-03; Phase A has controlled `tileSize` only (AR #5).                                            |
+| RD-02      | Full final `TileGridProps<T>`, `TileGridItem`, `TileGridItemProps`, `TileGridAction`, `TileGridReorderArgs`, `TileGridDragHandleProps`, `TileGridInteractionMode`, full export pin                                                                                | RD-03/RD-04 complete the public surface (AR #2, AR #13).                                                           |
+| RD-02      | Full photo-library recipe, toolbar, filter, actions, lightbox, arranging                                                                                                                                                                                          | RD-04. Phase A builds the layout/zoom/empty/20K benchmark stories only (AR #8).                                    |
+| RD-03      | Selection controls, roving focus, keyboard navigation, live announcements, `isSelectable`/`isDisabled`, `interactionMode`, `enableMarquee`, marquee overlay, `onItemActivate`, `scrollResetKey`, filtering persistence, disabled focusability, full accessibility | RD-03 plan. Phase A carries only the minimal selection wiring (AR #1, AR #3).                                      |
+| RD-04      | Tile shell, actions, overflow menu, drag/reorder, `@dnd-kit/core`, photo-library recipe, action announcements                                                                                                                                                     | RD-04 plan (AR #8).                                                                                                |
+| Plan-local | Marquee overlay and pointer host                                                                                                                                                                                                                                  | RD-03. The Phase A controller is internal, tested, and staged (AR #4).                                             |
 | Plan-local | Full SSR rendering and a separate E2E suite                                                                                                                                                                                                                       | A node import smoke is in scope (PF-002); the grid requires browser measurement; Vitest browser tests are the E2E. |
-| Plan-local | `@dnd-kit/core`                                                                                                                                                                                                                                                   | Only RD-04 arranging uses it (AR #18).                                            |
-| Plan-local | Public package release/tag and the final composed contract/export pin/full dependency set                                                                                                          | Phase A is internal; the release/contract-freeze gate is 6.3.3 and PF-001.        |
+| Plan-local | `@dnd-kit/core`                                                                                                                                                                                                                                                   | Only RD-04 arranging uses it (AR #18).                                                                             |
+| Plan-local | Public package release/tag and the final composed contract/export pin/full dependency set                                                                                                                                                                         | Phase A is internal; the release/contract-freeze gate is 6.3.3 and PF-001.                                         |
 
 ## Domain Lenses and Compatibility Boundary
 
@@ -72,31 +72,31 @@ RD-02 AC 14/17 and the RD-03 controls/focus/keyboard remain preflighted. The Pha
 
 ## Plan-local decisions
 
-| Decision            | Chosen                                                                                               | AR Ref                       |
-| ------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------- |
-| Phase A target      | RD-02 core + RD-01 + minimal RD-03 selection wiring; RD-03/RD-04 remainder deferred                  | AR #1                        |
-| Public contract     | Phase A internal subset; later plans extend; no public release until final contract freeze           | AR #2, AR #13, PF-001        |
-| Selection wiring    | Controlled/uncontrolled IDs, plain/Ctrl/Cmd/Shift clicks, handle methods; no controls/focus/keyboard | AR #3, AR #23                |
+| Decision            | Chosen                                                                                                           | AR Ref                       |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| Phase A target      | RD-02 core + RD-01 + minimal RD-03 selection wiring; RD-03/RD-04 remainder deferred                              | AR #1                        |
+| Public contract     | Phase A internal subset; later plans extend; no public release until final contract freeze                       | AR #2, AR #13, PF-001        |
+| Selection wiring    | Controlled/uncontrolled IDs, plain/Ctrl/Cmd/Shift clicks, handle methods; no controls/focus/keyboard             | AR #3, AR #23                |
 | Renderer            | Memoized item cell; stable `renderItem` identity; one selection change re-renders only the affected mounted cell | PF-005                       |
-| Module evaluation   | Node-environment import smoke; no full SSR render                                                    | PF-002                       |
-| 20K selection       | Public browser selection proxy plus the pure-transition microbenchmark                               | PF-003                       |
-| DOM-read/offscreen  | Browser `getBoundingClientRect` spy and per-layout scroll/offscreen assertions                       | PF-004                       |
-| Release gate        | No public release/tag until the final contract/export pin/dependency set is frozen                  | PF-001                       |
-| Domain lenses       | Web application + Data and migration; package is not a v8 migration layer                           | PF-006                       |
-| Logging             | No labels, image URLs, item IDs, or selected IDs in messages                                        | PF-009                       |
-| Vitest pin          | Pin `vitest` 5.0.5 to match the exact browser-provider peer                                          | PF-008                       |
-| Marquee             | Controller built and tested internally; overlay/host in RD-03                                        | AR #4                        |
-| Zoom                | Controlled `tileSize` and anchor only; `zoomable`/`onTileSizeChange` deferred                        | AR #5                        |
-| Scroll contract     | Grid root is the scroll container; the application sizes it                                          | AR #6                        |
-| Masonry             | TanStack `lanes` plus a geometry parity test                                                         | AR #7                        |
-| Virtualization      | Bands for fixed/justified/mosaic; items/lanes for masonry; two-row overscan                          | AR #12                       |
-| Module layout       | `src/components/TileGrid/` with `geometry/`, `virtualization/`, `selection/`, `marquee/`             | AR #11                       |
-| Test harness        | jsdom unit, separate browser/perf configs, Chromium per task, full matrix/perf in CI                 | AR #9, AR #10, AR #15–AR #17 |
-| Dependencies        | TanStack 3.14.21; Vitest browser/playwright 5.0.5; Playwright 1.64.1; `vitest` pinned 5.0.5; dnd-kit later | AR #18, PF-008               |
-| Mosaic ratio        | `getItemAspectRatio` accepted but does not affect cell placement                                     | AR #19                       |
-| Basic accessibility | List/listitem semantics, setsize/posinset, `ariaLabel`; controls/focus/announcements later           | AR #6, AR #20                |
-| Generic component   | Follow the existing `FormTextField` generic `forwardRef` assertion pattern                           | AR #22                       |
-| Docs/packaging      | Internal Phase A package README (unreleased), manifest, Vite external, CI, export pin, lockfile      | AR #24, PF-001               |
+| Module evaluation   | Node-environment import smoke; no full SSR render                                                                | PF-002                       |
+| 20K selection       | Public browser selection proxy plus the pure-transition microbenchmark                                           | PF-003                       |
+| DOM-read/offscreen  | Browser `getBoundingClientRect` spy and per-layout scroll/offscreen assertions                                   | PF-004                       |
+| Release gate        | No public release/tag until the final contract/export pin/dependency set is frozen                               | PF-001                       |
+| Domain lenses       | Web application + Data and migration; package is not a v8 migration layer                                        | PF-006                       |
+| Logging             | No labels, image URLs, item IDs, or selected IDs in messages                                                     | PF-009                       |
+| Vitest pin          | Pin `vitest` 5.0.5 to match the exact browser-provider peer                                                      | PF-008                       |
+| Marquee             | Controller built and tested internally; overlay/host in RD-03                                                    | AR #4                        |
+| Zoom                | Controlled `tileSize` and anchor only; `zoomable`/`onTileSizeChange` deferred                                    | AR #5                        |
+| Scroll contract     | Grid root is the scroll container; the application sizes it                                                      | AR #6                        |
+| Masonry             | TanStack `lanes` plus a geometry parity test                                                                     | AR #7                        |
+| Virtualization      | Bands for fixed/justified/mosaic; items/lanes for masonry; two-row overscan                                      | AR #12                       |
+| Module layout       | `src/components/TileGrid/` with `geometry/`, `virtualization/`, `selection/`, `marquee/`                         | AR #11                       |
+| Test harness        | jsdom unit, separate browser/perf configs, Chromium per task, full matrix/perf in CI                             | AR #9, AR #10, AR #15–AR #17 |
+| Dependencies        | TanStack 3.14.21; Vitest browser/playwright 5.0.5; Playwright 1.64.1; `vitest` pinned 5.0.5; dnd-kit later       | AR #18, PF-008               |
+| Mosaic ratio        | `getItemAspectRatio` accepted but does not affect cell placement                                                 | AR #19                       |
+| Basic accessibility | List/listitem semantics, setsize/posinset, `ariaLabel`; controls/focus/announcements later                       | AR #6, AR #20                |
+| Generic component   | Follow the existing `FormTextField` generic `forwardRef` assertion pattern                                       | AR #22                       |
+| Docs/packaging      | Internal Phase A package README (unreleased), manifest, Vite external, CI, export pin, lockfile                  | AR #24, PF-001               |
 
 ## Acceptance Criteria
 

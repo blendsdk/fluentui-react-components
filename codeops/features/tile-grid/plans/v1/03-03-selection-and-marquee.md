@@ -172,9 +172,9 @@ interface MarqueeSelectionOptions {
   onCommit(next: ReadonlySet<string>): void;
   onCancel?(preSelection: ReadonlySet<string>): void;
   onPreview?(preview: ReadonlySet<string>): void;
-  edgeThreshold?: number;       // default 24
-  maxScrollSpeed?: number;      // default 20
-  activationDistance?: number;  // default 4
+  edgeThreshold?: number; // default 24
+  maxScrollSpeed?: number; // default 20
+  activationDistance?: number; // default 4
   pointerCaptureTarget?: HTMLElement | null;
   requestFrame?: (callback: FrameRequestCallback) => number;
   cancelFrame?: (handle: number) => void;
@@ -236,20 +236,20 @@ The controller is internal, not exported from the package root, and not mounted 
 
 ## Error handling
 
-| Error case                                             | Handling strategy                                                               | AR Ref        |
-| ------------------------------------------------------ | ------------------------------------------------------------------------------- | ------------- |
-| `selectedIds` contains more than one ID in single mode | Warn in development; use the first ID; no callback                              | RD-03         |
-| `defaultSelectedIds` contains duplicates               | Deduplicate; single mode keeps the first                                        | RD-01         |
-| Unknown IDs in the selected set                        | Preserve; render nothing until the item exists                                  | RD-01         |
-| A no-op selection method                               | Do not call `onSelectionChange`                                                 | RD-01         |
-| `selectAll` in single/none                             | No-op with a development warning                                                | RD-01, AR #23 |
-| Interactive click target                               | Do not select                                                                   | AR #3         |
-| Pointer down on a non-left button                      | Ignore                                                                          | RD-01         |
-| Pointer capture unavailable                            | Continue without capture; rely on the host's listeners                          | RD-01         |
-| `lostpointercapture` after commit                      | No-op; never revert a committed set                                             | RD-01         |
-| Marquee geometry port returns `undefined` for an ID    | Skip that item                                                                  | RD-01         |
-| Auto-scroll at the scroll boundary                     | Clamp; keep the frame loop alive until the pointer leaves the edge/gesture ends | RD-01         |
-| Controller disposed mid-gesture                        | Stop frames, release capture, no callback                                       | Standards     |
+| Error case                                                | Handling strategy                                                               | AR Ref                  |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------- | ----------------------- |
+| `selectedIds` contains more than one ID in single mode    | Warn in development; use the first ID; no callback                              | RD-03                   |
+| `defaultSelectedIds` contains duplicates                  | Deduplicate; single mode keeps the first                                        | RD-01                   |
+| Unknown IDs in the selected set                           | Preserve; render nothing until the item exists                                  | RD-01                   |
+| A no-op selection method                                  | Do not call `onSelectionChange`                                                 | RD-01                   |
+| `selectAll` in single/none                                | No-op with a development warning                                                | RD-01, AR #23           |
+| Interactive click target                                  | Do not select                                                                   | AR #3                   |
+| Pointer down on a non-left button                         | Ignore                                                                          | RD-01                   |
+| Pointer capture unavailable                               | Continue without capture; rely on the host's listeners                          | RD-01                   |
+| `lostpointercapture` after commit                         | No-op; never revert a committed set                                             | RD-01                   |
+| Marquee geometry port returns `undefined` for an ID       | Skip that item                                                                  | RD-01                   |
+| Auto-scroll at the scroll boundary                        | Clamp; keep the frame loop alive until the pointer leaves the edge/gesture ends | RD-01                   |
+| Controller disposed mid-gesture                           | Stop frames, release capture, no callback                                       | Standards               |
 | A warning/diagnostic would include an item or selected ID | Use a generic message and non-identifying key; never log the ID                 | RD-01 §Security, PF-009 |
 
 ## Integration points

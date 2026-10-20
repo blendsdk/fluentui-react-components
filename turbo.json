@@ -24,7 +24,10 @@
         "src/**/*.tsx",
         "test/**/*.ts",
         "test/**/*.tsx",
-        "vitest.config.ts"
+        "vitest.config.ts",
+        "vitest.browser.config.ts",
+        "vitest.browser-matrix.config.ts",
+        "vitest.perf.config.ts"
       ],
       "outputs": []
     },
@@ -41,7 +44,11 @@
         "test/**/*.tsx",
         ".storybook/**/*.ts",
         ".storybook/**/*.tsx",
-        "tsconfig.json"
+        "tsconfig.json",
+        "vitest.config.ts",
+        "vitest.browser.config.ts",
+        "vitest.browser-matrix.config.ts",
+        "vitest.perf.config.ts"
       ]
     },
     "storybook": {
@@ -50,7 +57,13 @@
     },
     "storybook:build": {
       "dependsOn": ["build"],
-      "inputs": ["src/**/*.ts", "src/**/*.tsx", ".storybook/**", "package.json"],
+      "inputs": [
+        "src/**/*.ts",
+        "src/**/*.tsx",
+        ".storybook/**",
+        "package.json",
+        "test/fixtures/**/*.ts"
+      ],
       "outputs": ["storybook-static/**"],
       "env": ["STORYBOOK_BASE_PATH"]
     },

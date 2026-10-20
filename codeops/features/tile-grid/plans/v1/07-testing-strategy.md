@@ -71,7 +71,7 @@
 | ST-30 | Multiselect; hidden `z`; handle `selectAll` over `a,b,c`; then `clearSelection`                 | `{'z','a','b','c'}`, one callback; clear → `{}`, one callback; single/none `selectAll` → no callback + warning                                                    | RD-03 §Select-all/clear API; AR #23                   |
 | ST-31 | `renderItem` contains `<button>`; click the button, then the tile area                          | Button click does not select; tile-area click selects                                                                                                             | RD-03 §Action isolation; AR #3                        |
 | ST-32 | Render args after selection                                                                     | `selected` reflects the effective store; `selectable` is true; `disabled` is false in Phase A                                                                     | 03-04 §DOM; AR #3                                     |
-| ST-33 | 20K selected-ID set; 200 toggles through the pure transition helper (supplement)                | p95 under 16ms; no per-item React state; no 20K wrapper render; the public proxy is ST-47                                                                          | RD-01 §Performance; RD-02 §Performance; PF-003        |
+| ST-33 | 20K selected-ID set; 200 toggles through the pure transition helper (supplement)                | p95 under 16ms; no per-item React state; no 20K wrapper render; the public proxy is ST-47                                                                         | RD-01 §Performance; RD-02 §Performance; PF-003        |
 | ST-34 | Handle `scrollToSelected` with selected item `150` in a 200-item browser grid                   | Item 150's wrapper intersects the root viewport; no selection callback                                                                                            | RD-03 §Scrolling to selection; AR #23                 |
 
 ### Marquee controller
@@ -89,33 +89,33 @@
 
 ### Package, security, and verification
 
-| #     | Input / Scenario                                            | Expected Output / Behavior                                                                                                                                                                                | Source                                                 |
-| ----- | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
-| ST-43 | Import the package root                                     | `TileGrid` is a runtime export; `TileGridProps`, `TileGridHandle`, `TileGridItemRenderArgs`, `TileGridLayout`, `TileGridSelectionMode`, `TileGridStrings` compile; no RD-04 symbol is required in Phase A | RD-02 §Package surface (Phase A subset); AR #2, AR #13 |
-| ST-44 | `renderItem` with hostile-looking text and URL-like strings | Text renders as text, never HTML; the component does not log labels, URLs, item IDs, or selected IDs, and does not fetch images                                                                          | RD-02 §Security; RD-01 §Security; PF-009               |
-| ST-45 | `pnpm test:browser` / `pnpm test:perf` smoke                | The browser config runs the browser smoke; the perf config runs the 20K measurement; no second runner is required                                                                                         | AR #9, AR #10, AR #18                                  |
-| ST-46 | Node environment; import `../src/index` and `TileGrid`; no render | Import succeeds without throwing and without accessing `window`/`document` at module evaluation; no `renderToString` is used                                                                              | RD-02 AC 16; PF-002                                    |
-| ST-47 | Browser; 20K fixture; public controlled selection; select/clear/read; 200 toggles | p95 under 16ms; mounted `[data-tile-grid-item]` count unchanged; no 20K React state; one toggle changes only the affected mounted output                                                                 | RD-01 AC 13; RD-03 §Performance; PF-003                |
+| #     | Input / Scenario                                                                               | Expected Output / Behavior                                                                                                                                                                                | Source                                                 |
+| ----- | ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| ST-43 | Import the package root                                                                        | `TileGrid` is a runtime export; `TileGridProps`, `TileGridHandle`, `TileGridItemRenderArgs`, `TileGridLayout`, `TileGridSelectionMode`, `TileGridStrings` compile; no RD-04 symbol is required in Phase A | RD-02 §Package surface (Phase A subset); AR #2, AR #13 |
+| ST-44 | `renderItem` with hostile-looking text and URL-like strings                                    | Text renders as text, never HTML; the component does not log labels, URLs, item IDs, or selected IDs, and does not fetch images                                                                           | RD-02 §Security; RD-01 §Security; PF-009               |
+| ST-45 | `pnpm test:browser` / `pnpm test:perf` smoke                                                   | The browser config runs the browser smoke; the perf config runs the 20K measurement; no second runner is required                                                                                         | AR #9, AR #10, AR #18                                  |
+| ST-46 | Node environment; import `../src/index` and `TileGrid`; no render                              | Import succeeds without throwing and without accessing `window`/`document` at module evaluation; no `renderToString` is used                                                                              | RD-02 AC 16; PF-002                                    |
+| ST-47 | Browser; 20K fixture; public controlled selection; select/clear/read; 200 toggles              | p95 under 16ms; mounted `[data-tile-grid-item]` count unchanged; no 20K React state; one toggle changes only the affected mounted output                                                                  | RD-01 AC 13; RD-03 §Performance; PF-003                |
 | ST-48 | Browser; scroll each of the four 20K layouts; spy on `Element.prototype.getBoundingClientRect` | Mounted indexes stay within the visible-plus-overscan window; zero calls on `[data-tile-grid-item]`; no offscreen wrappers                                                                                | RD-02 AC 12; PF-004                                    |
-| ST-49 | Browser; stable `renderItem` spy; toggle one selected tile in a 20K grid | Only the affected mounted cell calls `renderItem` again; mounted count unchanged; the other visible cells do not re-render; an unstable renderer would re-render all visible cells and is documented | RD-03 §Performance; PF-005                             |
+| ST-49 | Browser; stable `renderItem` spy; toggle one selected tile in a 20K grid                       | Only the affected mounted cell calls `renderItem` again; mounted count unchanged; the other visible cells do not re-render; an unstable renderer would re-render all visible cells and is documented      | RD-03 §Performance; PF-005                             |
 
 ## Test Categories
 
 ### Specification Tests
 
-| Test file                                           | ST cases                  | Component                                  |
-| --------------------------------------------------- | ------------------------- | ------------------------------------------ |
-| `test/tile-grid-geometry.spec.test.ts`              | ST-1–ST-12                | Geometry engine (pure)                     |
-| `test/tile-grid-layout.spec.test.tsx`               | ST-16–ST-20, ST-44        | Public TileGrid layout/empty/list/security |
-| `test/tile-grid-selection.spec.test.tsx`            | ST-23–ST-32               | Public selection/click/handle              |
-| `test/tile-grid-marquee.spec.test.ts`               | ST-35–ST-42               | Marquee controller                         |
-| `test/package-exports.spec.test.ts`                 | ST-43                     | Package surface                            |
-| `test/tile-grid-ssr.spec.test.ts`                   | ST-46                     | Node import/module-evaluation smoke        |
-| `test/browser/tile-grid-harness.browser.test.tsx`   | ST-45                     | Browser harness smoke                      |
-| `test/perf/tile-grid-harness.perf.test.tsx`         | ST-45                     | Performance harness smoke                  |
+| Test file                                           | ST cases                         | Component                                    |
+| --------------------------------------------------- | -------------------------------- | -------------------------------------------- |
+| `test/tile-grid-geometry.spec.test.ts`              | ST-1–ST-12                       | Geometry engine (pure)                       |
+| `test/tile-grid-layout.spec.test.tsx`               | ST-16–ST-20, ST-44               | Public TileGrid layout/empty/list/security   |
+| `test/tile-grid-selection.spec.test.tsx`            | ST-23–ST-32                      | Public selection/click/handle                |
+| `test/tile-grid-marquee.spec.test.ts`               | ST-35–ST-42                      | Marquee controller                           |
+| `test/package-exports.spec.test.ts`                 | ST-43                            | Package surface                              |
+| `test/tile-grid-ssr.spec.test.ts`                   | ST-46                            | Node import/module-evaluation smoke          |
+| `test/browser/tile-grid-harness.browser.test.tsx`   | ST-45                            | Browser harness smoke                        |
+| `test/perf/tile-grid-harness.perf.test.tsx`         | ST-45                            | Performance harness smoke                    |
 | `test/browser/tile-grid-layout.browser.test.tsx`    | ST-13–ST-15, ST-21, ST-22, ST-48 | Browser measurement/virtualization/DOM reads |
-| `test/browser/tile-grid-selection.browser.test.tsx` | ST-34, ST-47, ST-49       | Browser selection/perf/render count        |
-| `test/perf/tile-grid.perf.test.tsx`                 | ST-13, ST-33 (supplement) | Geometry/mounted/scroll budgets            |
+| `test/browser/tile-grid-selection.browser.test.tsx` | ST-34, ST-47, ST-49              | Browser selection/perf/render count          |
+| `test/perf/tile-grid.perf.test.tsx`                 | ST-13, ST-33 (supplement)        | Geometry/mounted/scroll budgets              |
 
 ### Implementation Tests
 
@@ -129,11 +129,11 @@
 
 ### Integration / Browser Tests
 
-| Test                    | Components                                      | Description                                                              |
-| ----------------------- | ----------------------------------------------- | ------------------------------------------------------------------------ |
-| Layout browser suite    | TileGrid, geometry, virtualizer, ResizeObserver | 20K mounting, anchor, image bound, width changes, DOM-read/offscreen      |
+| Test                    | Components                                          | Description                                                           |
+| ----------------------- | --------------------------------------------------- | --------------------------------------------------------------------- |
+| Layout browser suite    | TileGrid, geometry, virtualizer, ResizeObserver     | 20K mounting, anchor, image bound, width changes, DOM-read/offscreen  |
 | Selection browser suite | TileGrid, selection store, handle, TileGridItemView | Real clicks, modifiers, handle scroll, 20K public proxy, render count |
-| Performance suite       | Geometry, TileGrid, selection transitions       | Geometry/mounted/scroll budgets; pure selection supplement               |
+| Performance suite       | Geometry, TileGrid, selection transitions           | Geometry/mounted/scroll budgets; pure selection supplement            |
 
 ### End-to-End Tests
 

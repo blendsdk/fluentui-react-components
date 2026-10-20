@@ -16,7 +16,14 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./test/setup.ts'],
     include: ['test/**/*.{test,spec}.{ts,tsx}'],
-    exclude: ['node_modules', 'dist', 'storybook-static', '.turbo'],
+    exclude: [
+      'node_modules',
+      'dist',
+      'storybook-static',
+      '.turbo',
+      'test/browser/**',
+      'test/perf/**',
+    ],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],

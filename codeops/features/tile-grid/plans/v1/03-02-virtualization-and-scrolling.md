@@ -146,17 +146,17 @@ The public `TileGridHandle` exposes only `selectAll`, `clearSelection`, and `scr
 
 ## Error handling
 
-| Error case                                                   | Handling strategy                                                                        | AR Ref     |
-| ------------------------------------------------------------ | ---------------------------------------------------------------------------------------- | ---------- |
-| Root not measured yet                                        | Render spacer height `0`, no items; wait for `ResizeObserver`                            | AR #6      |
-| Root removed or unmounted                                    | Disconnect observer, cancel pending scroll/anchor work, no state update after unmount    | Standards  |
-| `ResizeObserver` unavailable                                 | The browser target supports it; jsdom installs the stub. No production fallback is added | AR #20     |
-| Geometry anchor ID disappears                                | Scroll to top (`scrollTop = 0`)                                                          | RD-02      |
-| Scroll helper receives a non-finite offset                   | No-op                                                                                    | RD-02      |
-| Virtualizer total and geometry total diverge                 | Parity test fails; the spacer and item positions remain geometry-driven                  | AR #7      |
-| 20K fixture exceeds the mounted bound                        | Performance test fails; inspect overscan, band grouping, or mosaic span handling         | RD-02 AC 1 |
-| Renderer starts measuring item DOM during scroll             | ST-48 fails; inspect the wrapper/render path and remove per-item `getBoundingClientRect`  | RD-02 AC 12 |
-| Caller overrides `overflow`/height and breaks virtualization | README documents the scroll contract; the caller owns the override                       | AR #6      |
+| Error case                                                   | Handling strategy                                                                        | AR Ref      |
+| ------------------------------------------------------------ | ---------------------------------------------------------------------------------------- | ----------- |
+| Root not measured yet                                        | Render spacer height `0`, no items; wait for `ResizeObserver`                            | AR #6       |
+| Root removed or unmounted                                    | Disconnect observer, cancel pending scroll/anchor work, no state update after unmount    | Standards   |
+| `ResizeObserver` unavailable                                 | The browser target supports it; jsdom installs the stub. No production fallback is added | AR #20      |
+| Geometry anchor ID disappears                                | Scroll to top (`scrollTop = 0`)                                                          | RD-02       |
+| Scroll helper receives a non-finite offset                   | No-op                                                                                    | RD-02       |
+| Virtualizer total and geometry total diverge                 | Parity test fails; the spacer and item positions remain geometry-driven                  | AR #7       |
+| 20K fixture exceeds the mounted bound                        | Performance test fails; inspect overscan, band grouping, or mosaic span handling         | RD-02 AC 1  |
+| Renderer starts measuring item DOM during scroll             | ST-48 fails; inspect the wrapper/render path and remove per-item `getBoundingClientRect` | RD-02 AC 12 |
+| Caller overrides `overflow`/height and breaks virtualization | README documents the scroll contract; the caller owns the override                       | AR #6       |
 
 ## Integration points
 

@@ -76,26 +76,26 @@ Same-session review note: the artifact was created outside this session. The hig
 
 | #   | Dimension              | Findings | Highest Severity |
 | --- | ---------------------- | -------- | ---------------- |
-| 1   | Ambiguities            | 1        | 🟡                |
+| 1   | Ambiguities            | 1        | 🟡               |
 | 2   | Implicit Assumptions   | 0        | —                |
-| 3   | Logical Contradictions | 3        | 🟠                |
-| 4   | Completeness Gaps      | 3        | 🟠                |
-| 5   | Dependency Issues      | 1        | 🟡                |
-| 6   | Feasibility Concerns   | 1        | 🔴                |
-| 7   | Testability            | 2        | 🟠                |
-| 8   | Security Blind Spots   | 1        | 🟠                |
-| 9   | Edge Cases             | 2        | 🟡                |
-| 10  | Scope Creep Indicators | 1        | 🟡                |
-| 11  | Ordering & Sequencing  | 1        | 🟡                |
-| 12  | Consistency            | 1        | 🟡                |
-| 13  | Codebase Alignment     | 1        | 🟡                |
+| 3   | Logical Contradictions | 3        | 🟠               |
+| 4   | Completeness Gaps      | 3        | 🟠               |
+| 5   | Dependency Issues      | 1        | 🟡               |
+| 6   | Feasibility Concerns   | 1        | 🔴               |
+| 7   | Testability            | 2        | 🟠               |
+| 8   | Security Blind Spots   | 1        | 🟠               |
+| 9   | Edge Cases             | 2        | 🟡               |
+| 10  | Scope Creep Indicators | 1        | 🟡               |
+| 11  | Ordering & Sequencing  | 1        | 🟡               |
+| 12  | Consistency            | 1        | 🟡               |
+| 13  | Codebase Alignment     | 1        | 🟡               |
 
 Dimension 13 is also the cross-cutting lens for PF-001, PF-002, PF-003, PF-004, PF-009, PF-011, and PF-015. Dimension 2 produced no finding because every codebase assumption in the target was verified against the package, except where a finding already records the mismatch.
 
 ## Summary by Severity
 
-| Severity      | Count | Status                       |
-| ------------- | ----- | ---------------------------- |
+| Severity       | Count | Status                       |
+| -------------- | ----- | ---------------------------- |
 | 🔴 CRITICAL    | 1     | Resolved — accepted Option A |
 | 🟠 MAJOR       | 7     | Resolved — accepted Option A |
 | 🟡 MINOR       | 10    | Resolved — accepted Option A |
@@ -572,8 +572,8 @@ Not created. Strict scope is active, and no optional additions were reported as 
 
 ## Decision Log
 
-| Finding | Severity   | Recommendation | User Decision                |
-| ------- | ---------- | -------------- | ---------------------------- |
+| Finding | Severity    | Recommendation | User Decision                |
+| ------- | ----------- | -------------- | ---------------------------- |
 | PF-001  | 🔴 CRITICAL | Option A       | Resolved — accepted Option A |
 | PF-002  | 🟠 MAJOR    | Option A       | Resolved — accepted Option A |
 | PF-003  | 🟠 MAJOR    | Option A       | Resolved — accepted Option A |
@@ -605,9 +605,9 @@ Not created. Strict scope is active, and no optional additions were reported as 
 
 ## Next Steps
 
-| Action                                                 | Owner             | Status                                     |
-| ------------------------------------------------------ | ----------------- | ------------------------------------------ |
-| Create implementation plans                            | You / `make-plan` | Ready at revision `a697524d…0bb8cda`       |
-| Implement the plans                                    | You / `exec-plan` | After planning                             |
-| Re-run a targeted preflight if the requirements change | Me                | On demand                                  |
+| Action                                                 | Owner             | Status                                      |
+| ------------------------------------------------------ | ----------------- | ------------------------------------------- |
+| Create implementation plans                            | You / `make-plan` | Ready at revision `a697524d…0bb8cda`        |
+| Implement the plans                                    | You / `exec-plan` | After planning                              |
+| Re-run a targeted preflight if the requirements change | Me                | On demand                                   |
 | Roadmap sync                                           | Me                | Done — all four RDs are `🔎 RD Preflighted` |

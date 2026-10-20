@@ -1,9 +1,9 @@
 # TileGrid Phase A Implementation Plan
 
 > **Feature**: Generic Fluent UI v9 tile collection — geometry, four layouts, 20K virtualization, selection foundation, and internal marquee engine
-> **Status**: Preflighted — accepted fixes applied
+> **Status**: Executing — Phase A
 > **Created**: 2026-10-20 20:07
-> **Last Updated**: 2026-10-20 21:05
+> **Last Updated**: 2026-10-20 22:06
 > **Implements**: tile-grid/RD-01, tile-grid/RD-02
 > **CodeOps Artifact Schema**: 1
 
@@ -35,11 +35,11 @@ The plan is intentionally a Phase A plan. RD-02's final public contract and expo
 
 The requirements README selects two lenses; this plan carries both.
 
-| Lens | Selected | Evidence |
-| --- | --- | --- |
-| Web application | ✅ | Browser UI collection with virtualized layout, selection, list semantics, accessibility, image rendering, and 20K interaction performance. |
-| Data and migration | ✅ | Replaces the consuming application's v8 `TilesList`/`ActorTile` contract, preserves seeded selection and order across filters/pages, and adds a new public component API alongside the existing package surface. |
-| Compiler/language, financial, distributed/concurrent | — | No parser, ledger, queue, replica, or background worker. |
+| Lens                                                 | Selected | Evidence                                                                                                                                                                                                         |
+| ---------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Web application                                      | ✅       | Browser UI collection with virtualized layout, selection, list semantics, accessibility, image rendering, and 20K interaction performance.                                                                       |
+| Data and migration                                   | ✅       | Replaces the consuming application's v8 `TilesList`/`ActorTile` contract, preserves seeded selection and order across filters/pages, and adds a new public component API alongside the existing package surface. |
+| Compiler/language, financial, distributed/concurrent | —        | No parser, ledger, queue, replica, or background worker.                                                                                                                                                         |
 
 **Compatibility boundary:** the package stores no persistent data and performs no migration. The consuming application owns the v8 `TilesList`/`ActorTile` replacement, persisted selection/order mapping, and rollback. There is no v8 compatibility layer inside the package; the package's compatibility surface is its public component API. Phase A is internal and is not a public release.
 
@@ -54,12 +54,12 @@ Phase A is an internal delivery phase, not a v1 public release. No `@blendsdk/fl
 
 ## Partial RD Coverage
 
-| RD | Phase A coverage | Deferred |
-| --- | --- | --- |
-| RD-01 | Selection store, click mapping, handle methods, internal marquee controller | Grid-level marquee overlay/pointer host and integration tests (RD-03) |
-| RD-02 | Core geometry, four layouts, virtualization, controlled `tileSize`, anchor, empty state, list semantics, Phase A stories, 20K benchmark | `zoomable`/`onTileSizeChange` (RD-03); full final contract, RD-04 shell/reorder types, full export pin (RD-03/RD-04) |
-| RD-03 | Minimal selection wiring: modes, controlled/uncontrolled IDs, click mapping, handle, list semantics, selected render args | Selection controls, roving focus, keyboard, announcements, `isSelectable`/`isDisabled`, `interactionMode`, `enableMarquee`, overlay, `onItemActivate`, `scrollResetKey`, filtering persistence |
-| RD-04 | None | Tile shell, actions, drag/reorder, full recipe |
+| RD    | Phase A coverage                                                                                                                        | Deferred                                                                                                                                                                                       |
+| ----- | --------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| RD-01 | Selection store, click mapping, handle methods, internal marquee controller                                                             | Grid-level marquee overlay/pointer host and integration tests (RD-03)                                                                                                                          |
+| RD-02 | Core geometry, four layouts, virtualization, controlled `tileSize`, anchor, empty state, list semantics, Phase A stories, 20K benchmark | `zoomable`/`onTileSizeChange` (RD-03); full final contract, RD-04 shell/reorder types, full export pin (RD-03/RD-04)                                                                           |
+| RD-03 | Minimal selection wiring: modes, controlled/uncontrolled IDs, click mapping, handle, list semantics, selected render args               | Selection controls, roving focus, keyboard, announcements, `isSelectable`/`isDisabled`, `interactionMode`, `enableMarquee`, overlay, `onItemActivate`, `scrollResetKey`, filtering persistence |
+| RD-04 | None                                                                                                                                    | Tile shell, actions, drag/reorder, full recipe                                                                                                                                                 |
 
 The `Implements` line names the RD baseline this plan is based on; the partial coverage above is authoritative. The minimal RD-03 subset is plan-local and does not advance the RD-03 roadmap row.
 
@@ -131,22 +131,22 @@ The grid root is the scroll container. The application supplies a sized parent o
 
 ### Key Decisions
 
-| Decision        | Outcome                                                                                                                                           | Ref                        |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
-| Phase A target  | RD-02 core + RD-01 selection/marquee + minimal RD-03 selection wiring; RD-03/RD-04 remainder deferred                                             | AR #1                      |
-| Public contract | Phase A internal subset; RD-03/RD-04 extend; no public release until the final contract freeze                                                    | AR #2, PF-001              |
-| Selection       | Controlled/uncontrolled IDs, plain/Ctrl/Cmd/Shift clicks, handle methods; no controls/focus/keyboard yet                                          | AR #3                      |
-| Renderer        | Memoized item cells; stable `renderItem` identity; one selection change re-renders only the affected mounted cell                                 | PF-005                     |
-| Marquee         | Controller built and tested internally; overlay/host in RD-03                                                                                     | AR #4                      |
-| Zoom            | Controlled `tileSize` only; `zoomable`/`onTileSizeChange` in RD-03                                                                                | AR #5                      |
-| Scroll          | Grid root is the scroll container; application sizes it                                                                                           | AR #6                      |
-| Masonry         | TanStack `lanes` + geometry parity test                                                                                                           | AR #7                      |
-| Geometry        | Pure layout strategies; band virtualization for fixed/justified/mosaic; item/lane for masonry                                                     | AR #12                     |
-| Tests           | jsdom unit, Chromium browser per task, full matrix + performance in CI; node import smoke, 20K selection, DOM-read/offscreen, render-count        | AR #9, AR #10, PF-002–PF-005 |
-| Dependencies    | `@tanstack/react-virtual` 3.14.21; browser/perf dev dependencies; `vitest` pinned 5.0.5; dnd-kit later                                           | AR #18, PF-008             |
-| Release         | No public release/tag until RD-03/RD-04 complete and the final contract/export pin/dependency set is frozen                                       | PF-001                     |
-| Domain lenses   | Web application + Data and migration; no v8 compatibility layer inside the package                                                                | PF-006                     |
-| Partial RDs     | RD-02 AC 14/17 and RD-03 controls/focus/keyboard remain preflighted; see Partial RD Coverage                                                      | PF-007                     |
+| Decision        | Outcome                                                                                                                                    | Ref                          |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------- |
+| Phase A target  | RD-02 core + RD-01 selection/marquee + minimal RD-03 selection wiring; RD-03/RD-04 remainder deferred                                      | AR #1                        |
+| Public contract | Phase A internal subset; RD-03/RD-04 extend; no public release until the final contract freeze                                             | AR #2, PF-001                |
+| Selection       | Controlled/uncontrolled IDs, plain/Ctrl/Cmd/Shift clicks, handle methods; no controls/focus/keyboard yet                                   | AR #3                        |
+| Renderer        | Memoized item cells; stable `renderItem` identity; one selection change re-renders only the affected mounted cell                          | PF-005                       |
+| Marquee         | Controller built and tested internally; overlay/host in RD-03                                                                              | AR #4                        |
+| Zoom            | Controlled `tileSize` only; `zoomable`/`onTileSizeChange` in RD-03                                                                         | AR #5                        |
+| Scroll          | Grid root is the scroll container; application sizes it                                                                                    | AR #6                        |
+| Masonry         | TanStack `lanes` + geometry parity test                                                                                                    | AR #7                        |
+| Geometry        | Pure layout strategies; band virtualization for fixed/justified/mosaic; item/lane for masonry                                              | AR #12                       |
+| Tests           | jsdom unit, Chromium browser per task, full matrix + performance in CI; node import smoke, 20K selection, DOM-read/offscreen, render-count | AR #9, AR #10, PF-002–PF-005 |
+| Dependencies    | `@tanstack/react-virtual` 3.14.21; browser/perf dev dependencies; `vitest` pinned 5.0.5; dnd-kit later                                     | AR #18, PF-008               |
+| Release         | No public release/tag until RD-03/RD-04 complete and the final contract/export pin/dependency set is frozen                                | PF-001                       |
+| Domain lenses   | Web application + Data and migration; no v8 compatibility layer inside the package                                                         | PF-006                       |
+| Partial RDs     | RD-02 AC 14/17 and RD-03 controls/focus/keyboard remain preflighted; see Partial RD Coverage                                               | PF-007                       |
 
 ## Specialist Agents
 

@@ -51,8 +51,8 @@ and keeps the generic selection/marquee modules internal rather than public.
 
 | Lens                     | Selected | Evidence                                                                                                                                                                           |
 | ------------------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Web application**      | ✅        | Browser UI collection with selection, focus, keyboard, announcements, responsive layout, image loading, and 20K-item performance.                                                  |
-| **Data and migration**   | ✅        | Replaces the v8 `TilesList` contract, preserves seeded selection and order across filters/pages, and introduces a new public component API alongside the existing package surface. |
+| **Web application**      | ✅       | Browser UI collection with selection, focus, keyboard, announcements, responsive layout, image loading, and 20K-item performance.                                                  |
+| **Data and migration**   | ✅       | Replaces the v8 `TilesList` contract, preserves seeded selection and order across filters/pages, and introduces a new public component API alongside the existing package surface. |
 | Compiler / language      | —        | No grammar, parser, IR, codec, or evaluator.                                                                                                                                       |
 | Financial system         | —        | No money, balances, pricing, or ledger concepts.                                                                                                                                   |
 | Distributed / concurrent | —        | Client-side rendering only; no queues, replicas, or background workers.                                                                                                            |
