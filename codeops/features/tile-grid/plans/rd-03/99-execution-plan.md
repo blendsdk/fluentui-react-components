@@ -1,8 +1,8 @@
 # Execution Plan: TileGrid RD-03
 
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-22 01:47
-> **Progress**: 10/47 tasks (21%)
+> **Last Updated**: 2026-10-22 01:56
+> **Progress**: 11/47 tasks (23%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -85,7 +85,7 @@ verified tasks retain per-task commits/pushes.
 
 ### Session 1.3 — Internal Tests and Hardening
 
-- [ ] 1.3.1 Add store/handler/control lifecycle tests — `test/tile-grid-selection.impl.test.tsx`, `test/tile-grid-interaction.impl.test.tsx`; stable methods, no duplicate notifications, and warning privacy.
+- [x] 1.3.1 Add store/handler/control lifecycle tests — `test/tile-grid-selection.impl.test.tsx`, `test/tile-grid-interaction.impl.test.tsx`; stable methods, no duplicate notifications, and warning privacy. ✅ (completed: 2026-10-22 01:56; bounded cancellation correction per AR-18; 17 targeted internals and full 599-test gate pass; documentation checked)
 - [ ] 1.3.2 Run `pnpm verify && pnpm test:browser && pnpm test:perf`; record results and complete the strict independent phase-review loop.
 
 **Deliverable:** Verified Phase 1 and closed/authorized review findings.

@@ -171,4 +171,59 @@ describe('tile grid selection store internals', () => {
     rerender(cell(true));
     expect(renderItem).toHaveBeenCalledTimes(2);
   });
+
+  it('keeps methods stable while replacement reads the latest callback and retains the anchor', () => {
+    const firstChange = vi.fn();
+    const nextChange = vi.fn();
+    const { result, rerender } = renderHook(
+      ({ onSelectionChange }) =>
+        useGridSelection({
+          mode: 'multiselect',
+          defaultSelectedIds: ['seed'],
+          onSelectionChange,
+        }),
+      { initialProps: { onSelectionChange: firstChange } }
+    );
+    const first = result.current;
+    rerender({ onSelectionChange: nextChange });
+    for (const name of [
+      'select',
+      'selectOnly',
+      'toggle',
+      'selectRange',
+      'selectAll',
+      'clear',
+      'deselect',
+      'isSelected',
+      'replaceSelection',
+    ] as const) {
+      expect(result.current[name]).toBe(first[name]);
+    }
+    act(() => result.current.replaceSelection(new Set(['other', 'hidden'])));
+    expect(result.current.anchorId).toBe('seed');
+    expect(result.current.selectedIds).toEqual(new Set(['other', 'hidden']));
+    expect(firstChange).not.toHaveBeenCalled();
+    expect(nextChange).toHaveBeenCalledExactlyOnceWith(new Set(['other', 'hidden']));
+    act(() => result.current.replaceSelection(new Set(['hidden', 'other'])));
+    expect(nextChange).toHaveBeenCalledTimes(1);
+  });
+
+  it('reads current eligibility through stable methods without pruning stored membership', () => {
+    const { result, rerender } = renderHook(
+      ({ allowed }) =>
+        useGridSelection({
+          mode: 'multiselect',
+          defaultSelectedIds: ['hidden'],
+          isSelectable: id => id === allowed,
+        }),
+      { initialProps: { allowed: 'a' } }
+    );
+    const select = result.current.select;
+    act(() => select('a'));
+    rerender({ allowed: 'b' });
+    act(() => select('b'));
+    act(() => select('c'));
+    expect(result.current.select).toBe(select);
+    expect(result.current.selectedIds).toEqual(new Set(['hidden', 'a', 'b']));
+  });
 });

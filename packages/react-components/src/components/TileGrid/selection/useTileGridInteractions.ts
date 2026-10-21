@@ -110,11 +110,19 @@ export function useTileGridInteractions<T>(input: TileGridInteractionsInput<T>):
       !wrapper ||
       !InputType ||
       !(event.target instanceof InputType) ||
-      !event.target.hasAttribute('data-tile-grid-selection') ||
-      event.defaultPrevented ||
-      event.nativeEvent.defaultPrevented
+      !event.target.hasAttribute('data-tile-grid-selection')
     )
       return;
+    if (event.defaultPrevented || event.nativeEvent.defaultPrevented) {
+      const input = event.target;
+      // Native click cancellation can roll checkedness back after React has
+      // already restored its controlled value. Reconcile after that rollback,
+      // using the latest rendered projection mirrored by the owned input ref.
+      queueMicrotask(() => {
+        if (input.isConnected) input.checked = input.defaultChecked;
+      });
+      return;
+    }
     const id = wrapper.getAttribute('data-tile-grid-item');
     if (id === null) return;
     if (current.selection.mode === 'single') current.selection.select(id);

@@ -86,6 +86,11 @@ layout effect. Do not supply both React `checked` and `defaultChecked` props. No
 callback, count announcement, form-wide reset listener, or reset-to-seed behavior is introduced.
 Application-driven selection changes still apply normally (preflight PF-010).
 
+Consumer cancellation can trigger native checked-state rollback after React's controlled restore.
+For a cancelled owned-input event, reconcile the still-connected input in a microtask using its
+latest DOM reset default. This preserves the existing veto without a store action or stale snapshot
+(runtime AR-18).
+
 A single eligible mounted item may produce a singleton radio group. The user explicitly accepted
 the narrow HTML authoring-conformance exception in preflight PF-013. Keep the real radio and its
 normal selection semantics; do not add synthetic peers or fake tiles. Document this limitation.

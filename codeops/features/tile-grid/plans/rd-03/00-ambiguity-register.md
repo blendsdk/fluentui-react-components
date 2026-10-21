@@ -1,7 +1,7 @@
 ## Ambiguity Register: TileGrid RD-03
 
-> **Status**: ✅ GATE PASSED — all 17 items resolved, including two runtime decisions
-> **Last Updated**: 2026-10-22 01:40
+> **Status**: ✅ GATE PASSED — all 18 items resolved, including three runtime decisions
+> **Last Updated**: 2026-10-22 01:56
 > **CodeOps Artifact Schema**: 1
 
 ## Planning Boundaries
@@ -231,6 +231,28 @@ unsupported zero-listitem assertion and restoration of the existing placeholder 
 all other new assertions and existing oracles remain unchanged.
 **Verification:** New 49 cases passed, full gate 589 passed / 1 failed at the prior placeholder check;
 this was not a green checkpoint. The authorized correction now requires full re-verification.
+
+### Runtime AR-18 — Cancelled Native Input Rollback
+
+**Authority:** AI — delegated by `--auto-design`.
+**Eligibility:** Internal failure/recovery mechanism for the already approved prevented-event veto;
+no public behavior, policy, dependency, or scope expansion.
+**Objective:** Keep owned checked presentation consistent after consumer cancellation.
+**Evidence:** The new real-DOM internal test observes no selection callback after root `onChange`
+prevention, but checkedness becomes true: native cancelled-click rollback follows React's
+controlled-state restoration. The owned input already mirrors its latest rendered projection in
+DOM `defaultChecked` (03-01 Controls and Item Rendering).
+**Decision:** After cancellation, queue one microtask to restore the still-connected input's
+checked property from its current `defaultChecked`. No store mutation, callback, or timer service.
+**Rejected alternatives:** Synchronous restoration runs before native rollback; forcing a React
+rerender adds state and may run before rollback too. Removing native prevention would violate the
+consumer event contract.
+**Strongest counterargument:** The reconciliation is asynchronous. It runs before the next paint,
+uses current projection rather than a stale captured value, and ignores detached inputs.
+**Confidence:** High for this bounded DOM reconciliation; reopen if browser matrix disagrees.
+**Hardening:** In-context mechanism review; small, reversible change, no independent challenger required.
+**Policy version:** 1. **Root invocation ID:** `rd03-20261022-0057`.
+**Reopen triggers:** Cross-engine rollback mismatch or a post-unmount mutation/callback.
 
 The user accepted all nine major recommendations, then selected **Apply and re-scan** for the
 three minor corrections and the documented singleton-radio exception. The separate
