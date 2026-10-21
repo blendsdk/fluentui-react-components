@@ -1,7 +1,7 @@
 # Ambiguity Register: tile-grid requirements
 
-> **Status**: ✅ GATE PASSED — all 18 items resolved
-> **Last Updated**: 2026-10-20 19:34
+> **Status**: ✅ GATE PASSED — all 21 items resolved
+> **Last Updated**: 2026-10-21 23:36
 > **CodeOps Artifact Schema**: 1
 
 This register records the decisions behind the `tile-grid` requirements. The feature replaces the
@@ -47,6 +47,21 @@ URLs and the application owns URL validation; and zoom is controlled-only.
 | 18  | Security & compliance | Image URLs, PII, and rendering safety                                            | App-owned auth vs component fetch; URL validation; XSS                                                | **App-owned image access and PII.** The component accepts no URLs and performs no authenticated fetch or token handling. The application owns URL protocol allowlisting, authenticated image access, and image attributes; the component never parses HTML, never logs image URLs or labels, and escapes all text through React. Signed/cookie-authenticated URLs are the application's responsibility                                                                                                                                                                                                 | ✅ Resolved |
 
 ## Resolution Notes
+
+### RD-03 Planning Corrections (2026-10-21)
+
+The user explicitly approved bounded edits to RD-03, RD-02's native `tabIndex` contract, this
+decision history, and the prior preflight status. Decisions were taken in the RD-03 planning
+interview and are also linked from `../plans/rd-03/00-ambiguity-register.md` AR-4–AR-7.
+
+| #   | Category      | Ambiguity / Gap                                                                               | Options Presented                                                         | User Decision / Resolution                                                                                                                                                                                                                               | Status      |
+| --- | ------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| 19  | Data & state  | Stored selection conflicts with disabled/non-selectable eligibility.                          | Preserve selection and presentation / preserve IDs but mask presentation. | User chose **Keep selected**. Predicates block user interaction, not stored membership. Ineligible items have no selection control; enabled non-selectable items remain activatable and are not marked disabled.                                         | ✅ Resolved |
+| 20  | Accessibility | Native root `tabIndex` conflicts with active-tile entry.                                      | Grid-owned / caller override with a qualified guarantee.                  | User chose **Grid-owned**. Omit `tabIndex` from native public props. The active tile is the entry target; the named root is the fallback when no tile is available.                                                                                      | ✅ Resolved |
+| 21  | Focus         | A retained active ID may have no rendered focus target after a filter reset or manual scroll. | Visible fallback / retain ID and scroll back on re-entry.                 | User chose **Visible fallback**. Recover to a visible tile without undoing the reset or scroll; move actual focus only if the grid held it, otherwise update the next entry target. Prefer selectable items, then any visible item, then the named root. | ✅ Resolved |
+
+The old preflight report remains historical evidence; these corrected sections require a focused
+refresh before downstream execution. Phase A is complete but did not implement these behaviors.
 
 **AR-3:** The four layouts share one geometry contract. Every mode produces item rectangles, a
 visible band/lane range, a total scroll height, an index-at-point function, and a scroll anchor by

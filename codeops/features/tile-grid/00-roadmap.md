@@ -3,7 +3,7 @@
 > **Feature-Set**: tile-grid
 > **Status**: In Progress
 > **Created**: 2026-10-20
-> **Last Updated**: 2026-10-21 11:19
+> **Last Updated**: 2026-10-22 00:45
 > **Progress**: 0 / 4 (0%)
 > **CodeOps Artifact Schema**: 1
 
@@ -13,12 +13,12 @@
 
 ## Tracker
 
-| ID    | Title                                           | RD                                                               | Plan                       | Stage             | Status | Last Updated | Depends-on / Blocker  |
-| ----- | ----------------------------------------------- | ---------------------------------------------------------------- | -------------------------- | ----------------- | ------ | ------------ | --------------------- |
-| RD-01 | Selection and marquee internals                 | [RD-01](requirements/RD-01-selection-and-marquee.md)             | [v1](plans/v1/00-index.md) | 🔄 Executing      | ⬜     | 2026-10-21   | RD-02 (geometry port) |
-| RD-02 | TileGrid layout and virtualization              | [RD-02](requirements/RD-02-layout-and-virtualization.md)         | [v1](plans/v1/00-index.md) | 🔄 Executing      | ⬜     | 2026-10-21   | —                     |
-| RD-03 | Selection integration, focus, and accessibility | [RD-03](requirements/RD-03-selection-focus-and-accessibility.md) | —                          | 🔎 RD Preflighted | ⬜     | 2026-10-20   | RD-01, RD-02          |
-| RD-04 | Arranging, tile shell, and actions              | [RD-04](requirements/RD-04-arranging-tile-shell-and-actions.md)  | —                          | 🔎 RD Preflighted | ⬜     | 2026-10-20   | RD-02, RD-03          |
+| ID    | Title                                           | RD                                                               | Plan                                                         | Stage               | Status | Last Updated | Depends-on / Blocker    |
+| ----- | ----------------------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------ | ------------------- | ------ | ------------ | ----------------------- |
+| RD-01 | Selection and marquee internals                 | [RD-01](requirements/RD-01-selection-and-marquee.md)             | [v1](plans/v1/00-index.md), [rd-03](plans/rd-03/00-index.md) | 🔄 Executing        | 🔄     | 2026-10-21   | RD-02 (geometry port)   |
+| RD-02 | TileGrid layout and virtualization              | [RD-02](requirements/RD-02-layout-and-virtualization.md)         | [v1](plans/v1/00-index.md), [rd-03](plans/rd-03/00-index.md) | 🔄 Executing        | 🔄     | 2026-10-21   | Final contract: RD-04   |
+| RD-03 | Selection integration, focus, and accessibility | [RD-03](requirements/RD-03-selection-focus-and-accessibility.md) | [rd-03](plans/rd-03/00-index.md)                             | 🔬 Plan Preflighted | ⬜     | 2026-10-22   | RD-01/RD-02 foundations |
+| RD-04 | Arranging, tile shell, and actions              | [RD-04](requirements/RD-04-arranging-tile-shell-and-actions.md)  | —                                                            | 🔎 RD Preflighted   | ⬜     | 2026-10-20   | RD-02, RD-03            |
 
 ## Notes
 
@@ -28,5 +28,5 @@
 - The simplified complexity packet is approved: `@tanstack/react-virtual`, `@dnd-kit/core`, one browser test runner, and internal generic selection/marquee modules.
 - All four RDs are v1 release-blocking; the implementation order is RD-01/RD-02, then RD-03, then RD-04.
 - Phase A plan preflighted and passed at `plans/v1/`: it implements RD-01 and RD-02 plus the minimal RD-03 selection wiring needed to exercise RD-01. RD-03 focus/keyboard/accessibility and RD-04 arranging remain preflighted for later plans.
-- Partial coverage: RD-02 AC 14/17 and the RD-03 controls/focus/keyboard remain preflighted; the plan’s release/contract-freeze gate (PF-001) keeps the TileGrid surface out of any public package release until RD-03/RD-04 complete; the other components may ship. The preflight report is `plans/v1/00-preflight-report.md`.
-- Phase A execution is complete at 69/69 tasks: geometry, virtualization, selection, the internal marquee controller, stories, the 20K performance baseline, documentation, and the final gates passed. RD-01/RD-02 remain partially covered; RD-03/RD-04 remain preflighted. The release/contract-freeze gate for the TileGrid surface stays closed until those plans complete.
+- Partial coverage: RD-02's final contract/export work awaits RD-04. RD-03 passed preflight with notes at `plans/rd-03/`: 12 findings resolved and one singleton-radio conformance exception accepted; 47 tasks remain pending with 41 ST cases. Requirements AR-19–AR-21 passed their focused reviews. The TileGrid-only release gate remains held; other components may ship.
+- Phase A execution is complete at 69/69 tasks. RD-01/RD-02 remain partially covered; the new RD-03 plan includes their prerequisite invariant/zoom corrections. RD-04 remains preflighted for later planning. Portfolio synchronization is deferred until this feature branch lands on `main`.

@@ -1,7 +1,7 @@
 # RD-03: Selection Integration, Focus, and Accessibility
 
 > **Document**: RD-03-selection-focus-and-accessibility.md
-> **Status**: Preflighted — accepted fixes applied
+> **Status**: Revised during RD-03 planning — focused preflight refresh required
 > **Created**: 2026-10-20
 > **Project**: fluentui-react-components
 > **Depends On**: RD-01, RD-02
@@ -59,13 +59,18 @@ operable actions.
 - [ ] **None mode.** With `selectionMode="none"`, no selection controls render and click/Enter
       activate the tile. Ctrl/Shift/marquee selection is disabled.
 - [ ] **Selectable and disabled predicates.** `isSelectable(item)` defaults to true.
-      Non-selectable items cannot be selected, do not participate in select-all or range selection,
+      Non-selectable items cannot be newly selected by user gestures, do not participate in select-all or range selection,
       and render no selection control; they remain readable, focusable, and activatable when useful.
       `isDisabled(item)` defaults to false. Disabled items render `aria-disabled="true"`, do not
-      activate, do not start a drag or marquee, and are never selectable. When both predicates are
+      activate, do not start a drag or marquee, and are never eligible for user selection. When both predicates are
       supplied, disabled wins.
+- [ ] **Stored selection and eligibility.** Predicates control user interaction, not stored membership.
+      A seeded or previously selected ID remains selected and retains its selected presentation when
+      its item becomes disabled or non-selectable. No predicate or item change prunes the set or
+      fires `onSelectionChange`. Ineligible items render no selection control. Explicit replacement
+      and clear operations may remove their IDs like any other existing selection (AR #19).
 - [ ] **Disabled focusability.** Disabled items remain focusable by default so screen-reader users
-      can reach them and read why they are unavailable; they never activate, select, drag, or start
+      can reach them and read why they are unavailable; user gestures never activate, select, drag, or start
       a marquee. The application removes an item from the grid by filtering it out of `items`, not
       by disabling it.
 - [ ] **Marquee opt-in.** `enableMarquee` defaults to false and works only in multiselect mode.
@@ -79,7 +84,8 @@ operable actions.
       a no-op when no selected item is present.
 - [ ] **Filtering persistence.** When the application supplies a different filtered `items` array
       and changes `scrollResetKey`, selected IDs persist, the scroll position resets to the top, and
-      focus moves to the first visible selectable tile if the active tile disappeared. Appending a
+      the active target moves to a visible fallback if the active tile disappeared or is outside
+      the reset viewport. Actual focus moves only when the grid held it. Appending a
       page or updating items in place does not reset scroll while `scrollResetKey` is unchanged.
 - [ ] **Layout and zoom persistence.** Changing layout or `tileSize` preserves selection and the
       active item when possible.
@@ -89,6 +95,12 @@ operable actions.
       Home/End go to the first/last item; PageUp/PageDown move by one visible row across all lanes;
       Ctrl+Home/Ctrl+End go to the first/last item. Moving the active tile calls the internal scroll
       helper when the target is outside the viewport.
+- [ ] **Focus recovery.** The grid owns `tabIndex`, including the named-root fallback when no tile
+      is available. After a filter reset, use a visible fallback when the previous active tile is
+      absent or outside the viewport. After manual scrolling unmounts the active tile, choose a
+      visible fallback without reversing the scroll. Update actual focus only if the grid held it;
+      otherwise update the next entry target. Prefer a visible selectable item, then a visible
+      item even if disabled or non-selectable (AR #20–21).
 - [ ] **Keyboard selection.** Space toggles the active tile in multiselect mode; in single mode it
       selects the active tile and does not deselect it. Enter activates it; Shift+Arrow extends the
       selection range; Ctrl/Cmd+A selects all current selectable items in multiselect mode; Escape
@@ -185,11 +197,14 @@ interface. `ariaLabel` is a core prop in RD-02, not a selection prop.
   - ties resolve to the lower item index.
 - Moving the active item calls the internal `scrollToItem` helper when the target is outside the
   viewport.
-- A filter change that changes `scrollResetKey` sets `activeId` to the first visible selectable item
-  if the previous active ID is absent. A page append or in-place update keeps the active ID when it
-  is still present.
+- A filter change that changes `scrollResetKey` retains `activeId` only when the item is present
+  in the reset viewport; otherwise it chooses a visible fallback. A page append or in-place update
+  keeps the active ID when it is still present and mounted.
 - A layout or zoom change keeps `activeId` when the item remains visible; otherwise it chooses the
   nearest visible item.
+- Manual scrolling that unmounts the active tile chooses a visible fallback without scrolling back.
+  The fallback prefers selectable items, then any visible item. When no tile is available, the
+  named list root is the entry target. Focus recovery must not steal focus from outside the grid.
 - Disabled items remain in the roving focus order and are announced as disabled, but arrow/Space/
   Enter never activates or selects them.
 
@@ -207,9 +222,10 @@ interface. `ariaLabel` is a core prop in RD-02, not a selection prop.
   label.
 - Live region: `role="status"` or `aria-live="polite"` with `strings.selectionCount`. It must not
   use `aria-live="assertive"`.
-- Disabled/non-selectable: `aria-disabled="true"` and no selection or activation; a disabled item
-  remains focusable and its reason is available in the accessible description. A non-selectable but
-  enabled item has no selection control and remains activatable.
+- Disabled: `aria-disabled="true"` and no user selection or activation; the item remains focusable
+  and its reason is available in the accessible description. Non-selectable but enabled items are
+  not marked disabled and remain activatable. Neither kind renders a selection control; stored
+  selected membership and the selected render argument remain intact (AR #19).
 
 ### Filtering
 
@@ -220,7 +236,9 @@ interface. `ariaLabel` is a core prop in RD-02, not a selection prop.
 - Appending a page or updating items in place with the same `scrollResetKey` preserves the scroll
   anchor and the active item.
 - Selection is not cleared.
-- `activeId` is retained if present; otherwise it becomes the first visible selectable item.
+- After the reset, `activeId` is retained only if present in the viewport; otherwise choose the
+  first visible selectable item, then the first visible item, then the named root. Actual focus
+  moves only when the grid held it before the update (AR #21).
 - `scrollToSelected()` is available for an explicit “show selection” action and is a no-op when no
   selected item is present.
 
@@ -310,10 +328,10 @@ interface. `ariaLabel` is a core prop in RD-02, not a selection prop.
 12. [ ] The grid exposes exactly one entry tab stop; Tab enters the active tile's controls in DOM order, further Tab presses leave the grid, Shift+Tab reverses, and Escape returns focus to the tile wrapper. Inactive controls use `tabIndex={-1}`.
 13. [ ] The grid root has an accessible name from `ariaLabel` or `aria-labelledby` (the latter wins when both are present); a development warning is emitted when neither is supplied. Each mounted tile has `aria-setsize` and `aria-posinset`; each selectable tile has an accessible selection control with the item label; non-selectable tiles render no selection control; disabled tiles expose `aria-disabled="true"`.
 14. [ ] Single-select radios share one `name` and form one group; multiselect uses real checkboxes.
-15. [ ] A disabled item renders `aria-disabled="true"`, remains focusable, does not activate, does not start a drag or marquee, and is never selected; a non-selectable but enabled item has no selection control and remains activatable.
+15. [ ] A disabled item renders `aria-disabled="true"`, remains focusable, does not activate or start a drag/marquee, and cannot be newly selected by user gestures. Disabled and non-selectable items render no selection control, but retain any seeded or existing selected membership and presentation without a callback. An enabled non-selectable item is not marked disabled and remains activatable.
 16. [ ] The live region announces a committed selection count once, not on every marquee frame, using `strings.selectionCount`.
 17. [ ] With `enableMarquee` and multiselect, a plain background drag replaces the selection and calls `onSelectionChange` once; Shift+drag adds; Escape restores the pre-marquee selection and fires no callback.
-18. [ ] Changing `scrollResetKey` resets scroll to the top, preserves selection, and moves focus to the first visible selectable tile when the active tile disappears; appending a page while the key is unchanged preserves the scroll anchor and active item.
+18. [ ] Changing `scrollResetKey` resets scroll to the top and preserves selection. If the active tile disappears or is outside the reset viewport, the entry target becomes the first visible selectable tile, otherwise the first visible tile, otherwise the named root. Actual focus moves only when the grid held it. Manual scrolling that unmounts the active tile similarly recovers to a visible target without scrolling back. Appending a page while the key is unchanged preserves the scroll anchor and active item when still mounted.
 19. [ ] A 20K selection set can be selected, cleared, and read without rendering 20K tiles or creating per-item selection state; the performance job records p95 selection toggle under 16ms.
 20. [ ] The grid uses list semantics, not `role="grid"`, for all four layout modes.
 21. [ ] Security requirements verified: labels render as text, selection IDs are not logged, and unknown IDs do not create fake items.

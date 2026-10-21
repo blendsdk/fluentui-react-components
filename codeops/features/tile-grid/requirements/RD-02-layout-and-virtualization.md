@@ -1,7 +1,7 @@
 # RD-02: TileGrid Layout and Virtualization
 
 > **Document**: RD-02-layout-and-virtualization.md
-> **Status**: Preflighted — accepted fixes applied
+> **Status**: Preflighted baseline; native tabIndex contract revised — focused refresh required
 > **Created**: 2026-10-20
 > **Project**: fluentui-react-components
 > **Depends On**: —
@@ -183,7 +183,7 @@ interface TileGridHandle {
 
 interface TileGridProps<T> extends Omit<
   React.ComponentPropsWithoutRef<'div'>,
-  'children' | 'role' | 'aria-label' | 'dangerouslySetInnerHTML'
+  'children' | 'role' | 'aria-label' | 'tabIndex' | 'dangerouslySetInnerHTML'
 > {
   items: readonly T[];
   getItemId: (item: T) => string;
@@ -231,12 +231,14 @@ them.
 `moveDown`) falls back to the default; dynamic messages receive counts and are rendered as React
 text.
 
-Native `div` props pass through except `children`, `role`, `aria-label`, and
+Native `div` props pass through except `children`, `role`, `aria-label`, `tabIndex`, and
 `dangerouslySetInnerHTML`: the grid owns the list role and content, uses `ariaLabel` for the
 accessible name, and never parses HTML. `aria-labelledby` remains available through the native
 props; when both `ariaLabel` and `aria-labelledby` are supplied, `aria-labelledby` wins. A
 development warning is emitted when neither is supplied. `className` and `style` merge with the
 component's own values (the caller wins). The forwarded ref has type `TileGridHandle`.
+The grid owns `tabIndex`: RD-03 places the entry stop on the active tile, with a named-root
+fallback when no tile is available. Callers cannot add a second root entry stop (requirements AR #20).
 
 The exact generic names may be refined during implementation, but the public members and
 behaviour in this RD are fixed.

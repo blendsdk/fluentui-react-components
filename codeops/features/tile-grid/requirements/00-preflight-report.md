@@ -1,6 +1,6 @@
 # Preflight Report: tile-grid requirements
 
-> **Status**: ✅ PASSED — iteration 2: 18/18 accepted fixes applied and verified (1 critical, 7 major, 10 minor)
+> **Status**: ⚠️ STALE for RD-03 planning corrections — historical iteration 2 passed; focused refresh required
 > **Iteration**: 2 (fix verification and targeted re-scan)
 > **Previous Iteration**: 18 findings — all resolved; 0 carried forward
 > **This Iteration**: 0 new root-cause findings; related clarifications listed below
@@ -13,6 +13,15 @@
 > **Reasoning suggestion**: high (advisory only; no `--auto-effort` was supplied)
 
 Same-session review note: the artifact was created outside this session. The high-stakes finding batch was independently challenged before recommendations were recorded.
+
+## Subsequent Requirement Revision
+
+On 2026-10-21 the user approved requirements AR-19–AR-21 during RD-03 planning: stored selection
+versus eligibility, library-owned `tabIndex`, and visible focus recovery after reset/unmount.
+The affected files are `RD-03-selection-focus-and-accessibility.md` and the native `tabIndex`
+contract in `RD-02-layout-and-virtualization.md`. The content hash and pass below describe the
+earlier revision, not these corrections. A focused preflight refresh must verify these sections
+and their downstream RD-03 plan before execution. No historical finding ruling is changed.
 
 ## Codebase Context Summary
 

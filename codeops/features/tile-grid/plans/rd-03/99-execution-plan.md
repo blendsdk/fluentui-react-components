@@ -1,0 +1,206 @@
+# Execution Plan: TileGrid RD-03
+
+> **Parent**: [Index](00-index.md)
+> **Last Updated**: 2026-10-21 23:36
+> **Progress**: 0/47 tasks (0%)
+> **CodeOps Artifact Schema**: 1
+
+## Overview
+
+Implement the confirmed RD-03 plan on `feat/tile-grid-rd-03`. The scoped requirement corrections
+passed review; before execution, confirm a passing current preflight for this plan. Read the governing specifications
+and ST cases at each phase; do not infer behavior from current implementation.
+
+Paths in task lines are relative to `packages/react-components/` unless prefixed by `codeops/`.
+`03-01`, `03-02`, `03-03`, and `07` refer to the linked documents in [00-index.md](00-index.md).
+
+## Implementation Phases
+
+| Phase | Title                                                | Tasks |
+| ----- | ---------------------------------------------------- | ----- |
+| 1     | Selection and accessible controls                    | 12    |
+| 2     | Navigation, focus, filtering, and zoom               | 15    |
+| 3     | Mounted marquee                                      | 10    |
+| 4     | Integration, stories, documentation, and final gates | 10    |
+
+**Total: 47 tasks across 4 phases and 12 sessions.** Keep tasks reviewable (normally 1–3 files,
+one concern). Split a task if implementation reveals more than roughly 200 lines or three concerns;
+record new ordering in this document before executing the split.
+
+> **Execution rule — single progress authority:** Update this document immediately after every
+> task. On implementation mark `[~]` with `implemented: YYYY-MM-DD HH:MM`; after the appropriate
+> verification passes promote to `[x]` with `completed: YYYY-MM-DD HH:MM`. Only `[x]` counts in
+> the Progress header. Update that header and Last Updated each time. Resume the first `[~]`,
+> otherwise the first `[ ]`. Mark a blocker `[!]` with its reason. Read timestamps from the
+> system clock. Never duplicate tasks in another checklist or state file.
+
+Each phase has three ordered sessions: specification tests and explicit red check; implementation
+and green check; internal tests and hardening. A red-step result is expected evidence, not a green
+verification claim. Commit handling belongs to `exec-plan`; any checkpoint uses the `git-commit`
+skill with the selected execution mode. No automatic commit mode is selected by this plan.
+
+## Phase 1: Selection and Accessible Controls
+
+> **Phase baseline tree**: Recorded by exec-plan at phase start.
+> **Lenses**: api-surface, perf
+> **Risk tags**: performance-critical
+> **Reasoning**: high — controlled selection and bounded rendering share one state authority
+
+### Session 1.1 — Specification Tests
+
+**Reference:** 03-01; AR-1, AR-5, AR-9, AR-12, AR-15; 07 ST-01–ST-13 and ST-40–ST-41. Preview/cancel assertions belong to Phase 3 ST-34.
+
+- [ ] 1.1.1 [spec-author] Add selection-invariant oracles — `test/tile-grid-selection-invariants.spec.test.tsx`; ST-01–ST-04.
+- [ ] 1.1.2 [spec-author] Add interaction/control oracles — `test/tile-grid-interaction.spec.test.tsx`; ST-05–ST-09.
+- [ ] 1.1.3 [spec-author] Add accessible-state/count/type/security and owned-control composition oracles — `test/tile-grid-accessibility.spec.test.tsx`, `test/tile-grid-control-composition.spec.test.tsx`; ST-10–ST-13, ST-40–ST-41, and the two development warnings. Actual preview is excluded until Phase 3.
+- [ ] 1.1.4 Run the new targeted specs/type-check and record expected red failures; identify already-passing regression cases without altering their assertions.
+
+**Deliverable:** Immutable Phase 1 oracles and red evidence.
+**Verify:** Targeted Vitest files and type-check; expected red before implementation.
+
+### Session 1.2 — Implementation
+
+- [ ] 1.2.1 Correct fixed mode, seed/toggle anchors, and add the internal full-set commit path — `src/components/TileGrid/selection/useGridSelection.ts`, `selection/types.ts`; 03-01 Selection Store Integration.
+- [ ] 1.2.2 Add the implemented RD-03 type/default contract and local barrel types — `src/components/TileGrid/TileGrid.types.ts`, `index.ts`, `useTileGrid.ts`; 03-01 Contract Delta.
+- [ ] 1.2.3 Connect predicates, event composition, activation, and native summary/editing isolation — `src/components/TileGrid/selection/useTileGridInteractions.ts`, `selection/clickSelection.ts`, `useTileGrid.ts`; 03-01 Interaction Mapping.
+- [ ] 1.2.4 Compose selection controls with context isolation, reset-default synchronization, and item eligibility/descriptions — `src/components/TileGrid/TileGridSelectionControl.tsx`, `TileGridItemView.tsx`, `useTileGridStyles.styles.ts`; 03-01 Controls and Item Rendering.
+- [ ] 1.2.5 Add committed-count announcements and resolved list rendering — `src/components/TileGrid/selection/useSelectionAnnouncement.ts`, `useTileGrid.ts`, `renderTileGrid.tsx`; 03-01 Announcements.
+- [ ] 1.2.6 Run the Phase 1 specs to green and preserve every existing selection/layout/export/SSR oracle.
+
+**Deliverable:** Selection/control behavior matching ST-01–ST-13 and ST-40–ST-41, with preview-specific assertions reserved for Phase 3.
+**Verify:** Targeted green checks, then `pnpm verify`.
+
+### Session 1.3 — Internal Tests and Hardening
+
+- [ ] 1.3.1 Add store/handler/control lifecycle tests — `test/tile-grid-selection.impl.test.tsx`, `test/tile-grid-interaction.impl.test.tsx`; stable methods, no duplicate notifications, and warning privacy.
+- [ ] 1.3.2 Run `pnpm verify && pnpm test:browser && pnpm test:perf`; record results and complete the strict independent phase-review loop.
+
+**Deliverable:** Verified Phase 1 and closed/authorized review findings.
+**Verify:** `pnpm verify && pnpm test:browser && pnpm test:perf`.
+
+## Phase 2: Navigation, Focus, Filtering, and Zoom
+
+> **Phase baseline tree**: Recorded by exec-plan at phase start.
+> **Lenses**: api-surface, perf
+> **Risk tags**: complex, performance-critical
+> **Reasoning**: max — native tab order, observer writes, and virtual focus recovery interact
+
+### Session 2.1 — Specification Tests
+
+**Reference:** 03-02; AR-6–AR-9, AR-13; 07 ST-14–ST-25.
+
+- [ ] 2.1.1 [spec-author] Add hand-computed navigation and focus contracts — `test/tile-grid-navigation.spec.test.ts`, `test/tile-grid-focus.spec.test.tsx`; ST-14–ST-17 and ST-19–ST-25 DOM portions.
+- [ ] 2.1.2 [spec-author] Add controlled zoom/reset oracles — `test/tile-grid-keyboard-zoom.spec.test.tsx`; ST-18, ST-23–ST-24.
+- [ ] 2.1.3 [spec-author] Add real Tab/radio/menu/removal/virtual-target oracles — `test/browser/tile-grid-focus.browser.test.tsx`; ST-19–ST-25.
+- [ ] 2.1.4 Run targeted unit/browser specs and record expected red results, distinguishing passing inherited anchor behavior.
+
+**Deliverable:** Immutable focus/navigation oracles, including native browser edge cases.
+**Verify:** Targeted unit and Chromium browser cases; expected red.
+
+### Session 2.2 — Implementation
+
+- [ ] 2.2.1 Implement deterministic rectangle navigation — `src/components/TileGrid/focus/navigation.ts`; 03-02 Pure Navigation.
+- [ ] 2.2.2 Implement bounded descendant discovery and author-tabindex records for tile and empty content — `src/components/TileGrid/focus/useTileGridTabOrder.ts`; 03-02 Tab Order in Custom Content.
+- [ ] 2.2.3 Add observer write isolation, dynamic reconciliation, and cleanup to the tab-order helper — `src/components/TileGrid/focus/useTileGridTabOrder.ts`; AR-13.
+- [ ] 2.2.4 Implement active-ID/ref registration, immediate focus for connected overscan targets, and guarded pending focus for absent targets — `src/components/TileGrid/focus/useTileGridFocus.ts`; 03-02 Active Target and Physical Focus.
+- [ ] 2.2.5 Add removal, visible-fallback, empty-root, and external-focus recovery — `src/components/TileGrid/focus/useTileGridFocus.ts`; ST-23–ST-25.
+- [ ] 2.2.6 Wire wrapper/owned-input focus including symmetric radio Tab boundaries, memoized content, and token focus styles — `src/components/TileGrid/TileGridItemView.tsx`, `TileGridSelectionControl.tsx`, `useTileGridStyles.styles.ts`; 03-02 Tab Order.
+- [ ] 2.2.7 Give explicit reset priority over anchor restoration — `src/components/TileGrid/virtualization/useAnchorPreservation.ts`, `useTileGrid.ts`; 03-02 Reset and Controlled Zoom.
+- [ ] 2.2.8 Compose wrapper keyboard/controlled zoom and root fallback props — `src/components/TileGrid/useTileGrid.ts`, `renderTileGrid.tsx`, `selection/useTileGridInteractions.ts`; 03-02 Keyboard Mapping.
+- [ ] 2.2.9 Run Phase 2 unit/browser oracles to green without editing expected behavior.
+
+**Deliverable:** Geometry-owned navigation, bounded tab order, and stable reset/zoom focus behavior.
+**Verify:** Targeted green checks, then `pnpm verify && pnpm test:browser`.
+
+### Session 2.3 — Internal Tests and Hardening
+
+- [ ] 2.3.1 Add observer/ref/memoization internals — `test/tile-grid-focus.impl.test.tsx`, `test/tile-grid-interaction.impl.test.tsx`; author changes, feedback prevention, pending target cleanup, ownerDocument, and content render counts.
+- [ ] 2.3.2 Run `pnpm verify && pnpm test:browser && pnpm test:perf`; record results and complete strict independent review with the focus-challenger risks in the packet.
+
+**Deliverable:** Verified Phase 2 and resolved/authorized review findings.
+**Verify:** `pnpm verify && pnpm test:browser && pnpm test:perf`.
+
+## Phase 3: Mounted Marquee
+
+> **Phase baseline tree**: Recorded by exec-plan at phase start.
+> **Lenses**: concurrency, perf
+> **Risk tags**: performance-critical
+> **Reasoning**: high — pointer terminal ordering and controlled updates must commit once
+
+### Session 3.1 — Specification Tests
+
+**Reference:** 03-03; AR-10–AR-12; 07 ST-26–ST-34.
+
+- [ ] 3.1.1 [spec-author] Add host/preview/commit/cancel oracles with test-local stateful capture and active-preview preconditions — `test/tile-grid-marquee-integration.spec.test.tsx`; ST-26–ST-34, including preview/reset silence deferred from Phase 1.
+- [ ] 3.1.2 [spec-author] Add real capture, auto-scroll, and final-rectangle browser oracles — `test/browser/tile-grid-marquee.browser.test.tsx`; ST-26–ST-34.
+- [ ] 3.1.3 Run targeted specs and record expected red failures; existing controller unit behavior must still pass.
+
+**Deliverable:** Immutable marquee integration oracles and red evidence.
+**Verify:** Targeted unit/browser cases; expected red for the unmounted integration.
+
+### Session 3.2 — Implementation
+
+- [ ] 3.2.1 Extend rectangle notifications, border-aware coordinates, release sampling, and optional terminal resolver — `src/components/TileGrid/marquee/types.ts`, `createMarqueeController.ts`; 03-03 Existing Controller, Mounted Host / Geometry and Selection Flow.
+- [ ] 3.2.2 Implement geometry port, bounded rectangle-derived preview, final reconciliation, cancellation, and gesture-scoped document Escape lifecycle — `src/components/TileGrid/marquee/useTileGridMarquee.ts`; 03-03 Geometry / Event Ownership / Cleanup.
+- [ ] 3.2.3 Wire root pointer/Escape composition and token overlay rendering with duplicate-cancellation guards — `src/components/TileGrid/useTileGrid.ts`, `renderTileGrid.tsx`, `useTileGridStyles.styles.ts`; 03-03 Event Ownership.
+- [ ] 3.2.4 Run Phase 3 unit/browser oracles to green and preserve existing controller expectations.
+
+**Deliverable:** Mounted marquee following ST-26–ST-34.
+**Verify:** Targeted green checks, then `pnpm verify && pnpm test:browser`.
+
+### Session 3.3 — Internal Tests and Hardening
+
+- [ ] 3.3.1 Extend controller internal tests — `test/tile-grid-marquee.impl.test.ts`; resolver timing, rectangle-only notifications, duplicate terminals, and no full per-frame pass.
+- [ ] 3.3.2 Add mounted-host cleanup tests — `test/tile-grid-marquee-integration.impl.test.tsx`; stable geometry refs, capture failure, equal-membership parent updates, and no stale snapshot restoration.
+- [ ] 3.3.3 Run `pnpm verify && pnpm test:browser && pnpm test:perf`; record results and complete strict independent review.
+
+**Deliverable:** Verified Phase 3 and resolved/authorized review findings.
+**Verify:** `pnpm verify && pnpm test:browser && pnpm test:perf`.
+
+## Phase 4: Integration, Stories, Documentation, and Final Gates
+
+> **Phase baseline tree**: Recorded by exec-plan at phase start.
+> **Lenses**: api-surface, perf
+> **Risk tags**: performance-critical
+> **Reasoning**: high — cross-feature behavior must retain the 20K budget and release boundary
+
+### Session 4.1 — Specification Tests
+
+**Reference:** 03-01–03-03; AR-2, AR-3, AR-14; 07 ST-35–ST-41.
+
+- [ ] 4.1.1 [spec-author] Add combined application-flow and release-boundary guards — `test/tile-grid-integration.spec.test.tsx`; ST-36, ST-38–ST-39.
+- [ ] 4.1.2 [spec-author] Add combined browser/native-control and performance oracles using existing infrastructure — `test/browser/tile-grid-interaction.browser.test.tsx`, `test/perf/tile-grid.perf.test.tsx`; browser ST-35–ST-41 and existing ST-35/ST-38 performance measurements.
+- [ ] 4.1.3 Run the new cases before further implementation; record red findings or justified passes from Phases 1–3. Never fabricate failures for already delivered behavior.
+
+**Deliverable:** Cross-feature regression oracles and baseline red/pass evidence.
+**Verify:** Targeted unit/browser/performance cases.
+
+### Session 4.2 — Integration and Documentation
+
+- [ ] 4.2.1 Add KeyboardNavigation and InteractionModes scenarios — `src/components/TileGrid/stories/TileGridKeyboardNavigation.story.tsx`, `TileGridInteractionModes.story.tsx`; 03-01–03-02.
+- [ ] 4.2.2 Add MarqueeSelection and FilteringAndZoom scenarios — `src/components/TileGrid/stories/TileGridMarqueeSelection.story.tsx`, `TileGridFilteringAndZoom.story.tsx`; 03-02–03-03.
+- [ ] 4.2.3 Register stories and document controls, keys, stable predicates, filtering, app-owned portals, and the accepted singleton-radio conformance exception — `src/components/TileGrid/stories/TileGrid.stories.tsx`, `README.md`; AR-3, AR-13–AR-15 and PF-013.
+- [ ] 4.2.4 Run all new integration oracles to green; if they expose a defect, record a bounded implementation task against the owning 03 specification before fixing it.
+
+**Deliverable:** Complete examples and documentation with the TileGrid unreleased marker retained.
+**Verify:** `pnpm verify && pnpm storybook:build` plus the new browser cases.
+
+### Session 4.3 — Final Hardening and Evidence
+
+- [ ] 4.3.1 Add final lifecycle/memoization regression internals — `test/tile-grid-focus.impl.test.tsx`, `test/tile-grid-marquee-integration.impl.test.tsx`; ST-35/ST-38 implementation details without mirroring the public oracles.
+- [ ] 4.3.2 Run `pnpm verify && pnpm test:browser:all && pnpm test:perf && pnpm storybook:build && pnpm pack:check` plus 07's existing coverage command; record measurements/coverage, package/SSR checks, and complete strict independent review.
+- [ ] 4.3.3 Record aggregate RD-01/RD-03 acceptance evidence and RD-02's remaining final-contract work in this plan; synchronize `codeops/features/tile-grid/00-roadmap.md` and `codeops/00-roadmap.md` through the roadmap workflow.
+
+**Deliverable:** Verified completion evidence and accurate derived roadmap, with the release gate held.
+**Verify:** Full final sequence above; artifact/link/progress validation for the final evidence update.
+
+## Dependencies and Success Criteria
+
+Phase 1 → Phase 2 → Phase 3 → Phase 4. Each session depends on the preceding session in its phase.
+Specification tasks depend on the approved contract, not on implementation. Keep existing immutable
+specifications unchanged and do not publish TileGrid as part of any phase.
+
+Completion requires all 47 tasks verified, all applicable ST cases green, all full gates passed,
+authorized closure of critical/major findings, complete public/internal documentation, no unused
+new helpers, and correct roadmap coverage. RD-02's final composed API and RD-04 remain pending.
+Follow exec-plan's post-completion analysis protocol; architecture-doc automation is not opted in.
