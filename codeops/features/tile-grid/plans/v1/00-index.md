@@ -13,7 +13,7 @@ This plan delivers the foundation of `TileGrid<T>`: a pure geometry engine for f
 
 It also adds the minimal public selection wiring needed to exercise RD-01: controlled and uncontrolled selected IDs, plain/Ctrl/Cmd/Shift click mapping, and a small imperative handle. Focus, keyboard navigation, selection controls, live announcements, the marquee overlay, arranging, the tile shell, and the full photo-library recipe remain for the RD-03 and RD-04 plans.
 
-The plan is intentionally a Phase A plan. RD-02's final public contract and export pin are completed by the later plans; this plan implements only the behavior it can test end to end. Phase A is internal and does not authorize a public package release until the final contract freeze (PF-001).
+The plan is intentionally a Phase A plan. RD-02's final public contract and export pin are completed by the later plans; this plan implements only the behavior it can test end to end. Phase A is internal and does not authorize publishing the TileGrid surface until the final contract freeze (PF-001).
 
 ## Minimum-Sufficient Baseline
 
@@ -41,14 +41,14 @@ The requirements README selects two lenses; this plan carries both.
 | Data and migration                                   | ✅       | Replaces the consuming application's v8 `TilesList`/`ActorTile` contract, preserves seeded selection and order across filters/pages, and adds a new public component API alongside the existing package surface. |
 | Compiler/language, financial, distributed/concurrent | —        | No parser, ledger, queue, replica, or background worker.                                                                                                                                                         |
 
-**Compatibility boundary:** the package stores no persistent data and performs no migration. The consuming application owns the v8 `TilesList`/`ActorTile` replacement, persisted selection/order mapping, and rollback. There is no v8 compatibility layer inside the package; the package's compatibility surface is its public component API. Phase A is internal and is not a public release.
+**Compatibility boundary:** the package stores no persistent data and performs no migration. The consuming application owns the v8 `TilesList`/`ActorTile` replacement, persisted selection/order mapping, and rollback. There is no v8 compatibility layer inside the package; the package's compatibility surface is its public component API. Phase A is internal; the TileGrid surface is not part of a public release.
 
 ## Release and Contract Freeze
 
-Phase A is an internal delivery phase, not a v1 public release. No `@blendsdk/fluentui-react-components` publish, release tag, or release-workflow dispatch may include the TileGrid surface until RD-03 and RD-04 are complete and the final composed contract is frozen.
+Phase A is an internal delivery phase for the TileGrid surface, not a v1 public release. No `@blendsdk/fluentui-react-components` publish, release tag, or release-workflow dispatch may include the TileGrid surface until RD-03 and RD-04 are complete and the final composed contract is frozen. The package may release its other components while the TileGrid surface stays internal.
 
 - The final `TileGridProps<T>`, `TileGridStrings`, `TileGridItemRenderArgs`, export pin, and full runtime dependency set (`@tanstack/react-virtual` + `@dnd-kit/core`) are finalized in the RD-03/RD-04 plans.
-- The Phase A package README section is marked “Phase A — unreleased” (or the public README update waits for v1); the package version remains unpublished until the final freeze.
+- The Phase A package README section is marked “Phase A — unreleased” (or the public README update waits for v1); the TileGrid package-root export stays closed until the final freeze.
 - Phase 6 task 6.3.3 verifies this gate. The Phase A `pnpm pack:check` is an artifact guard, not release authorization.
 - The release gate is owned by the v1 planning/preflight; it is not a substitute for the RD-03/RD-04 plans.
 
@@ -134,7 +134,7 @@ The grid root is the scroll container. The application supplies a sized parent o
 | Decision        | Outcome                                                                                                                                    | Ref                          |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------- |
 | Phase A target  | RD-02 core + RD-01 selection/marquee + minimal RD-03 selection wiring; RD-03/RD-04 remainder deferred                                      | AR #1                        |
-| Public contract | Phase A internal subset; RD-03/RD-04 extend; no public release until the final contract freeze                                             | AR #2, PF-001                |
+| Public contract | Phase A internal subset; RD-03/RD-04 extend; no public TileGrid release until the final contract freeze                                    | AR #2, PF-001                |
 | Selection       | Controlled/uncontrolled IDs, plain/Ctrl/Cmd/Shift clicks, handle methods; no controls/focus/keyboard yet                                   | AR #3                        |
 | Renderer        | Memoized item cells; stable `renderItem` identity; one selection change re-renders only the affected mounted cell                          | PF-005                       |
 | Marquee         | Controller built and tested internally; overlay/host in RD-03                                                                              | AR #4                        |
@@ -144,7 +144,7 @@ The grid root is the scroll container. The application supplies a sized parent o
 | Geometry        | Pure layout strategies; band virtualization for fixed/justified/mosaic; item/lane for masonry                                              | AR #12                       |
 | Tests           | jsdom unit, Chromium browser per task, full matrix + performance in CI; node import smoke, 20K selection, DOM-read/offscreen, render-count | AR #9, AR #10, PF-002–PF-005 |
 | Dependencies    | `@tanstack/react-virtual` 3.14.21; browser/perf dev dependencies; `vitest` pinned 5.0.5; dnd-kit later                                     | AR #18, PF-008               |
-| Release         | No public release/tag until RD-03/RD-04 complete and the final contract/export pin/dependency set is frozen                                | PF-001                       |
+| Release         | No public TileGrid release/tag until RD-03/RD-04 complete and the final contract/export pin/dependency set is frozen                       | PF-001                       |
 | Domain lenses   | Web application + Data and migration; no v8 compatibility layer inside the package                                                         | PF-006                       |
 | Partial RDs     | RD-02 AC 14/17 and RD-03 controls/focus/keyboard remain preflighted; see Partial RD Coverage                                               | PF-007                       |
 

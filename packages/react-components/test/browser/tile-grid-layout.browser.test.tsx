@@ -2,8 +2,8 @@ import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { useState } from 'react';
 import type { ReactNode } from 'react';
 import { describe, expect, it, vi } from 'vitest';
-import { TileGrid } from '../../src/index';
-import type { TileGridItemRenderArgs, TileGridLayout } from '../../src/index';
+import { TileGrid } from '../../src/components/TileGrid';
+import type { TileGridItemRenderArgs, TileGridLayout } from '../../src/components/TileGrid';
 import { createTileGridFixture } from '../fixtures/tileGridFixture';
 import type { TileGridFixtureItem } from '../fixtures/tileGridFixture';
 

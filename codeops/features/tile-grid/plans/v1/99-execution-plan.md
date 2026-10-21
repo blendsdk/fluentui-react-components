@@ -425,10 +425,14 @@ Phase 4 depends on the public component from Phase 2 and the 20K/browser setup f
 4. ✅ `pnpm storybook:build` and `pnpm pack:check` pass after a build.
 5. ✅ No warnings/errors; no exported dead code; the staged marquee controller is documented and unexported.
 6. ✅ Security hardened: no HTML parsing, no item/image URL/item-ID/selected-ID logging, no image fetching by the component, numeric/ID validation, no unsafe casts.
-7. ✅ The Phase A package README is marked “Phase A — unreleased”; the export pin documents the internal Phase A surface; no publish/tag/release dispatch occurs before the final contract freeze.
+7. ✅ The Phase A package README is marked “Phase A — unreleased”; the export pin documents the internal Phase A surface; no publish/tag/release dispatch includes the TileGrid surface before the final contract freeze.
 8. ✅ No regressions in the existing component tests, export pin, or Storybook build.
 9. ✅ The RD-03 plan can mount the marquee controller and add focus, keyboard, selection controls, announcements, and filtering without reworking the geometry, store, or memoized-cell renderer contracts; one toggle re-renders only the affected mounted cell.
 10. ✅ The RD-04 plan can add the tile shell, actions, arranging, and the full recipe without changing the Phase A geometry/virtualization contracts.
 11. ✅ The node import smoke, 20K public selection proxy, renderer DOM-read/offscreen assertions, and affected-cell render count pass.
 12. ✅ The Web application + Data and migration lenses and the v8/public-API compatibility boundary are recorded; the package remains free of a v8 compatibility layer.
 13. ✅ The release/contract-freeze gate (6.3.3) is verified; Phase A is internal and not a partial public release.
+
+### Release scoping
+
+The next stable release ships the form-field work and the skill distribution while the TileGrid package-root export stays closed. The component remains fully tested from its folder and keeps its Storybook stories; the export returns as the final step before the TileGrid release, once RD-03/RD-04 and the final contract, export pin, and dependency set are complete.

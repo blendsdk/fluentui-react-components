@@ -2,9 +2,9 @@
  * @blendsdk/fluentui-react-components — custom React components built on
  * Fluent UI v9.
  *
- * Every component is exported from this package root; internal modules are
- * private to the package. See the component's own documentation for its
- * props and behavior.
+ * Every released component is exported from this package root; internal and
+ * unreleased modules are private to the package. See the component's own
+ * documentation for its props and behavior.
  *
  * @packageDocumentation
  */
@@ -72,12 +72,3 @@ export type { LoadingOverlayProps } from './components/LoadingOverlay';
 export { SystemErrorProvider } from './components/SystemErrorProvider';
 export { useSystemError } from './components/SystemErrorProvider';
 export type { CatchErrorOptions, SystemErrorProviderProps } from './components/SystemErrorProvider';
-export { TileGrid } from './components/TileGrid';
-export type {
-  TileGridHandle,
-  TileGridItemRenderArgs,
-  TileGridLayout,
-  TileGridProps,
-  TileGridSelectionMode,
-  TileGridStrings,
-} from './components/TileGrid';

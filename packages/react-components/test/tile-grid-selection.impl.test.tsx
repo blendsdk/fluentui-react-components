@@ -1,6 +1,6 @@
 import { act, render, renderHook } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import type { TileGridItemRenderArgs } from '../src/index';
+import type { TileGridItemRenderArgs } from '../src/components/TileGrid';
 import { resetDevWarningsForTests } from '../src/components/TileGrid/devWarnings';
 import { TileGridItemView } from '../src/components/TileGrid/TileGridItemView';
 import { areSetsEqual, useGridSelection } from '../src/components/TileGrid/selection';

@@ -1,8 +1,8 @@
 import { FluentProvider, webLightTheme } from '@fluentui/react-components';
 import { act, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { TileGrid } from '../src/index';
-import type { TileGridProps } from '../src/index';
+import { TileGrid } from '../src/components/TileGrid';
+import type { TileGridProps } from '../src/components/TileGrid';
 import { resetDevWarningsForTests } from '../src/components/TileGrid/devWarnings';
 import { setElementSize } from './jsdomStubs';
 

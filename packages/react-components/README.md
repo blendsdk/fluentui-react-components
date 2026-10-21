@@ -931,7 +931,9 @@ Call `run` from event handlers or effects, not during render.
 
 > **Internal Phase A surface.** The package does not publish or tag this
 > component until the later selection/focus and arranging work completes and
-> the final public contract, export pin and dependency set are frozen.
+> the final public contract, export pin and dependency set are frozen. It is
+> not exported from the package root in the current release; the example below
+> documents the intended public API.
 
 `TileGrid<T>` is a generic, virtualized tile collection with fixed, masonry,
 justified and mosaic layouts. It owns the scroll container and list semantics;
@@ -1083,8 +1085,8 @@ performance suites exercise the same fixture.
   pointer host follow in a later release.
 - No tile shell, actions, drag/reorder or full photo-library recipe yet.
 - The public type is a deliberate Phase A subset; later work extends it and
-  completes the final export pin. Do not treat this section as a release
-  authorization.
+  completes the final export pin. The package-root export is added back with
+  that pin. Do not treat this section as a release authorization.
 
 ## Agent skills
 

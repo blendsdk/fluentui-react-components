@@ -12,6 +12,7 @@
     "src/**/*.stories.ts",
     "src/**/*.stories.tsx",
     "src/**/*.story.ts",
-    "src/**/*.story.tsx"
+    "src/**/*.story.tsx",
+    "src/components/TileGrid/**"
   ]
 }

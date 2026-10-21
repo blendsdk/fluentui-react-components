@@ -4,7 +4,7 @@ import type {
   TileGridItemRenderArgs,
   TileGridProps,
   TileGridSelectionMode,
-} from '../src/index';
+} from '../src/components/TileGrid';
 
 interface TestItem {
   id: string;
@@ -12,12 +12,12 @@ interface TestItem {
 }
 
 /**
- * Compile-time pin for the selection members added to the package surface.
+ * Compile-time pin for the selection members added to the component surface.
  *
- * The runtime export list is pinned separately; this file makes the new public
+ * The runtime export list is pinned separately; this file makes the selection
  * types part of the type-check gate without changing the specification suite.
  */
-describe('tile grid selection public types', () => {
+describe('tile grid selection component types', () => {
   it('compiles the selection props, render args, and handle', () => {
     const item: TestItem = { id: 'a', label: 'Alpha' };
     const selectionMode: TileGridSelectionMode = 'multiselect';

@@ -2,7 +2,7 @@ import { render, waitFor } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { computeGeometry } from '../../src/components/TileGrid/geometry';
 import { toggleSelection } from '../../src/components/TileGrid/selection';
-import { TileGrid } from '../../src/index';
+import { TileGrid } from '../../src/components/TileGrid';
 import { createTileGridFixture, type TileGridFixtureItem } from '../fixtures/tileGridFixture';
 
 /** Layouts exercised by every performance measurement. */

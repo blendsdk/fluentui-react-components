@@ -2,8 +2,8 @@ import { act, createEvent, fireEvent, render, screen, waitFor } from '@testing-l
 import { createRef, useState } from 'react';
 import type { ReactNode, Ref } from 'react';
 import { describe, expect, it, vi } from 'vitest';
-import { TileGrid } from '../src/index';
-import type { TileGridHandle, TileGridItemRenderArgs } from '../src/index';
+import { TileGrid } from '../src/components/TileGrid';
+import type { TileGridHandle, TileGridItemRenderArgs } from '../src/components/TileGrid';
 import { setElementSize } from './jsdomStubs';
 
 /**

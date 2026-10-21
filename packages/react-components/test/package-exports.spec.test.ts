@@ -35,10 +35,6 @@ import type {
   LoadingOverlayProps,
   LoadingProps,
   SystemErrorProviderProps,
-  TileGridItemRenderArgs,
-  TileGridLayout,
-  TileGridProps,
-  TileGridStrings,
 } from '../src/index';
 
 describe('package export surface', () => {
@@ -46,6 +42,8 @@ describe('package export surface', () => {
     // Consumers import from the package root, so the runtime surface is part
     // of the contract: every documented component is reachable and no
     // internal module leaks out.
+    // TileGrid is intentionally absent until its public contract is frozen for
+    // release; internal tests import it from its component folder.
     expect(Object.keys(api).sort()).toEqual([
       'AppLauncher',
       'AppLauncherGrid',
@@ -70,7 +68,6 @@ describe('package export surface', () => {
       'Loading',
       'LoadingOverlay',
       'SystemErrorProvider',
-      'TileGrid',
       'useConfirm',
       'useLoading',
       'useSystemError',
@@ -100,41 +97,6 @@ describe('package export surface', () => {
 
     expect(options.kind).toBe('error');
     expect(providerProps.captureGlobalErrors).toBe(false);
-  });
-
-  it('exports the public TileGrid types', () => {
-    // The type imports above only compile when the package root exports them;
-    // the values below keep the file local-usage clean under noUnusedLocals.
-    interface TileGridTestItem {
-      id: string;
-      label: string;
-    }
-
-    const item: TileGridTestItem = { id: 'a', label: 'Alpha' };
-    const args: TileGridItemRenderArgs<TileGridTestItem> = {
-      item,
-      index: 0,
-      tileSize: 160,
-      width: 160,
-      height: 160,
-      selected: false,
-      selectable: true,
-      disabled: false,
-    };
-    const layout: TileGridLayout = 'masonry';
-    const strings: TileGridStrings = { emptyMessage: 'No tiles' };
-    const props: TileGridProps<TileGridTestItem> = {
-      items: [item],
-      getItemId: value => value.id,
-      getItemLabel: value => value.label,
-      renderItem: () => null,
-      layout,
-      strings,
-    };
-
-    expect(args.index).toBe(0);
-    expect(props.layout).toBe('masonry');
-    expect(strings.emptyMessage).toBe('No tiles');
   });
 
   it('exports the public ConfirmDialog types', () => {

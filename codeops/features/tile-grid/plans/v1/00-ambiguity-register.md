@@ -131,6 +131,23 @@ Root invocation ID: exec-plan-tile-grid-20261021-0842
 Reopen triggers: React stops passing ref as a prop to function components; a ref timing or composition issue appears; the package supports React 18.
 ```
 
+**AR-29 (release scope):** The next stable release ships the form-field work and the skill distribution while the TileGrid package-root export stays closed. Internal tests and Storybook import the component from its component folder. The export returns as the final step before the TileGrid release.
+
+```text
+Authority: User decision (2026-10-21)
+Eligibility: Release scope — keeps an unfinished public component out of the stable package surface without blocking unrelated components.
+Objective: Release the completed form-field work now while preserving the TileGrid release gate.
+Decision: Close the TileGrid package-root export for the stable release; keep the component internal until RD-03/RD-04 and the final contract, export pin, and dependency set are complete.
+Evidence: The package README marks TileGrid unreleased; the root export would otherwise publish the Phase A subset; the other components are independently complete.
+Rejected alternatives: Publish the Phase A subset as stable (violates the release gate and exposes an unfinished API); publish a beta only (does not give stable consumers the form fields); cut a release branch before TileGrid (the release workflow is hardcoded to main and the bookkeeping is heavier).
+Strongest counterargument: The root export was part of the Phase A plan and its removal changes the package surface. Mitigation: the component remains fully tested from its folder, Storybook keeps the stories, and the export returns with the final contract freeze.
+Confidence: High — the release scope is explicit and the export removal is covered by the package-export contract test.
+Hardening: Not required — release scoping decision with no runtime behavior, security, data, or compatibility change for the shipped components.
+Policy version: 1
+Root invocation ID: release-scoping-20261021
+Reopen triggers: The TileGrid contract/export pin is frozen; a stable release must include TileGrid earlier; the release workflow gains a supported release-branch path.
+```
+
 ### Preflight Refinements
 
 The plan preflight (`00-preflight-report.md`) refined these creation decisions without changing the confirmed scope:
