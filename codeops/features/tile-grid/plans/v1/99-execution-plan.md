@@ -2,7 +2,7 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-21 11:12
+> **Last Updated**: 2026-10-21 11:19
 > **Progress**: 69/69 tasks (100%)
 > **CodeOps Artifact Schema**: 1
 
@@ -179,8 +179,8 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 
 **Deliverables**:
 
-- [ ] The browser layout spec exists with the 20K fixture.
-- [ ] The red-phase result is recorded.
+- [x] The browser layout spec exists with the 20K fixture.
+- [x] The red-phase result is recorded.
 
 ### Step 3.2: Virtualization and scrolling implementation
 
@@ -199,11 +199,11 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 
 **Deliverables**:
 
-- [ ] All four layouts mount under 120 wrappers at 20K.
-- [ ] Masonry does not mount whole columns; fixed/justified/mosaic virtualize bands.
-- [ ] Changing `tileSize` preserves the first visible item and offset.
-- [ ] The Phase A stories render and the 20K story builds.
-- [ ] Renderer DOM reads and offscreen wrappers are covered for all four layouts (ST-48).
+- [x] All four layouts mount under 120 wrappers at 20K.
+- [x] Masonry does not mount whole columns; fixed/justified/mosaic virtualize bands.
+- [x] Changing `tileSize` preserves the first visible item and offset.
+- [x] The Phase A stories render and the 20K story builds.
+- [x] Renderer DOM reads and offscreen wrappers are covered for all four layouts (ST-48).
 
 ### Step 3.3: Virtualizer implementation tests and hardening
 
@@ -216,9 +216,9 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 
 **Deliverables**:
 
-- [ ] Parity tests pass; no whole-column masonry mounting.
-- [ ] Anchor and scroll helpers are covered.
-- [ ] No regressions.
+- [x] Parity tests pass; no whole-column masonry mounting.
+- [x] Anchor and scroll helpers are covered.
+- [x] No regressions.
 
 **Verify**: `pnpm verify && pnpm test:browser && pnpm test:perf`
 
@@ -244,8 +244,8 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 
 **Deliverables**:
 
-- [ ] Controlled/uncontrolled, click-modifier, hidden-ID, handle, interactive-guard, 20K selection proxy, and render-count cases exist.
-- [ ] The red-phase result is recorded.
+- [x] Controlled/uncontrolled, click-modifier, hidden-ID, handle, interactive-guard, 20K selection proxy, and render-count cases exist.
+- [x] The red-phase result is recorded.
 
 ### Step 4.2: Selection implementation
 
@@ -262,10 +262,10 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 
 **Deliverables**:
 
-- [ ] Controlled/uncontrolled selection, hidden IDs, single/multiselect click mapping, and handle methods work.
-- [ ] `onSelectionChange` never fires on mount/prop/items changes.
-- [ ] Interactive content does not trigger selection.
-- [ ] The 20K public selection proxy passes p95/mounted-count assertions; one toggle calls `renderItem` only for the affected mounted cell.
+- [x] Controlled/uncontrolled selection, hidden IDs, single/multiselect click mapping, and handle methods work.
+- [x] `onSelectionChange` never fires on mount/prop/items changes.
+- [x] Interactive content does not trigger selection.
+- [x] The 20K public selection proxy passes p95/mounted-count assertions; one toggle calls `renderItem` only for the affected mounted cell.
 
 ### Step 4.3: Selection implementation tests and hardening
 
@@ -277,8 +277,8 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 
 **Deliverables**:
 
-- [ ] All Phase 4 tests pass; no regressions.
-- [ ] The browser selection spec passes in Chromium, including the 20K public selection proxy and affected-cell render count.
+- [x] All Phase 4 tests pass; no regressions.
+- [x] The browser selection spec passes in Chromium, including the 20K public selection proxy and affected-cell render count.
 
 **Verify**: `pnpm verify && pnpm test:browser && pnpm test:perf`
 
@@ -303,8 +303,8 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 
 **Deliverables**:
 
-- [ ] The synthetic pointer/geometry harness exists.
-- [ ] The red-phase result is recorded.
+- [x] The synthetic pointer/geometry harness exists.
+- [x] The red-phase result is recorded.
 
 ### Step 5.2: Marquee implementation
 
@@ -318,8 +318,8 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 
 **Deliverables**:
 
-- [ ] The controller is internal, not exported, and not mounted in `TileGrid`.
-- [ ] Background clicks, additive selection, cancel, commit-once, and auto-scroll behave per RD-01.
+- [x] The controller is internal, not exported, and not mounted in `TileGrid`.
+- [x] Background clicks, additive selection, cancel, commit-once, and auto-scroll behave per RD-01.
 
 ### Step 5.3: Marquee implementation tests and hardening
 
@@ -331,8 +331,8 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 
 **Deliverables**:
 
-- [ ] All marquee tests pass; no public export.
-- [ ] The staged-internal-code exception is documented in the plan/review.
+- [x] All marquee tests pass; no public export.
+- [x] The staged-internal-code exception is documented in the plan/review.
 
 **Verify**: `pnpm verify && pnpm test:browser && pnpm test:perf`
 
@@ -343,6 +343,7 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 > **Phase baseline tree**: `c8719439877dfe3fe03bff00858e48af5b854fde`
 > **Expected modification set**: `test/perf/tile-grid.perf.test.tsx`, `packages/react-components/README.md`, `README.md`, `AGENTS.md`, `packages/react-components/package.json`, `vite.config.ts`, `turbo.json`, `.github/workflows/ci.yml` only if the audit requires it, `stories/TileGrid.stories.tsx`, and the plan/findings documents.
 > **Scope mode**: `strict`
+> **Review**: no CRITICAL/MAJOR findings; P6-RV-001–P6-RV-006 and P6-PE-001–P6-PE-004 fixed. No scoped re-review required (minor only).
 > **Lenses**: `perf`, `api-surface`
 > **Reasoning**: high — performance budgets, package surface, documentation, and the final gate.
 
@@ -356,8 +357,8 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 
 **Deliverables**:
 
-- [ ] The performance test records/asserts the geometry/mounted/scroll budgets and the pure selection supplement.
-- [ ] The baseline or red result is recorded.
+- [x] The performance test records/asserts the geometry/mounted/scroll budgets and the pure selection supplement.
+- [x] The baseline or red result is recorded.
 
 ### Step 6.2: Hardening, documentation, and story review
 
@@ -371,10 +372,10 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 
 **Deliverables**:
 
-- [ ] Performance budgets pass.
-- [ ] The internal Phase A package README is marked unreleased and documents the surface and limitations.
-- [ ] The Phase A story set is documented and accessible.
-- [ ] The manifest/build/CI wiring is consistent.
+- [x] Performance budgets pass.
+- [x] The internal Phase A package README is marked unreleased and documents the surface and limitations.
+- [x] The Phase A story set is documented and accessible.
+- [x] The manifest/build/CI wiring is consistent.
 
 ### Step 6.3: Final verification
 
@@ -387,10 +388,10 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 
 **Deliverables**:
 
-- [ ] All Phase A acceptance criteria in `01-requirements.md` are satisfied.
-- [ ] No regressions; no exported dead code; the marquee controller is documented as staged for RD-03.
-- [ ] The release/contract-freeze gate is recorded; Phase A is internal, not a partial public release.
-- [ ] The plan is ready for the Phase B (RD-03) planning step.
+- [x] All Phase A acceptance criteria in `01-requirements.md` are satisfied.
+- [x] No regressions; no exported dead code; the marquee controller is documented as staged for RD-03.
+- [x] The release/contract-freeze gate is recorded; Phase A is internal, not a partial public release.
+- [x] The plan is ready for the Phase B (RD-03) planning step.
 
 **Verify**: `pnpm verify && pnpm test:browser && pnpm test:perf && pnpm storybook:build && pnpm pack:check`
 

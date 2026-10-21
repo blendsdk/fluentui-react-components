@@ -3,7 +3,7 @@
 > **Feature-Set**: tile-grid
 > **Status**: In Progress
 > **Created**: 2026-10-20
-> **Last Updated**: 2026-10-21 00:02
+> **Last Updated**: 2026-10-21 11:19
 > **Progress**: 0 / 4 (0%)
 > **CodeOps Artifact Schema**: 1
 
@@ -15,8 +15,8 @@
 
 | ID    | Title                                           | RD                                                               | Plan                       | Stage             | Status | Last Updated | Depends-on / Blocker  |
 | ----- | ----------------------------------------------- | ---------------------------------------------------------------- | -------------------------- | ----------------- | ------ | ------------ | --------------------- |
-| RD-01 | Selection and marquee internals                 | [RD-01](requirements/RD-01-selection-and-marquee.md)             | [v1](plans/v1/00-index.md) | 🔄 Executing      | ⬜     | 2026-10-20   | RD-02 (geometry port) |
-| RD-02 | TileGrid layout and virtualization              | [RD-02](requirements/RD-02-layout-and-virtualization.md)         | [v1](plans/v1/00-index.md) | 🔄 Executing      | ⬜     | 2026-10-20   | —                     |
+| RD-01 | Selection and marquee internals                 | [RD-01](requirements/RD-01-selection-and-marquee.md)             | [v1](plans/v1/00-index.md) | 🔄 Executing      | ⬜     | 2026-10-21   | RD-02 (geometry port) |
+| RD-02 | TileGrid layout and virtualization              | [RD-02](requirements/RD-02-layout-and-virtualization.md)         | [v1](plans/v1/00-index.md) | 🔄 Executing      | ⬜     | 2026-10-21   | —                     |
 | RD-03 | Selection integration, focus, and accessibility | [RD-03](requirements/RD-03-selection-focus-and-accessibility.md) | —                          | 🔎 RD Preflighted | ⬜     | 2026-10-20   | RD-01, RD-02          |
 | RD-04 | Arranging, tile shell, and actions              | [RD-04](requirements/RD-04-arranging-tile-shell-and-actions.md)  | —                          | 🔎 RD Preflighted | ⬜     | 2026-10-20   | RD-02, RD-03          |
 
@@ -29,4 +29,4 @@
 - All four RDs are v1 release-blocking; the implementation order is RD-01/RD-02, then RD-03, then RD-04.
 - Phase A plan preflighted and passed at `plans/v1/`: it implements RD-01 and RD-02 plus the minimal RD-03 selection wiring needed to exercise RD-01. RD-03 focus/keyboard/accessibility and RD-04 arranging remain preflighted for later plans.
 - Partial coverage: RD-02 AC 14/17 and the RD-03 controls/focus/keyboard remain preflighted; the plan’s release/contract-freeze gate (PF-001) forbids a public package release until RD-03/RD-04 complete. The preflight report is `plans/v1/00-preflight-report.md`.
-- Phase A execution is at 26/69 tasks (geometry/core and core stories complete; selection/20K stories pending). RD-03/RD-04 remain preflighted.
+- Phase A execution is complete at 69/69 tasks: geometry, virtualization, selection, the internal marquee controller, stories, the 20K performance baseline, documentation, and the final gates passed. RD-01/RD-02 remain partially covered; RD-03/RD-04 remain preflighted. The release/contract-freeze gate stays closed until those plans complete.

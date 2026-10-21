@@ -13,6 +13,9 @@ export default defineConfig({
   test: {
     include: ['test/perf/**/*.perf.test.tsx'],
     setupFiles: ['./test/setup.ts'],
+    // Performance files build their own 20K fixtures and measure frame timing.
+    // Running them sequentially keeps one file from perturbing another's budget.
+    fileParallelism: false,
     testTimeout: 120_000,
     hookTimeout: 120_000,
     browser: {

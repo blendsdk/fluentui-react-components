@@ -215,36 +215,36 @@ The workflow uses the existing pnpm/Node setup actions and caching. No secrets, 
 
 ## Recorded Phase A baseline
 
-Measured in Chromium on 2026-10-21 against the completed Phase A implementation (`test/perf/tile-grid.perf.test.tsx`). The 20K fixture, 1440×900 container, `tileSize=160`, and `gap=8` are shared with the browser suite.
+Measured in Chromium on 2026-10-21 against the completed Phase A implementation (`test/perf/tile-grid.perf.test.tsx`). The 20K fixture, 1440×900 container, `tileSize=160`, and `gap=8` are shared with the browser suite. The ranges below cover three runs on the same host; the exact command was `pnpm test:perf`, and the per-run values are recorded in the gate logs.
 
-| Measurement                                            | Result            | Budget     |
+| Measurement                                            | Result range      | Budget     |
 | ------------------------------------------------------ | ----------------- | ---------- |
-| Geometry p95, fixed                                    | 25.10 ms          | < 200 ms   |
-| Geometry p95, masonry                                  | 8.40 ms           | < 200 ms   |
-| Geometry p95, justified                                | 22.40 ms          | < 200 ms   |
-| Geometry p95, mosaic                                   | 22.90 ms          | < 200 ms   |
+| Geometry p95, fixed                                    | 18.70–30.80 ms    | < 200 ms   |
+| Geometry p95, masonry                                  | 5.50–14.50 ms     | < 200 ms   |
+| Geometry p95, justified                                | 16.80–27.80 ms    | < 200 ms   |
+| Geometry p95, mosaic                                   | 18.00–38.80 ms    | < 200 ms   |
 | Mounted wrappers, fixed / masonry / justified / mosaic | 64 / 72 / 50 / 45 | < 120 each |
-| Pure selection toggle p95, 20K set                     | 0.40 ms           | < 16 ms    |
-| Scripted scroll frame-interval p95, fixed 20K          | 33.30 ms          | < 50 ms    |
+| Pure selection toggle p95, 20K set                     | 0.40–0.70 ms      | < 16 ms    |
+| Scripted scroll frame-interval p95, fixed 20K          | 16.70–33.30 ms    | < 50 ms    |
 
-The scroll interval is logged against the 16.67 ms 60fps target but asserted only at the accepted 50 ms pathological-regression budget. The public 20K selection proxy and affected-cell render count remain covered by the Phase 4 browser selection suite.
+The geometry figure is the maximum of ten samples by construction (nearest-rank p95 with ten samples); the ranges therefore reflect CPU/load variation rather than a stable point estimate. The scroll interval is logged against the 16.67 ms 60fps target but asserted only at the accepted 50 ms pathological-regression budget. The public 20K selection proxy and affected-cell render count remain covered by the Phase 4 browser selection suite.
 
 ## Verification checklist
 
-- [ ] All Phase A ST cases are defined in `07-testing-strategy.md` with concrete input/output.
-- [ ] Spec tests are written before implementation and fail first.
-- [ ] Geometry, layout, selection, handle, empty state, list semantics, and warnings pass in jsdom.
-- [ ] The node-environment import smoke passes (ST-46).
-- [ ] Four layouts mount under 120 wrappers at 20K in the browser.
-- [ ] Renderer DOM-read/offscreen assertions pass for all four layouts (ST-48).
-- [ ] Masonry start/end parity and lane range pass.
-- [ ] Anchor preservation passes.
-- [ ] Selection click mapping and handle methods pass in the browser.
-- [ ] 20K public selection proxy and affected-cell render count pass in the Phase 4 browser suite (ST-47/ST-49).
-- [ ] Performance job records/asserts the geometry/scroll budgets; the early `test:perf` gate is the harness smoke (PF-010).
-- [ ] `vitest` is pinned to 5.0.5 and the browser providers resolve; the lockfile is updated (PF-008).
-- [ ] No public publish/tag occurs before the final contract freeze (6.3.3, PF-001).
-- [ ] `pnpm verify`, `pnpm test:browser`, `pnpm test:browser:all` (CI), and `pnpm test:perf` pass.
-- [ ] `pnpm storybook:build` passes; the 20K story builds.
-- [ ] `pnpm pack:check` passes after a build.
-- [ ] No regressions in the existing test suite or export pin.
+- [x] All Phase A ST cases are defined in `07-testing-strategy.md` with concrete input/output.
+- [x] Spec tests are written before implementation and fail first.
+- [x] Geometry, layout, selection, handle, empty state, list semantics, and warnings pass in jsdom.
+- [x] The node-environment import smoke passes (ST-46).
+- [x] Four layouts mount under 120 wrappers at 20K in the browser.
+- [x] Renderer DOM-read/offscreen assertions pass for all four layouts (ST-48).
+- [x] Masonry start/end parity and lane range pass.
+- [x] Anchor preservation passes.
+- [x] Selection click mapping and handle methods pass in the browser.
+- [x] 20K public selection proxy and affected-cell render count pass in the Phase 4 browser suite (ST-47/ST-49).
+- [x] Performance job records/asserts the geometry/scroll budgets; the early `test:perf` gate is the harness smoke (PF-010).
+- [x] `vitest` is pinned to 5.0.5 and the browser providers resolve; the lockfile is updated (PF-008).
+- [x] No public publish/tag occurs before the final contract freeze (6.3.3, PF-001).
+- [x] `pnpm verify`, `pnpm test:browser`, and `pnpm test:perf` pass. `pnpm test:browser:all` is configured as the CI matrix job; the local run used Chromium because the other browser binaries are not installed.
+- [x] `pnpm storybook:build` passes; the 20K story builds.
+- [x] `pnpm pack:check` passes after a build.
+- [x] No regressions in the existing test suite or export pin.

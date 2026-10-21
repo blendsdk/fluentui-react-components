@@ -14,6 +14,14 @@ const CONTAINER_HEIGHT = 900;
 const TILE_SIZE = 160;
 const GAP = 8;
 
+/*
+ * The 60fps target is 16.67 ms per frame; the job asserts 50 ms as the
+ * pathological-regression guard accepted for this suite, not as a claim that
+ * the scroll path always reaches 60fps. Geometry uses ten samples because its
+ * p95 is the maximum of a short synchronous run; selection uses 200 toggles and
+ * scroll uses 30 intervals to keep the suite bounded while still exercising
+ * repeated work.
+ */
 const GEOMETRY_RUNS = 10;
 const GEOMETRY_BUDGET_MS = 200;
 
@@ -148,14 +156,15 @@ describe('TileGrid geometry recompute performance', () => {
         containerWidth: CONTAINER_WIDTH,
       };
 
-      computeGeometry(input);
-      computeGeometry(input);
+      computeGeometry({ ...input });
+      computeGeometry({ ...input });
 
       const durations: number[] = [];
       for (let run = 0; run < GEOMETRY_RUNS; run += 1) {
         const startedAt = performance.now();
-        computeGeometry(input);
+        const result = computeGeometry({ ...input });
         durations.push(performance.now() - startedAt);
+        expect(result.itemRects).toHaveLength(ITEM_COUNT);
       }
 
       const p95 = nearestRank95(durations);
@@ -286,6 +295,10 @@ describe('TileGrid scripted scroll performance', () => {
         { timeout: WAIT_TIMEOUT_MS }
       );
 
+      const firstMountedIndex = scrollRoot
+        .querySelector<HTMLElement>(TILE_ITEM_SELECTOR)
+        ?.getAttribute('data-index');
+
       const intervals = await measureScrollFrameIntervals(
         scrollRoot,
         SCROLL_FRAMES,
@@ -293,6 +306,12 @@ describe('TileGrid scripted scroll performance', () => {
       );
       expect(intervals.length).toBeGreaterThan(0);
       expect(scrollRoot.scrollTop).toBeGreaterThan(0);
+
+      const lastMountedIndex = scrollRoot
+        .querySelector<HTMLElement>(TILE_ITEM_SELECTOR)
+        ?.getAttribute('data-index');
+      expect(lastMountedIndex).not.toBe(firstMountedIndex);
+      expect(scrollRoot.querySelectorAll(TILE_ITEM_SELECTOR).length).toBeLessThan(120);
 
       const p95 = nearestRank95(intervals);
       console.info(

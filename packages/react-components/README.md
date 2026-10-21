@@ -944,8 +944,9 @@ package; React, Fluent UI and React Hook Form stay peers.
 The grid root is the scroll container. Give it a bounded height through a sized
 parent or a native `style` height; the 20K benchmark story uses a 900px frame.
 Window/page scrolling is not supported. `className` and `style` merge with the
-component's root values, and the caller wins. A reported scroll helper and the
-`scrollToSelected()` handle operate on this root.
+component's root values, and the caller wins. The native `onScroll` prop and
+the `scrollToSelected()` handle operate on this root; the internal anchor and
+scroll helpers are not public.
 
 #### Layouts and sizing
 
@@ -955,6 +956,32 @@ component's root values, and the caller wins. A reported scroll helper and the
 | `masonry`   | Variable-height tiles packed into the shortest lane.                   |
 | `justified` | Photo-wall rows that fill the container width.                         |
 | `mosaic`    | A dense base grid with optional 2x2 feature spans.                     |
+
+| Prop                  | Type                                               | Default      | Description                                                                                           |
+| --------------------- | -------------------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------- |
+| `items`               | `readonly T[]`                                     | — (required) | Items to render; duplicate IDs keep the first occurrence.                                             |
+| `getItemId`           | `(item: T) => string`                              | — (required) | Stable identity for keys, geometry and selection. Use a stable function.                              |
+| `getItemLabel`        | `(item: T) => string`                              | — (required) | Accessible name of the item.                                                                          |
+| `getItemAspectRatio`  | `(item: T) => number \| null \| undefined`         | —            | Intrinsic ratio for masonry, justified and fixed fallback.                                            |
+| `getItemSpan`         | `(item: T) => { columns?: 1 \| 2; rows?: 1 \| 2 }` | —            | Optional 2x2 span for mosaic.                                                                         |
+| `renderItem`          | `(args: TileGridItemRenderArgs<T>) => ReactNode`   | — (required) | Draws the tile content inside the positioned wrapper. Use a stable function.                          |
+| `renderEmpty`         | `() => ReactNode`                                  | —            | Replaces the entire empty state and wins over `strings.emptyMessage`.                                 |
+| `layout`              | `'fixed' \| 'masonry' \| 'justified' \| 'mosaic'`  | `'fixed'`    | Layout strategy.                                                                                      |
+| `tileSize`            | `number`                                           | `160`        | Preferred tile size; clamped to the bounds below.                                                     |
+| `minTileSize`         | `number`                                           | `120`        | Lower tile-size bound.                                                                                |
+| `maxTileSize`         | `number`                                           | `320`        | Upper tile-size bound.                                                                                |
+| `columns`             | `number`                                           | automatic    | Explicit column count for fixed, masonry and mosaic; ignored by justified.                            |
+| `gap`                 | `number`                                           | `8`          | Gap between tiles and rows.                                                                           |
+| `tileAspectRatio`     | `number`                                           | `1`          | Fixed-layout aspect ratio.                                                                            |
+| `fallbackAspectRatio` | `number`                                           | `1`          | Ratio used when an intrinsic ratio is missing or invalid.                                             |
+| `selectionMode`       | `'none' \| 'single' \| 'multiselect'`              | `'none'`     | Selection behaviour.                                                                                  |
+| `selectedIds`         | `ReadonlySet<string>`                              | —            | Controlled selected IDs; the source of truth when supplied.                                           |
+| `defaultSelectedIds`  | `Iterable<string>`                                 | —            | Uncontrolled initial IDs; ignored when `selectedIds` is supplied.                                     |
+| `onSelectionChange`   | `(next: ReadonlySet<string>) => void`              | —            | Reports the requested next set after a user action or handle method.                                  |
+| `ariaLabel`           | `string`                                           | —            | Accessible list name; `aria-labelledby` wins when both are present.                                   |
+| `strings`             | `Partial<TileGridStrings>`                         | —            | Localized strings; currently `emptyMessage`.                                                          |
+| `ref`                 | `React.Ref<TileGridHandle>`                        | —            | Access to `selectAll`, `clearSelection` and `scrollToSelected`.                                       |
+| …                     | `ComponentPropsWithoutRef<'div'>`                  | —            | Native root props pass through except `children`, `role`, `aria-label` and `dangerouslySetInnerHTML`. |
 
 `tileSize` defaults to 160 and is clamped to `minTileSize` (120) and
 `maxTileSize` (320); `gap` defaults to 8. `tileAspectRatio` and
@@ -968,13 +995,14 @@ zoom controls in this phase.
 `selectionMode` defaults to `none`. `single` replaces the selection; `multiselect`
 supports plain replace, Ctrl/Cmd toggle and Shift range selection. `selectedIds`
 is the controlled source of truth; `defaultSelectedIds` seeds the uncontrolled
-case; `onSelectionChange` receives the requested next set only after a user
-interaction. Hidden IDs are preserved. Clicks on buttons, links, inputs,
+case; `onSelectionChange` receives the requested next set after a user action or
+handle method, and never on mount, a controlled prop change or an item change.
+Hidden IDs are preserved. Clicks on buttons, links, inputs,
 selects, textareas, menu items, checkboxes, radios, switches, editable content
 or `[data-tile-grid-interactive]` do not select.
 
 ```tsx
-import { useCallback, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Button } from '@fluentui/react-components';
 import {
   TileGrid,
@@ -996,7 +1024,6 @@ const renderPhoto = ({ item, selected }: TileGridItemRenderArgs<Photo>) => (
 function PhotoPicker({ photos }: { photos: readonly Photo[] }) {
   const [selected, setSelected] = useState<ReadonlySet<string>>(new Set());
   const grid = useRef<TileGridHandle>(null);
-  const renderItem = useCallback(renderPhoto, []);
 
   return (
     <>
@@ -1008,7 +1035,7 @@ function PhotoPicker({ photos }: { photos: readonly Photo[] }) {
           getItemId={getItemId}
           getItemLabel={getItemLabel}
           getItemAspectRatio={getAspectRatio}
-          renderItem={renderItem}
+          renderItem={renderPhoto}
           layout="masonry"
           selectionMode="multiselect"
           selectedIds={selected}

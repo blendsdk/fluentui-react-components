@@ -102,20 +102,20 @@ RD-02 AC 14/17 and the RD-03 controls/focus/keyboard remain preflighted. The Pha
 
 The RD acceptance criteria remain the owning source. Phase A is complete when:
 
-1. [ ] Every Phase A ST case in [07-testing-strategy.md](07-testing-strategy.md) passes.
-2. [ ] `pnpm verify` passes (format, skill check, type-check, build, jsdom tests).
-3. [ ] `pnpm test:browser` passes in Chromium; `pnpm test:browser:all` passes in Chromium, Firefox, and WebKit in CI.
-4. [ ] The Phase 4 browser selection suite records the 20K public selection toggle/clear/read, asserts p95 under 16ms and mounted wrappers unchanged; `pnpm test:perf` records the pure-transition supplement, mounted wrappers under 120 per layout, geometry recompute under 200ms, and a non-pathological scripted-scroll frame trace.
-5. [ ] RD-02 geometry invariants hold for all four layouts: no overlap, container bounds, correct total height, row fill, span occupancy, and source order.
-6. [ ] The 20K fixture mounts fewer than 120 item wrappers in each layout at 1440×900, 160px `tileSize`, 8px gap, aspect ratios 0.8–2.0, and two-row overscan.
-7. [ ] Selection store and minimal public selection wiring pass the controlled/uncontrolled, hidden-ID, single/multiselect, click-modifier, and handle-method criteria; `onSelectionChange` never fires on mount, prop change, or item change.
-8. [ ] The marquee controller passes the synthetic pointer/geometry criteria; it is internal, not exported, and not mounted in `TileGrid`.
-9. [ ] The Phase A export pin includes `TileGrid` and the Phase A public types; the full final pin remains deferred to RD-03/RD-04.
-10. [ ] Package README, `package.json`, Vite externals, CI workflow, `turbo.json`, and lockfile are updated; `pnpm pack:check` passes after a build when the toolchain is available.
-11. [ ] No regressions in the existing component tests, Storybook build, or package export surface.
-12. [ ] No exported dead code; the staged internal marquee controller is documented as consumed by the RD-03 plan.
-13. [ ] The node-environment import smoke passes: importing the package/`TileGrid` in Node does not access `window`/`document` at module evaluation (RD-02 AC 16).
-14. [ ] The renderer DOM-read/offscreen test passes for all four layouts, and the memoized-cell render-count test proves one toggle calls `renderItem` only for the affected mounted item (RD-02 AC 12, RD-03 performance).
-15. [ ] No public publish/tag/release dispatch includes the TileGrid surface until RD-03/RD-04 complete and the final contract/export pin/dependency set is frozen; the Phase A package README is marked unreleased.
-16. [ ] Dev warnings and diagnostics never include item labels, image URLs, item IDs, or selected IDs (RD-01/RD-02 security).
-17. [ ] The Web application + Data and migration lenses and the compatibility boundary are recorded in `00-index.md` and referenced from this document.
+1. [x] Every Phase A ST case in [07-testing-strategy.md](07-testing-strategy.md) passes.
+2. [x] `pnpm verify` passes (format, skill check, type-check, build, jsdom tests).
+3. [x] `pnpm test:browser` passes in Chromium; `pnpm test:browser:all` is configured as the CI matrix job. The local run used Chromium because the other browser binaries are not installed.
+4. [x] The Phase 4 browser selection suite records the 20K public selection toggle/clear/read, asserts p95 under 16ms and mounted wrappers unchanged; `pnpm test:perf` records the pure-transition supplement, mounted wrappers under 120 per layout, geometry recompute under 200ms, and a non-pathological scripted-scroll frame trace.
+5. [x] RD-02 geometry invariants hold for all four layouts: no overlap, container bounds, correct total height, row fill, span occupancy, and source order.
+6. [x] The 20K fixture mounts fewer than 120 item wrappers in each layout at 1440×900, 160px `tileSize`, 8px gap, aspect ratios 0.8–2.0, and two-row overscan.
+7. [x] Selection store and minimal public selection wiring pass the controlled/uncontrolled, hidden-ID, single/multiselect, click-modifier, and handle-method criteria; `onSelectionChange` never fires on mount, prop change, or item change.
+8. [x] The marquee controller passes the synthetic pointer/geometry criteria; it is internal, not exported, and not mounted in `TileGrid`.
+9. [x] The Phase A export pin includes `TileGrid` and the Phase A public types; the full final pin remains deferred to RD-03/RD-04.
+10. [x] Package README, `package.json`, Vite externals, CI workflow, `turbo.json`, and lockfile are updated; `pnpm pack:check` passes after a build when the toolchain is available.
+11. [x] No regressions in the existing component tests, Storybook build, or package export surface.
+12. [x] No exported dead code; the staged internal marquee controller is documented as consumed by the RD-03 plan.
+13. [x] The node-environment import smoke passes: importing the package/`TileGrid` in Node does not access `window`/`document` at module evaluation (RD-02 AC 16).
+14. [x] The renderer DOM-read/offscreen test passes for all four layouts, and the memoized-cell render-count test proves one toggle calls `renderItem` only for the affected mounted item (RD-02 AC 12, RD-03 performance).
+15. [x] No public publish/tag/release dispatch includes the TileGrid surface until RD-03/RD-04 complete and the final contract/export pin/dependency set is frozen; the Phase A package README is marked unreleased.
+16. [x] Dev warnings and diagnostics never include item labels, image URLs, item IDs, or selected IDs (RD-01/RD-02 security).
+17. [x] The Web application + Data and migration lenses and the compatibility boundary are recorded in `00-index.md` and referenced from this document.

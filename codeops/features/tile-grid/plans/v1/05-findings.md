@@ -53,6 +53,16 @@
 | P5-PE-003  | 5     | MINOR       | packages/react-components/src/components/TileGrid/marquee/createMarqueeController.ts       | fixed    |
 | P5-RRV-001 | 5     | MINOR       | plans/v1/03-03-selection-and-marquee.md                                                    | fixed    |
 | P5-PE-004  | 5     | MINOR       | packages/react-components/src/components/TileGrid/marquee/createMarqueeController.ts       | fixed    |
+| P6-RV-001  | 6     | MINOR       | packages/react-components/README.md                                                        | fixed    |
+| P6-RV-002  | 6     | MINOR       | packages/react-components/README.md                                                        | fixed    |
+| P6-RV-003  | 6     | MINOR       | packages/react-components/README.md                                                        | fixed    |
+| P6-RV-004  | 6     | MINOR       | packages/react-components/README.md                                                        | fixed    |
+| P6-RV-005  | 6     | MINOR       | packages/react-components/test/perf/tile-grid.perf.test.tsx                                | fixed    |
+| P6-RV-006  | 6     | MINOR       | plans/v1/99-execution-plan.md, 03-05-test-harness-and-performance.md                       | fixed    |
+| P6-PE-001  | 6     | MINOR       | packages/react-components/test/perf/tile-grid.perf.test.tsx                                | fixed    |
+| P6-PE-002  | 6     | MINOR       | packages/react-components/test/perf/tile-grid.perf.test.tsx                                | fixed    |
+| P6-PE-003  | 6     | MINOR       | plans/v1/03-05-test-harness-and-performance.md                                             | fixed    |
+| P6-PE-004  | 6     | MINOR       | packages/react-components/vitest.perf.config.ts                                            | fixed    |
 
 > **Phase 3 re-review:** clean — no remaining findings in the fix diff (`da873e3..855e9dc`).
 
