@@ -1,17 +1,17 @@
-import { Button, makeStyles, mergeClasses, tokens } from '@fluentui/react-components';
+import { Button, makeStyles, tokens } from '@fluentui/react-components';
 import { useRef, useState } from 'react';
 import type { ReactElement } from 'react';
 import { TileGrid } from '../TileGrid';
-import type { TileGridHandle, TileGridItemRenderArgs } from '../TileGrid.types';
+import type { TileGridHandle } from '../TileGrid.types';
 import {
   getStoryItemAspectRatio,
   getStoryItemId,
   getStoryItemLabel,
   getStoryItemSpan,
+  renderStoryTile,
   StoryFrame,
   storyItems,
 } from './TileGridStoryData.story';
-import type { StoryItem } from './TileGridStoryData.story';
 
 const useStyles = makeStyles({
   toolbar: {
@@ -25,57 +25,7 @@ const useStyles = makeStyles({
     color: tokens.colorNeutralForeground2,
     fontVariantNumeric: 'tabular-nums',
   },
-  tile: {
-    position: 'relative',
-    width: '100%',
-    height: '100%',
-    overflow: 'hidden',
-    borderRadius: tokens.borderRadiusMedium,
-    backgroundColor: tokens.colorNeutralBackground3,
-    outline: '2px solid transparent',
-    outlineOffset: '-2px',
-  },
-  selected: {
-    outlineColor: tokens.colorBrandStroke1,
-  },
-  image: {
-    display: 'block',
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover',
-  },
-  label: {
-    position: 'absolute',
-    insetInlineStart: tokens.spacingHorizontalS,
-    insetBlockEnd: tokens.spacingVerticalS,
-    maxWidth: `calc(100% - (${tokens.spacingHorizontalS} * 2))`,
-    padding: `${tokens.spacingVerticalXS} ${tokens.spacingHorizontalS}`,
-    overflow: 'hidden',
-    color: tokens.colorNeutralForeground1,
-    backgroundColor: tokens.colorNeutralBackground1,
-    borderRadius: tokens.borderRadiusMedium,
-    boxShadow: tokens.shadow4,
-    fontSize: tokens.fontSizeBase200,
-    lineHeight: tokens.lineHeightBase200,
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-  },
 });
-
-function SelectionTile({ item, selected }: { item: StoryItem; selected: boolean }): ReactElement {
-  const classes = useStyles();
-
-  return (
-    <div className={mergeClasses(classes.tile, selected && classes.selected)}>
-      <img className={classes.image} src={item.image} alt="" />
-      <span className={classes.label}>{item.label}</span>
-    </div>
-  );
-}
-
-function renderSelectionTile({ item, selected }: TileGridItemRenderArgs<StoryItem>): ReactElement {
-  return <SelectionTile item={item} selected={selected} />;
-}
 
 /**
  * Controlled multiselect: plain click replaces, Ctrl/Cmd toggles, Shift
@@ -105,7 +55,7 @@ export const Selection = (): ReactElement => {
           getItemLabel={getStoryItemLabel}
           getItemAspectRatio={getStoryItemAspectRatio}
           getItemSpan={getStoryItemSpan}
-          renderItem={renderSelectionTile}
+          renderItem={renderStoryTile}
           layout="fixed"
           tileSize={160}
           gap={8}

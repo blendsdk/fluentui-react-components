@@ -38,6 +38,11 @@
 | P3-PE-001  | 3     | MAJOR       | packages/react-components/src/components/TileGrid/virtualization/useTileGridVirtualizer.ts | fixed    |
 | P3-PE-002  | 3     | MINOR       | packages/react-components/src/components/TileGrid/virtualization/useTileGridVirtualizer.ts | fixed    |
 | P3-PE-003  | 3     | MINOR       | packages/react-components/src/components/TileGrid/useTileGrid.ts                           | fixed    |
+| P4-RV-001  | 4     | MINOR       | packages/react-components/src/components/TileGrid/TileGrid.types.ts                        | fixed    |
+| P4-RV-002  | 4     | MINOR       | packages/react-components/src/components/TileGrid/selection/transitions.ts                 | fixed    |
+| P4-RV-003  | 4     | MINOR       | packages/react-components/src/components/TileGrid/TileGrid.types.ts                        | fixed    |
+| P4-RV-004  | 4     | MINOR       | packages/react-components/src/components/TileGrid/stories/TileGridSelection.story.tsx      | fixed    |
+| P4-RV-005  | 4     | MINOR       | packages/react-components/vitest.browser.config.ts                                         | fixed    |
 
 > **Phase 3 re-review:** clean — no remaining findings in the fix diff (`da873e3..855e9dc`).
 

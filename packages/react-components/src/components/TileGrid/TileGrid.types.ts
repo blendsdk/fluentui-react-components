@@ -9,8 +9,8 @@ export type TileGridSelectionMode = 'none' | 'single' | 'multiselect';
 /**
  * Imperative operations exposed by a TileGrid ref.
  *
- * The handle is intentionally small in this phase: it covers the operations
- * that need current items or scroll geometry and cannot be expressed by props.
+ * The handle covers the operations that need current items or scroll geometry
+ * and cannot be expressed by props.
  */
 export interface TileGridHandle {
   /** Selects every current item in multiselect mode. */
@@ -64,7 +64,13 @@ export interface TileGridProps<T> extends Omit<
 > {
   /** Items to render. Duplicate IDs keep the first occurrence. */
   items: readonly T[];
-  /** Stable identifier used for keys, geometry, and selection. */
+  /**
+   * Stable identifier used for keys, geometry, and selection.
+   *
+   * Pass a stable identity (a module-level function or `useCallback`) so an
+   * unrelated parent render does not recompute geometry and re-render the
+   * mounted cells.
+   */
   getItemId: (item: T) => string;
   /** Human-readable label used for the item and the accessible name. */
   getItemLabel: (item: T) => string;
@@ -72,7 +78,13 @@ export interface TileGridProps<T> extends Omit<
   getItemAspectRatio?: (item: T) => number | null | undefined;
   /** Optional 1x1 or 2x2 span used by the mosaic layout. */
   getItemSpan?: (item: T) => { columns?: 1 | 2; rows?: 1 | 2 } | undefined;
-  /** Draws the tile content inside the positioned wrapper. */
+  /**
+   * Draws the tile content inside the positioned wrapper.
+   *
+   * Pass a stable identity (a module-level function or `useCallback`) so a
+   * selection change re-renders only the affected mounted cell instead of all
+   * visible cells.
+   */
   renderItem: (args: TileGridItemRenderArgs<T>) => ReactNode;
   /** Replaces the default empty message when there are no items. */
   renderEmpty?: () => ReactNode;

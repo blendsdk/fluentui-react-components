@@ -18,6 +18,10 @@ export const browserTestConfig = {
   test: {
     include: ['test/browser/**/*.browser.test.tsx'],
     setupFiles: ['./test/setup.ts'],
+    // The 20K layout and selection files are performance-sensitive. Running
+    // them sequentially keeps one file's paint work out of another file's
+    // timing budget while preserving real-browser behavior.
+    fileParallelism: false,
     browser: {
       enabled: true,
       provider: playwright(),

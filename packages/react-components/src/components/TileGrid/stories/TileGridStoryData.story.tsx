@@ -1,4 +1,4 @@
-import { makeStyles, tokens } from '@fluentui/react-components';
+import { makeStyles, mergeClasses, tokens } from '@fluentui/react-components';
 import type { ReactElement, ReactNode } from 'react';
 import { TileGrid } from '../TileGrid';
 import type { TileGridItemRenderArgs, TileGridLayout, TileGridStrings } from '../TileGrid.types';
@@ -105,6 +105,11 @@ const useStoryTileStyles = makeStyles({
     overflow: 'hidden',
     borderRadius: tokens.borderRadiusMedium,
     backgroundColor: tokens.colorNeutralBackground3,
+    outline: '2px solid transparent',
+    outlineOffset: '-2px',
+  },
+  selected: {
+    outlineColor: tokens.colorBrandStroke1,
   },
   image: {
     display: 'block',
@@ -131,11 +136,17 @@ const useStoryTileStyles = makeStyles({
 });
 
 /** The visual content of one tile; the grid wrapper owns position and label. */
-function StoryTile({ item }: { item: StoryItem }): ReactElement {
+function StoryTile({
+  item,
+  selected = false,
+}: {
+  item: StoryItem;
+  selected?: boolean;
+}): ReactElement {
   const classes = useStoryTileStyles();
 
   return (
-    <div className={classes.tile}>
+    <div className={mergeClasses(classes.tile, selected && classes.selected)}>
       <img className={classes.image} src={item.image} alt="" />
       <span className={classes.label}>{item.label}</span>
     </div>
@@ -143,8 +154,11 @@ function StoryTile({ item }: { item: StoryItem }): ReactElement {
 }
 
 /** Stable tile renderer shared by every story. */
-export function renderStoryTile({ item }: TileGridItemRenderArgs<StoryItem>): ReactElement {
-  return <StoryTile item={item} />;
+export function renderStoryTile({
+  item,
+  selected,
+}: TileGridItemRenderArgs<StoryItem>): ReactElement {
+  return <StoryTile item={item} selected={selected} />;
 }
 
 const useStoryFrameStyles = makeStyles({

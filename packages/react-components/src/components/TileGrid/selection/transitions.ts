@@ -1,4 +1,4 @@
-/** Pure set transitions used by the selection store and its performance test. */
+/** Pure set transitions used by the selection store. */
 
 /** Returns true when both sets contain exactly the same IDs. */
 export function areSetsEqual(left: ReadonlySet<string>, right: ReadonlySet<string>): boolean {
@@ -30,7 +30,11 @@ export function addSelection(current: ReadonlySet<string>, id: string): Readonly
   return next;
 }
 
-/** Replaces the set with one ID, returning the same set when already equal. */
+/**
+ * Replaces the set with one ID.
+ *
+ * The store's equality guard suppresses a redundant change notification.
+ */
 export function selectOnlySelection(id: string): ReadonlySet<string> {
   return new Set([id]);
 }
