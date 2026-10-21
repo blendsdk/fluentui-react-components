@@ -85,7 +85,7 @@ Objective: Keep geometry authoritative for rendered masonry positions while usin
 Decision: Preserve the geometry lowest-lane tie rule; assert start/end parity and accept any lane that maps to the same rendered offset.
 Evidence: Item 14 has geometry lane 3, virtualizer lane 4, and both starts are 217.833…; all 20K starts match geometry.
 Rejected alternatives: Change geometry to TanStack's last-index tie rule (changes the specified leftmost placement); replace TanStack with a custom range calculator (extra machinery and complexity); drop lane assertions (weakens the parity check).
-Strongest counterargument: A differing lane could hide a real range divergence. Mitigation: every item's start and end must match, and the lane must belong to a geometry item at that same start; the browser suite independently verifies mounted-window bounds and scrolling.
+Strongest counterargument: A differing lane could hide a real range divergence. Mitigation: every item's start and end must match, the lane must be within the geometry lane count, and the browser suite independently verifies mounted-window bounds and scrolling.
 Confidence: High — the tie behavior and start equality are deterministic on the 20K fixture.
 Hardening: Not required — testing/integration choice with no security, data, or compatibility consequence.
 Policy version: 1

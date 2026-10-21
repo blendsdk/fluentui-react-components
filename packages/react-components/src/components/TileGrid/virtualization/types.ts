@@ -47,10 +47,22 @@ export interface TileGridBandVirtualizerOptions {
 }
 
 /**
- * Options for the masonry virtualizer. One virtual item represents one tile,
- * and TanStack's lane assignment must match the geometry lane assignment.
+ * Options for the masonry virtualizer. One virtual item represents one tile.
+ * The geometry result remains the source of the rendered lane position.
  */
-export interface TileGridMasonryVirtualizerOptions extends TileGridBandVirtualizerOptions {
+export interface TileGridMasonryVirtualizerOptions {
+  /** Number of items. */
+  count: number;
+  /** Returns the scroll container. */
+  getScrollElement: () => HTMLDivElement | null;
+  /** Returns the height of one item. */
+  estimateSize: (index: number) => number;
+  /** Stable key for an item. */
+  getItemKey: (index: number) => string;
+  /** Gap between tiles. */
+  gap: number;
+  /** Number of extra lane rows rendered on each side. */
+  overscan: number;
   /** Number of masonry lanes. */
   lanes: number;
 }

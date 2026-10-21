@@ -127,27 +127,22 @@ export function useTileGrid<T>(props: TileGridProps<T>): TileGridState<T> {
     ]
   );
 
-  const geometryKey = useMemo(() => {
-    const ids = normalized.items.map(getItemId);
-    return JSON.stringify([
-      layout,
-      resolvedTileSize,
-      columns ?? null,
-      resolvedGap,
-      tileAspectRatio,
-      fallbackAspectRatio,
-      ids,
-    ]);
-  }, [
-    normalized.items,
-    getItemId,
-    layout,
-    resolvedTileSize,
-    columns,
-    resolvedGap,
-    tileAspectRatio,
-    fallbackAspectRatio,
-  ]);
+  // Anchor restoration reacts only to layout inputs that change item
+  // positions. Container width and item values are intentionally excluded:
+  // a resize recomputes geometry but must not restore the anchor, while an
+  // item-list change is detected by the normalized array reference.
+  const geometryKey = useMemo(
+    () =>
+      JSON.stringify([
+        layout,
+        resolvedTileSize,
+        columns ?? null,
+        resolvedGap,
+        tileAspectRatio,
+        fallbackAspectRatio,
+      ]),
+    [layout, resolvedTileSize, columns, resolvedGap, tileAspectRatio, fallbackAspectRatio]
+  );
 
   const virtualWindow = useTileGridVirtualizer({
     layout,
@@ -156,7 +151,7 @@ export function useTileGrid<T>(props: TileGridProps<T>): TileGridState<T> {
     gap: resolvedGap,
   });
 
-  useAnchorPreservation({ rootRef, geometry, geometryKey });
+  useAnchorPreservation({ rootRef, geometry, geometryKey, itemList: normalized.items });
 
   const visibleItemRects = virtualWindow.itemIndexes.flatMap(index => {
     const rect = geometry.itemRects[index];

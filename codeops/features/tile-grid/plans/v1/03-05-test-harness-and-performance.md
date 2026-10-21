@@ -221,7 +221,7 @@ The workflow uses the existing pnpm/Node setup actions and caching. No secrets, 
 - [ ] The node-environment import smoke passes (ST-46).
 - [ ] Four layouts mount under 120 wrappers at 20K in the browser.
 - [ ] Renderer DOM-read/offscreen assertions pass for all four layouts (ST-48).
-- [ ] Masonry lane/start parity passes.
+- [ ] Masonry start/end parity and lane range pass.
 - [ ] Anchor preservation passes.
 - [ ] Selection click mapping and handle methods pass in the browser.
 - [ ] 20K public selection proxy and affected-cell render count pass in the Phase 4 browser suite (ST-47/ST-49).

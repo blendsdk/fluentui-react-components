@@ -2,7 +2,7 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-21 09:15
+> **Last Updated**: 2026-10-21 09:28
 > **Progress**: 40/69 tasks (58%)
 > **CodeOps Artifact Schema**: 1
 
@@ -163,8 +163,9 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 ## Phase 3: Virtualization, scrolling, and 20K
 
 > **Phase baseline tree**: `563c90780e45fcc79400407dc551ddc0e9f8af81`
-> **Expected modification set**: `src/components/TileGrid/virtualization/**`, `src/components/TileGrid/useTileGrid.ts`, `src/components/TileGrid/renderTileGrid.tsx`, `src/components/TileGrid/TileGrid.tsx`, `src/components/TileGrid/stories/**`, `test/browser/tile-grid-layout.browser.test.tsx`, `test/tile-grid-virtualizer.impl.test.tsx`, `test/tile-grid-layout.impl.test.tsx`, and the plan/roadmap documents.
+> **Expected modification set**: `src/components/TileGrid/virtualization/**`, `src/components/TileGrid/useTileGrid.ts`, `src/components/TileGrid/renderTileGrid.tsx`, `src/components/TileGrid/TileGridItemView.tsx`, `src/components/TileGrid/stories/**`, `test/browser/tile-grid-layout.browser.test.tsx`, `test/tile-grid-virtualizer.impl.test.tsx`, `test/tile-grid-layout.impl.test.tsx`, `vitest.browser.config.ts`, and the plan documents (`00-ambiguity-register.md`, `03-01`, `03-02`, `99-execution-plan.md`).
 > **Scope mode**: `strict`
+> **Review**: P3-RV-001–P3-RV-005 and P3-PE-001–P3-PE-003 fixed; scoped re-review pending.
 > **Lenses**: `perf`
 > **Reasoning**: high — 20K mounting, measurement, scrolling, and anchor behavior are performance-critical and browser-dependent.
 

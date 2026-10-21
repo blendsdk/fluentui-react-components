@@ -1,35 +1,43 @@
 # Findings Ledger: TileGrid Phase A
 
-| Finding    | Phase | Severity    | Area                                                                                 | Ruling   |
-| ---------- | ----- | ----------- | ------------------------------------------------------------------------------------ | -------- |
-| RV-001     | 1     | MINOR       | packages/react-components/package.json                                               | fixed    |
-| RV-002     | 1     | MINOR       | packages/react-components/test/setup.ts                                              | fixed    |
-| RV-003     | 1     | MINOR       | packages/react-components/test/harness                                               | fixed    |
-| RV-004     | 1     | MINOR       | requirements/RD-03                                                                   | fixed    |
-| RV-005     | 1     | MINOR       | plans/v1/99-execution-plan.md                                                        | fixed    |
-| RV-006     | 1     | OBSERVATION | packages/react-components/test/jsdomStubs.ts                                         | fixed    |
-| RV-007     | 1     | OBSERVATION | AGENTS.md                                                                            | deferred |
-| P2-RV-001  | 2     | MAJOR       | packages/react-components/src/components/TileGrid/devWarnings.ts                     | fixed    |
-| P2-RV-002  | 2     | MAJOR       | packages/react-components/src/components/TileGrid/geometry/mosaicLayout.ts           | fixed    |
-| P2-RV-003  | 2     | MAJOR       | packages/react-components/src/components/TileGrid/geometry/mosaicLayout.ts           | fixed    |
-| P2-RV-004  | 2     | MINOR       | packages/react-components/src/components/TileGrid/renderTileGrid.tsx                 | fixed    |
-| P2-RV-005  | 2     | MINOR       | packages/react-components/src/components/TileGrid/geometry/computeGeometry.ts        | deferred |
-| P2-RV-006  | 2     | MINOR       | packages/react-components/src/components/TileGrid/geometry/normalize.ts              | fixed    |
-| P2-RV-007  | 2     | MINOR       | packages/react-components/src/components/TileGrid/geometry/computeGeometry.ts        | fixed    |
-| P2-RV-008  | 2     | MINOR       | plans/v1/99-execution-plan.md                                                        | fixed    |
-| P2-RV-009  | 2     | MINOR       | packages/react-components/test/tile-grid-layout.impl.test.tsx                        | fixed    |
-| P2-RV-010  | 2     | OBSERVATION | packages/react-components/src/components/TileGrid/TileGrid.tsx                       | fixed    |
-| P2-RV-011  | 2     | OBSERVATION | packages/react-components/src/components/TileGrid/useTileGrid.ts                     | fixed    |
-| P2-RV-012  | 2     | OBSERVATION | packages/react-components/src/components/TileGrid/TileGridItemView.tsx               | fixed    |
-| P2-RV-013  | 2     | OBSERVATION | packages/react-components/src/components/TileGrid/virtualization/useContainerSize.ts | fixed    |
-| P2-RV-014  | 2     | OBSERVATION | plans/v1/03-03-selection-and-marquee.md                                              | deferred |
-| P2-RV-015  | 2     | MAJOR       | packages/react-components/src/components/TileGrid/renderTileGrid.tsx                 | fixed    |
-| P2-RRV-001 | 2     | MAJOR       | packages/react-components/src/components/TileGrid/devWarnings.ts                     | fixed    |
-| P2-RRV-002 | 2     | MAJOR       | packages/react-components/test/tile-grid-geometry.impl.test.ts                       | fixed    |
-| P2-RRV-003 | 2     | MINOR       | packages/react-components/test/tile-grid-geometry.impl.test.ts                       | fixed    |
-| P2-RRV-004 | 2     | MINOR       | plans/v1/07-testing-strategy.md                                                      | fixed    |
-| P2-RRV-005 | 2     | OBSERVATION | plans/v1/03-01-geometry-engine.md                                                    | fixed    |
-| P2-RRV-006 | 2     | OBSERVATION | plans/v1/05-findings.md                                                              | fixed    |
+| Finding    | Phase | Severity    | Area                                                                                       | Ruling   |
+| ---------- | ----- | ----------- | ------------------------------------------------------------------------------------------ | -------- |
+| RV-001     | 1     | MINOR       | packages/react-components/package.json                                                     | fixed    |
+| RV-002     | 1     | MINOR       | packages/react-components/test/setup.ts                                                    | fixed    |
+| RV-003     | 1     | MINOR       | packages/react-components/test/harness                                                     | fixed    |
+| RV-004     | 1     | MINOR       | requirements/RD-03                                                                         | fixed    |
+| RV-005     | 1     | MINOR       | plans/v1/99-execution-plan.md                                                              | fixed    |
+| RV-006     | 1     | OBSERVATION | packages/react-components/test/jsdomStubs.ts                                               | fixed    |
+| RV-007     | 1     | OBSERVATION | AGENTS.md                                                                                  | deferred |
+| P2-RV-001  | 2     | MAJOR       | packages/react-components/src/components/TileGrid/devWarnings.ts                           | fixed    |
+| P2-RV-002  | 2     | MAJOR       | packages/react-components/src/components/TileGrid/geometry/mosaicLayout.ts                 | fixed    |
+| P2-RV-003  | 2     | MAJOR       | packages/react-components/src/components/TileGrid/geometry/mosaicLayout.ts                 | fixed    |
+| P2-RV-004  | 2     | MINOR       | packages/react-components/src/components/TileGrid/renderTileGrid.tsx                       | fixed    |
+| P2-RV-005  | 2     | MINOR       | packages/react-components/src/components/TileGrid/geometry/computeGeometry.ts              | deferred |
+| P2-RV-006  | 2     | MINOR       | packages/react-components/src/components/TileGrid/geometry/normalize.ts                    | fixed    |
+| P2-RV-007  | 2     | MINOR       | packages/react-components/src/components/TileGrid/geometry/computeGeometry.ts              | fixed    |
+| P2-RV-008  | 2     | MINOR       | plans/v1/99-execution-plan.md                                                              | fixed    |
+| P2-RV-009  | 2     | MINOR       | packages/react-components/test/tile-grid-layout.impl.test.tsx                              | fixed    |
+| P2-RV-010  | 2     | OBSERVATION | packages/react-components/src/components/TileGrid/TileGrid.tsx                             | fixed    |
+| P2-RV-011  | 2     | OBSERVATION | packages/react-components/src/components/TileGrid/useTileGrid.ts                           | fixed    |
+| P2-RV-012  | 2     | OBSERVATION | packages/react-components/src/components/TileGrid/TileGridItemView.tsx                     | fixed    |
+| P2-RV-013  | 2     | OBSERVATION | packages/react-components/src/components/TileGrid/virtualization/useContainerSize.ts       | fixed    |
+| P2-RV-014  | 2     | OBSERVATION | plans/v1/03-03-selection-and-marquee.md                                                    | deferred |
+| P2-RV-015  | 2     | MAJOR       | packages/react-components/src/components/TileGrid/renderTileGrid.tsx                       | fixed    |
+| P2-RRV-001 | 2     | MAJOR       | packages/react-components/src/components/TileGrid/devWarnings.ts                           | fixed    |
+| P2-RRV-002 | 2     | MAJOR       | packages/react-components/test/tile-grid-geometry.impl.test.ts                             | fixed    |
+| P2-RRV-003 | 2     | MINOR       | packages/react-components/test/tile-grid-geometry.impl.test.ts                             | fixed    |
+| P2-RRV-004 | 2     | MINOR       | plans/v1/07-testing-strategy.md                                                            | fixed    |
+| P2-RRV-005 | 2     | OBSERVATION | plans/v1/03-01-geometry-engine.md                                                          | fixed    |
+| P2-RRV-006 | 2     | OBSERVATION | plans/v1/05-findings.md                                                                    | fixed    |
+| P3-RV-001  | 3     | MINOR       | packages/react-components/src/components/TileGrid/virtualization/useAnchorPreservation.ts  | fixed    |
+| P3-RV-002  | 3     | MINOR       | packages/react-components/test/browser/tile-grid-layout.browser.test.tsx                   | fixed    |
+| P3-RV-003  | 3     | MINOR       | plans/v1/07-testing-strategy.md, 03-05, 00-ambiguity-register.md                           | fixed    |
+| P3-RV-004  | 3     | MINOR       | packages/react-components/src/components/TileGrid/virtualization/options.ts, types.ts      | fixed    |
+| P3-RV-005  | 3     | MINOR       | packages/react-components/src/components/TileGrid/useTileGrid.ts                           | fixed    |
+| P3-PE-001  | 3     | MAJOR       | packages/react-components/src/components/TileGrid/virtualization/useTileGridVirtualizer.ts | fixed    |
+| P3-PE-002  | 3     | MINOR       | packages/react-components/src/components/TileGrid/virtualization/useTileGridVirtualizer.ts | fixed    |
+| P3-PE-003  | 3     | MINOR       | packages/react-components/src/components/TileGrid/useTileGrid.ts                           | fixed    |
 
 ## Deferred Rulings
 

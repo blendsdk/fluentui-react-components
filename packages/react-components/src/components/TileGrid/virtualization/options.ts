@@ -55,8 +55,9 @@ export function buildBandVirtualizerOptions({
  * Builds TanStack Virtual options for the masonry layout.
  *
  * TanStack's lane assignment is a range calculator only. The rendered tile
- * positions still come from the geometry rectangles, and the lane parity test
- * verifies that both algorithms make the same choice.
+ * positions still come from the geometry rectangles. The parity test asserts
+ * start/end parity and a valid lane range; the lane number may differ when two
+ * lanes end at the same offset.
  */
 export function buildMasonryVirtualizerOptions({
   geometry,

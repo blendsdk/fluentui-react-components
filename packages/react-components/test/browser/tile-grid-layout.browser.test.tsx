@@ -216,6 +216,50 @@ function TileSizeSwitchGrid() {
   );
 }
 
+/** Changes the tile size from a larger tile to a smaller one. */
+function TileSizeShrinkGrid() {
+  const [tileSize, setTileSize] = useState(200);
+
+  return (
+    <>
+      <button type="button" onClick={() => setTileSize(160)}>
+        Use smaller tiles
+      </button>
+      <span data-testid="tile-size">{tileSize}</span>
+      <div style={{ width: VIEWPORT_WIDTH, height: VIEWPORT_HEIGHT }}>
+        <TileGrid
+          {...createGridProps({ layout: 'fixed', tileSize, ariaLabel: 'Shrink anchor grid' })}
+        />
+      </div>
+    </>
+  );
+}
+
+const removalItems = createTileGridFixture(500);
+
+/** Removes the item used as the current anchor. */
+function ItemRemovalGrid() {
+  const [currentItems, setCurrentItems] = useState(removalItems);
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setCurrentItems(items => items.filter(item => item.id !== 'tile-200'))}
+      >
+        Remove anchor item
+      </button>
+      <span data-testid="removal-count">{currentItems.length}</span>
+      <div style={{ width: VIEWPORT_WIDTH, height: VIEWPORT_HEIGHT }}>
+        <TileGrid
+          {...createGridProps({ layout: 'fixed', ariaLabel: 'Removal grid' })}
+          items={currentItems}
+        />
+      </div>
+    </>
+  );
+}
+
 /**
  * Counts layout reads that target item wrappers. The grid must position tiles
  * from its geometry data instead of measuring each rendered item.
@@ -345,6 +389,92 @@ describe('tile grid browser virtualization', () => {
         expect(after.offset).toBeLessThanOrEqual(after.height);
         expect(Math.abs(after.offset - expectedOffset)).toBeLessThanOrEqual(1);
         expect(root.scrollTop).toBeGreaterThan(1_000);
+      },
+      TEST_TIMEOUT
+    );
+  });
+
+  describe('anchor edge cases', () => {
+    it(
+      'keeps the anchor visible when the old offset exceeds the smaller tile',
+      async () => {
+        render(<TileSizeShrinkGrid />);
+
+        const root = await screen.findByRole('list', { name: 'Shrink anchor grid' });
+        await waitForMounted(root);
+
+        const maxScroll = Math.max(0, root.scrollHeight - root.clientHeight);
+        await scrollTo(root, Math.round((504 / ITEM_COUNT) * maxScroll));
+
+        await waitFor(
+          () => {
+            expect(root.querySelector('[data-tile-grid-item="tile-504"]')).not.toBeNull();
+          },
+          { timeout: SETTLE_TIMEOUT }
+        );
+
+        const anchorItem = root.querySelector<HTMLElement>('[data-tile-grid-item="tile-504"]');
+        expect(anchorItem).not.toBeNull();
+        await scrollTo(root, styleNumber(anchorItem as HTMLElement, 'top') + 180);
+
+        const before = firstVisibleItem(root);
+        expect(before.id).toBe('tile-504');
+        expect(before.offset).toBe(180);
+
+        const scrollHeightBeforeChange = root.scrollHeight;
+        fireEvent.click(screen.getByRole('button', { name: 'Use smaller tiles' }));
+
+        await waitFor(() => expect(screen.getByTestId('tile-size')).toHaveTextContent('160'), {
+          timeout: SETTLE_TIMEOUT,
+        });
+        await waitFor(() => expect(root.scrollHeight).not.toBe(scrollHeightBeforeChange), {
+          timeout: SETTLE_TIMEOUT,
+        });
+
+        await waitFor(
+          () => {
+            const after = firstVisibleItem(root);
+            expect(after.id).toBe('tile-504');
+            expect(after.offset).toBeGreaterThanOrEqual(0);
+            expect(after.offset).toBeLessThan(after.height);
+          },
+          { timeout: SETTLE_TIMEOUT }
+        );
+      },
+      TEST_TIMEOUT
+    );
+
+    it(
+      'returns to the top when the anchor item is removed',
+      async () => {
+        render(<ItemRemovalGrid />);
+
+        const root = await screen.findByRole('list', { name: 'Removal grid' });
+        await waitForMounted(root);
+
+        const maxScroll = Math.max(0, root.scrollHeight - root.clientHeight);
+        await scrollTo(root, Math.round((200 / 500) * maxScroll));
+
+        await waitFor(
+          () => {
+            expect(root.querySelector('[data-tile-grid-item="tile-200"]')).not.toBeNull();
+          },
+          { timeout: SETTLE_TIMEOUT }
+        );
+
+        const anchorItem = root.querySelector<HTMLElement>('[data-tile-grid-item="tile-200"]');
+        expect(anchorItem).not.toBeNull();
+        await scrollTo(root, styleNumber(anchorItem as HTMLElement, 'top') + 37);
+
+        const before = firstVisibleItem(root);
+        expect(before.id).toBe('tile-200');
+
+        fireEvent.click(screen.getByRole('button', { name: 'Remove anchor item' }));
+
+        await waitFor(() => expect(screen.getByTestId('removal-count')).toHaveTextContent('499'), {
+          timeout: SETTLE_TIMEOUT,
+        });
+        await waitFor(() => expect(root.scrollTop).toBe(0), { timeout: SETTLE_TIMEOUT });
       },
       TEST_TIMEOUT
     );

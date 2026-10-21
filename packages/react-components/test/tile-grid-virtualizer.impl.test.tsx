@@ -131,7 +131,7 @@ describe('tile grid virtualizer parity', () => {
     }
   );
 
-  it('matches every masonry lane and item start for the 20K fixture', async () => {
+  it('matches every masonry item start and end for the 20K fixture', async () => {
     const geometry = createGeometry('masonry');
     const { getInstance } = mountProbe('masonry', geometry);
 

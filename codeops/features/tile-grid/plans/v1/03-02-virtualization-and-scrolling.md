@@ -67,7 +67,7 @@ const virtualizer = useVirtualizer(
 }
 ```
 
-The virtualizer's cumulative band starts equal the geometry band starts because the band heights and `gap` are the same. A unit test asserts this for all three band layouts. The rendered band range is `virtualizer.getVirtualItems()`. The rendered item set is `geometry.itemsInRange(firstBand.start, lastBand.start + lastBand.height)`, which also returns mosaic items that start in an earlier band and span into the range. Each item wrapper is positioned from its geometry rectangle, not from the virtualizer's `start`.
+The virtualizer's cumulative band starts equal the geometry band starts because the band heights and `gap` are the same. A unit test asserts this for all three band layouts. The rendered band range is `virtualizer.getVirtualItems()`. The rendered item set is the union of every visible band's `firstIndex..lastIndex`; those ranges include mosaic items that start in an earlier band and span into the range. Each item wrapper is positioned from its geometry rectangle, not from the virtualizer's `start`.
 
 The spacer height is `geometry.totalHeight`, not `virtualizer.getTotalSize()`. The two values must agree; a parity assertion in the virtualizer test catches drift.
 
@@ -105,13 +105,13 @@ The rendered set is `virtualizer.getVirtualItems()` mapped to geometry rectangle
 
 `useAnchorPreservation` captures the first visible item and pixel offset before a geometry-changing render, then restores it after the new geometry is committed.
 
-- Track a geometry key: `layout`, normalized `tileSize`, `columns`, `gap`, `tileAspectRatio`, `fallbackAspectRatio`, and the unique item IDs.
-- When the key changes (and it is not the first render), capture `scrollTop = root.scrollTop`, `anchor = previousGeometry.firstVisibleItem(scrollTop)`, and `offset = anchor ? scrollTop - anchor.y : 0`.
+- Track a geometry key: `layout`, normalized `tileSize`, `columns`, `gap`, `tileAspectRatio`, and `fallbackAspectRatio`; also track the normalized item-list reference.
+- When the key or item list changes (and it is not the first render), capture `scrollTop = root.scrollTop`, `anchor = previousGeometry.firstVisibleItem(scrollTop)`, and `offset = anchor ? scrollTop - anchor.y : 0`.
 - After the new geometry is available, find the new rectangle by `anchor.id`.
-  - If found: clamp `offset` to `[0, newRect.height]`, then set `root.scrollTop = clamp(newRect.y + offset, 0, maxScroll)`.
+  - If found: clamp `offset` to `[0, max(0, newRect.height - 1)]` so at least one pixel of the anchor stays visible, then set `root.scrollTop = clamp(newRect.y + offset, 0, maxScroll)`.
   - If not found: set `root.scrollTop = 0`.
-- A plain scroll does not change the geometry key and must not run the restore.
-- A `tileSize` change from 160 to 200 on the 20K fixture keeps the same first visible item and the same pixel offset (clamped to the new item height). The browser test records the item ID and offset before and after.
+- A plain scroll does not change the geometry key or item list and must not run the restore.
+- A `tileSize` change from 160 to 200 on the 20K fixture keeps the same first visible item and the same pixel offset (clamped below the new item height). The browser test records the item ID and offset before and after; a shrink case covers an old offset larger than the new item height.
 - The effect uses `useLayoutEffect` so the browser paints the restored position.
 
 ## Internal scroll helpers

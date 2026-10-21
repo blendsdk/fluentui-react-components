@@ -7,10 +7,14 @@ import { buildBandVirtualizerOptions, buildMasonryVirtualizerOptions } from './o
  * Resolves the mounted item window for the current layout and scroll offset.
  *
  * Fixed, justified, and mosaic layouts virtualize geometry bands, then include
- * every item that intersects the rendered band range. Masonry virtualizes
+ * the item index range carried by every rendered band. Masonry virtualizes
  * individual items with lanes. In both cases the geometry result remains the
  * source of rendered rectangles; this hook only chooses which indexes to
  * mount.
+ *
+ * The options are memoized so a scroll render keeps the same `getItemKey`
+ * identity. TanStack can then reuse its measurement cache instead of rebuilding
+ * the full item table on every scroll event.
  */
 export function useTileGridVirtualizer({
   layout,
@@ -20,21 +24,24 @@ export function useTileGridVirtualizer({
   overscan = 2,
 }: TileGridVirtualizerInput): TileGridVirtualWindow {
   const getScrollElement = useMemo(() => () => rootRef.current, [rootRef]);
-  const bandOptions = buildBandVirtualizerOptions({
-    geometry,
-    getScrollElement,
-    gap,
-    overscan,
-  });
-  const masonryOptions = buildMasonryVirtualizerOptions({
-    geometry,
-    getScrollElement,
-    gap,
-    overscan,
-  });
-  const virtualizer = useVirtualizer<HTMLDivElement, HTMLDivElement>(
-    layout === 'masonry' ? masonryOptions : bandOptions
+  const options = useMemo(
+    () =>
+      layout === 'masonry'
+        ? buildMasonryVirtualizerOptions({
+            geometry,
+            getScrollElement,
+            gap,
+            overscan,
+          })
+        : buildBandVirtualizerOptions({
+            geometry,
+            getScrollElement,
+            gap,
+            overscan,
+          }),
+    [layout, geometry, getScrollElement, gap, overscan]
   );
+  const virtualizer = useVirtualizer<HTMLDivElement, HTMLDivElement>(options);
   const virtualItems = virtualizer.getVirtualItems();
 
   if (layout === 'masonry') {
@@ -45,10 +52,24 @@ export function useTileGridVirtualizer({
     return { itemIndexes: [] };
   }
 
-  const firstBand = virtualItems[0];
-  const lastBand = virtualItems[virtualItems.length - 1];
+  const itemIndexes = new Set<number>();
+
+  for (const virtualBand of virtualItems) {
+    const band = geometry.bands[virtualBand.index];
+
+    if (!band) {
+      continue;
+    }
+
+    const first = Math.max(0, band.firstIndex);
+    const last = Math.min(geometry.itemRects.length - 1, band.lastIndex);
+
+    for (let index = first; index <= last; index += 1) {
+      itemIndexes.add(index);
+    }
+  }
 
   return {
-    itemIndexes: geometry.itemsInRange(firstBand.start, lastBand.start + lastBand.size),
+    itemIndexes: [...itemIndexes].sort((left, right) => left - right),
   };
 }
