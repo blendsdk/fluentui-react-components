@@ -39,6 +39,8 @@
 | P3-PE-002  | 3     | MINOR       | packages/react-components/src/components/TileGrid/virtualization/useTileGridVirtualizer.ts | fixed    |
 | P3-PE-003  | 3     | MINOR       | packages/react-components/src/components/TileGrid/useTileGrid.ts                           | fixed    |
 
+> **Phase 3 re-review:** clean — no remaining findings in the fix diff (`da873e3..855e9dc`).
+
 ## Deferred Rulings
 
 - RV-007: update the root `AGENTS.md` command and CI guidance in Phase 6 task 6.2.2.
