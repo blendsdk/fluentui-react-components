@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-21 10:50
-> **Progress**: 60/69 tasks (87%)
+> **Last Updated**: 2026-10-21 11:12
+> **Progress**: 69/69 tasks (100%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -340,7 +340,9 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 
 ## Phase 6: Performance, docs, and final verification
 
-> **Phase baseline tree**: _(recorded by the exec-plan skill from a temporary-index snapshot of committed, staged, unstaged, and untracked phase-start state)_
+> **Phase baseline tree**: `c8719439877dfe3fe03bff00858e48af5b854fde`
+> **Expected modification set**: `test/perf/tile-grid.perf.test.tsx`, `packages/react-components/README.md`, `README.md`, `AGENTS.md`, `packages/react-components/package.json`, `vite.config.ts`, `turbo.json`, `.github/workflows/ci.yml` only if the audit requires it, `stories/TileGrid.stories.tsx`, and the plan/findings documents.
+> **Scope mode**: `strict`
 > **Lenses**: `perf`, `api-surface`
 > **Reasoning**: high — performance budgets, package surface, documentation, and the final gate.
 
@@ -349,8 +351,8 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 **Reference**: 03-05 §Performance test; ST-13, ST-33 (supplement), ST-47/ST-49 (Phase 4 browser); RD-02 §Performance, AC 1, 11; RD-01 §Performance; PF-003, PF-010.
 **Objective**: Add the real geometry/mounted/scroll performance test and record the baseline before final hardening. The public 20K selection proxy is already asserted in Phase 4.
 
-- [ ] 6.1.1 [spec-author] Write `test/perf/tile-grid.perf.test.tsx` for geometry recompute, mounted wrappers, pure selection supplement, and scripted scroll — 03-05
-- [ ] 6.1.2 Run `pnpm test:perf`; record the measured values. If a budget already passes before any Phase 6 change, document that baseline as a pre-implementation pass with justification.
+- [x] 6.1.1 [spec-author] Write `test/perf/tile-grid.perf.test.tsx` for geometry recompute, mounted wrappers, pure selection supplement, and scripted scroll — 03-05 ✅ (completed: 2026-10-21 11:05)
+- [x] 6.1.2 Run `pnpm test:perf`; record the measured values. If a budget already passes before any Phase 6 change, document that baseline as a pre-implementation pass with justification. ✅ (completed: 2026-10-21 11:05)
 
 **Deliverables**:
 
@@ -362,10 +364,10 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 **Reference**: 03-04 §Package surface, §Documentation; 03-05 §CI jobs; AR #24.
 **Objective**: Fix any performance regression, finish the package docs, and review the stories/CI.
 
-- [ ] 6.2.1 If the perf test fails, profile and fix the hot path in `geometry/`, `virtualization/`, or `selection/transitions.ts`; do not relax the RD budgets — 03-05 §Performance test
-- [ ] 6.2.2 Add the internal “Phase A — unreleased” `TileGrid` section to `packages/react-components/README.md` (install, scroll contract, layouts, controlled `tileSize`, selection, empty state, strings, Phase A limitations), add the browser/perf commands to the root `README.md` commands table, and add the three commands plus the browser-matrix/performance jobs to `AGENTS.md` — 03-04 §Package surface; 03-05 §CI jobs; PF-001
-- [~] 6.2.3 Update `TileGrid.stories.tsx` docs/manual checklist and verify the story a11y addon reports no violations for the Phase A stories — 03-04 §Stories ⏳ (early subset: fixed/columns/masonry/justified/mosaic, empty, and controlled tile-size stories plus axe-clean checks completed 2026-10-21 00:02; selection and 20K stories and the final Phase A a11y review pending)
-- [ ] 6.2.4 Verify the final `package.json` (`vitest` pinned 5.0.5), `vite.config.ts`, `turbo.json`, and CI workflow match 03-05; run `pnpm test:browser` and, when the browsers are installed, `pnpm test:browser:all` — PF-008
+- [x] 6.2.1 If the perf test fails, profile and fix the hot path in `geometry/`, `virtualization/`, or `selection/transitions.ts`; do not relax the RD budgets — 03-05 §Performance test ✅ (completed: 2026-10-21 11:10; baseline passed, no hot-path change required)
+- [x] 6.2.2 Add the internal “Phase A — unreleased” `TileGrid` section to `packages/react-components/README.md` (install, scroll contract, layouts, controlled `tileSize`, selection, empty state, strings, Phase A limitations), add the browser/perf commands to the root `README.md` commands table, and add the three commands plus the browser-matrix/performance jobs to `AGENTS.md` — 03-04 §Package surface; 03-05 §CI jobs; PF-001 ✅ (completed: 2026-10-21 11:10)
+- [x] 6.2.3 Update `TileGrid.stories.tsx` docs/manual checklist and verify the story a11y addon reports no violations for the Phase A stories — 03-04 §Stories ✅ (completed: 2026-10-21 11:10; 11 stories, axe WCAG A/AA clean, no console errors)
+- [x] 6.2.4 Verify the final `package.json` (`vitest` pinned 5.0.5), `vite.config.ts`, `turbo.json`, and CI workflow match 03-05; run `pnpm test:browser` and, when the browsers are installed, `pnpm test:browser:all` — PF-008 ✅ (completed: 2026-10-21 11:10; manifest/build/CI match; Chromium browser suite passes, other browser binaries are not installed locally)
 
 **Deliverables**:
 
@@ -379,9 +381,9 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 **Reference**: 01-requirements.md §Acceptance Criteria; 03-05 §Verification checklist.
 **Objective**: Run the complete Phase A gate and confirm the deferred surface.
 
-- [ ] 6.3.1 Run `pnpm verify`, `pnpm test:browser`, `pnpm test:perf`, `pnpm storybook:build`, and `pnpm pack:check`; fix failures in the implementation
-- [ ] 6.3.2 Review the Phase A export pin and the deferred RD-03/RD-04 contract; confirm no out-of-scope symbol is required and no staged module is package-root exported
-- [ ] 6.3.3 Verify the release/contract-freeze gate: no publish/tag/release dispatch includes the TileGrid surface until RD-03/RD-04 complete and the final composed contract/export pin/dependency set is frozen; the package README is marked unreleased — PF-001
+- [x] 6.3.1 Run `pnpm verify`, `pnpm test:browser`, `pnpm test:perf`, `pnpm storybook:build`, and `pnpm pack:check`; fix failures in the implementation ✅ (completed: 2026-10-21 11:12; 542 jsdom, 18 Chromium, 11 perf, Storybook and pack checks passed)
+- [x] 6.3.2 Review the Phase A export pin and the deferred RD-03/RD-04 contract; confirm no out-of-scope symbol is required and no staged module is package-root exported ✅ (completed: 2026-10-21 11:12; no marquee/selection runtime export, no RD-04 symbol)
+- [x] 6.3.3 Verify the release/contract-freeze gate: no publish/tag/release dispatch includes the TileGrid surface until RD-03/RD-04 complete and the final composed contract/export pin/dependency set is frozen; the package README is marked unreleased — PF-001 ✅ (completed: 2026-10-21 11:12; Phase A is internal, no new tag or release dispatch, README marked unreleased)
 
 **Deliverables**:
 

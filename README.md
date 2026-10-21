@@ -36,6 +36,9 @@ pnpm install --frozen-lockfile
 | ----------------------------------- | ------------------------------------------------------------ |
 | `pnpm build`                        | Build every package (Vite bundle + declarations)             |
 | `pnpm test`                         | Run the test graph (Vitest, jsdom)                           |
+| `pnpm test:browser`                 | Run the Chromium layout and selection suite                  |
+| `pnpm test:browser:all`             | Run the Chromium/Firefox/WebKit matrix (CI)                  |
+| `pnpm test:perf`                    | Run the 20K geometry, selection and scroll suite (Chromium)  |
 | `pnpm type-check`                   | Type-check sources, tests and Storybook config               |
 | `pnpm storybook`                    | Component workbench on <http://localhost:6006>               |
 | `pnpm storybook:build`              | Static Storybook build                                       |

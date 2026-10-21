@@ -342,4 +342,4 @@ Update the package README with an **internal Phase A** `TileGrid` section:
 - Browser: four layouts, 20K mounted count, anchor preservation, scrollToSelected, image count; renderer DOM-read/offscreen (ST-48); 20K public selection proxy (ST-47).
 - Render count: one selection toggle calls `renderItem` only for the affected mounted cell; mounted count unchanged (ST-49).
 - Type/export pin: Phase A runtime and type exports.
-- Storybook: all Phase A stories render without console errors; the 20K story builds.
+- Storybook: all Phase A stories render without console errors; the 20K story builds. Final Phase A check (2026-10-21): 11 stories, axe WCAG A/AA clean, no console errors.

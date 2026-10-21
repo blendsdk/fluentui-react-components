@@ -213,6 +213,22 @@ The workflow uses the existing pnpm/Node setup actions and caching. No secrets, 
 - No image network mocks; the fixture uses data URLs and the image test counts elements, not requests.
 - No snapshot files for geometry (RD-02 AC 2); hand-computed values and invariants are the oracle.
 
+## Recorded Phase A baseline
+
+Measured in Chromium on 2026-10-21 against the completed Phase A implementation (`test/perf/tile-grid.perf.test.tsx`). The 20K fixture, 1440×900 container, `tileSize=160`, and `gap=8` are shared with the browser suite.
+
+| Measurement                                            | Result            | Budget     |
+| ------------------------------------------------------ | ----------------- | ---------- |
+| Geometry p95, fixed                                    | 25.10 ms          | < 200 ms   |
+| Geometry p95, masonry                                  | 8.40 ms           | < 200 ms   |
+| Geometry p95, justified                                | 22.40 ms          | < 200 ms   |
+| Geometry p95, mosaic                                   | 22.90 ms          | < 200 ms   |
+| Mounted wrappers, fixed / masonry / justified / mosaic | 64 / 72 / 50 / 45 | < 120 each |
+| Pure selection toggle p95, 20K set                     | 0.40 ms           | < 16 ms    |
+| Scripted scroll frame-interval p95, fixed 20K          | 33.30 ms          | < 50 ms    |
+
+The scroll interval is logged against the 16.67 ms 60fps target but asserted only at the accepted 50 ms pathological-regression budget. The public 20K selection proxy and affected-cell render count remain covered by the Phase 4 browser selection suite.
+
 ## Verification checklist
 
 - [ ] All Phase A ST cases are defined in `07-testing-strategy.md` with concrete input/output.

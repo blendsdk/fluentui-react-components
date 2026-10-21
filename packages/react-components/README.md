@@ -927,6 +927,138 @@ Call `run` from event handlers or effects, not during render.
   `ariaLive`) are intentionally not ported. The scrim and text follow the
   `FluentProvider` theme; `label` is the only user-facing string.
 
+### TileGrid (Phase A — unreleased)
+
+> **Internal Phase A surface.** The package does not publish or tag this
+> component until the later selection/focus and arranging work completes and
+> the final public contract, export pin and dependency set are frozen.
+
+`TileGrid<T>` is a generic, virtualized tile collection with fixed, masonry,
+justified and mosaic layouts. It owns the scroll container and list semantics;
+the application owns the items, tile content and selection state. The grid
+ships with `@tanstack/react-virtual` as a direct dependency, installed with the
+package; React, Fluent UI and React Hook Form stay peers.
+
+#### Scroll contract
+
+The grid root is the scroll container. Give it a bounded height through a sized
+parent or a native `style` height; the 20K benchmark story uses a 900px frame.
+Window/page scrolling is not supported. `className` and `style` merge with the
+component's root values, and the caller wins. A reported scroll helper and the
+`scrollToSelected()` handle operate on this root.
+
+#### Layouts and sizing
+
+| Layout      | Use it for                                                             |
+| ----------- | ---------------------------------------------------------------------- |
+| `fixed`     | Uniform square or ratio-shaped tiles in automatic or explicit columns. |
+| `masonry`   | Variable-height tiles packed into the shortest lane.                   |
+| `justified` | Photo-wall rows that fill the container width.                         |
+| `mosaic`    | A dense base grid with optional 2x2 feature spans.                     |
+
+`tileSize` defaults to 160 and is clamped to `minTileSize` (120) and
+`maxTileSize` (320); `gap` defaults to 8. `tileAspectRatio` and
+`fallbackAspectRatio` cover fixed and invalid intrinsic ratios. `getItemSpan`
+supplies mosaic spans. `tileSize` is controlled by the application and changing
+it preserves the first visible item and its pixel offset; there are no built-in
+zoom controls in this phase.
+
+#### Selection
+
+`selectionMode` defaults to `none`. `single` replaces the selection; `multiselect`
+supports plain replace, Ctrl/Cmd toggle and Shift range selection. `selectedIds`
+is the controlled source of truth; `defaultSelectedIds` seeds the uncontrolled
+case; `onSelectionChange` receives the requested next set only after a user
+interaction. Hidden IDs are preserved. Clicks on buttons, links, inputs,
+selects, textareas, menu items, checkboxes, radios, switches, editable content
+or `[data-tile-grid-interactive]` do not select.
+
+```tsx
+import { useCallback, useRef, useState } from 'react';
+import { Button } from '@fluentui/react-components';
+import {
+  TileGrid,
+  type TileGridHandle,
+  type TileGridItemRenderArgs,
+} from '@blendsdk/fluentui-react-components';
+
+const getItemId = (photo: Photo) => photo.id;
+const getItemLabel = (photo: Photo) => photo.title;
+const getAspectRatio = (photo: Photo) => photo.width / photo.height;
+const renderPhoto = ({ item, selected }: TileGridItemRenderArgs<Photo>) => (
+  <img
+    src={item.thumbnailUrl}
+    alt=""
+    style={{ outline: selected ? '2px solid #0f6cbd' : undefined }}
+  />
+);
+
+function PhotoPicker({ photos }: { photos: readonly Photo[] }) {
+  const [selected, setSelected] = useState<ReadonlySet<string>>(new Set());
+  const grid = useRef<TileGridHandle>(null);
+  const renderItem = useCallback(renderPhoto, []);
+
+  return (
+    <>
+      <Button onClick={() => grid.current?.selectAll()}>Select all</Button>
+      <div style={{ height: 600 }}>
+        <TileGrid
+          ref={grid}
+          items={photos}
+          getItemId={getItemId}
+          getItemLabel={getItemLabel}
+          getItemAspectRatio={getAspectRatio}
+          renderItem={renderItem}
+          layout="masonry"
+          selectionMode="multiselect"
+          selectedIds={selected}
+          onSelectionChange={setSelected}
+          ariaLabel="Photos"
+        />
+      </div>
+    </>
+  );
+}
+```
+
+The handle exposes `selectAll()`, `clearSelection()` and `scrollToSelected()`.
+`selectAll()` is multiselect-only; `clearSelection()` also clears hidden IDs;
+`scrollToSelected()` targets the first selected item in current order.
+
+#### Empty state and strings
+
+The default empty message is `No items`. Override it with
+`strings={{ emptyMessage: 'No photos' }}`; a blank string falls back to the
+default. `renderEmpty()` replaces the whole empty state and wins over the
+string. The empty state is rendered as the list's single list item inside the
+named root.
+
+#### Accessibility and performance
+
+The root is a named `role="list"`; every mounted tile is a `listitem` with
+`aria-setsize`, `aria-posinset` and the `getItemLabel` name. Prefer
+`aria-labelledby` when a visible heading exists; `ariaLabel` is the fallback.
+The root is keyboard-focusable by default.
+
+At 20K items the grid mounts only the visible window plus two rows of overscan
+(under 120 wrappers at 1440×900, 160px tiles and 8px gaps). Pass stable
+`getItemId`, `getItemLabel`, aspect-ratio and `renderItem` callbacks (module
+functions or `useCallback`) so a selection change re-renders only the affected
+mounted cell. The `TwentyThousandBenchmark` Storybook story and the browser/
+performance suites exercise the same fixture.
+
+#### Phase A limitations
+
+- No selection controls, roving focus, keyboard selection, live announcements,
+  `isSelectable`/`isDisabled`, `interactionMode`, `enableMarquee`,
+  `onItemActivate` or `scrollResetKey` yet.
+- The marquee engine is internal and tested but not mounted; the overlay and
+  pointer host follow in a later release.
+- No tile shell, actions, drag/reorder or full photo-library recipe yet.
+- The public type is a deliberate Phase A subset; later work extends it and
+  completes the final export pin. Do not treat this section as a release
+  authorization.
+
 ## Agent skills
 
 The package ships two distributable skills in the published `skills/`
