@@ -43,6 +43,14 @@
 | P4-RV-003  | 4     | MINOR       | packages/react-components/src/components/TileGrid/TileGrid.types.ts                        | fixed    |
 | P4-RV-004  | 4     | MINOR       | packages/react-components/src/components/TileGrid/stories/TileGridSelection.story.tsx      | fixed    |
 | P4-RV-005  | 4     | MINOR       | packages/react-components/vitest.browser.config.ts                                         | fixed    |
+| P5-RV-001  | 5     | MAJOR       | packages/react-components/src/components/TileGrid/marquee/createMarqueeController.ts       | fixed    |
+| P5-RV-002  | 5     | MINOR       | packages/react-components/src/components/TileGrid/marquee/createMarqueeController.ts       | fixed    |
+| P5-RV-003  | 5     | MINOR       | packages/react-components/src/components/TileGrid/marquee/types.ts                         | fixed    |
+| P5-RV-004  | 5     | MINOR       | packages/react-components/src/components/TileGrid/marquee/createMarqueeController.ts       | fixed    |
+| P5-RV-005  | 5     | MINOR       | packages/react-components/test/tile-grid-marquee.impl.test.ts                              | fixed    |
+| P5-PE-001  | 5     | MAJOR       | packages/react-components/src/components/TileGrid/marquee/createMarqueeController.ts       | fixed    |
+| P5-PE-002  | 5     | MINOR       | packages/react-components/src/components/TileGrid/marquee/createMarqueeController.ts       | fixed    |
+| P5-PE-003  | 5     | MINOR       | packages/react-components/src/components/TileGrid/marquee/createMarqueeController.ts       | fixed    |
 
 > **Phase 3 re-review:** clean — no remaining findings in the fix diff (`da873e3..855e9dc`).
 

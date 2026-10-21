@@ -1,3 +1,4 @@
+import { areSetsEqual } from '../selection/transitions';
 import { normalizeRect, rectsIntersect } from './intersection';
 import type {
   MarqueeController,
@@ -9,24 +10,6 @@ import type {
 type MarqueePhase = 'idle' | 'pending' | 'active' | 'committed' | 'cancelled';
 
 const EMPTY_SELECTION: ReadonlySet<string> = new Set<string>();
-
-function selectionEquals(left: ReadonlySet<string>, right: ReadonlySet<string>): boolean {
-  if (left === right) {
-    return true;
-  }
-
-  if (left.size !== right.size) {
-    return false;
-  }
-
-  for (const id of left) {
-    if (!right.has(id)) {
-      return false;
-    }
-  }
-
-  return true;
-}
 
 function defaultRequestFrame(callback: FrameRequestCallback): number {
   return typeof requestAnimationFrame === 'function' ? requestAnimationFrame(callback) : 0;
@@ -71,6 +54,7 @@ export function createMarqueeController({
   let additive = false;
   let preSelection: ReadonlySet<string> = EMPTY_SELECTION;
   let preview: ReadonlySet<string> = EMPTY_SELECTION;
+  let lastHits: ReadonlySet<string> = EMPTY_SELECTION;
   let rect: MarqueeRect | null = null;
   let frameHandle: number | null = null;
   let captured = false;
@@ -101,40 +85,60 @@ export function createMarqueeController({
   const containerBounds = (): DOMRect | null =>
     geometry.getScrollContainer()?.getBoundingClientRect() ?? null;
 
-  const contentPoint = (clientX: number, clientY: number): { x: number; y: number } => {
-    const bounds = containerBounds();
-
+  /**
+   * Converts a client point to content coordinates.
+   *
+   * The pointer-down anchor is converted once; later points use the current
+   * scroll offset so auto-scroll keeps the rectangle anchored while its far
+   * edge follows the pointer through the content.
+   */
+  const contentPoint = (
+    clientX: number,
+    clientY: number,
+    bounds = containerBounds()
+  ): { x: number; y: number } => {
     return {
       x: clientX - (bounds?.left ?? 0),
       y: clientY - (bounds?.top ?? 0) + geometry.getScrollOffset(),
     };
   };
 
-  const edgeDelta = (clientY: number): number => {
-    const bounds = containerBounds();
-
+  /**
+   * Returns the signed auto-scroll speed for the current pointer position.
+   *
+   * Positive means scroll down, negative means scroll up. The distance is
+   * measured from the nearest edge; at or beyond an edge the pointer cannot
+   * move farther, so the maximum speed is used instead of a dead zone.
+   */
+  const edgeDelta = (clientY: number, bounds = containerBounds()): number => {
     if (!bounds) {
       return 0;
     }
 
     const bottomDistance = bounds.bottom - clientY;
     const topDistance = clientY - bounds.top;
-    const bottomSpeed = Math.min(maxScrollSpeed, Math.max(1, bottomDistance));
-    const topSpeed = Math.min(maxScrollSpeed, Math.max(1, topDistance));
 
-    if (bottomDistance > 0 && bottomDistance <= edgeThreshold) {
-      return bottomSpeed;
+    if (bottomDistance <= 0) {
+      return maxScrollSpeed;
     }
 
-    if (topDistance > 0 && topDistance <= edgeThreshold) {
-      return -topSpeed;
+    if (topDistance <= 0) {
+      return -maxScrollSpeed;
+    }
+
+    if (bottomDistance <= edgeThreshold) {
+      return Math.min(maxScrollSpeed, Math.max(1, bottomDistance));
+    }
+
+    if (topDistance <= edgeThreshold) {
+      return -Math.min(maxScrollSpeed, Math.max(1, topDistance));
     }
 
     return 0;
   };
 
   const updatePreview = (nextPreview: ReadonlySet<string>): void => {
-    if (selectionEquals(preview, nextPreview)) {
+    if (areSetsEqual(preview, nextPreview)) {
       return;
     }
 
@@ -142,35 +146,44 @@ export function createMarqueeController({
     onPreview?.(new Set(nextPreview));
   };
 
-  const updateFromPointer = (clientX: number, clientY: number): void => {
-    const current = contentPoint(clientX, clientY);
+  const updateFromPointer = (
+    clientX: number,
+    clientY: number,
+    bounds = containerBounds()
+  ): void => {
+    const current = contentPoint(clientX, clientY, bounds);
     rect = normalizeRect(startContentX, startContentY, current.x, current.y);
 
-    const next = new Set<string>();
-
-    if (additive) {
-      for (const id of preSelection) {
-        next.add(id);
-      }
-    }
+    const hits = new Set<string>();
 
     for (const id of geometry.getVisibleItemIds()) {
       const itemRect = geometry.getItemRect(id);
 
       if (itemRect && isSelectable(id) && rectsIntersect(itemRect, rect)) {
-        next.add(id);
+        hits.add(id);
       }
     }
 
-    updatePreview(next);
-  };
-
-  const scheduleFrame = (): void => {
-    if (phase !== 'active' || frameHandle !== null) {
+    if (areSetsEqual(lastHits, hits)) {
       return;
     }
 
-    if (edgeDelta(pointerClientY) === 0) {
+    lastHits = hits;
+
+    if (!additive) {
+      updatePreview(hits);
+      return;
+    }
+
+    const next = new Set(preSelection);
+    for (const id of hits) {
+      next.add(id);
+    }
+    updatePreview(next);
+  };
+
+  const scheduleFrame = (delta: number): void => {
+    if (phase !== 'active' || frameHandle !== null || delta === 0) {
       return;
     }
 
@@ -184,15 +197,24 @@ export function createMarqueeController({
       return;
     }
 
-    const delta = edgeDelta(pointerClientY);
+    const bounds = containerBounds();
+    const delta = edgeDelta(pointerClientY, bounds);
 
     if (delta === 0) {
       return;
     }
 
+    const before = geometry.getScrollOffset();
     geometry.scrollBy(delta);
-    updateFromPointer(pointerClientX, pointerClientY);
-    scheduleFrame();
+    updateFromPointer(pointerClientX, pointerClientY, bounds);
+
+    // Stop at a boundary instead of rescheduling a no-op frame forever; the
+    // next pointer move restarts the loop if the pointer is still in the zone.
+    if (geometry.getScrollOffset() !== before) {
+      scheduleFrame(delta);
+    } else {
+      stopFrames();
+    }
   }
 
   const cancel = (): void => {
@@ -204,6 +226,7 @@ export function createMarqueeController({
     stopFrames();
     rect = null;
     preview = new Set(preSelection);
+    lastHits = EMPTY_SELECTION;
     onCancel?.(new Set(preSelection));
     releaseCapture();
   };
@@ -225,10 +248,12 @@ export function createMarqueeController({
       additive = event.shiftKey || event.ctrlKey || event.metaKey;
       preSelection = new Set(getSelectedIds());
       preview = additive ? new Set(preSelection) : EMPTY_SELECTION;
+      lastHits = EMPTY_SELECTION;
       rect = null;
       phase = 'pending';
 
-      const start = contentPoint(event.clientX, event.clientY);
+      const bounds = containerBounds();
+      const start = contentPoint(event.clientX, event.clientY, bounds);
       startContentX = start.x;
       startContentY = start.y;
 
@@ -264,10 +289,13 @@ export function createMarqueeController({
         phase = 'active';
       }
 
-      updateFromPointer(event.clientX, event.clientY);
+      const bounds = containerBounds();
+      updateFromPointer(event.clientX, event.clientY, bounds);
 
-      if (edgeDelta(event.clientY) !== 0) {
-        scheduleFrame();
+      const delta = edgeDelta(event.clientY, bounds);
+
+      if (delta !== 0) {
+        scheduleFrame(delta);
       } else {
         stopFrames();
       }

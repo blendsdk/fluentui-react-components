@@ -2,7 +2,7 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-21 10:41
+> **Last Updated**: 2026-10-21 10:50
 > **Progress**: 60/69 tasks (87%)
 > **CodeOps Artifact Schema**: 1
 
@@ -289,6 +289,7 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 > **Phase baseline tree**: `81f821af17be9ff33a915828bef577858d2807db`
 > **Expected modification set**: `src/components/TileGrid/marquee/**`, `test/tile-grid-marquee.spec.test.ts`, `test/tile-grid-marquee.impl.test.ts`, and the plan/findings documents.
 > **Scope mode**: `strict`
+> **Review**: P5-RV-001–P5-RV-005 and P5-PE-001–P5-PE-003 fixed; scoped re-review pending.
 > **Lenses**: `perf`
 > **Reasoning**: high — pointer state, capture-loss ordering, auto-scroll frames, and commit/cancel correctness.
 

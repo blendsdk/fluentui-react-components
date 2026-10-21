@@ -217,7 +217,6 @@ function createHarness(settings: HarnessSettings = {}) {
       getScrollOffset,
       scrollBy,
     },
-    getCurrentIds: () => [...visibleIds],
     getSelectedIds: () => new Set(selectedIds),
     isSelectable,
     onCommit,

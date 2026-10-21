@@ -1,6 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
-import { createMarqueeController } from '../src/components/TileGrid/marquee';
-import { normalizeRect, rectsIntersect } from '../src/components/TileGrid/marquee';
+import {
+  createMarqueeController,
+  normalizeRect,
+  rectsIntersect,
+} from '../src/components/TileGrid/marquee';
 
 interface Rect {
   x: number;
@@ -81,7 +84,6 @@ function createHarness(
       getScrollOffset: () => scroll.offset,
       scrollBy,
     },
-    getCurrentIds: () => visibleIds,
     getSelectedIds: () => new Set(options.selectedIds ?? []),
     isSelectable: () => true,
     onCommit,
@@ -162,6 +164,20 @@ describe('marquee controller implementation details', () => {
     expect(harness.onPreview).not.toHaveBeenCalled();
     expect(harness.onCommit).not.toHaveBeenCalled();
     expect(harness.onCancel).not.toHaveBeenCalled();
+  });
+
+  it('uses maximum speed when the pointer reaches the exact edge', () => {
+    const harness = createHarness();
+
+    harness.controller.handlePointerDown(pointer(10, 10));
+    harness.controller.handlePointerMove(pointer(40, 600));
+
+    const [callback] = [...harness.pending.values()];
+    expect(callback).toBeDefined();
+    callback?.(16);
+
+    expect(harness.scrollBy).toHaveBeenCalled();
+    expect(harness.scrollBy.mock.calls[0][0]).toBe(20);
   });
 
   it('drops a stale frame callback after dispose', () => {

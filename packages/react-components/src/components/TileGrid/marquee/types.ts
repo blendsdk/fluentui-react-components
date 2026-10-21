@@ -40,8 +40,6 @@ export interface PointerLikeEvent {
 export interface MarqueeSelectionOptions {
   /** Cached geometry view for visible IDs and item rectangles. */
   geometry: TileGridGeometryPort;
-  /** Returns the current item IDs in display order. */
-  getCurrentIds(): readonly string[];
   /** Returns the selection present when the gesture starts. */
   getSelectedIds(): ReadonlySet<string>;
   /** Whether an item may be included in the marquee preview. */
