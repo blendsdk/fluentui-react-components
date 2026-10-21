@@ -104,18 +104,25 @@ The execution plan stages the ref layer: Phase 2 builds the generic component sh
 
 ```tsx
 const TileGridBase = <T,>(props: TileGridProps<T>, ref: React.Ref<TileGridHandle>) => {
-  const state = useTileGrid(props, ref);
+  const state = useTileGrid(props);
   return renderTileGrid(state);
 };
 
-TileGridBase.displayName = 'TileGrid';
-
-export const TileGrid = React.forwardRef(TileGridBase) as <T>(
+const TileGridForwardRef = React.forwardRef(TileGridBase) as <T>(
   props: TileGridProps<T> & React.RefAttributes<TileGridHandle>
 ) => React.ReactElement;
+
+const TileGridCallable = <T,>(
+  props: TileGridProps<T> & React.RefAttributes<TileGridHandle>
+): React.ReactElement => {
+  const { ref, ...rest } = props;
+  return <TileGridForwardRef {...rest} ref={ref} />;
+};
+
+export const TileGrid = TileGridCallable;
 ```
 
-This follows the existing `FormTextField` pattern: one compile-time assertion restores the generic call signature; no `as any`/`as unknown` (AR #22).
+The inner component follows the existing `FormTextField` generic `forwardRef` pattern; no `as any`/`as unknown` is used. React 19 passes `ref` as a regular prop to the callable wrapper, which forwards it to the inner component. The public export stays callable while the inner component owns `useImperativeHandle` (AR #22, AR-28).
 
 ## State hook
 

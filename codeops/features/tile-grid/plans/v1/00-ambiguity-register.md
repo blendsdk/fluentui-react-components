@@ -1,6 +1,6 @@
 ## Ambiguity Register: TileGrid Phase A Implementation Plan
 
-> **Status**: ✅ GATE PASSED — all 27 items resolved; preflight refinements applied
+> **Status**: ✅ GATE PASSED — all 28 items resolved; preflight refinements applied
 > **Last Updated**: 2026-10-21 09:09
 
 | #   | Category          | Ambiguity / Gap                                                                                                                                                                                                                                                                                                                                                                | Options Presented                                                                                                                                                                                                                                              | User Decision                                                                                                                                                                                                                                                                                                                                                                                                                                          | Status      |
@@ -33,7 +33,9 @@
 
 | 26 | Testing (runtime) | TanStack Virtual's masonry lane identity differs from the geometry engine's lowest-lane tie rule when two lanes end at the same offset. The rendered `start` values still match geometry for all 20K items, but a strict lane-number assertion fails at item 14 (geometry lane 3, virtualizer lane 4). | A) keep the geometry's lowest-lane rule and assert start/end parity plus a valid lane range · B) change the geometry tie rule to TanStack's last-index rule · C) replace TanStack's lane assignment with a custom range calculator | Authority: AI — delegated by --auto-design. Decision: **A**. Geometry remains authoritative; the test asserts every item's start and end plus a valid lane range, not a specific lane number on an equal-offset tie. | ✅ Resolved |
 
-| 27 | Testing (runtime) | The Phase 2 node import smoke asserts that `TileGrid` is a function. This phase makes the public component a generic `forwardRef`, which is an exotic component object whose `$$typeof` is the React forward-ref symbol. The old assertion fails even though the module imports safely and the planned ref API works. | A) update the smoke to assert that the public component is defined and has the forward-ref marker, keeping the no-render import check · B) avoid `forwardRef` and make the component callable · C) remove the smoke assertion | Authority: AI — delegated by --auto-design. Decision: **A**. The smoke keeps its real purpose: importing the package in Node must not touch browser globals. | ✅ Resolved |
+| 27 | Testing (runtime) | The Phase 2 node import smoke asserts that `TileGrid` is a function. This phase makes the public component a generic `forwardRef`, which is an exotic component object whose `$$typeof` is the React forward-ref symbol. The old assertion fails even though the module imports safely and the planned ref API works. | A) update the smoke to assert that the public component is defined and has the forward-ref marker, keeping the no-render import check · B) avoid `forwardRef` and make the component callable · C) remove the smoke assertion | Authority: AI — delegated by --auto-design. Decision: **A**, superseded by AR-28. Keep the node import smoke unchanged and preserve the callable public component shape. | ✅ Resolved — superseded by AR-28 |
+
+| 28 | Testing (runtime) | The planned generic `forwardRef` changes the runtime export into an exotic component object and would force edits to the node import smoke and export-pin specification. The public contract only needs a callable component with a `TileGridHandle` ref. | A) keep the internal `forwardRef` and expose a thin callable wrapper, leaving the spec tests untouched and pinning the new types in a non-spec type test · B) edit the two specification tests · C) drop the ref handle | Authority: AI — delegated by --auto-design. Decision: **A**. Public `TileGrid` stays callable; the internal forward-ref component owns the handle; the package-export and node-import specs remain unchanged. | ✅ Resolved |
 
 ### Resolution Notes
 
@@ -110,6 +112,23 @@ Hardening: Not required — testing-shape choice with no product, security, data
 Policy version: 1
 Root invocation ID: exec-plan-tile-grid-20261021-0842
 Reopen triggers: The public component stops using forwardRef, or the node import smoke starts rendering.
+```
+
+**AR-28 (runtime):** The implementation keeps the internal generic `forwardRef` component but exports a thin callable wrapper. React 19 passes `ref` as a regular prop to function components; the wrapper forwards it to the internal component, which owns `useImperativeHandle`. This preserves the established callable import shape, avoids modifying the node import smoke and the package-export specification, and still supports the public `TileGridHandle`. The new selection types are pinned by a separate non-spec type test.
+
+```text
+Authority: AI — delegated by --auto-design
+Eligibility: Testing strategy and public component shape — the ref capability is already authorized; only the export form changes.
+Objective: Add the selection handle without editing immutable specification tests.
+Decision: Keep an internal forwardRef component and export a callable wrapper; keep the package-export and SSR specs unchanged; pin the new types in a non-spec test.
+Evidence: React 19 ref-as-prop semantics; the selection browser suite exercises the ref handle; the runtime export list remains unchanged.
+Rejected alternatives: Edit the specification tests (violates the immutable-oracle rule); drop the ref handle (loses the planned handle API); add a new dependency (unnecessary).
+Strongest counterargument: The wrapper adds one component layer and relies on React 19 ref semantics; the package peer range is React 19, and the browser ref tests cover the behavior.
+Confidence: High — the wrapper is small, uses the existing forwardRef implementation, and is covered by the selection browser suite.
+Hardening: Not required — no security, data, or compatibility surface beyond the already approved handle.
+Policy version: 1
+Root invocation ID: exec-plan-tile-grid-20261021-0842
+Reopen triggers: React stops passing ref as a prop to function components; a ref timing or composition issue appears; the package supports React 18.
 ```
 
 ### Preflight Refinements

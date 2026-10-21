@@ -227,7 +227,7 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 ## Phase 4: Selection store and public selection
 
 > **Phase baseline tree**: `f83706129ccf304fc07eb5cfa42188ee3062bf3e`
-> **Expected modification set**: `src/components/TileGrid/selection/**`, `TileGrid.types.ts`, `TileGrid.tsx`, `useTileGrid.ts`, `renderTileGrid.tsx`, `TileGridItemView.tsx`, `index.ts`, `src/index.ts`, `stories/TileGridSelection.story.tsx`, `stories/TileGrid.stories.tsx`, `test/tile-grid-selection.spec.test.tsx`, `test/browser/tile-grid-selection.browser.test.tsx`, `test/tile-grid-selection.impl.test.tsx`, `test/package-exports.spec.test.ts`, and the plan/findings documents.
+> **Expected modification set**: `src/components/TileGrid/selection/**`, `TileGrid.types.ts`, `TileGrid.tsx`, `useTileGrid.ts`, `renderTileGrid.tsx`, `TileGridItemView.tsx`, `index.ts`, `src/index.ts`, `stories/TileGridSelection.story.tsx`, `stories/TileGrid.stories.tsx`, `test/tile-grid-selection.spec.test.tsx`, `test/browser/tile-grid-selection.browser.test.tsx`, `test/tile-grid-selection.impl.test.tsx`, `test/tile-grid-selection.types.test.tsx`, and the plan/findings documents.
 > **Scope mode**: `strict`
 > **Lenses**: `api-surface`
 > **Reasoning**: high — the selection contract is public, controlled-first, and shared with the later focus/keyboard plan.
@@ -255,7 +255,7 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 - [x] 4.2.2 Add `selection/useGridSelection.ts` and `selection/clickSelection.ts` — 03-03 §Controlled/uncontrolled resolution, §Click mapping ✅ (completed: 2026-10-21 09:58)
 - [x] 4.2.3 Extend `TileGrid.types.ts` with `TileGridSelectionMode`, selection props, and `TileGridHandle` — 03-04 §Public types ✅ (completed: 2026-10-21 09:58)
 - [x] 4.2.4 Update `TileGrid.tsx` to `forwardRef` with `TileGridHandle`, and update `useTileGrid.ts`/`renderTileGrid.tsx`/`TileGridItemView.tsx` to use the store, selected render args, stable click handler, memoized cell, and handle — 03-03 §Handle semantics; 03-04 §Generic forwardRef, §Click selection; PF-005 ✅ (completed: 2026-10-21 09:58)
-- [x] 4.2.5 Update `src/index.ts` and `test/package-exports.spec.test.ts` with the selection types/handle — 03-04 §Package surface ✅ (completed: 2026-10-21 09:58)
+- [x] 4.2.5 Update `src/index.ts` and add `test/tile-grid-selection.types.test.tsx` with the selection types/handle; leave the package-export specification unchanged — 03-04 §Package surface ✅ (completed: 2026-10-21 09:58)
 - [x] 4.2.6 Add `TileGridSelection.story.tsx` and re-export it from `TileGrid.stories.tsx` — 03-04 §Stories ✅ (completed: 2026-10-21 09:58)
 - [x] 4.2.7 Run the selection spec tests; verify they pass (green phase); fix the implementation, not the tests ✅ (completed: 2026-10-21 09:58)
 
