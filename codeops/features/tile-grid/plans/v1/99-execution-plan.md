@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-21 00:02
-> **Progress**: 26/69 tasks (38%)
+> **Last Updated**: 2026-10-21 08:56
+> **Progress**: 28/69 tasks (41%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -162,7 +162,9 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 
 ## Phase 3: Virtualization, scrolling, and 20K
 
-> **Phase baseline tree**: _(recorded by the exec-plan skill from a temporary-index snapshot of committed, staged, unstaged, and untracked phase-start state)_
+> **Phase baseline tree**: `563c90780e45fcc79400407dc551ddc0e9f8af81`
+> **Expected modification set**: `src/components/TileGrid/virtualization/**`, `src/components/TileGrid/useTileGrid.ts`, `src/components/TileGrid/renderTileGrid.tsx`, `src/components/TileGrid/TileGrid.tsx`, `src/components/TileGrid/stories/**`, `test/browser/tile-grid-layout.browser.test.tsx`, `test/tile-grid-virtualizer.impl.test.tsx`, `test/tile-grid-layout.impl.test.tsx`, and the plan/roadmap documents.
+> **Scope mode**: `strict`
 > **Lenses**: `perf`
 > **Reasoning**: high — 20K mounting, measurement, scrolling, and anchor behavior are performance-critical and browser-dependent.
 
@@ -171,8 +173,8 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 **Reference**: 03-02 §Scroll container–§Performance; ST-13–ST-15, ST-21, ST-22, ST-48; RD-02 AC 1, 4, 8, 11–13; PF-004.
 **Objective**: Define the browser-level mounting, anchor, image-bound, resize, DOM-read, and offscreen behavior before virtualization exists.
 
-- [ ] 3.1.1 [spec-author] Write `test/browser/tile-grid-layout.browser.test.tsx` covering ST-13–ST-15, ST-21, ST-22, ST-48 — 03-02
-- [ ] 3.1.2 Run `pnpm test:browser`; verify the 20K/layout cases fail because the component still renders all items and has no anchor/scroll behavior (red phase)
+- [x] 3.1.1 [spec-author] Write `test/browser/tile-grid-layout.browser.test.tsx` covering ST-13–ST-15, ST-21, ST-22, ST-48 — 03-02 ✅ (completed: 2026-10-21 08:56)
+- [x] 3.1.2 Run `pnpm test:browser`; verify the 20K/layout cases fail because the component still renders all items and has no anchor/scroll behavior (red phase) ✅ (completed: 2026-10-21 08:56)
 
 **Deliverables**:
 
