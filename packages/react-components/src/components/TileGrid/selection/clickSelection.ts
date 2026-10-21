@@ -7,12 +7,12 @@ const INTERACTIVE_SELECTOR = [
   'input',
   'select',
   'textarea',
+  'summary',
   '[role="button"]',
   '[role="menuitem"]',
   '[role="checkbox"]',
   '[role="radio"]',
   '[role="switch"]',
-  '[contenteditable="true"]',
   '[data-tile-grid-interactive]',
 ].join(',');
 
@@ -21,9 +21,21 @@ const INTERACTIVE_SELECTOR = [
  * element explicitly marked by the application.
  */
 export function isInteractiveClickTarget(target: EventTarget | null): boolean {
-  return typeof Element !== 'undefined' && target instanceof Element
-    ? target.closest(INTERACTIVE_SELECTOR) !== null
-    : false;
+  if (typeof Element === 'undefined' || !(target instanceof Element)) {
+    return false;
+  }
+  if (target.closest(INTERACTIVE_SELECTOR)) {
+    return true;
+  }
+
+  // Editable state is inherited. The nearest explicit valid value wins, so
+  // a non-editable island inside an editor must not inherit the outer value.
+  for (let element: Element | null = target; element; element = element.parentElement) {
+    const value = element.getAttribute('contenteditable')?.toLowerCase();
+    if (value === 'false') return false;
+    if (value === '' || value === 'true' || value === 'plaintext-only') return true;
+  }
+  return false;
 }
 
 /** Inputs for the public item click mapping. */

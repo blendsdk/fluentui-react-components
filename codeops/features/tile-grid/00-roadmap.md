@@ -13,12 +13,12 @@
 
 ## Tracker
 
-| ID    | Title                                           | RD                                                               | Plan                                                         | Stage               | Status | Last Updated | Depends-on / Blocker    |
-| ----- | ----------------------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------ | ------------------- | ------ | ------------ | ----------------------- |
-| RD-01 | Selection and marquee internals                 | [RD-01](requirements/RD-01-selection-and-marquee.md)             | [v1](plans/v1/00-index.md), [rd-03](plans/rd-03/00-index.md) | 🔄 Executing        | 🔄     | 2026-10-21   | RD-02 (geometry port)   |
-| RD-02 | TileGrid layout and virtualization              | [RD-02](requirements/RD-02-layout-and-virtualization.md)         | [v1](plans/v1/00-index.md), [rd-03](plans/rd-03/00-index.md) | 🔄 Executing        | 🔄     | 2026-10-21   | Final contract: RD-04   |
-| RD-03 | Selection integration, focus, and accessibility | [RD-03](requirements/RD-03-selection-focus-and-accessibility.md) | [rd-03](plans/rd-03/00-index.md)                             | 🔬 Plan Preflighted | ⬜     | 2026-10-22   | RD-01/RD-02 foundations |
-| RD-04 | Arranging, tile shell, and actions              | [RD-04](requirements/RD-04-arranging-tile-shell-and-actions.md)  | —                                                            | 🔎 RD Preflighted   | ⬜     | 2026-10-20   | RD-02, RD-03            |
+| ID    | Title                                           | RD                                                               | Plan                                                         | Stage             | Status | Last Updated | Depends-on / Blocker    |
+| ----- | ----------------------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------ | ----------------- | ------ | ------------ | ----------------------- |
+| RD-01 | Selection and marquee internals                 | [RD-01](requirements/RD-01-selection-and-marquee.md)             | [v1](plans/v1/00-index.md), [rd-03](plans/rd-03/00-index.md) | 🔄 Executing      | 🔄     | 2026-10-21   | RD-02 (geometry port)   |
+| RD-02 | TileGrid layout and virtualization              | [RD-02](requirements/RD-02-layout-and-virtualization.md)         | [v1](plans/v1/00-index.md), [rd-03](plans/rd-03/00-index.md) | 🔄 Executing      | 🔄     | 2026-10-21   | Final contract: RD-04   |
+| RD-03 | Selection integration, focus, and accessibility | [RD-03](requirements/RD-03-selection-focus-and-accessibility.md) | [rd-03](plans/rd-03/00-index.md)                             | 🔄 Executing      | 🔄     | 2026-10-22   | RD-01/RD-02 foundations |
+| RD-04 | Arranging, tile shell, and actions              | [RD-04](requirements/RD-04-arranging-tile-shell-and-actions.md)  | —                                                            | 🔎 RD Preflighted | ⬜     | 2026-10-20   | RD-02, RD-03            |
 
 ## Notes
 

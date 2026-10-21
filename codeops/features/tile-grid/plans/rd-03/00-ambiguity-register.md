@@ -1,7 +1,7 @@
 ## Ambiguity Register: TileGrid RD-03
 
-> **Status**: ✅ GATE PASSED — all 15 items resolved
-> **Last Updated**: 2026-10-21 23:36
+> **Status**: ✅ GATE PASSED — all 17 items resolved, including two runtime decisions
+> **Last Updated**: 2026-10-22 01:40
 > **CodeOps Artifact Schema**: 1
 
 ## Planning Boundaries
@@ -188,6 +188,49 @@ was independently classified as ordinary feature implementation. The scoped requ
 passed; current plan preflight remains a verification prerequisite, not an unresolved design choice.
 
 ## Accepted Preflight Refinements
+
+### Runtime AR-16 — Green Checkpoint Cadence
+
+**Category:** Technical / execution sequencing (runtime).
+**Root invocation:** `rd03-20261022-0057`; auto-design policy version 1.
+**Problem:** Specification-first tasks must fail before dependent implementation, while the commit
+protocol requires full green verification and a commit after each verified task. Committing only
+the early specifications creates a red checkpoint; committing their implementation while its
+tasks remain pending violates the verification gate.
+**Proposed resolution:** Keep expected-red and dependent tasks `[~]`, record red evidence, then
+verify/promote each task individually at the first full green boundary and commit that mutually
+dependent slice together. Later independent green tasks continue with individual commits/pushes.
+**Rejected option:** Completing/pushing failing specifications violates the green commit gate.
+**Independent challenge:** `ses_e9f4ce4bbffeG2ydpx0UFBjIuE` supports this as the smallest practical
+sequence but identifies commit-cadence authorization as conflicting with the literal per-task
+rule; auto-design cannot silently waive a governing constraint.
+**Confidence:** High on preserving green commits; medium-high on needing a cadence exception.
+**User Decision:** User selected **Group green checkpoints (Recommended)**. Mutually dependent
+specification/implementation tasks may share one green commit after individual verification;
+subsequent independent tasks retain automatic commit/push after verification.
+**Affected gate:** Each phase's first green checkpoint; resolved. No test/verification gate changes.
+
+### Runtime AR-17 — Unsupported Empty-State Oracle
+
+**Category:** Specification correction (runtime); reserved immutable-oracle authority.
+**Root invocation:** `rd03-20261022-0057`; auto-design policy version 1.
+**Evidence:** The newly authored accessibility test asserts zero listitems after an empty update
+at `test/tile-grid-accessibility.spec.test.tsx:150`. The owning 03-01 specification requires existing
+empty-list semantics, and ST-11 requires empty content inside the named list with status outside it.
+Neither requires zero placeholder listitems. The prior implementation has one placeholder,
+explicitly pinned by `test/tile-grid-layout.impl.test.tsx:125–130`.
+**Independent author check:** `ses_e9f392081ffe547m6YwoCfIGJG` confirms a drafting error: the
+no-fake-item rule for unknown selected IDs was incorrectly extended to the empty-state placeholder.
+**Recommended correction:** Remove only the unsupported zero-listitem assertion and restore the
+existing placeholder role. Retain every other oracle assertion and the prior implementation test.
+**Rejected alternative:** Changing the prior empty-list contract solely to satisfy this unsupported
+assertion contradicts the approved specification. No product change is needed.
+**Confidence:** High; owning specification and independent author agree.
+**User Decision:** User selected **Approve correction (Recommended)** for removal of only the
+unsupported zero-listitem assertion and restoration of the existing placeholder role. Applied;
+all other new assertions and existing oracles remain unchanged.
+**Verification:** New 49 cases passed, full gate 589 passed / 1 failed at the prior placeholder check;
+this was not a green checkpoint. The authorized correction now requires full re-verification.
 
 The user accepted all nine major recommendations, then selected **Apply and re-scan** for the
 three minor corrections and the documented singleton-radio exception. The separate

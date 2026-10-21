@@ -1,8 +1,8 @@
 # Execution Plan: TileGrid RD-03
 
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-21 23:36
-> **Progress**: 0/47 tasks (0%)
+> **Last Updated**: 2026-10-22 01:47
+> **Progress**: 10/47 tasks (21%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -39,9 +39,22 @@ and green check; internal tests and hardening. A red-step result is expected evi
 verification claim. Commit handling belongs to `exec-plan`; any checkpoint uses the `git-commit`
 skill with the selected execution mode. No automatic commit mode is selected by this plan.
 
+### Active Execution Invocation
+
+Run `rd03-20261022-0057`: user requested `--auto-commit --auto-design`; strict scope, policy
+version 1. Eligible internal technical decisions use delegated authority; all reserved categories
+remain user-owned. Existing plan/preflight work was verified and checkpointed as `b358e57`.
+Expected-red specification and dependent implementation tasks remain `[~]` until the full gate
+passes; their recorded red evidence permits the next specification-first step but never a commit
+or a green completion claim. Verified tasks are promoted individually; runtime AR-16 authorizes
+one coherent green commit/push for the mutually dependent red-to-green slice. Later independent
+verified tasks retain per-task commits/pushes.
+
 ## Phase 1: Selection and Accessible Controls
 
-> **Phase baseline tree**: Recorded by exec-plan at phase start.
+> **Phase baseline tree**: `33fca8b92155dad524b30164ca6001f6ef972519`
+> **Scope mode**: strict
+> **Expected modification set**: Phase 1 task paths under `packages/react-components/`, this plan's execution/decision/review evidence, and derived TileGrid roadmap status. Original goal and smallest design: 00-index Minimum-Sufficient Baseline; approved local control integration only.
 > **Lenses**: api-surface, perf
 > **Risk tags**: performance-critical
 > **Reasoning**: high — controlled selection and bounded rendering share one state authority
@@ -50,22 +63,22 @@ skill with the selected execution mode. No automatic commit mode is selected by 
 
 **Reference:** 03-01; AR-1, AR-5, AR-9, AR-12, AR-15; 07 ST-01–ST-13 and ST-40–ST-41. Preview/cancel assertions belong to Phase 3 ST-34.
 
-- [ ] 1.1.1 [spec-author] Add selection-invariant oracles — `test/tile-grid-selection-invariants.spec.test.tsx`; ST-01–ST-04.
-- [ ] 1.1.2 [spec-author] Add interaction/control oracles — `test/tile-grid-interaction.spec.test.tsx`; ST-05–ST-09.
-- [ ] 1.1.3 [spec-author] Add accessible-state/count/type/security and owned-control composition oracles — `test/tile-grid-accessibility.spec.test.tsx`, `test/tile-grid-control-composition.spec.test.tsx`; ST-10–ST-13, ST-40–ST-41, and the two development warnings. Actual preview is excluded until Phase 3.
-- [ ] 1.1.4 Run the new targeted specs/type-check and record expected red failures; identify already-passing regression cases without altering their assertions.
+- [x] 1.1.1 [spec-author] Add selection-invariant oracles — `test/tile-grid-selection-invariants.spec.test.tsx`; ST-01–ST-04. ✅ (completed: 2026-10-22 01:47; red 8/1, now green in full 590-test gate)
+- [x] 1.1.2 [spec-author] Add interaction/control oracles — `test/tile-grid-interaction.spec.test.tsx`; ST-05–ST-09. ✅ (completed: 2026-10-22 01:47; red 16/5, now green in full 590-test gate)
+- [x] 1.1.3 [spec-author] Add accessible-state/count/type/security and owned-control composition oracles — `test/tile-grid-accessibility.spec.test.tsx`, `test/tile-grid-control-composition.spec.test.tsx`; ST-10–ST-13, ST-40–ST-41, and the two development warnings. Actual preview is excluded until Phase 3. ✅ (completed: 2026-10-22 01:47; red 18/1; AR-17 narrowly authorized correction; full runtime/type gate green)
+- [x] 1.1.4 Run the new targeted specs/type-check and record expected red failures; identify already-passing regression cases without altering their assertions. ✅ (completed: 2026-10-22 01:47; independent red runs: 42 failed / 7 baseline passes, no fixture failures; all 49 now green)
 
 **Deliverable:** Immutable Phase 1 oracles and red evidence.
 **Verify:** Targeted Vitest files and type-check; expected red before implementation.
 
 ### Session 1.2 — Implementation
 
-- [ ] 1.2.1 Correct fixed mode, seed/toggle anchors, and add the internal full-set commit path — `src/components/TileGrid/selection/useGridSelection.ts`, `selection/types.ts`; 03-01 Selection Store Integration.
-- [ ] 1.2.2 Add the implemented RD-03 type/default contract and local barrel types — `src/components/TileGrid/TileGrid.types.ts`, `index.ts`, `useTileGrid.ts`; 03-01 Contract Delta.
-- [ ] 1.2.3 Connect predicates, event composition, activation, and native summary/editing isolation — `src/components/TileGrid/selection/useTileGridInteractions.ts`, `selection/clickSelection.ts`, `useTileGrid.ts`; 03-01 Interaction Mapping.
-- [ ] 1.2.4 Compose selection controls with context isolation, reset-default synchronization, and item eligibility/descriptions — `src/components/TileGrid/TileGridSelectionControl.tsx`, `TileGridItemView.tsx`, `useTileGridStyles.styles.ts`; 03-01 Controls and Item Rendering.
-- [ ] 1.2.5 Add committed-count announcements and resolved list rendering — `src/components/TileGrid/selection/useSelectionAnnouncement.ts`, `useTileGrid.ts`, `renderTileGrid.tsx`; 03-01 Announcements.
-- [ ] 1.2.6 Run the Phase 1 specs to green and preserve every existing selection/layout/export/SSR oracle.
+- [x] 1.2.1 Correct fixed mode, seed/toggle anchors, and add the internal full-set commit path — `src/components/TileGrid/selection/useGridSelection.ts`, `selection/types.ts`; 03-01 Selection Store Integration. ✅ (completed: 2026-10-22 01:47; full gate 590 passed; documentation checked)
+- [x] 1.2.2 Add the implemented RD-03 type/default contract and local barrel types — `src/components/TileGrid/TileGrid.types.ts`, `index.ts`, `useTileGrid.ts`, `TileGrid.tsx` API documentation; 03-01 Contract Delta. ✅ (completed: 2026-10-22 01:47; full gate 590 passed after initial timeout; type and export checks green)
+- [x] 1.2.3 Connect predicates, event composition, activation, and native summary/editing isolation — `src/components/TileGrid/selection/useTileGridInteractions.ts`, `selection/clickSelection.ts`, `useTileGrid.ts`, `renderTileGrid.tsx`; 03-01 Interaction Mapping. ✅ (completed: 2026-10-22 01:47; root delegation preserves consumer prevention; full gate 590 passed)
+- [x] 1.2.4 Compose selection controls with context isolation, reset-default synchronization, and item eligibility/descriptions — `src/components/TileGrid/TileGridSelectionControl.tsx`, `TileGridItemView.tsx`, `useTileGridStyles.styles.ts`; 03-01 Controls and Item Rendering. ✅ (completed: 2026-10-22 01:47; native-control/reset/context oracles and full 590-test gate pass)
+- [x] 1.2.5 Add committed-count announcements and resolved list rendering — `src/components/TileGrid/selection/useSelectionAnnouncement.ts`, `useTileGrid.ts`, `renderTileGrid.tsx`, `useTileGridStyles.styles.ts`; 03-01 Announcements. ✅ (completed: 2026-10-22 01:47; committed-count, hostile-text, unchanged empty semantics and full gate pass)
+- [x] 1.2.6 Run the Phase 1 specs to green and preserve every existing selection/layout/export/SSR oracle. ✅ (completed: 2026-10-22 01:47; pnpm verify: 61 files / 590 tests pass; all pre-existing tests unchanged; AR-17 correction scoped to one newly authored assertion)
 
 **Deliverable:** Selection/control behavior matching ST-01–ST-13 and ST-40–ST-41, with preview-specific assertions reserved for Phase 3.
 **Verify:** Targeted green checks, then `pnpm verify`.

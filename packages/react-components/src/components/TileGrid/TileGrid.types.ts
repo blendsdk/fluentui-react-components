@@ -6,6 +6,9 @@ export type { TileGridLayout };
 /** Selection behaviour for a tile grid. */
 export type TileGridSelectionMode = 'none' | 'single' | 'multiselect';
 
+/** Whether an unmodified tile click selects the item or activates it. */
+export type TileGridInteractionMode = 'browse' | 'select';
+
 /**
  * Imperative operations exposed by a TileGrid ref.
  *
@@ -46,21 +49,24 @@ export interface TileGridItemRenderArgs<T> {
   disabled: boolean;
 }
 
-/** Localizable strings used by the empty state. */
+/** Localizable empty-state and committed-selection messages. */
 export interface TileGridStrings {
   /** Message shown when there are no items. */
   emptyMessage: string;
+  /** Formats the committed count, including hidden IDs, against the current item total. */
+  selectionCount: (selected: number, total: number) => string;
 }
 
 /**
  * Props for the TileGrid component.
  *
- * Native `div` props pass through except `children`, `role`, `aria-label`, and
- * `dangerouslySetInnerHTML`; the component owns the list role and its content.
+ * Native `div` props pass through except `children`, `role`, `aria-label`,
+ * `tabIndex`, and `dangerouslySetInnerHTML`; the grid owns list semantics,
+ * content, and keyboard entry. Selection changes are proposals when controlled.
  */
 export interface TileGridProps<T> extends Omit<
   ComponentPropsWithoutRef<'div'>,
-  'children' | 'role' | 'aria-label' | 'dangerouslySetInnerHTML'
+  'children' | 'role' | 'aria-label' | 'tabIndex' | 'dangerouslySetInnerHTML'
 > {
   /** Items to render. Duplicate IDs keep the first occurrence. */
   items: readonly T[];
@@ -108,7 +114,7 @@ export interface TileGridProps<T> extends Omit<
   ariaLabel?: string;
   /** Overrides for localizable strings. */
   strings?: Partial<TileGridStrings>;
-  /** Selection behaviour. Defaults to `none`. */
+  /** Selection behaviour, fixed until unmount. Defaults to `none`. */
   selectionMode?: TileGridSelectionMode;
   /** Controlled selected IDs; the source of truth when supplied. */
   selectedIds?: ReadonlySet<string>;
@@ -116,4 +122,26 @@ export interface TileGridProps<T> extends Omit<
   defaultSelectedIds?: Iterable<string>;
   /** Called once with the requested next set when a selection action changes it. */
   onSelectionChange?: (next: ReadonlySet<string>) => void;
+  /** Plain click behavior when selection is enabled. Defaults to `select`. */
+  interactionMode?: TileGridInteractionMode;
+  /** Enables mouse/pen background marquee in multiselect mode. Defaults to false. */
+  enableMarquee?: boolean;
+  /**
+   * Whether a current item may be selected by a gesture. Defaults to true.
+   * Existing membership is preserved. Keep the callback identity stable during marquee.
+   */
+  isSelectable?: (item: T) => boolean;
+  /**
+   * Blocks item selection and activation, while retaining readable, focusable content.
+   * Defaults to false. Keep the callback identity stable during marquee.
+   */
+  isDisabled?: (item: T) => boolean;
+  /** Receives enabled item activation from browse clicks, select double-clicks, or Enter. */
+  onItemActivate?: (item: T) => void;
+  /** Changing this key resets scroll to the top while retaining selection. Compared with Object.is. */
+  scrollResetKey?: unknown;
+  /** Enables unmodified keyboard zoom when a size callback is supplied. Defaults to false. */
+  zoomable?: boolean;
+  /** Reports the requested bounded tile size; the application must apply it through `tileSize`. */
+  onTileSizeChange?: (size: number) => void;
 }

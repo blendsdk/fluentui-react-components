@@ -14,51 +14,58 @@ export function renderTileGrid<T>(state: TileGridState<T>): ReactElement {
   const labelledBy = state.rootProps['aria-labelledby'];
 
   return (
-    <div
-      {...state.rootProps}
-      ref={state.rootRef}
-      role="list"
-      aria-label={labelledBy ? undefined : state.ariaLabel}
-      className={mergeClasses(classes.root, state.className)}
-      style={state.style}
-      tabIndex={state.rootProps.tabIndex ?? 0}
-    >
-      {state.hasItems ? (
-        <>
-          <div
-            className={classes.spacer}
-            style={{ height: state.geometry.totalHeight }}
-            aria-hidden="true"
-          />
-          {state.visibleItemRects.map(rect => (
-            <TileGridItemView
-              key={rect.id}
-              rect={rect}
-              item={state.uniqueItems[rect.index]}
-              index={rect.index}
-              setSize={state.uniqueItems.length}
-              tileSize={state.tileSize}
-              selected={state.isSelected(rect.id)}
-              selectable
-              disabled={false}
-              label={state.getItemLabel(state.uniqueItems[rect.index])}
-              renderItem={state.renderItem}
-              onItemClick={state.onItemClick}
-              className={classes.item}
+    <>
+      <div
+        {...state.rootProps}
+        ref={state.rootRef}
+        role="list"
+        data-tile-grid-root=""
+        aria-label={labelledBy ? undefined : state.ariaLabel}
+        className={mergeClasses(classes.root, state.className)}
+        style={state.style}
+        tabIndex={0}
+      >
+        {state.hasItems ? (
+          <>
+            <div
+              className={classes.spacer}
+              style={{ height: state.geometry.totalHeight }}
+              aria-hidden="true"
             />
-          ))}
-        </>
-      ) : (
-        // A list role needs an owned listitem; the empty state is the single
-        // listitem until the first item arrives.
-        <div role="listitem" className={classes.emptyItem}>
-          {state.renderEmpty ? (
-            state.renderEmpty()
-          ) : (
-            <div className={classes.empty}>{state.emptyMessage}</div>
-          )}
-        </div>
-      )}
-    </div>
+            {state.visibleItemRects.map(rect => (
+              <TileGridItemView
+                key={rect.id}
+                rect={rect}
+                item={state.uniqueItems[rect.index]}
+                index={rect.index}
+                setSize={state.uniqueItems.length}
+                tileSize={state.tileSize}
+                selected={state.isSelected(rect.id)}
+                selectable={state.selectionMode !== 'none' && state.isSelectable(rect.id)}
+                disabled={state.isDisabled(rect.id)}
+                label={state.getItemLabel(state.uniqueItems[rect.index])}
+                renderItem={state.renderItem}
+                className={classes.item}
+                selectionMode={state.selectionMode}
+                radioName={state.radioName}
+                controlClassName={classes.control}
+                contentClassName={classes.content}
+              />
+            ))}
+          </>
+        ) : (
+          <div role="listitem" data-tile-grid-empty="" className={classes.emptyItem}>
+            {state.renderEmpty ? (
+              state.renderEmpty()
+            ) : (
+              <div className={classes.empty}>{state.emptyMessage}</div>
+            )}
+          </div>
+        )}
+      </div>
+      <div role="status" aria-live="polite" aria-atomic="true" className={classes.status}>
+        {state.selectionAnnouncement}
+      </div>
+    </>
   );
 }

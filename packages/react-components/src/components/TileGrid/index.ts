@@ -1,6 +1,7 @@
 export { TileGrid } from './TileGrid';
 export type {
   TileGridHandle,
+  TileGridInteractionMode,
   TileGridItemRenderArgs,
   TileGridLayout,
   TileGridProps,

@@ -1,7 +1,8 @@
-import { memo } from 'react';
+import { memo, useId } from 'react';
 import type { CSSProperties, MouseEvent, ReactElement, ReactNode } from 'react';
 import type { TileGridItemRect } from './geometry';
-import type { TileGridItemRenderArgs } from './TileGrid.types';
+import type { TileGridItemRenderArgs, TileGridSelectionMode } from './TileGrid.types';
+import { TileGridSelectionControl } from './TileGridSelectionControl';
 
 /** Props for the internal memoized tile wrapper. */
 export interface TileGridItemViewProps<T> {
@@ -29,8 +30,30 @@ export interface TileGridItemViewProps<T> {
   onItemClick?: (event: MouseEvent<HTMLElement>, id: string) => void;
   /** Wrapper class from the grid styles. */
   className?: string;
+  /** Mounted selection mode; standalone internal views default to no control. */
+  selectionMode?: TileGridSelectionMode;
+  /** Shared unique name for this grid's owned radios. */
+  radioName?: string;
+  /** Token-based placement of the owned selection overlay. */
+  controlClassName?: string;
+  /** Full rectangle layout for application content. */
+  contentClassName?: string;
 }
 
+/** Keeps control and focus updates from invoking unchanged application content. */
+function TileGridContentComponent<T>({
+  renderItem,
+  ...args
+}: TileGridItemRenderArgs<T> & {
+  /** Stable application renderer. */
+  renderItem: (args: TileGridItemRenderArgs<T>) => ReactNode;
+}): ReactNode {
+  return renderItem(args);
+}
+
+const TileGridContent = memo(TileGridContentComponent) as typeof TileGridContentComponent;
+
+/** Positions a labelled tile while keeping input and content lifecycles independent. */
 function TileGridItemViewComponent<T>({
   rect,
   item,
@@ -44,7 +67,12 @@ function TileGridItemViewComponent<T>({
   renderItem,
   onItemClick,
   className,
+  selectionMode = 'none',
+  radioName,
+  controlClassName,
+  contentClassName,
 }: TileGridItemViewProps<T>): ReactElement {
+  const contentId = useId();
   const position: CSSProperties = {
     top: rect.y,
     left: rect.x,
@@ -58,22 +86,36 @@ function TileGridItemViewComponent<T>({
       aria-setsize={setSize}
       aria-posinset={index + 1}
       aria-label={label}
+      aria-describedby={contentId}
+      aria-disabled={disabled || undefined}
       data-tile-grid-item={rect.id}
       data-index={index}
       className={className}
       style={position}
       onClick={onItemClick ? event => onItemClick(event, rect.id) : undefined}
     >
-      {renderItem({
-        item,
-        index,
-        tileSize,
-        width: rect.width,
-        height: rect.height,
-        selected,
-        selectable,
-        disabled,
-      })}
+      {selectable && selectionMode !== 'none' && (
+        <TileGridSelectionControl
+          mode={selectionMode}
+          checked={selected}
+          label={label}
+          name={radioName}
+          className={controlClassName}
+        />
+      )}
+      <div id={contentId} data-tile-grid-content="" className={contentClassName}>
+        <TileGridContent
+          item={item}
+          index={index}
+          tileSize={tileSize}
+          width={rect.width}
+          height={rect.height}
+          selected={selected}
+          selectable={selectable}
+          disabled={disabled}
+          renderItem={renderItem}
+        />
+      </div>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { devWarn } from '../devWarnings';
 import type { GridSelection, GridSelectionMode, GridSelectionOptions } from './types';
 import {
@@ -47,35 +47,51 @@ export function useGridSelection({
   onSelectionChange,
   isSelectable,
 }: GridSelectionOptions): GridSelection {
+  // The mounted mode defines both transitions and presentation for this store.
+  // Changing a prop must not silently reinterpret its existing selected IDs.
+  const modeRef = useRef(mode);
+  const effectiveMode = modeRef.current;
   const [internalSelected, setInternalSelected] = useState<ReadonlySet<string>>(() => {
     const seed = uniqueIds(defaultSelectedIds);
 
-    if (mode === 'single' && seed.length > 1) {
+    if (effectiveMode === 'single' && seed.length > 1) {
       devWarn(
         'tile-grid-single-seed',
         'TileGrid single selection uses only the first defaultSelectedId.'
       );
     }
 
-    return effectiveSelection(new Set(seed), mode);
+    return effectiveSelection(new Set(seed), effectiveMode);
   });
-  const [anchorId, setAnchorId] = useState<string | undefined>(undefined);
   const controlled = selectedIds !== undefined;
   const currentSelection = controlled
-    ? effectiveSelection(selectedIds, mode)
-    : effectiveSelection(internalSelected, mode);
+    ? effectiveSelection(selectedIds, effectiveMode)
+    : effectiveSelection(internalSelected, effectiveMode);
+  const [anchorId, setAnchorId] = useState<string | undefined>(
+    () => currentSelection.values().next().value
+  );
   const currentRef = useRef<ReadonlySet<string>>(currentSelection);
-  const anchorRef = useRef<string | undefined>(undefined);
+  const anchorRef = useRef(anchorId);
   const controlledRef = useRef(controlled);
-  const modeRef = useRef(mode);
   const onSelectionChangeRef = useRef(onSelectionChange);
   const isSelectableRef = useRef(isSelectable ?? defaultSelectable);
 
   currentRef.current = currentSelection;
   controlledRef.current = controlled;
-  modeRef.current = mode;
   onSelectionChangeRef.current = onSelectionChange;
   isSelectableRef.current = isSelectable ?? defaultSelectable;
+
+  useEffect(() => {
+    if (mode !== effectiveMode) {
+      devWarn('tile-grid-mode-change', 'TileGrid keeps its initial selection mode until unmount.');
+    }
+    if (effectiveMode === 'single' && selectedIds && selectedIds.size > 1) {
+      devWarn(
+        'tile-grid-single-controlled',
+        'TileGrid single selection uses only the first selected ID.'
+      );
+    }
+  }, [mode, effectiveMode, selectedIds]);
 
   const updateAnchor = useCallback((nextAnchor: string | undefined): void => {
     anchorRef.current = nextAnchor;
@@ -148,18 +164,16 @@ export function useGridSelection({
       }
 
       if (modeRef.current === 'single') {
-        if (!currentRef.current.has(id)) {
-          select(id);
-        }
+        select(id);
         return;
       }
 
+      updateAnchor(id);
       if (currentRef.current.has(id)) {
         commit(deselectSelection(currentRef.current, id));
         return;
       }
 
-      updateAnchor(id);
       commit(addSelection(currentRef.current, id));
     },
     [commit, select, updateAnchor]
@@ -222,7 +236,19 @@ export function useGridSelection({
 
   const isSelected = useCallback((id: string): boolean => currentRef.current.has(id), []);
 
+  const replaceSelection = useCallback(
+    (next: ReadonlySet<string>): void => {
+      if (modeRef.current !== 'none') {
+        // Complete gesture results share the normal commit guard without changing
+        // the user's range anchor or pruning IDs outside the current item window.
+        commit(effectiveSelection(next, modeRef.current));
+      }
+    },
+    [commit]
+  );
+
   return {
+    mode: effectiveMode,
     selectedIds: currentSelection,
     anchorId,
     isSelected,
@@ -233,5 +259,6 @@ export function useGridSelection({
     selectRange,
     selectAll,
     clear,
+    replaceSelection,
   };
 }

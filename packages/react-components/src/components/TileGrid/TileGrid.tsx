@@ -45,9 +45,15 @@ TileGridCallable.displayName = 'TileGrid';
 /**
  * Displays items in a fixed, masonry, justified, or mosaic grid.
  *
- * The component owns the layout, list semantics, and optional selection. The
- * scroll container is keyboard-focusable by default; pass a native `tabIndex`
- * to override it. Use the ref handle for select-all, clear, and scroll-to-
- * selected operations.
+ * The component owns layout, list semantics, keyboard entry, and optional
+ * selection. Use the ref handle for select-all, clear, and scroll-to-selected
+ * operations; controlled selection remains application-owned.
+ *
+ * @example
+ * ```tsx
+ * <TileGrid items={photos} getItemId={photo => photo.id}
+ *   getItemLabel={photo => photo.name} ariaLabel="Photos"
+ *   selectionMode="multiselect" renderItem={({ item }) => <span>{item.name}</span>} />
+ * ```
  */
 export const TileGrid = TileGridCallable;

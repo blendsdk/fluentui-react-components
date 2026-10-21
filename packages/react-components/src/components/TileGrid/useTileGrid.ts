@@ -1,16 +1,12 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
-import type {
-  ComponentPropsWithoutRef,
-  CSSProperties,
-  MouseEvent,
-  ReactNode,
-  RefObject,
-} from 'react';
+import { useCallback, useEffect, useId, useMemo, useRef } from 'react';
+import type { ComponentPropsWithoutRef, CSSProperties, ReactNode, RefObject } from 'react';
 import { computeGeometry, normalizeGap, normalizeItems, normalizeTileSize } from './geometry';
 import type { TileGridGeometryResult, TileGridItemRect } from './geometry';
 import type { TileGridItemRenderArgs, TileGridProps } from './TileGrid.types';
 import { devWarn } from './devWarnings';
-import { applyItemClick, useGridSelection } from './selection';
+import { useGridSelection } from './selection';
+import { useTileGridInteractions } from './selection/useTileGridInteractions';
+import { useSelectionAnnouncement } from './selection/useSelectionAnnouncement';
 import { useTileGridStyles } from './useTileGridStyles.styles';
 import { useTileGridVirtualizer } from './virtualization/useTileGridVirtualizer';
 import { useAnchorPreservation } from './virtualization/useAnchorPreservation';
@@ -29,7 +25,7 @@ export interface TileGridState<T> {
   /** Native `div` props that pass through to the scroll container. */
   rootProps: Omit<
     ComponentPropsWithoutRef<'div'>,
-    'children' | 'role' | 'aria-label' | 'dangerouslySetInnerHTML'
+    'children' | 'role' | 'aria-label' | 'tabIndex' | 'dangerouslySetInnerHTML'
   >;
   /** Caller class name, merged by the renderer. */
   className?: string;
@@ -65,8 +61,16 @@ export interface TileGridState<T> {
   scrollToOffset: (offset: number) => void;
   /** Returns true when the effective selection contains the ID. */
   isSelected: (id: string) => boolean;
-  /** Maps an item wrapper click to the current selection mode. */
-  onItemClick: (event: MouseEvent<HTMLElement>, id: string) => void;
+  /** Mode fixed by the mounted selection store. */
+  selectionMode: ReturnType<typeof useGridSelection>['mode'];
+  /** Whether the current item may be newly selected. */
+  isSelectable: (id: string) => boolean;
+  /** Whether the current item is disabled. */
+  isDisabled: (id: string) => boolean;
+  /** Generated native group name, unique to this mounted grid. */
+  radioName: string;
+  /** Latest committed count change, initially empty. */
+  selectionAnnouncement: string;
   /** Selects every current item in multiselect mode. */
   selectAll: () => void;
   /** Clears every selected ID, including hidden IDs. */
@@ -106,11 +110,20 @@ export function useTileGrid<T>(props: TileGridProps<T>): TileGridState<T> {
     selectedIds,
     defaultSelectedIds,
     onSelectionChange,
+    interactionMode = 'select',
+    enableMarquee = false,
+    isSelectable,
+    isDisabled,
+    onItemActivate,
+    scrollResetKey: _scrollResetKey,
+    zoomable: _zoomable = false,
+    onTileSizeChange: _onTileSizeChange,
     className,
     style,
     ...rootProps
   } = props;
   const rootRef = useRef<HTMLDivElement>(null);
+  const radioName = useId();
   const classes = useTileGridStyles();
   const size = useContainerSize(rootRef);
   const normalized = useMemo(() => normalizeItems(items, getItemId), [items, getItemId]);
@@ -181,27 +194,50 @@ export function useTileGrid<T>(props: TileGridProps<T>): TileGridState<T> {
   });
 
   const currentIds = useMemo(() => normalized.items.map(getItemId), [normalized.items, getItemId]);
+  const itemById = useMemo(
+    () => new Map(normalized.items.map(item => [getItemId(item), item])),
+    [normalized.items, getItemId]
+  );
+  const eligibility = useRef({ itemById, isSelectable, isDisabled });
+  eligibility.current = { itemById, isSelectable, isDisabled };
+  const isItemDisabled = useCallback((id: string): boolean => {
+    const current = eligibility.current;
+    const item = current.itemById.get(id);
+    return item !== undefined && (current.isDisabled?.(item) ?? false);
+  }, []);
+  const isItemSelectable = useCallback((id: string): boolean => {
+    const current = eligibility.current;
+    const item = current.itemById.get(id);
+    return (
+      item !== undefined &&
+      !(current.isDisabled?.(item) ?? false) &&
+      (current.isSelectable?.(item) ?? true)
+    );
+  }, []);
   const selection = useGridSelection({
     mode: selectionMode,
     selectedIds,
     defaultSelectedIds,
     onSelectionChange,
+    isSelectable: isItemSelectable,
   });
   const selectionRef = useRef(selection);
   selectionRef.current = selection;
-
-  const onItemClick = useCallback(
-    (event: MouseEvent<HTMLElement>, id: string) => {
-      applyItemClick({
-        event,
-        id,
-        mode: selectionMode,
-        currentIds,
-        selection: selectionRef.current,
-      });
-    },
-    [currentIds, selectionMode]
+  const selectionAnnouncement = useSelectionAnnouncement(
+    selection.selectedIds.size,
+    normalized.items.length,
+    strings?.selectionCount
   );
+
+  const interactionHandlers = useTileGridInteractions({
+    selection,
+    interactionMode,
+    itemById,
+    currentIds,
+    isDisabled: isItemDisabled,
+    onItemActivate,
+    rootProps,
+  });
 
   const selectAll = useCallback(() => {
     selectionRef.current.selectAll(currentIds);
@@ -253,6 +289,18 @@ export function useTileGrid<T>(props: TileGridProps<T>): TileGridState<T> {
   }, []);
 
   useEffect(() => {
+    if (enableMarquee && selection.mode !== 'multiselect') {
+      devWarn('tile-grid-marquee-mode', 'TileGrid marquee is available only in multiselect mode.');
+    }
+    if (selection.mode === 'none' && props.interactionMode !== undefined) {
+      devWarn(
+        'tile-grid-interaction-mode',
+        'TileGrid ignores interactionMode when selection mode is none.'
+      );
+    }
+  }, [enableMarquee, selection.mode, props.interactionMode]);
+
+  useEffect(() => {
     if (normalized.duplicateIds.length > 0) {
       devWarn('tile-grid-duplicate-ids', 'TileGrid ignored duplicate item IDs.');
     }
@@ -286,7 +334,7 @@ export function useTileGrid<T>(props: TileGridProps<T>): TileGridState<T> {
 
   return {
     rootRef,
-    rootProps,
+    rootProps: { ...rootProps, ...interactionHandlers },
     className,
     style,
     classes,
@@ -304,8 +352,12 @@ export function useTileGrid<T>(props: TileGridProps<T>): TileGridState<T> {
     scrollToIndex,
     scrollToOffset,
     isSelected: selection.isSelected,
-    onItemClick,
+    selectionMode: selection.mode,
+    isSelectable: isItemSelectable,
+    isDisabled: isItemDisabled,
     selectAll,
+    radioName,
+    selectionAnnouncement,
     clearSelection,
     scrollToSelected,
   };

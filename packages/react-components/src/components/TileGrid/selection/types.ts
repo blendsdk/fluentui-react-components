@@ -24,6 +24,8 @@ export interface GridSelectionOptions {
  * and the TileGrid handle; this interface is for the component internals.
  */
 export interface GridSelection {
+  /** Selection mode fixed for this mounted store. */
+  mode: GridSelectionMode;
   /** Effective selected IDs, including hidden IDs. */
   selectedIds: ReadonlySet<string>;
   /** Current range anchor, or undefined when no anchor is set. */
@@ -44,4 +46,6 @@ export interface GridSelection {
   selectAll(currentIds: readonly string[]): void;
   /** Clears every selected ID and the anchor. */
   clear(): void;
+  /** Commits a complete gesture result without changing the range anchor. */
+  replaceSelection(next: ReadonlySet<string>): void;
 }
