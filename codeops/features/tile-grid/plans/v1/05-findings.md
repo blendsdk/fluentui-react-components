@@ -23,6 +23,7 @@
 | P2-RV-012  | 2     | OBSERVATION | packages/react-components/src/components/TileGrid/TileGridItemView.tsx               | fixed    |
 | P2-RV-013  | 2     | OBSERVATION | packages/react-components/src/components/TileGrid/virtualization/useContainerSize.ts | fixed    |
 | P2-RV-014  | 2     | OBSERVATION | plans/v1/03-03-selection-and-marquee.md                                              | deferred |
+| P2-RV-015  | 2     | MAJOR       | packages/react-components/src/components/TileGrid/renderTileGrid.tsx                 | fixed    |
 | P2-RRV-001 | 2     | MAJOR       | packages/react-components/src/components/TileGrid/devWarnings.ts                     | fixed    |
 | P2-RRV-002 | 2     | MAJOR       | packages/react-components/test/tile-grid-geometry.impl.test.ts                       | fixed    |
 | P2-RRV-003 | 2     | MINOR       | packages/react-components/test/tile-grid-geometry.impl.test.ts                       | fixed    |

@@ -21,6 +21,7 @@ export function renderTileGrid<T>(state: TileGridState<T>): ReactElement {
       aria-label={labelledBy ? undefined : state.ariaLabel}
       className={mergeClasses(classes.root, state.className)}
       style={state.style}
+      tabIndex={state.rootProps.tabIndex ?? 0}
     >
       {state.hasItems ? (
         <>
@@ -46,10 +47,16 @@ export function renderTileGrid<T>(state: TileGridState<T>): ReactElement {
             />
           ))}
         </>
-      ) : state.renderEmpty ? (
-        state.renderEmpty()
       ) : (
-        <div className={classes.empty}>{state.emptyMessage}</div>
+        // A list role needs an owned listitem; the empty state is the single
+        // listitem until the first item arrives.
+        <div role="listitem" className={classes.emptyItem}>
+          {state.renderEmpty ? (
+            state.renderEmpty()
+          ) : (
+            <div className={classes.empty}>{state.emptyMessage}</div>
+          )}
+        </div>
       )}
     </div>
   );

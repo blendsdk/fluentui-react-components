@@ -2,7 +2,7 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-20 23:48
+> **Last Updated**: 2026-10-21 00:02
 > **Progress**: 26/69 tasks (38%)
 > **CodeOps Artifact Schema**: 1
 
@@ -355,7 +355,7 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 
 - [ ] 6.2.1 If the perf test fails, profile and fix the hot path in `geometry/`, `virtualization/`, or `selection/transitions.ts`; do not relax the RD budgets — 03-05 §Performance test
 - [ ] 6.2.2 Add the internal “Phase A — unreleased” `TileGrid` section to `packages/react-components/README.md` (install, scroll contract, layouts, controlled `tileSize`, selection, empty state, strings, Phase A limitations), add the browser/perf commands to the root `README.md` commands table, and add the three commands plus the browser-matrix/performance jobs to `AGENTS.md` — 03-04 §Package surface; 03-05 §CI jobs; PF-001
-- [ ] 6.2.3 Update `TileGrid.stories.tsx` docs/manual checklist and verify the story a11y addon reports no violations for the Phase A stories — 03-04 §Stories
+- [~] 6.2.3 Update `TileGrid.stories.tsx` docs/manual checklist and verify the story a11y addon reports no violations for the Phase A stories — 03-04 §Stories ⏳ (early subset: fixed/columns/masonry/justified/mosaic, empty, and controlled tile-size stories plus axe-clean checks completed 2026-10-21 00:02; selection and 20K stories and the final Phase A a11y review pending)
 - [ ] 6.2.4 Verify the final `package.json` (`vitest` pinned 5.0.5), `vite.config.ts`, `turbo.json`, and CI workflow match 03-05; run `pnpm test:browser` and, when the browsers are installed, `pnpm test:browser:all` — PF-008
 
 **Deliverables**:

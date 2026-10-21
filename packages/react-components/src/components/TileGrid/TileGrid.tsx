@@ -12,6 +12,7 @@ const TileGridBase = <T,>(props: TileGridProps<T>): ReactElement => {
  * Displays items in a fixed, masonry, justified, or mosaic grid.
  *
  * The component owns the layout and list semantics; callers supply the tile
- * content through `renderItem`.
+ * content through `renderItem`. The scroll container is keyboard-focusable by
+ * default; pass a native `tabIndex` to override it.
  */
 export const TileGrid = Object.assign(TileGridBase, { displayName: 'TileGrid' });
