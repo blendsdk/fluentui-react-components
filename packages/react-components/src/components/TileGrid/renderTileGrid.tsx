@@ -30,7 +30,7 @@ export function renderTileGrid<T>(state: TileGridState<T>): ReactElement {
             style={{ height: state.geometry.totalHeight }}
             aria-hidden="true"
           />
-          {state.geometry.itemRects.map(rect => (
+          {state.visibleItemRects.map(rect => (
             <TileGridItemView
               key={rect.id}
               rect={rect}

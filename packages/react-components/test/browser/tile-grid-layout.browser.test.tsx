@@ -294,19 +294,22 @@ describe('tile grid browser virtualization', () => {
         await waitForMounted(root);
 
         const maxScroll = Math.max(0, root.scrollHeight - root.clientHeight);
-        const approximateItem500Top = Math.round((500 / ITEM_COUNT) * maxScroll);
-        await scrollTo(root, approximateItem500Top);
+        // Item 504 starts a row in both the eight-column and six-column
+        // layouts, so the first-visible assertion remains meaningful after
+        // the automatic column change.
+        const approximateAnchorTop = Math.round((504 / ITEM_COUNT) * maxScroll);
+        await scrollTo(root, approximateAnchorTop);
 
         await waitFor(
           () => {
-            expect(root.querySelector('[data-tile-grid-item="tile-500"]')).not.toBeNull();
+            expect(root.querySelector('[data-tile-grid-item="tile-504"]')).not.toBeNull();
           },
           { timeout: SETTLE_TIMEOUT }
         );
 
-        const item500 = root.querySelector<HTMLElement>('[data-tile-grid-item="tile-500"]');
-        expect(item500).not.toBeNull();
-        await scrollTo(root, styleNumber(item500 as HTMLElement, 'top') + 37);
+        const anchorItem = root.querySelector<HTMLElement>('[data-tile-grid-item="tile-504"]');
+        expect(anchorItem).not.toBeNull();
+        await scrollTo(root, styleNumber(anchorItem as HTMLElement, 'top') + 37);
 
         const before = firstVisibleItem(root);
         expect(before.offset).toBeGreaterThanOrEqual(0);

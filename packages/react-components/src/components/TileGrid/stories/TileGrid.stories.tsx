@@ -21,8 +21,9 @@ const meta: Meta<typeof TileGrid> = {
           '4. Scroll — the frame is 560px tall with more content than fits: the grid scrolls internally and the page does not jump.',
           '5. Empty — DefaultEmpty shows the built-in message, CustomMessage replaces the string, and CustomEmpty replaces the whole state.',
           '6. Accessibility — every story exposes a named list with labelled list items; the a11y addon reports no violations.',
+          '7. 20K — open TwentyThousandBenchmark: the 900px frame scrolls 20,000 items and mounts only the visible window plus overscan.',
           '',
-          'Tiles are display-only in this story set. Selection, keyboard navigation and the 20K benchmark are added with the features that support them.',
+          'Tiles are display-only in this story set. Selection, keyboard navigation and the full photo-library recipe are added with later work.',
         ].join('\n'),
       },
     },
@@ -34,3 +35,4 @@ export default meta;
 export { Fixed, FixedColumns, Masonry, Justified, Mosaic } from './TileGridLayouts.story';
 export { DefaultEmpty, CustomMessage, CustomEmpty } from './TileGridEmpty.story';
 export { ControlledTileSize } from './TileGridControlledTileSize.story';
+export { TwentyThousandBenchmark } from './TileGridTwentyThousandBenchmark.story';

@@ -12,6 +12,9 @@ import { defineConfig } from 'vitest/config';
 /** Shared Chromium browser project; the matrix config replaces its instances. */
 export const browserTestConfig = {
   plugins: [react()],
+  resolve: {
+    dedupe: ['react', 'react-dom'],
+  },
   test: {
     include: ['test/browser/**/*.browser.test.tsx'],
     setupFiles: ['./test/setup.ts'],

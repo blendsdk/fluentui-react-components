@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-21 08:56
-> **Progress**: 28/69 tasks (41%)
+> **Last Updated**: 2026-10-21 09:07
+> **Progress**: 37/69 tasks (54%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -186,15 +186,15 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 **Reference**: 03-02 §Scroll container–§Internal scroll helpers, §Item wrapper rendering; AR #6, AR #7, AR #12.
 **Objective**: Add the band/item virtualizer, root scroll container, anchor preservation, scroll helpers, and Phase A stories.
 
-- [ ] 3.2.1 Add `virtualization/types.ts` and `virtualization/options.ts` — 03-02 §Virtualizer integration
-- [ ] 3.2.2 Add `virtualization/useTileGridVirtualizer.ts` — 03-02 §Band layouts, §Masonry
-- [ ] 3.2.3 Add `virtualization/scrollHelpers.ts` and `virtualization/useAnchorPreservation.ts` — 03-02 §Anchor preservation, §Internal scroll helpers
-- [ ] 3.2.4 Update `useTileGrid.ts` to integrate the container size, geometry, virtualizer, anchor, and scroll helpers — 03-02 §Container measurement, §Integration points
-- [ ] 3.2.5 Update `renderTileGrid.tsx` to render the spacer and visible memoized cells from the virtual range — 03-02 §Item wrapper rendering; PF-005
-- [ ] 3.2.6 Add `TileGrid.stories.tsx` and `TileGridLayouts.story.tsx` — 03-04 §Stories
-- [ ] 3.2.7 Add `TileGridControlledTileSize.story.tsx` and `TileGridEmpty.story.tsx` — 03-04 §Stories; RD-02 AC 14 (controlled part)
-- [ ] 3.2.8 Add `TileGridTwentyThousandBenchmark.story.tsx` with the shared 20K fixture and a fixed-height wrapper — 03-04 §Stories; RD-02 AC 1
-- [ ] 3.2.9 Run the browser spec; verify it passes (green phase)
+- [x] 3.2.1 Add `virtualization/types.ts` and `virtualization/options.ts` — 03-02 §Virtualizer integration ✅ (completed: 2026-10-21 09:07)
+- [x] 3.2.2 Add `virtualization/useTileGridVirtualizer.ts` — 03-02 §Band layouts, §Masonry ✅ (completed: 2026-10-21 09:07)
+- [x] 3.2.3 Add `virtualization/scrollHelpers.ts` and `virtualization/useAnchorPreservation.ts` — 03-02 §Anchor preservation, §Internal scroll helpers ✅ (completed: 2026-10-21 09:07)
+- [x] 3.2.4 Update `useTileGrid.ts` to integrate the container size, geometry, virtualizer, anchor, and scroll helpers — 03-02 §Container measurement, §Integration points ✅ (completed: 2026-10-21 09:07)
+- [x] 3.2.5 Update `renderTileGrid.tsx` to render the spacer and visible memoized cells from the virtual range — 03-02 §Item wrapper rendering; PF-005 ✅ (completed: 2026-10-21 09:07)
+- [x] 3.2.6 Add `TileGrid.stories.tsx` and `TileGridLayouts.story.tsx` — 03-04 §Stories ✅ (completed: 2026-10-21 09:07)
+- [x] 3.2.7 Add `TileGridControlledTileSize.story.tsx` and `TileGridEmpty.story.tsx` — 03-04 §Stories; RD-02 AC 14 (controlled part) ✅ (completed: 2026-10-21 09:07)
+- [x] 3.2.8 Add `TileGridTwentyThousandBenchmark.story.tsx` with the shared 20K fixture and a fixed-height wrapper — 03-04 §Stories; RD-02 AC 1 ✅ (completed: 2026-10-21 09:07)
+- [x] 3.2.9 Run the browser spec; verify it passes (green phase) ✅ (completed: 2026-10-21 09:07)
 
 **Deliverables**:
 

@@ -59,6 +59,7 @@ function TileGridItemViewComponent<T>({
       aria-posinset={index + 1}
       aria-label={label}
       data-tile-grid-item={rect.id}
+      data-index={index}
       className={className}
       style={position}
       onClick={onItemClick ? event => onItemClick(event, rect.id) : undefined}

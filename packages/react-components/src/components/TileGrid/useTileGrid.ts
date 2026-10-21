@@ -1,10 +1,17 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import type { ComponentPropsWithoutRef, CSSProperties, ReactNode, RefObject } from 'react';
-import { computeGeometry, normalizeItems, normalizeTileSize } from './geometry';
-import type { TileGridGeometryResult } from './geometry';
+import { computeGeometry, normalizeGap, normalizeItems, normalizeTileSize } from './geometry';
+import type { TileGridGeometryResult, TileGridItemRect } from './geometry';
 import type { TileGridItemRenderArgs, TileGridProps } from './TileGrid.types';
 import { devWarn } from './devWarnings';
 import { useTileGridStyles } from './useTileGridStyles.styles';
+import { useTileGridVirtualizer } from './virtualization/useTileGridVirtualizer';
+import { useAnchorPreservation } from './virtualization/useAnchorPreservation';
+import {
+  scrollToIndex as scrollRootToIndex,
+  scrollToItem as scrollRootToItem,
+  scrollToOffset as scrollRootToOffset,
+} from './virtualization/scrollHelpers';
 import { useContainerSize } from './virtualization/useContainerSize';
 
 /** Resolved render state shared by the component shell and the pure renderer. */
@@ -28,6 +35,8 @@ export interface TileGridState<T> {
   uniqueItems: readonly T[];
   /** Computed layout and query helpers. */
   geometry: TileGridGeometryResult;
+  /** Item rectangles in the currently mounted virtual window. */
+  visibleItemRects: readonly TileGridItemRect[];
   /** Normalized tile size passed to the renderer. */
   tileSize: number;
   /** Whether there is at least one normalized item. */
@@ -40,13 +49,21 @@ export interface TileGridState<T> {
   renderItem: (args: TileGridItemRenderArgs<T>) => ReactNode;
   /** Accessible item label. */
   getItemLabel: (item: T) => string;
+  /** Scrolls to an item ID; unknown IDs are ignored. */
+  scrollToItem: (id: string) => void;
+  /** Scrolls to an item index; invalid indexes are ignored. */
+  scrollToIndex: (index: number) => void;
+  /** Scrolls to a clamped offset; non-finite offsets are ignored. */
+  scrollToOffset: (offset: number) => void;
 }
 
 /**
- * Resolves TileGrid props into geometry and render state.
+ * Resolves TileGrid props into geometry, the mounted virtual window, and
+ * render state.
  *
- * This hook owns normalization, defaults, measurement, geometry, and
- * development warnings.
+ * This hook owns normalization, defaults, measurement, geometry, anchor
+ * preservation, and development warnings. The virtualizer only selects the
+ * indexes to mount; the geometry rectangles remain the rendered positions.
  */
 export function useTileGrid<T>(props: TileGridProps<T>): TileGridState<T> {
   const {
@@ -76,6 +93,7 @@ export function useTileGrid<T>(props: TileGridProps<T>): TileGridState<T> {
   const size = useContainerSize(rootRef);
   const normalized = useMemo(() => normalizeItems(items, getItemId), [items, getItemId]);
   const resolvedTileSize = normalizeTileSize(tileSize, minTileSize, maxTileSize);
+  const resolvedGap = normalizeGap(gap);
   const emptyMessage = strings?.emptyMessage?.trim() ? strings.emptyMessage.trim() : 'No items';
   const ariaLabelledBy = rootProps['aria-labelledby'];
 
@@ -91,7 +109,7 @@ export function useTileGrid<T>(props: TileGridProps<T>): TileGridState<T> {
         tileSize: resolvedTileSize,
         tileAspectRatio,
         fallbackAspectRatio,
-        gap,
+        gap: resolvedGap,
         containerWidth: size.width,
       }),
     [
@@ -104,10 +122,73 @@ export function useTileGrid<T>(props: TileGridProps<T>): TileGridState<T> {
       resolvedTileSize,
       tileAspectRatio,
       fallbackAspectRatio,
-      gap,
+      resolvedGap,
       size.width,
     ]
   );
+
+  const geometryKey = useMemo(() => {
+    const ids = normalized.items.map(getItemId);
+    return JSON.stringify([
+      layout,
+      resolvedTileSize,
+      columns ?? null,
+      resolvedGap,
+      tileAspectRatio,
+      fallbackAspectRatio,
+      ids,
+    ]);
+  }, [
+    normalized.items,
+    getItemId,
+    layout,
+    resolvedTileSize,
+    columns,
+    resolvedGap,
+    tileAspectRatio,
+    fallbackAspectRatio,
+  ]);
+
+  const virtualWindow = useTileGridVirtualizer({
+    layout,
+    geometry,
+    rootRef,
+    gap: resolvedGap,
+  });
+
+  useAnchorPreservation({ rootRef, geometry, geometryKey });
+
+  const visibleItemRects = virtualWindow.itemIndexes.flatMap(index => {
+    const rect = geometry.itemRects[index];
+    return rect ? [rect] : [];
+  });
+
+  const scrollToItem = useCallback(
+    (id: string) => {
+      const root = rootRef.current;
+      if (root) {
+        scrollRootToItem(root, geometry, id);
+      }
+    },
+    [geometry]
+  );
+
+  const scrollToIndex = useCallback(
+    (index: number) => {
+      const root = rootRef.current;
+      if (root) {
+        scrollRootToIndex(root, geometry, index);
+      }
+    },
+    [geometry]
+  );
+
+  const scrollToOffset = useCallback((offset: number) => {
+    const root = rootRef.current;
+    if (root) {
+      scrollRootToOffset(root, offset);
+    }
+  }, []);
 
   useEffect(() => {
     if (normalized.duplicateIds.length > 0) {
@@ -150,11 +231,15 @@ export function useTileGrid<T>(props: TileGridProps<T>): TileGridState<T> {
     ariaLabel,
     uniqueItems: normalized.items,
     geometry,
+    visibleItemRects,
     tileSize: resolvedTileSize,
     hasItems: normalized.items.length > 0,
     emptyMessage,
     renderEmpty,
     renderItem,
     getItemLabel,
+    scrollToItem,
+    scrollToIndex,
+    scrollToOffset,
   };
 }
