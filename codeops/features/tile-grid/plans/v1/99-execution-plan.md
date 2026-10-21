@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-21 10:25
-> **Progress**: 52/69 tasks (75%)
+> **Last Updated**: 2026-10-21 10:41
+> **Progress**: 60/69 tasks (87%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -286,7 +286,9 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 
 ## Phase 5: Marquee controller
 
-> **Phase baseline tree**: _(recorded by the exec-plan skill from a temporary-index snapshot of committed, staged, unstaged, and untracked phase-start state)_
+> **Phase baseline tree**: `81f821af17be9ff33a915828bef577858d2807db`
+> **Expected modification set**: `src/components/TileGrid/marquee/**`, `test/tile-grid-marquee.spec.test.ts`, `test/tile-grid-marquee.impl.test.ts`, and the plan/findings documents.
+> **Scope mode**: `strict`
 > **Lenses**: `perf`
 > **Reasoning**: high — pointer state, capture-loss ordering, auto-scroll frames, and commit/cancel correctness.
 
@@ -295,8 +297,8 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 **Reference**: 03-03 §Marquee controller; ST-35–ST-42; RD-01 AC 8–13.
 **Objective**: Define the controller's threshold, preview, commit/cancel, capture ordering, auto-scroll, and geometry usage before implementation.
 
-- [ ] 5.1.1 [spec-author] Write `test/tile-grid-marquee.spec.test.ts` covering ST-35–ST-42 with a synthetic geometry port and injected frame scheduler — 03-03
-- [ ] 5.1.2 Run the marquee spec; verify it fails because the controller does not exist (red phase)
+- [x] 5.1.1 [spec-author] Write `test/tile-grid-marquee.spec.test.ts` covering ST-35–ST-42 with a synthetic geometry port and injected frame scheduler — 03-03 ✅ (completed: 2026-10-21 10:36)
+- [x] 5.1.2 Run the marquee spec; verify it fails because the controller does not exist (red phase) ✅ (completed: 2026-10-21 10:36)
 
 **Deliverables**:
 
@@ -308,10 +310,10 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 **Reference**: 03-03 §State machine; RD-01 §Marquee algorithm; AR #4.
 **Objective**: Implement the internal controller and its capture/auto-scroll edge cases.
 
-- [ ] 5.2.1 Add `marquee/types.ts` and `marquee/intersection.ts` — 03-03 §Types
-- [ ] 5.2.2 Add `marquee/createMarqueeController.ts` with the idle/pending/active/committed/cancelled state machine, threshold, preview, and commit/cancel — 03-03 §State machine
-- [ ] 5.2.3 Extend `marquee/createMarqueeController.ts` with auto-scroll frames, pointer capture, `lostpointercapture` ordering, and `dispose` — 03-03 §State machine, §Error handling
-- [ ] 5.2.4 Run the marquee spec; verify it passes (green phase)
+- [x] 5.2.1 Add `marquee/types.ts` and `marquee/intersection.ts` — 03-03 §Types ✅ (completed: 2026-10-21 10:36)
+- [x] 5.2.2 Add `marquee/createMarqueeController.ts` with the idle/pending/active/committed/cancelled state machine, threshold, preview, and commit/cancel — 03-03 §State machine ✅ (completed: 2026-10-21 10:36)
+- [x] 5.2.3 Extend `marquee/createMarqueeController.ts` with auto-scroll frames, pointer capture, `lostpointercapture` ordering, and `dispose` — 03-03 §State machine, §Error handling ✅ (completed: 2026-10-21 10:36)
+- [x] 5.2.4 Run the marquee spec; verify it passes (green phase) ✅ (completed: 2026-10-21 10:36)
 
 **Deliverables**:
 
@@ -323,8 +325,8 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 **Reference**: 03-03 §Testing requirements; ST-35–ST-42.
 **Objective**: Add edge-case coverage and run the phase gate.
 
-- [ ] 5.3.1 Add `test/tile-grid-marquee.impl.test.ts` for capture unavailable, dispose, boundary clamps, additive hidden IDs, and scheduler cleanup — 03-03
-- [ ] 5.3.2 Run `pnpm verify && pnpm test:browser && pnpm test:perf`; phase gate
+- [x] 5.3.1 Add `test/tile-grid-marquee.impl.test.ts` for capture unavailable, dispose, boundary clamps, additive hidden IDs, and scheduler cleanup — 03-03 ✅ (completed: 2026-10-21 10:36)
+- [x] 5.3.2 Run `pnpm verify && pnpm test:browser && pnpm test:perf`; phase gate ✅ (completed: 2026-10-21 10:41)
 
 **Deliverables**:
 
