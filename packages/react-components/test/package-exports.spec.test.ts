@@ -35,9 +35,11 @@ import type {
   LoadingOverlayProps,
   LoadingProps,
   SystemErrorProviderProps,
+  TileGridHandle,
   TileGridItemRenderArgs,
   TileGridLayout,
   TileGridProps,
+  TileGridSelectionMode,
   TileGridStrings,
 } from '../src/index';
 
@@ -123,6 +125,12 @@ describe('package export surface', () => {
     };
     const layout: TileGridLayout = 'masonry';
     const strings: TileGridStrings = { emptyMessage: 'No tiles' };
+    const selectionMode: TileGridSelectionMode = 'multiselect';
+    const handle: TileGridHandle = {
+      selectAll: () => {},
+      clearSelection: () => {},
+      scrollToSelected: () => {},
+    };
     const props: TileGridProps<TileGridTestItem> = {
       items: [item],
       getItemId: value => value.id,
@@ -130,11 +138,17 @@ describe('package export surface', () => {
       renderItem: () => null,
       layout,
       strings,
+      selectionMode,
+      selectedIds: new Set(['a']),
+      defaultSelectedIds: ['a'],
+      onSelectionChange: () => {},
     };
 
     expect(args.index).toBe(0);
     expect(props.layout).toBe('masonry');
     expect(strings.emptyMessage).toBe('No tiles');
+    expect(selectionMode).toBe('multiselect');
+    expect(handle).toBeDefined();
   });
 
   it('exports the public ConfirmDialog types', () => {

@@ -38,11 +38,12 @@ export function renderTileGrid<T>(state: TileGridState<T>): ReactElement {
               index={rect.index}
               setSize={state.uniqueItems.length}
               tileSize={state.tileSize}
-              selected={false}
+              selected={state.isSelected(rect.id)}
               selectable
               disabled={false}
               label={state.getItemLabel(state.uniqueItems[rect.index])}
               renderItem={state.renderItem}
+              onItemClick={state.onItemClick}
               className={classes.item}
             />
           ))}

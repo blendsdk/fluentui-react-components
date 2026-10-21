@@ -3,6 +3,24 @@ import type { TileGridLayout } from './geometry';
 
 export type { TileGridLayout };
 
+/** Selection behaviour for a tile grid. */
+export type TileGridSelectionMode = 'none' | 'single' | 'multiselect';
+
+/**
+ * Imperative operations exposed by a TileGrid ref.
+ *
+ * The handle is intentionally small in this phase: it covers the operations
+ * that need current items or scroll geometry and cannot be expressed by props.
+ */
+export interface TileGridHandle {
+  /** Selects every current item in multiselect mode. */
+  selectAll(): void;
+  /** Clears every selected ID, including hidden IDs. */
+  clearSelection(): void;
+  /** Scrolls to the first selected item in current item order. */
+  scrollToSelected(): void;
+}
+
 /**
  * Arguments passed to the application's `renderItem` callback.
  *
@@ -78,4 +96,12 @@ export interface TileGridProps<T> extends Omit<
   ariaLabel?: string;
   /** Overrides for localizable strings. */
   strings?: Partial<TileGridStrings>;
+  /** Selection behaviour. Defaults to `none`. */
+  selectionMode?: TileGridSelectionMode;
+  /** Controlled selected IDs; the source of truth when supplied. */
+  selectedIds?: ReadonlySet<string>;
+  /** Uncontrolled initial selected IDs. Ignored when `selectedIds` is supplied. */
+  defaultSelectedIds?: Iterable<string>;
+  /** Called once with the requested next set when a selection action changes it. */
+  onSelectionChange?: (next: ReadonlySet<string>) => void;
 }

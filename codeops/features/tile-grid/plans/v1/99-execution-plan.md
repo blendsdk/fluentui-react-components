@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-21 09:33
-> **Progress**: 40/69 tasks (58%)
+> **Last Updated**: 2026-10-21 09:58
+> **Progress**: 52/69 tasks (75%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -226,7 +226,9 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 
 ## Phase 4: Selection store and public selection
 
-> **Phase baseline tree**: _(recorded by the exec-plan skill from a temporary-index snapshot of committed, staged, unstaged, and untracked phase-start state)_
+> **Phase baseline tree**: `f83706129ccf304fc07eb5cfa42188ee3062bf3e`
+> **Expected modification set**: `src/components/TileGrid/selection/**`, `TileGrid.types.ts`, `TileGrid.tsx`, `useTileGrid.ts`, `renderTileGrid.tsx`, `TileGridItemView.tsx`, `index.ts`, `src/index.ts`, `stories/TileGridSelection.story.tsx`, `stories/TileGrid.stories.tsx`, `test/tile-grid-selection.spec.test.tsx`, `test/browser/tile-grid-selection.browser.test.tsx`, `test/tile-grid-selection.impl.test.tsx`, `test/package-exports.spec.test.ts`, and the plan/findings documents.
+> **Scope mode**: `strict`
 > **Lenses**: `api-surface`
 > **Reasoning**: high — the selection contract is public, controlled-first, and shared with the later focus/keyboard plan.
 
@@ -235,9 +237,9 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 **Reference**: 03-03 §Selection store, §Click mapping, §Handle semantics, §Performance; ST-23–ST-32, ST-34, ST-47, ST-49; RD-03 §Selection modes–§Select-all/clear API; PF-003, PF-005.
 **Objective**: Define the public selection, 20K public selection proxy, affected-cell render count, and browser handle-scroll behavior before the store exists.
 
-- [ ] 4.1.1 [spec-author] Write `test/tile-grid-selection.spec.test.tsx` covering ST-23–ST-32 — 03-03
-- [ ] 4.1.2 [spec-author] Write `test/browser/tile-grid-selection.browser.test.tsx` covering ST-34, ST-47, ST-49 — 03-03
-- [ ] 4.1.3 Run the jsdom and browser selection specs; verify they fail because the selection props/store/handle/renderer proxy do not exist (red phase)
+- [x] 4.1.1 [spec-author] Write `test/tile-grid-selection.spec.test.tsx` covering ST-23–ST-32 — 03-03 ✅ (completed: 2026-10-21 09:58)
+- [x] 4.1.2 [spec-author] Write `test/browser/tile-grid-selection.browser.test.tsx` covering ST-34, ST-47, ST-49 — 03-03 ✅ (completed: 2026-10-21 09:58)
+- [x] 4.1.3 Run the jsdom and browser selection specs; verify they fail because the selection props/store/handle/renderer proxy do not exist (red phase) ✅ (completed: 2026-10-21 09:58)
 
 **Deliverables**:
 
@@ -249,13 +251,13 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 **Reference**: 03-03 §Selection store–§Handle semantics; AR #3, AR #23.
 **Objective**: Implement the selection store, click mapping, public selection props, selected render args, and handle.
 
-- [ ] 4.2.1 Add `selection/types.ts` and `selection/transitions.ts` — 03-03 §Types, §Transitions
-- [ ] 4.2.2 Add `selection/useGridSelection.ts` and `selection/clickSelection.ts` — 03-03 §Controlled/uncontrolled resolution, §Click mapping
-- [ ] 4.2.3 Extend `TileGrid.types.ts` with `TileGridSelectionMode`, selection props, and `TileGridHandle` — 03-04 §Public types
-- [ ] 4.2.4 Update `TileGrid.tsx` to `forwardRef` with `TileGridHandle`, and update `useTileGrid.ts`/`renderTileGrid.tsx`/`TileGridItemView.tsx` to use the store, selected render args, stable click handler, memoized cell, and handle — 03-03 §Handle semantics; 03-04 §Generic forwardRef, §Click selection; PF-005
-- [ ] 4.2.5 Update `src/index.ts` and `test/package-exports.spec.test.ts` with the selection types/handle — 03-04 §Package surface
-- [ ] 4.2.6 Add `TileGridSelection.story.tsx` and re-export it from `TileGrid.stories.tsx` — 03-04 §Stories
-- [ ] 4.2.7 Run the selection spec tests; verify they pass (green phase); fix the implementation, not the tests
+- [x] 4.2.1 Add `selection/types.ts` and `selection/transitions.ts` — 03-03 §Types, §Transitions ✅ (completed: 2026-10-21 09:58)
+- [x] 4.2.2 Add `selection/useGridSelection.ts` and `selection/clickSelection.ts` — 03-03 §Controlled/uncontrolled resolution, §Click mapping ✅ (completed: 2026-10-21 09:58)
+- [x] 4.2.3 Extend `TileGrid.types.ts` with `TileGridSelectionMode`, selection props, and `TileGridHandle` — 03-04 §Public types ✅ (completed: 2026-10-21 09:58)
+- [x] 4.2.4 Update `TileGrid.tsx` to `forwardRef` with `TileGridHandle`, and update `useTileGrid.ts`/`renderTileGrid.tsx`/`TileGridItemView.tsx` to use the store, selected render args, stable click handler, memoized cell, and handle — 03-03 §Handle semantics; 03-04 §Generic forwardRef, §Click selection; PF-005 ✅ (completed: 2026-10-21 09:58)
+- [x] 4.2.5 Update `src/index.ts` and `test/package-exports.spec.test.ts` with the selection types/handle — 03-04 §Package surface ✅ (completed: 2026-10-21 09:58)
+- [x] 4.2.6 Add `TileGridSelection.story.tsx` and re-export it from `TileGrid.stories.tsx` — 03-04 §Stories ✅ (completed: 2026-10-21 09:58)
+- [x] 4.2.7 Run the selection spec tests; verify they pass (green phase); fix the implementation, not the tests ✅ (completed: 2026-10-21 09:58)
 
 **Deliverables**:
 
@@ -269,8 +271,8 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 **Reference**: 03-03 §Testing requirements; ST-23–ST-34.
 **Objective**: Add store internals/edge-case coverage and run the phase gate.
 
-- [ ] 4.3.1 Add `test/tile-grid-selection.impl.test.tsx` for the transition table, no-op callbacks, anchor behavior, single seed warning, selectAll filtering, and memoized-cell props — 03-03; PF-005
-- [ ] 4.3.2 Run `pnpm verify && pnpm test:browser && pnpm test:perf`; phase gate
+- [x] 4.3.1 Add `test/tile-grid-selection.impl.test.tsx` for the transition table, no-op callbacks, anchor behavior, single seed warning, selectAll filtering, and memoized-cell props — 03-03; PF-005 ✅ (completed: 2026-10-21 09:58)
+- [x] 4.3.2 Run `pnpm verify && pnpm test:browser && pnpm test:perf`; phase gate ✅ (completed: 2026-10-21 09:58)
 
 **Deliverables**:
 

@@ -1,6 +1,6 @@
 ## Ambiguity Register: TileGrid Phase A Implementation Plan
 
-> **Status**: ✅ GATE PASSED — all 26 items resolved; preflight refinements applied
+> **Status**: ✅ GATE PASSED — all 27 items resolved; preflight refinements applied
 > **Last Updated**: 2026-10-21 09:09
 
 | #   | Category          | Ambiguity / Gap                                                                                                                                                                                                                                                                                                                                                                | Options Presented                                                                                                                                                                                                                                              | User Decision                                                                                                                                                                                                                                                                                                                                                                                                                                          | Status      |
@@ -32,6 +32,8 @@
 | 25  | Testing (runtime) | The browser anchor test scrolls to item 500, then asserts the first visible item ID is unchanged after `tileSize` grows from 160 to 200. The automatic column count changes from 8 to 6, so the old first visible item is 496; after reflow item 496 shares its row with item 492, which has the lower index. The assertion is unsatisfiable without changing rendering order. | A) move the scenario to item 504, a row boundary in both 8-column and 6-column layouts, and keep the same first-visible/offset assertions · B) assert only that the old anchor item remains mounted and visible · C) keep item 500 and freeze the column count | Authority: AI — delegated by --auto-design. Decision: **A**. Use item 504 at `tileSize` 160 and 200; the anchor and first-visible assertions stay unchanged.                                                                                                                                                                                                                                                                                           | ✅ Resolved |
 
 | 26 | Testing (runtime) | TanStack Virtual's masonry lane identity differs from the geometry engine's lowest-lane tie rule when two lanes end at the same offset. The rendered `start` values still match geometry for all 20K items, but a strict lane-number assertion fails at item 14 (geometry lane 3, virtualizer lane 4). | A) keep the geometry's lowest-lane rule and assert start/end parity plus a valid lane range · B) change the geometry tie rule to TanStack's last-index rule · C) replace TanStack's lane assignment with a custom range calculator | Authority: AI — delegated by --auto-design. Decision: **A**. Geometry remains authoritative; the test asserts every item's start and end plus a valid lane range, not a specific lane number on an equal-offset tie. | ✅ Resolved |
+
+| 27 | Testing (runtime) | The Phase 2 node import smoke asserts that `TileGrid` is a function. This phase makes the public component a generic `forwardRef`, which is an exotic component object whose `$$typeof` is the React forward-ref symbol. The old assertion fails even though the module imports safely and the planned ref API works. | A) update the smoke to assert that the public component is defined and has the forward-ref marker, keeping the no-render import check · B) avoid `forwardRef` and make the component callable · C) remove the smoke assertion | Authority: AI — delegated by --auto-design. Decision: **A**. The smoke keeps its real purpose: importing the package in Node must not touch browser globals. | ✅ Resolved |
 
 ### Resolution Notes
 
@@ -91,6 +93,23 @@ Hardening: Not required — testing/integration choice with no security, data, o
 Policy version: 1
 Root invocation ID: exec-plan-tile-grid-20261021-0842
 Reopen triggers: TanStack changes its lane tie rule; the geometry tie rule changes; a browser range divergence appears.
+```
+
+**AR-27 (runtime):** The node import smoke originally asserted `typeof TileGrid === 'function'`. This phase adds the planned generic `forwardRef` so callers can use `TileGridHandle`; React represents a forward-ref component as an object with a `$$typeof` marker, not a function. The smoke now checks that the runtime export is defined and carries that marker. It still imports the package in the Node environment without accessing `window`/`document` or rendering.
+
+```text
+Authority: AI — delegated by --auto-design
+Eligibility: Testing strategy — the public ref capability is already authorized; only the shape assertion changes.
+Objective: Keep the node import smoke focused on module-evaluation safety while recognizing the planned forwardRef component shape.
+Decision: Assert the exported TileGrid is defined and has a $$typeof marker; keep the no-render smoke.
+Evidence: React.forwardRef returns an exotic component object; the handle is part of the planned public selection surface.
+Rejected alternatives: Replace forwardRef with a callable wrapper (adds indirection and weakens the established generic ref pattern); remove the export assertion (loses import-surface coverage).
+Strongest counterargument: A marker-only assertion is less specific than a function check; the package export test separately pins the runtime export list, and the selection/browser suites exercise the ref handle.
+Confidence: High — the component shape follows the repository's existing generic forwardRef pattern.
+Hardening: Not required — testing-shape choice with no product, security, data, or compatibility consequence.
+Policy version: 1
+Root invocation ID: exec-plan-tile-grid-20261021-0842
+Reopen triggers: The public component stops using forwardRef, or the node import smoke starts rendering.
 ```
 
 ### Preflight Refinements

@@ -74,8 +74,10 @@ export { useSystemError } from './components/SystemErrorProvider';
 export type { CatchErrorOptions, SystemErrorProviderProps } from './components/SystemErrorProvider';
 export { TileGrid } from './components/TileGrid';
 export type {
+  TileGridHandle,
   TileGridItemRenderArgs,
   TileGridLayout,
   TileGridProps,
+  TileGridSelectionMode,
   TileGridStrings,
 } from './components/TileGrid';

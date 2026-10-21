@@ -1,9 +1,16 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
-import type { ComponentPropsWithoutRef, CSSProperties, ReactNode, RefObject } from 'react';
+import type {
+  ComponentPropsWithoutRef,
+  CSSProperties,
+  MouseEvent,
+  ReactNode,
+  RefObject,
+} from 'react';
 import { computeGeometry, normalizeGap, normalizeItems, normalizeTileSize } from './geometry';
 import type { TileGridGeometryResult, TileGridItemRect } from './geometry';
 import type { TileGridItemRenderArgs, TileGridProps } from './TileGrid.types';
 import { devWarn } from './devWarnings';
+import { applyItemClick, useGridSelection } from './selection';
 import { useTileGridStyles } from './useTileGridStyles.styles';
 import { useTileGridVirtualizer } from './virtualization/useTileGridVirtualizer';
 import { useAnchorPreservation } from './virtualization/useAnchorPreservation';
@@ -11,6 +18,7 @@ import {
   scrollToIndex as scrollRootToIndex,
   scrollToItem as scrollRootToItem,
   scrollToOffset as scrollRootToOffset,
+  scrollToSelected as scrollRootToSelected,
 } from './virtualization/scrollHelpers';
 import { useContainerSize } from './virtualization/useContainerSize';
 
@@ -55,6 +63,16 @@ export interface TileGridState<T> {
   scrollToIndex: (index: number) => void;
   /** Scrolls to a clamped offset; non-finite offsets are ignored. */
   scrollToOffset: (offset: number) => void;
+  /** Returns true when the effective selection contains the ID. */
+  isSelected: (id: string) => boolean;
+  /** Maps an item wrapper click to the current selection mode. */
+  onItemClick: (event: MouseEvent<HTMLElement>, id: string) => void;
+  /** Selects every current item in multiselect mode. */
+  selectAll: () => void;
+  /** Clears every selected ID, including hidden IDs. */
+  clearSelection: () => void;
+  /** Scrolls to the first selected item in current item order. */
+  scrollToSelected: () => void;
 }
 
 /**
@@ -84,6 +102,10 @@ export function useTileGrid<T>(props: TileGridProps<T>): TileGridState<T> {
     gap = 8,
     ariaLabel,
     strings,
+    selectionMode = 'none',
+    selectedIds,
+    defaultSelectedIds,
+    onSelectionChange,
     className,
     style,
     ...rootProps
@@ -157,6 +179,51 @@ export function useTileGrid<T>(props: TileGridProps<T>): TileGridState<T> {
     const rect = geometry.itemRects[index];
     return rect ? [rect] : [];
   });
+
+  const currentIds = useMemo(() => normalized.items.map(getItemId), [normalized.items, getItemId]);
+  const selection = useGridSelection({
+    mode: selectionMode,
+    selectedIds,
+    defaultSelectedIds,
+    onSelectionChange,
+  });
+  const selectionRef = useRef(selection);
+  selectionRef.current = selection;
+
+  const onItemClick = useCallback(
+    (event: MouseEvent<HTMLElement>, id: string) => {
+      applyItemClick({
+        event,
+        id,
+        mode: selectionMode,
+        currentIds,
+        selection: selectionRef.current,
+      });
+    },
+    [currentIds, selectionMode]
+  );
+
+  const selectAll = useCallback(() => {
+    selectionRef.current.selectAll(currentIds);
+  }, [currentIds]);
+
+  const clearSelection = useCallback(() => {
+    selectionRef.current.clear();
+  }, []);
+
+  const scrollToSelected = useCallback(() => {
+    const root = rootRef.current;
+
+    if (root) {
+      scrollRootToSelected(
+        root,
+        geometry,
+        selectionRef.current.selectedIds,
+        normalized.items,
+        getItemId
+      );
+    }
+  }, [geometry, normalized.items, getItemId]);
 
   const scrollToItem = useCallback(
     (id: string) => {
@@ -236,5 +303,10 @@ export function useTileGrid<T>(props: TileGridProps<T>): TileGridState<T> {
     scrollToItem,
     scrollToIndex,
     scrollToOffset,
+    isSelected: selection.isSelected,
+    onItemClick,
+    selectAll,
+    clearSelection,
+    scrollToSelected,
   };
 }
