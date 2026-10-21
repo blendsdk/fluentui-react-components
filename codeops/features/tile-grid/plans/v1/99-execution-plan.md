@@ -289,7 +289,7 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 > **Phase baseline tree**: `81f821af17be9ff33a915828bef577858d2807db`
 > **Expected modification set**: `src/components/TileGrid/marquee/**`, `test/tile-grid-marquee.spec.test.ts`, `test/tile-grid-marquee.impl.test.ts`, and the plan/findings documents.
 > **Scope mode**: `strict`
-> **Review**: P5-RV-001–P5-RV-005 and P5-PE-001–P5-PE-003 fixed; scoped re-review pending.
+> **Review**: P5-RV-001–P5-RV-005 and P5-PE-001–P5-PE-003 fixed; scoped re-review found no blocking issues; residual minor PE-001/RRV-001 corrections applied.
 > **Lenses**: `perf`
 > **Reasoning**: high — pointer state, capture-loss ordering, auto-scroll frames, and commit/cancel correctness.
 

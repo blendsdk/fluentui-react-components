@@ -53,7 +53,7 @@ export function createMarqueeController({
   let pointerClientY = 0;
   let additive = false;
   let preSelection: ReadonlySet<string> = EMPTY_SELECTION;
-  let preview: ReadonlySet<string> = EMPTY_SELECTION;
+  let preview = new Set<string>();
   let lastHits: ReadonlySet<string> = EMPTY_SELECTION;
   let rect: MarqueeRect | null = null;
   let frameHandle: number | null = null;
@@ -137,15 +137,6 @@ export function createMarqueeController({
     return 0;
   };
 
-  const updatePreview = (nextPreview: ReadonlySet<string>): void => {
-    if (areSetsEqual(preview, nextPreview)) {
-      return;
-    }
-
-    preview = nextPreview;
-    onPreview?.(new Set(nextPreview));
-  };
-
   const updateFromPointer = (
     clientX: number,
     clientY: number,
@@ -168,18 +159,36 @@ export function createMarqueeController({
       return;
     }
 
-    lastHits = hits;
-
     if (!additive) {
-      updatePreview(hits);
+      lastHits = hits;
+      preview = hits;
+      onPreview?.(new Set(preview));
       return;
     }
 
-    const next = new Set(preSelection);
+    // Keep the union as the live preview and apply only the hit-set delta.
+    // The pre-selection is never copied on an unchanged hit set.
+    let changed = false;
+
     for (const id of hits) {
-      next.add(id);
+      if (!lastHits.has(id) && !preview.has(id)) {
+        preview.add(id);
+        changed = true;
+      }
     }
-    updatePreview(next);
+
+    for (const id of lastHits) {
+      if (!hits.has(id) && !preSelection.has(id)) {
+        preview.delete(id);
+        changed = true;
+      }
+    }
+
+    lastHits = hits;
+
+    if (changed) {
+      onPreview?.(new Set(preview));
+    }
   };
 
   const scheduleFrame = (delta: number): void => {
@@ -247,7 +256,7 @@ export function createMarqueeController({
       pointerClientY = event.clientY;
       additive = event.shiftKey || event.ctrlKey || event.metaKey;
       preSelection = new Set(getSelectedIds());
-      preview = additive ? new Set(preSelection) : EMPTY_SELECTION;
+      preview = additive ? new Set(preSelection) : new Set<string>();
       lastHits = EMPTY_SELECTION;
       rect = null;
       phase = 'pending';
@@ -310,7 +319,7 @@ export function createMarqueeController({
         phase = 'idle';
         stopFrames();
         rect = null;
-        preview = EMPTY_SELECTION;
+        preview = new Set<string>();
         releaseCapture();
         return;
       }
@@ -364,7 +373,7 @@ export function createMarqueeController({
       phase = 'idle';
       stopFrames();
       rect = null;
-      preview = EMPTY_SELECTION;
+      preview = new Set<string>();
       releaseCapture();
     },
   };

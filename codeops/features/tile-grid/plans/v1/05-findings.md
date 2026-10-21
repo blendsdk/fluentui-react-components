@@ -51,6 +51,8 @@
 | P5-PE-001  | 5     | MAJOR       | packages/react-components/src/components/TileGrid/marquee/createMarqueeController.ts       | fixed    |
 | P5-PE-002  | 5     | MINOR       | packages/react-components/src/components/TileGrid/marquee/createMarqueeController.ts       | fixed    |
 | P5-PE-003  | 5     | MINOR       | packages/react-components/src/components/TileGrid/marquee/createMarqueeController.ts       | fixed    |
+| P5-RRV-001 | 5     | MINOR       | plans/v1/03-03-selection-and-marquee.md                                                    | fixed    |
+| P5-PE-004  | 5     | MINOR       | packages/react-components/src/components/TileGrid/marquee/createMarqueeController.ts       | fixed    |
 
 > **Phase 3 re-review:** clean — no remaining findings in the fix diff (`da873e3..855e9dc`).
 
