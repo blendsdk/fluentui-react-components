@@ -1,5 +1,5 @@
 import { FluentProvider, webLightTheme } from '@fluentui/react-components';
-import { act, cleanup, render, screen } from '@testing-library/react';
+import { act, cleanup, render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { TileGrid } from '../src/index';
 import type { TileGridItemRenderArgs, TileGridProps } from '../src/index';
@@ -113,6 +113,45 @@ describe('TileGrid layout implementation details', () => {
     warn.mockRestore();
     error.mockRestore();
     fetchSpy.mockRestore();
+  });
+
+  it('marks mounted wrappers with their normalized index', () => {
+    renderGrid();
+    measureList();
+
+    expect(screen.getAllByRole('listitem')[0]).toHaveAttribute('data-index', '0');
+  });
+
+  it('keeps the empty state as a single listitem after measurement', () => {
+    renderGrid({ items: [] });
+    measureList();
+
+    expect(screen.getAllByRole('listitem')).toHaveLength(1);
+    expect(screen.getByText('No items')).toBeInTheDocument();
+  });
+
+  it('keeps the mounted window bounded when the measured width changes', async () => {
+    const manyItems: readonly ImplItem[] = Array.from({ length: 200 }, (_, index) => ({
+      id: `item-${index}`,
+      label: `Item ${index}`,
+    }));
+
+    renderGrid({ items: manyItems });
+    const list = measureList(800, 600);
+    const initialCount = screen.getAllByRole('listitem').length;
+
+    expect(initialCount).toBeGreaterThan(0);
+    expect(initialCount).toBeLessThan(manyItems.length);
+
+    act(() => {
+      setElementSize(list, 400, 600);
+    });
+
+    await waitFor(() => {
+      const nextCount = screen.getAllByRole('listitem').length;
+      expect(nextCount).toBeGreaterThan(0);
+      expect(nextCount).toBeLessThan(manyItems.length);
+    });
   });
 
   it('re-renders the memoized cell only when its selection changes', () => {

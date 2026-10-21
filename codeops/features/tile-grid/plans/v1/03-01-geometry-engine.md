@@ -8,7 +8,7 @@
 
 The geometry engine turns normalized items and a container width into deterministic rectangles for four layouts. It is pure: no React, no DOM, no image measurement, no logging. The renderer and the marquee controller consume its result; the virtualizer uses its bands or lane assignments only as a range hint.
 
-The engine owns the shortest-column assignment for masonry. TanStack's `lanes` mode repeats the same shortest-column/leftmost rule; a parity test in `03-02` asserts agreement. Rendered positions always come from the geometry rectangles.
+The engine owns the shortest-column assignment for masonry. TanStack's `lanes` mode also chooses the shortest lane, but its lane identity can differ when two lanes end at the same offset. A parity test in `03-02` asserts start/end parity and a valid lane range; rendered positions always come from the geometry rectangles.
 
 **References:** RD-02 §Fixed layout, §Masonry layout, §Justified layout, §Mosaic layout, §Aspect ratio, §Span source, §Gap, §tileSize bounds, §Columns, §Virtualized rendering, §Geometry result. **Decisions:** AR #7, AR #12, AR #19.
 

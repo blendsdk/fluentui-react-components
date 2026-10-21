@@ -97,7 +97,7 @@ const virtualizer = useVirtualizer(
 }
 ```
 
-The rendered set is `virtualizer.getVirtualItems()` mapped to geometry rectangles. TanStack's lane assignment must match the geometry engine's shortest-column/leftmost rule. `test/tile-grid-virtualizer.impl.test.tsx` uses the same `buildMasonryVirtualizerOptions` helper with a test host and compares `virtualizer.measurementsCache[i].lane` and `.start` to the geometry rect for every item. If the library changes its lane rule, the parity test fails; the geometry rectangles remain the rendered source.
+The rendered set is `virtualizer.getVirtualItems()` mapped to geometry rectangles. TanStack's lane assignment must match the geometry engine's shortest-column rule. On an equal-offset tie, the library may choose a different lane number; the rendered start must still match. `test/tile-grid-virtualizer.impl.test.tsx` uses the same `buildMasonryVirtualizerOptions` helper with a test host and compares `virtualizer.measurementsCache[i].start` and `.end` to the geometry rect for every item, plus a valid lane range. If the library changes its start/end rule, the parity test fails; the geometry rectangles remain the rendered source.
 
 `overscan: 2` with lanes is two rows of lanes. At 1440×900, 160px `tileSize`, 8px gap, and aspect ratios 0.8–2.0, the visible window plus overscan stays under 120 mounted wrappers.
 
@@ -167,7 +167,7 @@ The public `TileGridHandle` exposes only `selectAll`, `clearSelection`, and `scr
 
 ## Testing requirements
 
-- Pure virtualizer-option tests: band starts/total match geometry; masonry lanes/starts match geometry for the 20K fixture.
+- Pure virtualizer-option tests: band starts/total match geometry; masonry starts/ends and lane range match geometry for the 20K fixture.
 - Browser: four layouts at 1440×900 mount under 120 wrappers; masonry does not mount whole columns.
 - Browser: scrolling each layout keeps mounted indexes within the visible-plus-overscan window and never calls `getBoundingClientRect()` on a `[data-tile-grid-item]` (ST-48).
 - Browser: tileSize 160 → 200 preserves the first visible item ID and offset; an item removed from the middle scrolls to top when it was the anchor.

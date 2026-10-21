@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-21 09:07
-> **Progress**: 37/69 tasks (54%)
+> **Last Updated**: 2026-10-21 09:15
+> **Progress**: 40/69 tasks (58%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -209,9 +209,9 @@ The plan assumes the project toolchain is available (`node` 22+, `pnpm` 12.11.2)
 **Reference**: 03-02 §Testing requirements; ST-13–ST-15, ST-21, ST-22, ST-48; PF-004.
 **Objective**: Add parity/scroll-helper coverage and run the phase gate.
 
-- [ ] 3.3.1 Add `test/tile-grid-virtualizer.impl.test.tsx` for band start/total parity, masonry lane/start parity, and scroll-helper clamps — 03-02
-- [ ] 3.3.2 Update `test/tile-grid-layout.impl.test.tsx` for virtualized empty/list/resize edge cases and memoized-cell props — 03-02 §Error handling; PF-005
-- [ ] 3.3.3 Run `pnpm verify && pnpm test:browser && pnpm test:perf`; phase gate
+- [x] 3.3.1 Add `test/tile-grid-virtualizer.impl.test.tsx` for band start/total parity, masonry start/end parity and lane range, and scroll-helper clamps — 03-02 ✅ (completed: 2026-10-21 09:10)
+- [x] 3.3.2 Update `test/tile-grid-layout.impl.test.tsx` for virtualized empty/list/resize edge cases and memoized-cell props — 03-02 §Error handling; PF-005 ✅ (completed: 2026-10-21 09:10)
+- [x] 3.3.3 Run `pnpm verify && pnpm test:browser && pnpm test:perf`; phase gate ✅ (completed: 2026-10-21 09:15)
 
 **Deliverables**:
 
