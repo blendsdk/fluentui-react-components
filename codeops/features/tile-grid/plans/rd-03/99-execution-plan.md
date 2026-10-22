@@ -1,8 +1,8 @@
 # Execution Plan: TileGrid RD-03
 
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-22 09:58
-> **Progress**: 46/47 tasks (98%)
+> **Last Updated**: 2026-10-22 10:03
+> **Progress**: 47/47 tasks (100%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -212,7 +212,7 @@ verified tasks retain per-task commits/pushes.
 
 - [x] 4.3.1 Add final lifecycle/memoization regression internals — `test/tile-grid-focus.impl.test.tsx`, `test/tile-grid-marquee-integration.impl.test.tsx`; ST-35/ST-38 implementation details without mirroring the public oracles. ✅ (completed: 2026-10-22 09:03; intentional blur, unchanged preview content, and disabled gesture cleanup pass; full verify 793 tests)
 - [x] 4.3.2 Run `pnpm verify && pnpm test:browser:all && pnpm test:perf && pnpm storybook:build && pnpm pack:check` plus 07's existing coverage command; record measurements/coverage, package/SSR checks, and complete strict independent review. ✅ (completed: 2026-10-22 09:58; 793 unit / 270 matrix / 16 performance; coverage/media/Storybook/package pass; both independent reviewers report no findings)
-- [ ] 4.3.3 Record aggregate RD-01/RD-03 acceptance evidence and RD-02's remaining final-contract work in this plan; synchronize `codeops/features/tile-grid/00-roadmap.md` and `codeops/00-roadmap.md` through the roadmap workflow.
+- [x] 4.3.3 Record aggregate RD-01/RD-03 acceptance evidence and RD-02's remaining final-contract work in this plan; synchronize `codeops/features/tile-grid/00-roadmap.md` and `codeops/00-roadmap.md` through the roadmap workflow. ✅ (completed: 2026-10-22 10:03; aggregate evidence verified; roadmap closes RD-01/RD-03 only; sync engine computed 2/4 in an isolated mirror to honor feature-branch portfolio deferral; full verify 793 tests)
 
 **Deliverable:** Verified completion evidence and accurate derived roadmap, with the release gate held.
 **Verify:** Full final sequence above; artifact/link/progress validation for the final evidence update.
@@ -227,3 +227,13 @@ Completion requires all 47 tasks verified, all applicable ST cases green, all fu
 authorized closure of critical/major findings, complete public/internal documentation, no unused
 new helpers, and correct roadmap coverage. RD-02's final composed API and RD-04 remain pending.
 Follow exec-plan's post-completion analysis protocol; architecture-doc automation is not opted in.
+
+## Completion Evidence
+
+[Aggregate acceptance](08-acceptance-evidence.md) closes RD-01 and RD-03. The full final sequence
+passed with 793 unit, 270 native browser and 16 performance tests, plus Storybook/package/coverage
+and three-engine forced-colors/reduced-motion checks. [Independent reviews](06-review-report.md)
+have no unresolved findings. RD-02 retains its final-contract boundary and RD-04 remains pending.
+The roadmap engine computed 2/4 RDs complete; portfolio arithmetic was previewed in an isolated
+temporary mirror because this feature branch must not write the shared integration-branch summary.
+Requirements and earlier preflight reports remain historical authorities, not duplicated task state.
