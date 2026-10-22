@@ -5,6 +5,9 @@ import { installJsdomStubs, resetJsdomStubs } from './jsdomStubs';
 
 installJsdomStubs();
 
+/** Preserve the real browser observer, or the installed shim when running in jsdom. */
+const initialResizeObserver = globalThis.ResizeObserver;
+
 /**
  * Unmounts every rendered component after each test.
  *
@@ -20,4 +23,7 @@ installJsdomStubs();
 afterEach(() => {
   cleanup();
   resetJsdomStubs();
+  // Positioning libraries may install a no-op observer in test mode. A menu
+  // case must not disable real measurement in the next mounted component.
+  globalThis.ResizeObserver = initialResizeObserver;
 });

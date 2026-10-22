@@ -134,5 +134,5 @@ remains authoritative. Strings render as React text.
 | Parent rejects a change                   | Read the controlled source on render; no false announcement.           | RD-01; AR-12 |
 | Nested control or prevented event         | No grid default action.                                                | AR-9         |
 
-Specification cases: ST-01–ST-13, ST-36–ST-41. Existing selection/export/SSR specifications stay
+Specification cases: ST-01–ST-13, ST-36–ST-42. Existing selection/export/SSR specifications stay
 unchanged. Security tests exercise hostile labels and IDs, static warnings, and no fake items.

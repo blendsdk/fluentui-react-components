@@ -7,6 +7,9 @@ import { devWarn } from './devWarnings';
 import { useGridSelection } from './selection';
 import { useTileGridInteractions } from './selection/useTileGridInteractions';
 import { useSelectionAnnouncement } from './selection/useSelectionAnnouncement';
+import { useTileGridFocus } from './focus/useTileGridFocus';
+import type { TileGridFocusState } from './focus/useTileGridFocus';
+import { useTileGridTabOrder } from './focus/useTileGridTabOrder';
 import { useTileGridStyles } from './useTileGridStyles.styles';
 import { useTileGridVirtualizer } from './virtualization/useTileGridVirtualizer';
 import { useAnchorPreservation } from './virtualization/useAnchorPreservation';
@@ -71,6 +74,8 @@ export interface TileGridState<T> {
   radioName: string;
   /** Latest committed count change, initially empty. */
   selectionAnnouncement: string;
+  /** Logical entry, physical ownership, and mounted wrapper registration. */
+  focus: TileGridFocusState;
   /** Selects every current item in multiselect mode. */
   selectAll: () => void;
   /** Clears every selected ID, including hidden IDs. */
@@ -115,9 +120,9 @@ export function useTileGrid<T>(props: TileGridProps<T>): TileGridState<T> {
     isSelectable,
     isDisabled,
     onItemActivate,
-    scrollResetKey: _scrollResetKey,
-    zoomable: _zoomable = false,
-    onTileSizeChange: _onTileSizeChange,
+    scrollResetKey,
+    zoomable = false,
+    onTileSizeChange,
     className,
     style,
     ...rootProps
@@ -186,7 +191,13 @@ export function useTileGrid<T>(props: TileGridProps<T>): TileGridState<T> {
     gap: resolvedGap,
   });
 
-  useAnchorPreservation({ rootRef, geometry, geometryKey, itemList: normalized.items });
+  useAnchorPreservation({
+    rootRef,
+    geometry,
+    geometryKey,
+    itemList: normalized.items,
+    scrollResetKey,
+  });
 
   const visibleItemRects = virtualWindow.itemIndexes.flatMap(index => {
     const rect = geometry.itemRects[index];
@@ -229,6 +240,25 @@ export function useTileGrid<T>(props: TileGridProps<T>): TileGridState<T> {
     strings?.selectionCount
   );
 
+  const focus = useTileGridFocus({
+    rootRef,
+    geometry,
+    visibleItemRects,
+    geometryKey,
+    itemList: normalized.items,
+    scrollResetKey,
+    selectedIds: selection.selectedIds,
+    isSelectable: isItemSelectable,
+    onFocus: rootProps.onFocus,
+    onBlur: rootProps.onBlur,
+  });
+  const handleInlineKey = useTileGridTabOrder({
+    rootRef,
+    activeId: focus.activeId,
+    entered: focus.entered,
+    getEntry: focus.getEntry,
+    recoverFocus: focus.recoverFocus,
+  });
   const interactionHandlers = useTileGridInteractions({
     selection,
     interactionMode,
@@ -237,6 +267,13 @@ export function useTileGrid<T>(props: TileGridProps<T>): TileGridState<T> {
     isDisabled: isItemDisabled,
     onItemActivate,
     rootProps,
+    navigate: focus.navigate,
+    handleInlineKey,
+    zoomable,
+    tileSize: resolvedTileSize,
+    minTileSize,
+    maxTileSize,
+    onTileSizeChange,
   });
 
   const selectAll = useCallback(() => {
@@ -334,7 +371,12 @@ export function useTileGrid<T>(props: TileGridProps<T>): TileGridState<T> {
 
   return {
     rootRef,
-    rootProps: { ...rootProps, ...interactionHandlers },
+    rootProps: {
+      ...rootProps,
+      ...interactionHandlers,
+      onFocus: focus.onFocus,
+      onBlur: focus.onBlur,
+    },
     className,
     style,
     classes,
@@ -358,6 +400,7 @@ export function useTileGrid<T>(props: TileGridProps<T>): TileGridState<T> {
     selectAll,
     radioName,
     selectionAnnouncement,
+    focus,
     clearSelection,
     scrollToSelected,
   };

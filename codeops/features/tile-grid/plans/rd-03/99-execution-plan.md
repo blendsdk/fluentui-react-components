@@ -1,8 +1,8 @@
 # Execution Plan: TileGrid RD-03
 
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-22 02:10
-> **Progress**: 12/47 tasks (26%)
+> **Last Updated**: 2026-10-22 03:34
+> **Progress**: 25/47 tasks (53%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -94,34 +94,36 @@ verified tasks retain per-task commits/pushes.
 
 ## Phase 2: Navigation, Focus, Filtering, and Zoom
 
-> **Phase baseline tree**: Recorded by exec-plan at phase start.
+> **Phase baseline tree**: `3c098ae509ae38134d58c5ea9d249f8132a54f98`
+> **Scope mode**: strict
+> **Expected modification set**: Phase 2 task paths under `packages/react-components/`, existing `test/setup.ts` cleanup under runtime AR-21, this plan's execution/decision/review evidence, and derived TileGrid roadmap status. Approved mounted-local focus helper only; no global portal registry or new framework.
 > **Lenses**: api-surface, perf
 > **Risk tags**: complex, performance-critical
 > **Reasoning**: max — native tab order, observer writes, and virtual focus recovery interact
 
 ### Session 2.1 — Specification Tests
 
-**Reference:** 03-02; AR-6–AR-9, AR-13; 07 ST-14–ST-25.
+**Reference:** 03-02; AR-6–AR-9, AR-13, runtime AR-20; 07 ST-14–ST-25 and ST-42.
 
-- [ ] 2.1.1 [spec-author] Add hand-computed navigation and focus contracts — `test/tile-grid-navigation.spec.test.ts`, `test/tile-grid-focus.spec.test.tsx`; ST-14–ST-17 and ST-19–ST-25 DOM portions.
-- [ ] 2.1.2 [spec-author] Add controlled zoom/reset oracles — `test/tile-grid-keyboard-zoom.spec.test.tsx`; ST-18, ST-23–ST-24.
-- [ ] 2.1.3 [spec-author] Add real Tab/radio/menu/removal/virtual-target oracles — `test/browser/tile-grid-focus.browser.test.tsx`; ST-19–ST-25.
-- [ ] 2.1.4 Run targeted unit/browser specs and record expected red results, distinguishing passing inherited anchor behavior.
+- [x] 2.1.1 [spec-author] Add hand-computed navigation, focus, and range-anchor contracts — `test/tile-grid-navigation.spec.test.ts`, `test/tile-grid-focus.spec.test.tsx`, `test/tile-grid-range-anchor.spec.test.tsx`; ST-14–ST-17, ST-19–ST-25 DOM portions, and ST-42. ✅ (completed: 2026-10-22 03:34; 44 navigation + 33 focus + 2 anchor cases pass unchanged; red evidence recorded)
+- [x] 2.1.2 [spec-author] Add controlled zoom/reset oracles — `test/tile-grid-keyboard-zoom.spec.test.tsx`; ST-18, ST-23–ST-24. ✅ (completed: 2026-10-22 03:34; 23 cases pass unchanged after 13 red / 10 baseline passes)
+- [x] 2.1.3 [spec-author] Add real Tab/radio/menu/removal/virtual-target oracles — `test/browser/tile-grid-focus.browser.test.tsx`; ST-19–ST-25. ✅ (completed: 2026-10-22 03:34; all 25 Chromium cases pass unchanged; native observer isolation corrected under AR-21)
+- [x] 2.1.4 Run targeted unit/browser specs and record expected red results, distinguishing passing inherited anchor behavior. ✅ (completed: 2026-10-22 03:34; red 44 missing-module cases, 46 behavior failures / 12 baseline passes, 25 browser failures; all now green)
 
 **Deliverable:** Immutable focus/navigation oracles, including native browser edge cases.
 **Verify:** Targeted unit and Chromium browser cases; expected red.
 
 ### Session 2.2 — Implementation
 
-- [ ] 2.2.1 Implement deterministic rectangle navigation — `src/components/TileGrid/focus/navigation.ts`; 03-02 Pure Navigation.
-- [ ] 2.2.2 Implement bounded descendant discovery and author-tabindex records for tile and empty content — `src/components/TileGrid/focus/useTileGridTabOrder.ts`; 03-02 Tab Order in Custom Content.
-- [ ] 2.2.3 Add observer write isolation, dynamic reconciliation, and cleanup to the tab-order helper — `src/components/TileGrid/focus/useTileGridTabOrder.ts`; AR-13.
-- [ ] 2.2.4 Implement active-ID/ref registration, immediate focus for connected overscan targets, and guarded pending focus for absent targets — `src/components/TileGrid/focus/useTileGridFocus.ts`; 03-02 Active Target and Physical Focus.
-- [ ] 2.2.5 Add removal, visible-fallback, empty-root, and external-focus recovery — `src/components/TileGrid/focus/useTileGridFocus.ts`; ST-23–ST-25.
-- [ ] 2.2.6 Wire wrapper/owned-input focus including symmetric radio Tab boundaries, memoized content, and token focus styles — `src/components/TileGrid/TileGridItemView.tsx`, `TileGridSelectionControl.tsx`, `useTileGridStyles.styles.ts`; 03-02 Tab Order.
-- [ ] 2.2.7 Give explicit reset priority over anchor restoration — `src/components/TileGrid/virtualization/useAnchorPreservation.ts`, `useTileGrid.ts`; 03-02 Reset and Controlled Zoom.
-- [ ] 2.2.8 Compose wrapper keyboard/controlled zoom and root fallback props — `src/components/TileGrid/useTileGrid.ts`, `renderTileGrid.tsx`, `selection/useTileGridInteractions.ts`; 03-02 Keyboard Mapping.
-- [ ] 2.2.9 Run Phase 2 unit/browser oracles to green without editing expected behavior.
+- [x] 2.2.1 Implement deterministic rectangle navigation — `src/components/TileGrid/focus/navigation.ts`; 03-02 Pure Navigation. ✅ (completed: 2026-10-22 03:34; 44 hand-computed cases and full gate pass; documentation checked)
+- [x] 2.2.2 Implement bounded descendant discovery and author-tabindex records for tile and empty content — `src/components/TileGrid/focus/useTileGridTabOrder.ts`; 03-02 Tab Order in Custom Content. ✅ (completed: 2026-10-22 03:34; unit/native traversal cases and full gate pass; mounted-local scope and documentation checked)
+- [x] 2.2.3 Add observer write isolation, dynamic reconciliation, and cleanup to the tab-order helper — `src/components/TileGrid/focus/useTileGridTabOrder.ts`; AR-13. ✅ (completed: 2026-10-22 03:34; dynamic author changes, detached restoration and native eligibility cases pass; full gate green)
+- [x] 2.2.4 Implement active-ID/ref registration, immediate focus for connected overscan targets, and guarded pending focus for absent targets — `src/components/TileGrid/focus/useTileGridFocus.ts`; 03-02 Active Target and Physical Focus. ✅ (completed: 2026-10-22 03:34; real overscan/unmounted/pending-cancellation cases and full gate pass)
+- [x] 2.2.5 Add removal, visible-fallback, empty-root, and external-focus recovery — `src/components/TileGrid/focus/useTileGridFocus.ts`; ST-23–ST-25. ✅ (completed: 2026-10-22 03:34; wheel/removal/root/external-focus regressions and full gate pass)
+- [x] 2.2.6 Wire wrapper/owned-input focus including symmetric radio Tab boundaries, memoized content, and token focus styles — `src/components/TileGrid/TileGridItemView.tsx`, `TileGridSelectionControl.tsx`, `useTileGridStyles.styles.ts`; 03-02 Tab Order. ✅ (completed: 2026-10-22 03:34; native forward/reverse radio and checkbox traversal pass; full gate green)
+- [x] 2.2.7 Give explicit reset priority over anchor restoration — `src/components/TileGrid/virtualization/useAnchorPreservation.ts`, `useTileGrid.ts`; 03-02 Reset and Controlled Zoom. ✅ (completed: 2026-10-22 03:34; Object.is, simultaneous reset/layout/items, stable append and browser cases pass)
+- [x] 2.2.8 Compose wrapper keyboard/controlled zoom and root fallback props; preserve missing range anchors per AR-20 — `src/components/TileGrid/useTileGrid.ts`, `renderTileGrid.tsx`, `selection/useTileGridInteractions.ts`, `selection/useGridSelection.ts`; 03-02 Keyboard Mapping and ST-42. ✅ (completed: 2026-10-22 03:34; keyboard, zoom, range recovery and full gate pass; documentation checked)
+- [x] 2.2.9 Run Phase 2 unit/browser oracles to green without editing expected behavior; restore the original ResizeObserver in existing `test/setup.ts` cleanup per AR-21. ✅ (completed: 2026-10-22 03:34; pnpm verify: 713 unit tests; full Chromium suite: 43 tests; all oracles unchanged; diagnostic instrumentation and generated repo screenshots removed)
 
 **Deliverable:** Geometry-owned navigation, bounded tab order, and stable reset/zoom focus behavior.
 **Verify:** Targeted green checks, then `pnpm verify && pnpm test:browser`.

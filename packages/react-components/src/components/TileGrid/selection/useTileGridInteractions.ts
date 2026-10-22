@@ -3,6 +3,9 @@ import type { ComponentPropsWithoutRef, KeyboardEvent, MouseEvent } from 'react'
 import type { TileGridInteractionMode } from '../TileGrid.types';
 import type { GridSelection } from './types';
 import { applyItemClick, isInteractiveClickTarget } from './clickSelection';
+import { isNavigationKey } from '../focus/navigation';
+import type { TileGridNavigationKey } from '../focus/navigation';
+import { normalizeTileSize } from '../geometry';
 
 /** Native handlers composed after consumer handlers on the same root event. */
 type RootHandlers = Pick<
@@ -26,6 +29,20 @@ export interface TileGridInteractionsInput<T> {
   onItemActivate?: (item: T) => void;
   /** Original native callbacks; each runs once before grid processing. */
   rootProps: RootHandlers;
+  /** Spatial movement supplied by the mounted focus controller. */
+  navigate?: (id: string, key: TileGridNavigationKey) => string | undefined;
+  /** Tab/Escape boundary handling for inline content and the root fallback. */
+  handleInlineKey?: (event: KeyboardEvent<HTMLDivElement>) => boolean;
+  /** Enables controlled wrapper zoom; a size callback is also required. */
+  zoomable?: boolean;
+  /** Resolved current size used as the base for a request. */
+  tileSize?: number;
+  /** Lower bound for requested sizes. */
+  minTileSize?: number;
+  /** Upper bound for requested sizes. */
+  maxTileSize?: number;
+  /** Application callback; the grid never resizes itself. */
+  onTileSizeChange?: (size: number) => void;
 }
 
 /** Finds an inline tile owned by this grid, excluding nested grids and React-bubbled portals. */
@@ -132,18 +149,53 @@ export function useTileGridInteractions<T>(input: TileGridInteractionsInput<T>):
   const onKeyDown = useCallback<NonNullable<RootHandlers['onKeyDown']>>(event => {
     const current = live.current;
     current.rootProps.onKeyDown?.(event);
+    if (event.defaultPrevented || current.handleInlineKey?.(event)) return;
     const wrapper = findItem(event.currentTarget, event.target);
     const id = wrapper?.getAttribute('data-tile-grid-item');
-    if (
-      event.defaultPrevented ||
-      modified(event) ||
-      event.key !== 'Enter' ||
-      event.target !== wrapper ||
-      id === null ||
-      id === undefined ||
-      current.isDisabled(id)
-    )
+    if (event.target !== wrapper || id == null || event.altKey) return;
+    const command = event.ctrlKey || event.metaKey;
+    if (command && !event.shiftKey && event.key.toLowerCase() === 'a') {
+      event.preventDefault();
+      current.selection.selectAll(current.currentIds);
       return;
+    }
+    if (
+      isNavigationKey(event.key) &&
+      (!command || (!event.shiftKey && (event.key === 'Home' || event.key === 'End'))) &&
+      (!event.shiftKey || event.key.startsWith('Arrow'))
+    ) {
+      const target = current.navigate?.(id, event.key);
+      if (target !== undefined) {
+        event.preventDefault();
+        if (event.shiftKey && target !== id)
+          current.selection.selectRange(target, current.currentIds);
+      }
+      return;
+    }
+    if (command) return;
+    if (
+      (event.key === '+' || event.key === '=' || event.key === '-') &&
+      current.zoomable &&
+      current.onTileSizeChange &&
+      current.tileSize !== undefined
+    ) {
+      event.preventDefault();
+      current.onTileSizeChange(
+        normalizeTileSize(
+          current.tileSize + (event.key === '-' ? -20 : 20),
+          current.minTileSize ?? 120,
+          current.maxTileSize ?? 320
+        )
+      );
+      return;
+    }
+    if (event.shiftKey || current.isDisabled(id)) return;
+    if (event.key === ' ' && current.selection.mode !== 'none') {
+      event.preventDefault();
+      current.selection.toggle(id);
+      return;
+    }
+    if (event.key !== 'Enter') return;
     const item = current.itemById.get(id);
     if (item !== undefined && current.onItemActivate) {
       event.preventDefault();

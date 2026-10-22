@@ -1,7 +1,7 @@
 ## Ambiguity Register: TileGrid RD-03
 
-> **Status**: ✅ GATE PASSED — all 19 items resolved, including four runtime decisions
-> **Last Updated**: 2026-10-22 02:03
+> **Status**: ✅ GATE PASSED — all 21 items resolved, including six runtime decisions
+> **Last Updated**: 2026-10-22 03:23
 > **CodeOps Artifact Schema**: 1
 
 ## Planning Boundaries
@@ -274,6 +274,54 @@ constructor; preserve fixed selectors and opaque IDs, and use the label's ownerD
 **Hardening:** In-context comparison; small reversible guard extension, no high-stakes escalation trigger.
 **Policy version:** 1. **Root invocation ID:** `rd03-20261022-0057`.
 **Reopen triggers:** Native-label regressions, lost control activation, or over-blocked unassociated content.
+
+### Runtime AR-20 — Missing-Anchor Range Fallback
+
+**Authority:** AI — delegated by `--auto-design`.
+**Eligibility:** Necessary implementation correction for an already explicit anchor invariant;
+no new product rule or upstream requirement modification.
+**Objective:** Range operations preserve the original anchor, including a hidden or absent anchor.
+**Evidence:** RD-01 Range algorithm lines 163–168 specifies target-only fallback when an index is
+missing and retention of the original anchor. 03-01 Selection Store Integration also says ranges
+preserve it. Current `selection/useGridSelection.ts` calls `selectOnly(targetId)` in that fallback,
+which establishes a new anchor. Existing new cases prove only the first fallback, not its effect
+on the next range.
+**Decision:** Add independent public interaction regression ST-42; replace only the fallback's
+anchor-mutating helper call with the same target-only commit through the existing equality guard.
+Preserve selection replacement semantics, callback rules, and all other range behavior.
+**Rejected alternative:** Treating fallback as a new non-range action contradicts the explicit
+retained-anchor invariant. No new state or abstraction is necessary.
+**Strongest counterargument:** Common file browsers may establish an anchor on first Shift use;
+this project's explicit contract governs instead.
+**Confidence:** High; the correction follows the written invariant directly.
+**Hardening:** In-context contract/control-flow review; independent oracle precedes the change.
+**Policy version:** 1. **Root invocation ID:** `rd03-20261022-0057`.
+**Reopen triggers:** A governing requirement explicitly defines a fallback exception or an existing
+immutable oracle proves contrary behavior; pause rather than weakening that oracle.
+
+### Runtime AR-21 — Browser ResizeObserver Test Isolation
+
+**Authority:** AI — delegated by `--auto-design`.
+**Eligibility:** Necessary test-environment correction inside existing setup; no product behavior,
+dependency, runner, or generalized harness changes.
+**Objective:** Browser focus/resize oracles use the real browser API independently of prior cases.
+**Evidence:** The zero-width browser case passes alone and after the empty-grid case, but fails
+after the full focus suite. Bounded instrumentation showed its observer constructor was non-native
+and no resize callback arrived. Installed `@fluentui/react-positioning/lib/utils/createResizeObserver.js:4–15`
+unconditionally replaces the target window's constructor with a no-op in test mode when positioning
+runs. The portalled-menu case therefore contaminates later mounts.
+**Decision:** Capture the initial constructor after existing setup installs missing jsdom APIs,
+then restore it after cleanup for every test in `test/setup.ts`. Keep actual component measurement
+code and all immutable expectations unchanged; remove all diagnostic instrumentation.
+**Rejected alternatives:** Changing component measurement to work around a test-only no-op adds
+unnecessary runtime work; weakening or reordering the resize oracle hides contamination; changing
+the entire browser NODE_ENV has broader effects than restoring this one API.
+**Strongest counterargument:** Future dependency callbacks could overwrite the constructor after
+cleanup; reopen if isolation still fails or a single test needs a later fresh mount after positioning.
+**Confidence:** High; isolated pass, ordered failure, instrumentation, and dependency source agree.
+**Hardening:** In-context environmental diagnosis; a direct existing cleanup correction.
+**Policy version:** 1. **Root invocation ID:** `rd03-20261022-0057`.
+**Reopen triggers:** Recurrent ordered resize failure or changed dependency test-mode behavior.
 
 The user accepted all nine major recommendations, then selected **Apply and re-scan** for the
 three minor corrections and the documented singleton-radio exception. The separate

@@ -1,5 +1,11 @@
 import { makeStyles, tokens } from '@fluentui/react-components';
 
+/** An inset ring remains visible for tiles touching the clipped scroll-container edge. */
+const focusOutline = {
+  outline: `${tokens.strokeWidthThick} solid ${tokens.colorStrokeFocus2}`,
+  outlineOffset: `calc(-1 * ${tokens.strokeWidthThick})`,
+};
+
 /** Griffel styles for the TileGrid scroll container and item wrappers. */
 export const useTileGridStyles = makeStyles({
   root: {
@@ -9,6 +15,7 @@ export const useTileGridStyles = makeStyles({
     minHeight: 0,
     boxSizing: 'border-box',
     padding: 0,
+    ':focus-visible': focusOutline,
   },
   spacer: {
     position: 'relative',
@@ -20,6 +27,7 @@ export const useTileGridStyles = makeStyles({
     boxSizing: 'border-box',
     minWidth: 0,
     minHeight: 0,
+    ':focus-visible': focusOutline,
   },
   emptyItem: {
     display: 'flex',

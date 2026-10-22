@@ -31,7 +31,7 @@ and previously uncovered required invariants (AR-1, AR-2, AR-14).
 
 ## Plan-Local Acceptance
 
-The concrete additional cases are ST-01–ST-41 in [07-testing-strategy.md](07-testing-strategy.md).
+The concrete additional cases are ST-01–ST-42 in [07-testing-strategy.md](07-testing-strategy.md).
 No acceptance criterion is inferred from implementation output. The three owning specifications
 define exact algorithms and lifecycle ordering; the requirement documents own product scope.
 

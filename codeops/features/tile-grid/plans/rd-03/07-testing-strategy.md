@@ -85,6 +85,16 @@ Use real pointer capture, native Tab/radio navigation, and virtualization in bro
 | ST-40 | Mount inside a native form; change initial `a` selection to `b`, then call `form.reset()`. Repeat controlled/uncontrolled and checkbox/radio; include an ordinary sibling form field.                                                                                       | Owned controls keep the effective current checked projection; no reset-to-seed, selection callback, or count message. Ordinary form fields reset normally. No React checked/defaultChecked warning. Reset during marquee preview belongs to Phase 3 ST-34.    | RD-03 control-state authority; PF-010 |
 | ST-41 | Enclose a multiselect grid in required Fluent Field labelled Photos; enclose a single-select grid in RadioGroup with required=true, disabled=true, defaultValue=a while the grid selects b. Include consumer content using its own context. Also render one eligible radio. | Private input IDs are unique, accessible names remain item-derived, controls are not unexpectedly required/disabled, own grouping/checked state wins, and consumer content keeps its enclosing context. Singleton uses one real radio with no fake peer/tile. | RD-03 AC 13–15; PF-011,PF-013         |
 
+### Range Recovery Regression
+
+ST-42 (runtime AR-20): with hidden-first anchor and current `a,b,c,d`, Shift-click `b` selects
+only `b`; bring the original hidden anchor into the current list before `a`, then Shift-click `d`.
+The range begins at that original anchor, producing `{hidden,a,b,c,d}`. Separately, clear the
+selection/anchor, then Shift-click `b` and `d`; each absent-anchor fallback selects only its target,
+so the final membership is `{d}`. Neither fallback invents a new anchor. Source: RD-01 Range
+algorithm, especially its original-anchor rule. This is an additive Phase 2 oracle, authored
+before the bounded correction to the inherited store.
+
 ## File Map
 
 All paths below are relative to `packages/react-components/`. The unit files use `.spec.test.tsx`;
@@ -100,6 +110,7 @@ the pure geometry-navigation contract may use `.spec.test.ts`. Browser files fol
 | `test/tile-grid-navigation.spec.test.ts`              | ST-14–ST-16 pure cases                                                            |
 | `test/tile-grid-focus.spec.test.tsx`                  | ST-16–ST-17, ST-19–ST-25 DOM-contract portions                                    |
 | `test/tile-grid-keyboard-zoom.spec.test.tsx`          | ST-18, ST-23–ST-24 controlled zoom/reset portions                                 |
+| `test/tile-grid-range-anchor.spec.test.tsx`           | ST-42 missing-anchor fallback preserves the original anchor                       |
 | `test/tile-grid-marquee-integration.spec.test.tsx`    | ST-26–ST-34 host contracts                                                        |
 | `test/tile-grid-integration.spec.test.tsx`            | ST-36, ST-38–ST-39 cross-feature guards                                           |
 | `test/browser/tile-grid-focus.browser.test.tsx`       | ST-19–ST-25, ST-37 actual browser focus                                           |

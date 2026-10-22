@@ -23,7 +23,7 @@ export function renderTileGrid<T>(state: TileGridState<T>): ReactElement {
         aria-label={labelledBy ? undefined : state.ariaLabel}
         className={mergeClasses(classes.root, state.className)}
         style={state.style}
-        tabIndex={0}
+        tabIndex={state.focus.rootTabIndex}
       >
         {state.hasItems ? (
           <>
@@ -50,6 +50,9 @@ export function renderTileGrid<T>(state: TileGridState<T>): ReactElement {
                 radioName={state.radioName}
                 controlClassName={classes.control}
                 contentClassName={classes.content}
+                itemRef={state.focus.getItemRef(rect.id)}
+                tabIndex={state.focus.activeId === rect.id ? 0 : -1}
+                controlTabIndex={state.focus.entered && state.focus.activeId === rect.id ? 0 : -1}
               />
             ))}
           </>

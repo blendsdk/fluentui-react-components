@@ -15,6 +15,8 @@ export interface UseAnchorPreservationInput<T> {
   geometryKey: string;
   /** Normalized item list; a new reference means the item set changed. */
   itemList: readonly T[];
+  /** Explicit filter-reset key; a changed value takes priority over restoration. */
+  scrollResetKey?: unknown;
 }
 
 /**
@@ -30,20 +32,31 @@ export function useAnchorPreservation<T>({
   geometry,
   geometryKey,
   itemList,
+  scrollResetKey,
 }: UseAnchorPreservationInput<T>): void {
   const previousGeometry = useRef(geometry);
   const previousKey = useRef(geometryKey);
   const previousItemList = useRef(itemList);
+  const previousResetKey = useRef(scrollResetKey);
 
   useIsomorphicLayoutEffect(() => {
     const root = rootRef.current;
     const oldGeometry = previousGeometry.current;
     const oldKey = previousKey.current;
     const oldItemList = previousItemList.current;
+    const reset = !Object.is(previousResetKey.current, scrollResetKey);
 
     previousGeometry.current = geometry;
     previousKey.current = geometryKey;
     previousItemList.current = itemList;
+    previousResetKey.current = scrollResetKey;
+
+    // Reset is an explicit application request. Do not restore the previous
+    // anchor in this same update, even when layout and items changed together.
+    if (root && reset) {
+      scrollToOffset(root, 0);
+      return;
+    }
 
     if (!root || (oldKey === geometryKey && oldItemList === itemList)) {
       return;
@@ -72,5 +85,5 @@ export function useAnchorPreservation<T>({
     const clampedOffset = Math.min(Math.max(offset, 0), maximumOffset);
 
     scrollToOffset(root, nextRect.y + clampedOffset);
-  }, [geometry, geometryKey, itemList, rootRef]);
+  }, [geometry, geometryKey, itemList, rootRef, scrollResetKey]);
 }

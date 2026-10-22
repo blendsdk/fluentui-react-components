@@ -22,6 +22,8 @@ export interface TileGridSelectionControlProps {
   name?: string;
   /** Token-based overlay placement. */
   className?: string;
+  /** Zero only while this tile is entered; otherwise native sequential entry is suppressed. */
+  tabIndex?: 0 | -1;
 }
 
 /**
@@ -37,6 +39,7 @@ function TileGridSelectionControlComponent({
   label,
   name,
   className,
+  tabIndex = -1,
 }: TileGridSelectionControlProps): ReactElement {
   const inputRef = useRef<HTMLInputElement>(null);
   useIsomorphicLayoutEffect(() => {
@@ -53,6 +56,7 @@ function TileGridSelectionControlComponent({
             name={name}
             aria-label={label}
             data-tile-grid-selection=""
+            tabIndex={tabIndex}
           />
         </RadioGroupProvider>
       ) : (
@@ -62,6 +66,7 @@ function TileGridSelectionControlComponent({
             checked={checked}
             aria-label={label}
             data-tile-grid-selection=""
+            tabIndex={tabIndex}
           />
         </FieldContextProvider>
       )}

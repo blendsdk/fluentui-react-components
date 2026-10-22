@@ -197,7 +197,9 @@ export function useGridSelection({
       const currentAnchor = anchorRef.current;
 
       if (currentAnchor === undefined || !currentIds.includes(currentAnchor)) {
-        selectOnly(targetId);
+        // A range fallback replaces membership, but it is still a range action:
+        // it must not establish a different anchor for a later Shift gesture.
+        commit(selectOnlySelection(targetId));
         return;
       }
 
@@ -211,7 +213,7 @@ export function useGridSelection({
         )
       );
     },
-    [commit, select, selectOnly]
+    [commit, select]
   );
 
   const selectAll = useCallback(

@@ -1,5 +1,5 @@
 import { memo, useId } from 'react';
-import type { CSSProperties, MouseEvent, ReactElement, ReactNode } from 'react';
+import type { CSSProperties, MouseEvent, ReactElement, ReactNode, RefCallback } from 'react';
 import type { TileGridItemRect } from './geometry';
 import type { TileGridItemRenderArgs, TileGridSelectionMode } from './TileGrid.types';
 import { TileGridSelectionControl } from './TileGridSelectionControl';
@@ -38,6 +38,12 @@ export interface TileGridItemViewProps<T> {
   controlClassName?: string;
   /** Full rectangle layout for application content. */
   contentClassName?: string;
+  /** Stable registration callback for this mounted wrapper. */
+  itemRef?: RefCallback<HTMLDivElement>;
+  /** The active wrapper is the only outside entry stop. */
+  tabIndex?: 0 | -1;
+  /** Enables the owned input only while its active tile holds inline focus. */
+  controlTabIndex?: 0 | -1;
 }
 
 /** Keeps control and focus updates from invoking unchanged application content. */
@@ -71,6 +77,9 @@ function TileGridItemViewComponent<T>({
   radioName,
   controlClassName,
   contentClassName,
+  itemRef,
+  tabIndex = -1,
+  controlTabIndex = -1,
 }: TileGridItemViewProps<T>): ReactElement {
   const contentId = useId();
   const position: CSSProperties = {
@@ -83,6 +92,8 @@ function TileGridItemViewComponent<T>({
   return (
     <div
       role="listitem"
+      ref={itemRef}
+      tabIndex={tabIndex}
       aria-setsize={setSize}
       aria-posinset={index + 1}
       aria-label={label}
@@ -101,6 +112,7 @@ function TileGridItemViewComponent<T>({
           label={label}
           name={radioName}
           className={controlClassName}
+          tabIndex={controlTabIndex}
         />
       )}
       <div id={contentId} data-tile-grid-content="" className={contentClassName}>
