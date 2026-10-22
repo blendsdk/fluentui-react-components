@@ -116,6 +116,26 @@ function start(root: HTMLElement) {
 }
 
 describe('TileGrid mounted marquee internals', () => {
+  it('keeps unchanged content memoized through rectangle-only preview and releases ownership on disable', async () => {
+    const renderItem = vi.fn(base.renderItem);
+    const changes = vi.fn();
+    const view = await mount({ renderItem, onSelectionChange: changes });
+    start(view.root);
+    renderItem.mockClear();
+    for (let x = 221; x <= 230; x++) pointer(view.root, 'pointermove', x, 70);
+    expect(renderItem).not.toHaveBeenCalled();
+    const remove = vi.spyOn(document, 'removeEventListener');
+    view.update({ enableMarquee: false });
+    expect(captures.size).toBe(0);
+    expect(released).toHaveBeenCalledTimes(1);
+    expect(remove.mock.calls.filter(([type]) => type === 'keydown')).toHaveLength(1);
+    expect(view.root.querySelector('[data-tile-grid-marquee]')).toBeNull();
+    pointer(view.root, 'pointerup', 230, 70);
+    expect(changes).not.toHaveBeenCalled();
+    expect(screen.getByRole('checkbox', { name: 'a' })).toBeChecked();
+    expect(screen.getByRole('checkbox', { name: 'b' })).not.toBeChecked();
+  });
+
   it('releases document ownership before replacement layout effects can dispatch keys', async () => {
     const prevented: boolean[] = [];
     const view = await mount();

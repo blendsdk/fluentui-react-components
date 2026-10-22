@@ -47,6 +47,27 @@ async function measure(root = screen.getByRole('list')) {
 afterEach(() => vi.restoreAllMocks());
 
 describe('TileGrid focus internals', () => {
+  it('respects intentional blur through later parent renders and never reclaims external focus', async () => {
+    const renderItem = vi.fn(actions);
+    const view = render(grid(renderItem));
+    await measure();
+    const wrapper = screen.getByRole('listitem', { name: 'a' });
+    act(() => wrapper.focus());
+    expect(screen.getByRole('button', { name: 'Action a' })).toHaveAttribute('tabindex', '0');
+    await act(async () => wrapper.blur());
+    expect(screen.getByRole('button', { name: 'Action a' })).toHaveAttribute('tabindex', '-1');
+    const outside = screen.getByRole('textbox', { name: 'Outside' });
+    act(() => outside.focus());
+    renderItem.mockClear();
+    view.rerender(grid(renderItem));
+    await act(async () => {
+      await Promise.resolve();
+    });
+    expect(outside).toHaveFocus();
+    expect(wrapper).toHaveAttribute('tabindex', '0');
+    expect(renderItem).not.toHaveBeenCalled();
+  });
+
   it('leaves native Tab available if a consumer disables the cached target during key dispatch', async () => {
     render(
       <FluentProvider theme={webLightTheme}>
