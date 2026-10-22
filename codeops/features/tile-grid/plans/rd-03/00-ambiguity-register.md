@@ -1,7 +1,7 @@
 ## Ambiguity Register: TileGrid RD-03
 
-> **Status**: ✅ GATE PASSED — all 18 items resolved, including three runtime decisions
-> **Last Updated**: 2026-10-22 01:56
+> **Status**: ✅ GATE PASSED — all 19 items resolved, including four runtime decisions
+> **Last Updated**: 2026-10-22 02:03
 > **CodeOps Artifact Schema**: 1
 
 ## Planning Boundaries
@@ -253,6 +253,27 @@ uses current projection rather than a stale captured value, and ignores detached
 **Hardening:** In-context mechanism review; small, reversible change, no independent challenger required.
 **Policy version:** 1. **Root invocation ID:** `rd03-20261022-0057`.
 **Reopen triggers:** Cross-engine rollback mismatch or a post-unmount mutation/callback.
+
+### Runtime AR-19 — Associated Control Labels
+
+**Authority:** AI — delegated by `--auto-design`.
+**Eligibility:** Necessary internal guard correction preserving approved application-control
+isolation; no new behavior, public API, dependency, or support framework.
+**Objective:** A consumer control and its associated label act locally without selecting/activating a tile.
+**Evidence:** RV-001 reproduces wrapping-label clicks that both toggle the checkbox and invoke
+grid behavior; `selection/clickSelection.ts` omits labels from target classification. The owning
+03-01 Interaction Mapping already excludes application controls from tile actions.
+**Decision:** Extend the existing guard to recognize a native label with an associated control,
+including clicks on label descendants. Add independent regression specifications before the fix.
+**Rejected alternatives:** Guarding every label suppresses ordinary unassociated content;
+requiring application markers contradicts automatic native-control isolation; suppressing native
+label activation breaks the control. Browser association (`label.control`) handles nesting and htmlFor.
+**Strongest counterargument:** Cross-document label instances require their own document's DOM
+constructor; preserve fixed selectors and opaque IDs, and use the label's ownerDocument for that check.
+**Confidence:** High; independently reproduced and a direct existing-contract correction.
+**Hardening:** In-context comparison; small reversible guard extension, no high-stakes escalation trigger.
+**Policy version:** 1. **Root invocation ID:** `rd03-20261022-0057`.
+**Reopen triggers:** Native-label regressions, lost control activation, or over-blocked unassociated content.
 
 The user accepted all nine major recommendations, then selected **Apply and re-scan** for the
 three minor corrections and the documented singleton-radio exception. The separate

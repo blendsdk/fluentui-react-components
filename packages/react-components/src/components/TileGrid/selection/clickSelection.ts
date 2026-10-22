@@ -28,6 +28,15 @@ export function isInteractiveClickTarget(target: EventTarget | null): boolean {
     return true;
   }
 
+  // A label's original click precedes the input click it activates. Treat that
+  // first event as part of the control too, without swallowing ordinary labels
+  // that have no associated input. Native association covers wrapping and for.
+  const label = target.closest('label');
+  const LabelType = label?.ownerDocument.defaultView?.HTMLLabelElement;
+  if (LabelType && label instanceof LabelType && label.control !== null) {
+    return true;
+  }
+
   // Editable state is inherited. The nearest explicit valid value wins, so
   // a non-editable island inside an editor must not inherit the outer value.
   for (let element: Element | null = target; element; element = element.parentElement) {
