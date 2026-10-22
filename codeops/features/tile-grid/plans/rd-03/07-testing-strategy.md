@@ -95,6 +95,13 @@ so the final membership is `{d}`. Neither fallback invents a new anchor. Source:
 algorithm, especially its original-anchor rule. This is an additive Phase 2 oracle, authored
 before the bounded correction to the inherited store.
 
+ST-43 (runtime AR-26): use the documented internal selection hook in single mode, seeded with
+anchor `a`. Selecting range target `b` yields only `{b}` while anchor stays `a`; an ordinary
+non-range selection still moves the anchor. After clear, a range target yields that single ID
+while the anchor remains absent. An ineligible range target changes neither membership nor anchor.
+Include controlled acceptance of a range proposal without inventing a parent-update anchor.
+These Phase 4 oracles derive from RD-01's explicit internal module contract, not implementation.
+
 ## File Map
 
 All paths below are relative to `packages/react-components/`. The unit files use `.spec.test.tsx`;
@@ -111,6 +118,7 @@ the pure geometry-navigation contract may use `.spec.test.ts`. Browser files fol
 | `test/tile-grid-focus.spec.test.tsx`                     | ST-16–ST-17, ST-19–ST-25 DOM-contract portions                                    |
 | `test/tile-grid-keyboard-zoom.spec.test.tsx`             | ST-18, ST-23–ST-24 controlled zoom/reset portions                                 |
 | `test/tile-grid-range-anchor.spec.test.tsx`              | ST-42 missing-anchor fallback preserves the original anchor                       |
+| `test/tile-grid-single-range.spec.test.tsx`              | ST-43 single-mode internal range-anchor invariant                                 |
 | `test/tile-grid-marquee-integration.spec.test.tsx`       | ST-26–ST-34 host contracts                                                        |
 | `test/tile-grid-integration.spec.test.tsx`               | ST-36, ST-38–ST-39 cross-feature guards                                           |
 | `test/browser/tile-grid-focus.browser.test.tsx`          | ST-19–ST-25, ST-37 actual browser focus                                           |

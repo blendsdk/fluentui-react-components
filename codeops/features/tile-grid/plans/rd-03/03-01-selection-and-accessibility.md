@@ -26,6 +26,8 @@ existing uncovered RD-01 invariants before building on them:
   updates never notify. Parent updates do not invent a new user anchor.
 - Every non-range select/toggle establishes the interacted ID as anchor, including removal by
   toggle. Ranges preserve it; clear removes it. Fixed single mode keeps radio semantics.
+  Single-mode selectRange still preserves the anchor while committing only its eligible target
+  (runtime AR-26); it must not delegate through the anchor-mutating non-range helper.
 - Add one internal `replaceSelection(next: ReadonlySet<string>): void` entry point for a complete
   marquee result, routed through the same equality guard and controlled/uncontrolled commit path.
   It is not exported from the package and does not invent a range anchor.
@@ -134,5 +136,5 @@ remains authoritative. Strings render as React text.
 | Parent rejects a change                   | Read the controlled source on render; no false announcement.           | RD-01; AR-12 |
 | Nested control or prevented event         | No grid default action.                                                | AR-9         |
 
-Specification cases: ST-01–ST-13, ST-36–ST-42. Existing selection/export/SSR specifications stay
+Specification cases: ST-01–ST-13, ST-36–ST-43. Existing selection/export/SSR specifications stay
 unchanged. Security tests exercise hostile labels and IDs, static warnings, and no fake items.

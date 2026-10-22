@@ -355,11 +355,13 @@ export function createMarqueeController({
         return;
       }
 
-      updateFromPointer(event.clientX, event.clientY);
-      const finalRect = rect;
       phase = 'committed';
       stopFrames();
       try {
+        // Sampling also notifies rectangle/preview listeners. The terminal
+        // guard must already be in place before any of those callbacks run.
+        updateFromPointer(event.clientX, event.clientY);
+        const finalRect = rect;
         const finalSelection =
           resolveFinalSelection && finalRect
             ? resolveFinalSelection({ ...finalRect }, preSelection, additive)

@@ -1,5 +1,6 @@
 import { FluentProvider, webLightTheme } from '@fluentui/react-components';
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { useLayoutEffect } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { TileGrid } from '../src/components/TileGrid';
 import type { TileGridProps } from '../src/components/TileGrid';
@@ -72,6 +73,7 @@ async function mount(props: Partial<TileGridProps<string>> = {}) {
   return {
     root,
     unmount: view.unmount,
+    replace: view.rerender,
     update: (next: Partial<TileGridProps<string>>) => view.rerender(tree({ ...props, ...next })),
   };
 }
@@ -114,6 +116,29 @@ function start(root: HTMLElement) {
 }
 
 describe('TileGrid mounted marquee internals', () => {
+  it('releases document ownership before replacement layout effects can dispatch keys', async () => {
+    const prevented: boolean[] = [];
+    const view = await mount();
+    start(view.root);
+    /** A replacement view can start handling document input as soon as its layout effects run. */
+    function Replacement() {
+      useLayoutEffect(() => {
+        const event = new KeyboardEvent('keydown', {
+          key: 'Escape',
+          bubbles: true,
+          cancelable: true,
+        });
+        document.dispatchEvent(event);
+        prevented.push(event.defaultPrevented);
+      }, []);
+      return <input aria-label="Replacement" />;
+    }
+    view.replace(<Replacement />);
+    expect(view.root.isConnected).toBe(false);
+    expect(prevented).toEqual([false]);
+    expect(captures.size).toBe(0);
+  });
+
   it('registers document Escape only for an accepted gesture and removes exactly that listener', async () => {
     const view = await mount();
     const add = vi.spyOn(document, 'addEventListener');

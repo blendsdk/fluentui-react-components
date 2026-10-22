@@ -158,7 +158,9 @@ export function useTileGridMarquee<T>(input: TileGridMarqueeInput<T>): TileGridM
     }
   });
 
-  useEffect(() => {
+  // Ownership must end during unmount, before a replacement view's layout
+  // effects can handle input through the same document.
+  useIsomorphicLayoutEffect(() => {
     const root = input.rootRef.current;
     if (!input.enabled || !root) return;
     const view = root.ownerDocument.defaultView;

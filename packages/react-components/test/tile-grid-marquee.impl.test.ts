@@ -140,6 +140,30 @@ function captureTarget(overrides: { setThrows?: boolean; releaseThrows?: boolean
 }
 
 describe('marquee controller implementation details', () => {
+  it('ignores reentrant capture loss from the final rectangle notification', () => {
+    let loseCapture = () => {};
+    const resolve = vi.fn(() => new Set(['resolved']));
+    const harness = createHarness({
+      callbacks: {
+        resolveFinalSelection: resolve,
+        onRectChange: rect => {
+          if (rect?.width === 20) loseCapture();
+        },
+      },
+    });
+    loseCapture = () => harness.controller.handleLostPointerCapture(pointer(30, 30));
+    harness.controller.handlePointerDown(pointer(10, 10));
+    harness.controller.handlePointerMove(pointer(20, 20));
+    harness.controller.handlePointerUp(pointer(30, 30));
+    expect(harness.onCancel).not.toHaveBeenCalled();
+    expect(resolve).toHaveBeenCalledExactlyOnceWith(
+      { x: 10, y: 10, width: 20, height: 20 },
+      new Set(),
+      false
+    );
+    expect(harness.onCommit).toHaveBeenCalledExactlyOnceWith(new Set(['resolved']));
+  });
+
   it('notifies rectangle-only changes with snapshots and removes the rectangle on cancellation', () => {
     const rectangles: (MarqueeRect | null)[] = [];
     const harness = createHarness({ callbacks: { onRectChange: rect => rectangles.push(rect) } });

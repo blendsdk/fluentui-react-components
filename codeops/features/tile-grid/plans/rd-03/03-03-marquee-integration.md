@@ -28,6 +28,8 @@ No resolver runs on short clicks, cancel, capture loss, or dispose.
 overlay rectangle, and event wiring. The existing selection store remains committed-state authority.
 Construct/dispose the controller through effects when the root and opt-in allow it; do not allocate
 a controller during render or mount listeners when disabled.
+Use the existing SSR-safe layout-effect pattern so teardown releases document/capture ownership
+before replacement layout effects can handle input (runtime AR-25).
 
 ## Geometry and Selection Flow
 

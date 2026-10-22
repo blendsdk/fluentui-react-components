@@ -1,7 +1,7 @@
 ## Ambiguity Register: TileGrid RD-03
 
-> **Status**: ✅ GATE PASSED — all 24 items resolved, including nine runtime decisions
-> **Last Updated**: 2026-10-22 06:19
+> **Status**: ✅ GATE PASSED — all 27 items resolved, including twelve runtime decisions
+> **Last Updated**: 2026-10-22 07:50
 > **CodeOps Artifact Schema**: 1
 
 ## Planning Boundaries
@@ -402,6 +402,72 @@ cost and removes overflow without per-frame geometry work or another event loop.
 not a material support-layer escalation. No risk is waived.
 **Policy version:** 1. **Root invocation ID:** `rd03-20261022-0057`.
 **Reopen triggers:** Changed scroll extent, altered inner rectangle coordinates, or viewport clipping regressions.
+
+### Runtime AR-25 — Synchronous Gesture Ownership Teardown
+
+**Authority:** AI — delegated by `--auto-design`.
+**Eligibility:** Necessary internal resource-lifecycle correction for the approved unmount behavior;
+no new product behavior, public surface, dependency, or support mechanism.
+**Objective:** A removed grid must release capture and document Escape before its replacement handles input.
+**Evidence:** A real React replacement-layout-effect regression dispatches Escape after the old
+root is disconnected. Passive controller cleanup runs later, so the old listener prevents that
+event (`[true]` instead of `[false]`). Existing after-unmount checks flush passive effects and did
+not expose this commit-time gap.
+**Decision:** Construct/dispose the controller in the existing SSR-safe layout-effect pattern.
+Cleanup now ends all gesture ownership during unmount, before replacement layout effects.
+**Rejected alternatives:** A mounted flag in the key handler masks the key symptom but retains
+capture/frame/listener resources until passive cleanup; another global lifecycle service is unnecessary.
+**Strongest counterargument:** Layout effects block paint, but this factory only initializes a
+small controller and callbacks; geometry scans and gesture snapshots occur later on user input.
+**Confidence:** High; the precise lifecycle regression precedes the one-effect-phase correction.
+**Hardening:** In-context comparison against the surrounding DOM ownership hooks; small and reversible.
+**Policy version:** 1. **Root invocation ID:** `rd03-20261022-0057`.
+**Reopen triggers:** Replacement-view input interception, delayed resource release, or SSR/mount regressions.
+
+### Runtime AR-26 — Single-Mode Range Anchor Consistency
+
+**Authority:** AI — delegated by `--auto-design`.
+**Eligibility:** Necessary correction to an explicit existing internal selection invariant;
+no new selection behavior, public API, or upstream requirement change.
+**Objective:** Every selectRange operation preserves its original anchor while single mode still
+selects only its target.
+**Evidence:** RD-01 lines 60–65 and its Range algorithm require anchor preservation; the internal
+module exposes anchorId. The single-mode branch of `selection/useGridSelection.ts` delegates to
+the non-range `select` helper, which replaces the anchor. Multiselect fallback was corrected
+under AR-20, but that did not cover this separate branch.
+**Decision:** Add independent ST-43 hook-contract oracles in Phase 4, then make the single-mode
+range branch commit its eligible target without calling the anchor-mutating non-range helper.
+Keep ordinary single select/toggle anchor behavior and callbacks unchanged. Task 4.2.4 owns the
+bounded store correction before aggregate requirement completion is claimed.
+**Rejected alternative:** Changing the anchor rule contradicts the governing requirement; adding
+new state is unnecessary. This does not alter pointer click mapping or single-selection membership.
+**Strongest counterargument:** Single-mode navigation does not currently consume its anchor, but
+the existing internal contract explicitly exposes and governs it; this is not future-proofing.
+**Confidence:** High from the written invariant and direct helper delegation.
+**Hardening:** In-context contract trace; independent oracles must precede the small correction.
+**Policy version:** 1. **Root invocation ID:** `rd03-20261022-0057`.
+**Reopen triggers:** A contrary existing immutable oracle or a governing explicit single-mode exception.
+
+### Runtime AR-27 — Terminal State Before Release Notifications
+
+**Authority:** AI — delegated by `--auto-design`.
+**Eligibility:** Necessary internal ordering correction to the existing terminal-before-callback
+contract; no new public behavior, layer, or dependency.
+**Objective:** Release sampling cannot be cancelled reentrantly before its final resolver runs.
+**Evidence:** RV-004 and a targeted internal regression reproduce final onRectChange → capture loss
+→ cancellation → fallback commit, with the supplied final resolver bypassed. The mounted callback
+currently only updates React state, so the independent reviewer classifies the issue as minor.
+**Decision:** Mark the gesture committed and stop frames before final sampling; put sampling inside
+the existing terminal cleanup try/finally. Preserve final coordinates, resolver count, and all
+standalone behavior except the incorrect reentrant cancellation.
+**Rejected alternative:** Suppressing the final rectangle notification violates its independent
+notification contract; special-casing capture loss inside that callback adds unnecessary machinery.
+**Strongest counterargument:** Consumers see terminal state during the last rectangle notification;
+that is precisely the already approved terminal-before-calling-out rule.
+**Confidence:** High; the regression reproduces the review finding before the small ordering change.
+**Hardening:** Independent finding plus in-context control-flow check; no complex mechanism or risk waiver.
+**Policy version:** 1. **Root invocation ID:** `rd03-20261022-0057`.
+**Reopen triggers:** Duplicate terminal callbacks, skipped final resolver, or release cleanup regressions.
 
 The user accepted all nine major recommendations, then selected **Apply and re-scan** for the
 three minor corrections and the documented singleton-radio exception. The separate

@@ -1,7 +1,7 @@
 # TileGrid RD-03 Implementation Plan
 
 > **Feature**: Selection integration, focus, keyboard navigation, accessibility, and marquee
-> **Status**: Preflighted — passed with notes; ready for execution
+> **Status**: Executing — final integration and release-boundary verification remain
 > **Created**: 2026-10-21 23:36
 > **Implements**: tile-grid/RD-01, tile-grid/RD-02, tile-grid/RD-03
 > **CodeOps Artifact Schema**: 1
@@ -20,7 +20,8 @@ approved requirement corrections under AR-4–AR-7 passed their scoped reviews i
 [RD-03's report](../../requirements/00-preflight-report-RD-03.md). The user approved twelve
 plan corrections and one narrow conformance exception in the [preflight report](00-preflight-report.md).
 The bounded rescan passed with notes: twelve corrections verified and the singleton-radio
-authoring-conformance exception explicitly accepted. Execution remains a separate user action.
+authoring-conformance exception explicitly accepted. Current execution progress is owned by the
+[execution plan](99-execution-plan.md); runtime corrections and authority remain in the register.
 
 ## Minimum-Sufficient Baseline
 

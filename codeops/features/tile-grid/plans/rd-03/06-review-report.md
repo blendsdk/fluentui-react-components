@@ -95,3 +95,24 @@ major finding; the performance re-review confirms PE-001 fixed with no new perfo
 Both continued independent sessions are identified above. No threshold changed or risk waived.
 Architecture documentation automation remains opted out. Temporary browser attachments were
 removed; final execution cleanup removes this phase's captured logs and review diffs.
+
+## Phase 3 — Mounted Marquee
+
+**Baseline tree:** `5e54aec635e969d00092afa1dd60089680c6aa78`.
+**Scope:** Existing controller extensions, mounted host, root pointer/Escape composition, decorative
+canvas, and corresponding oracles/internals. Strict scope; no new dependency or input framework.
+
+| Check                             | Evidence                                                                                                                                                                                                                                                                                                                |
+| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Specification-first               | Mounted unit: 42 red / 1 baseline pass. Native browser: 22 red / 8 baseline passes; additive canvas-boundary regression red before AR-24 fix. All 43 unit and 31 native cases pass. A typed asynchronous pointer getter corrected fixture control-flow typing without changing assertions.                              |
+| Runtime hardening                 | AR-24 clips decoration without changing inner coordinates or native scroll range. AR-25 fixes replacement-layout Escape interception through synchronous teardown. Controller tests cover terminal resolver timing/errors, snapshots, and zero large-set traversal during preview frames.                               |
+| Correctness/concurrency/standards | `ses_e9ddd6c62ffevP3s3JW4lbg0bD`: no critical/major findings; RV-004 minor, final sampling notified before terminal state. AR-27 moved terminal marking and frame cancellation before sampling inside cleanup protection. Targeted regression was red, then green. Minor-only fixes do not require another review pass. |
+| Performance audit                 | `ses_e9ddd0b81ffeIBTicUglMtiJSe`: no findings. Preview remains mounted-bounded, map construction is memoized/disabled-cheap, final full pass is terminal-only, and resources/scroll extent are bounded.                                                                                                                 |
+| Final verification                | `pnpm verify`: 781 unit tests; full Chromium: 79 tests; performance: 11 tests, all passed.                                                                                                                                                                                                                              |
+| Final measurements                | Geometry p95 fixed 7.10ms, masonry 15.70ms, justified 13.00ms, mosaic 31.70ms (<200ms). Mounted counts 64/72/50/45 (<120). Pure selection p95 0.40ms (<16ms); scroll p95 16.70ms (<50ms guard).                                                                                                                         |
+
+**Phase verdict:** Passed; no unresolved critical/major finding, no threshold changes or risk waivers.
+Dedicated security review remains inactive for this client-only phase; base review and existing
+hostile-data checks apply. Techdocs automation is opted out. AR-26's single-mode internal anchor
+correction is explicitly sequenced into Phase 4 before aggregate RD-01 completion; it is outside
+this marquee-only implementation diff and has not been claimed delivered.

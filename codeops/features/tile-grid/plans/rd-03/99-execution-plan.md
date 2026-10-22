@@ -1,8 +1,8 @@
 # Execution Plan: TileGrid RD-03
 
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-22 07:14
-> **Progress**: 36/47 tasks (77%)
+> **Last Updated**: 2026-10-22 08:04
+> **Progress**: 37/47 tasks (79%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -145,6 +145,7 @@ verified tasks retain per-task commits/pushes.
 > **Lenses**: concurrency, perf
 > **Risk tags**: performance-critical
 > **Reasoning**: high — pointer terminal ordering and controlled updates must commit once
+> **Review**: correctness/concurrency review found no critical/major issue; RV-004 minor fixed under AR-27 after a red regression. Performance auditor reported no findings. Minor-only correction did not require re-review; final gates pass. Evidence: 06-review-report.md.
 
 ### Session 3.1 — Specification Tests
 
@@ -171,7 +172,7 @@ verified tasks retain per-task commits/pushes.
 
 - [x] 3.3.1 Extend controller internal tests — `test/tile-grid-marquee.impl.test.ts`; resolver timing, rectangle-only notifications, duplicate terminals, and no full per-frame pass. ✅ (completed: 2026-10-22 06:52; controller regressions and full 771-test gate pass; no large retained-set traversal during frames; documentation checked)
 - [x] 3.3.2 Add mounted-host cleanup tests — `test/tile-grid-marquee-integration.impl.test.tsx`; stable geometry refs, capture failure, equal-membership parent updates, and no stale snapshot restoration. ✅ (completed: 2026-10-22 07:14; 8 targeted cases and full 779-test gate pass; nested-spy fixture restoration corrected without changing expectations; documentation checked)
-- [ ] 3.3.3 Run `pnpm verify && pnpm test:browser && pnpm test:perf`; record results and complete strict independent review.
+- [x] 3.3.3 Run `pnpm verify && pnpm test:browser && pnpm test:perf`; record results and complete strict independent review. ✅ (completed: 2026-10-22 08:04; 781 unit / 79 Chromium / 11 performance tests; AR-25 teardown and RV-004 ordering regressions green; independent review complete with no unresolved critical/major finding)
 
 **Deliverable:** Verified Phase 3 and resolved/authorized review findings.
 **Verify:** `pnpm verify && pnpm test:browser && pnpm test:perf`.
@@ -185,9 +186,9 @@ verified tasks retain per-task commits/pushes.
 
 ### Session 4.1 — Specification Tests
 
-**Reference:** 03-01–03-03; AR-2, AR-3, AR-14; 07 ST-35–ST-41.
+**Reference:** 03-01–03-03; AR-2, AR-3, AR-14, runtime AR-26; 07 ST-35–ST-41 and ST-43.
 
-- [ ] 4.1.1 [spec-author] Add combined application-flow and release-boundary guards — `test/tile-grid-integration.spec.test.tsx`; ST-36, ST-38–ST-39.
+- [ ] 4.1.1 [spec-author] Add combined application-flow, release-boundary, and single-range anchor guards — `test/tile-grid-integration.spec.test.tsx`, `test/tile-grid-single-range.spec.test.tsx`; ST-36, ST-38–ST-39, ST-43.
 - [ ] 4.1.2 [spec-author] Add combined browser/native-control and performance oracles using existing infrastructure — `test/browser/tile-grid-interaction.browser.test.tsx`, `test/perf/tile-grid.perf.test.tsx`; browser ST-35–ST-41 and existing ST-35/ST-38 performance measurements.
 - [ ] 4.1.3 Run the new cases before further implementation; record red findings or justified passes from Phases 1–3. Never fabricate failures for already delivered behavior.
 
@@ -199,7 +200,7 @@ verified tasks retain per-task commits/pushes.
 - [ ] 4.2.1 Add KeyboardNavigation and InteractionModes scenarios — `src/components/TileGrid/stories/TileGridKeyboardNavigation.story.tsx`, `TileGridInteractionModes.story.tsx`; 03-01–03-02.
 - [ ] 4.2.2 Add MarqueeSelection and FilteringAndZoom scenarios — `src/components/TileGrid/stories/TileGridMarqueeSelection.story.tsx`, `TileGridFilteringAndZoom.story.tsx`; 03-02–03-03.
 - [ ] 4.2.3 Register stories and document controls, keys, stable predicates, filtering, app-owned portals, and the accepted singleton-radio conformance exception — `src/components/TileGrid/stories/TileGrid.stories.tsx`, `README.md`; AR-3, AR-13–AR-15 and PF-013.
-- [ ] 4.2.4 Run all new integration oracles to green; if they expose a defect, record a bounded implementation task against the owning 03 specification before fixing it.
+- [ ] 4.2.4 Correct the single-mode range branch in `src/components/TileGrid/selection/useGridSelection.ts` to preserve its anchor (03-01, AR-26, ST-43), then run all new integration oracles to green. Record any other required bounded correction against its owning 03 specification before fixing it.
 
 **Deliverable:** Complete examples and documentation with the TileGrid unreleased marker retained.
 **Verify:** `pnpm verify && pnpm storybook:build` plus the new browser cases.
