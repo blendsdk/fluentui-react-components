@@ -34,7 +34,9 @@ function content({ item, selected }: TileGridItemRenderArgs<Item>) {
     <div style={{ paddingTop: 36 }} data-testid={`content-${item.id}`} data-selected={selected}>
       <span>{item.label}</span>
       <button type="button">Open {item.label}</button>
-      <a href="#details">Details {item.label}</a>
+      <a href="#details" draggable={false}>
+        Details {item.label}
+      </a>
       <input aria-label={`Edit ${item.label}`} style={{ width: 90 }} />
     </div>
   );

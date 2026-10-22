@@ -1,7 +1,7 @@
 ## Ambiguity Register: TileGrid RD-03
 
-> **Status**: ✅ GATE PASSED — all 28 items resolved, including thirteen runtime decisions
-> **Last Updated**: 2026-10-22 07:50
+> **Status**: ✅ GATE PASSED — all 30 items resolved, including fifteen runtime decisions
+> **Last Updated**: 2026-10-22 09:37
 > **CodeOps Artifact Schema**: 1
 
 ## Planning Boundaries
@@ -492,6 +492,46 @@ loosening expected offsets, or ignoring Firefox would hide fixture defects and w
 **Hardening:** In-context environment diagnosis. Existing native event paths and runner are retained.
 **Policy version:** 1. **Root invocation ID:** `rd03-20261022-0057`.
 **Reopen triggers:** Failure after the required scroll/viewport preconditions are demonstrably met.
+
+### Runtime AR-29 — Native Wheel Recovery Timing Oracle
+
+**Authority:** User — explicit **Approve correction (Recommended)** response.
+**Category:** Narrow immutable-oracle correction; no product behavior change.
+**Evidence:** Full matrix: 267/270 passed. WebKit can deliver intermediate scroll positions during
+one wheel gesture. A valid recovery to tile-18 occurs while that tile is visible; at final offset
+1680 it remains mounted in overscan. The test hard-coded tile-21/tile-20 only at the final offset.
+03-02 lines 37–43 requires recovery when the active wrapper unmounts, not every time it leaves
+the viewport. Independent author `ses_e9f0bda4affe8CUj2MmEMv9Xlt` confirms the final-offset
+expectation imposes unsupported browser timing.
+**Approved correction:** Passively record each actual focus handoff and its viewport; verify the
+first eligible visible item then, or first visible item if all are ineligible. Preserve native wheel
+input, old-node unmount, exact final offset/stability, no-scroll-back and callback-silence checks.
+Check the final connected recovered node retains focus; derive the disabled keyboard neighbour
+from that recorded fixture target. No other oracle is changed.
+**Rejected alternative:** Replacing native wheel with a programmatic jump loses required native
+coverage; changing runtime recovery would contradict the mounted-target trigger.
+**Confidence:** High on the contract; all three engines must verify the corrected oracle.
+**Hardening:** Independent specification-author check followed by direct user approval.
+**Root invocation ID:** `rd03-20261022-0057`.
+
+### Runtime AR-30 — Isolate Native Link Dragging in Pointer Fixture
+
+**Authority:** AI — delegated by `--auto-design`.
+**Eligibility:** Necessary fixture-only isolation; expectations and component behavior are unchanged.
+**Evidence:** Independent author `ses_e9e5c6906ffek1d4e8knaf7pRI` reproduced WebKit's ordered
+link→input failure. The link origin starts native HTML drag, emits dragstart/dragend but no pointerup;
+the following input receives trusted mouse events and pointerup, but no document-level pointerdown.
+Hit testing and page scroll are correct. Temporarily setting draggable=false on the fixture link
+restores the pair and all 31 native marquee cases in WebKit.
+**Decision:** Disable native HTML dragging on that test anchor only. The native pointer stream,
+link origin, and all exclusion/callback assertions remain unchanged. The suite tests marquee
+isolation, not browser HTML drag-and-drop.
+**Rejected alternatives:** Longer timeouts cannot create a missing pointer event; component changes
+cannot recover an event the browser did not dispatch; synthetic pointer input would weaken the test.
+**Confidence:** High; native event traces and full-file verification isolate the cause.
+**Hardening:** Independent specification-author diagnosis and bounded in-context remedy review.
+**Policy version:** 1. **Root invocation ID:** `rd03-20261022-0057`.
+**Reopen triggers:** Lost link-origin coverage or another ordered native input failure.
 
 The user accepted all nine major recommendations, then selected **Apply and re-scan** for the
 three minor corrections and the documented singleton-radio exception. The separate

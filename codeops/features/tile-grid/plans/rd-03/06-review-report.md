@@ -116,3 +116,49 @@ Dedicated security review remains inactive for this client-only phase; base revi
 hostile-data checks apply. Techdocs automation is opted out. AR-26's single-mode internal anchor
 correction is explicitly sequenced into Phase 4 before aggregate RD-01 completion; it is outside
 this marquee-only implementation diff and has not been claimed delivered.
+
+## Phase 4 — Integration, Stories, Documentation, and Final Gates
+
+**Baseline tree:** `74a453b75162fb6289e988afa27dc0b6c0796d85`.
+**Scope:** Combined application/native-control/performance oracles, four stories and package docs,
+AR-26's single-mode range correction, existing browser-input setup under AR-28, and the narrowly
+user-approved wheel timing oracle under AR-29. Strict scope; no publication/export expansion.
+
+| Check               | Current evidence                                                                                                                                                                                                                                                                                                                                                                   |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Specification-first | 7 unit baseline passes and 3 single-range anchor failures before correction; all 10 now pass. 11 combined native cases and 5 additional 20K performance cases passed at authoring.                                                                                                                                                                                                 |
+| Unit/full gate      | `pnpm verify`: 793 tests pass, including unchanged existing export/type/SSR contracts.                                                                                                                                                                                                                                                                                             |
+| Matrix              | Final complete matrix: 270/270 passed, 90 each in Chromium, Firefox, and WebKit. AR-29 records the user-approved wheel timing correction; AR-30 isolates native link dragging in the fixture.                                                                                                                                                                                      |
+| Performance         | Final 16 cases pass. Geometry p95 fixed 8.10ms, masonry 13.80ms, justified 9.20ms, mosaic 28.80ms (<200ms). Controls-enabled counts 64/72/50/45 (<120); focus-only content calls 0, toggle 1 in each layout. Pure selection p95 0.30ms (<16ms). Original/controls-enabled scroll p95 33.30/16.70ms (<50ms guard), 30 intervals each. The 60fps target is not asserted as achieved. |
+| Storybook/package   | Storybook builds with four additional scenarios. `pnpm pack:check` passes. Unit artifact guards verify no TileGrid runtime/declaration output.                                                                                                                                                                                                                                     |
+| Media inspection    | Built KeyboardNavigation and MarqueeSelection stories exercised with real Playwright in Chromium, Firefox, and WebKit; both forced-colors and reduced-motion media queries confirmed active. Focus outline 2px solid; overlay border 1px, pointer-transparent, non-animated; Escape removes it. Temporary static server stopped afterward.                                         |
+| Independent review  | Correctness/API/standards: `ses_e9d63fe61ffeBwVPKl4THyQ0ME`, no findings. Performance: `ses_e9d639c84ffel5ZxX0tIspWFEh`, no findings. Both reviewed the complete Phase 4 snapshot and supplied final evidence.                                                                                                                                                                     |
+
+### Coverage Evidence
+
+The existing unit coverage command passed with 793 tests. The existing Chromium browser suite
+also ran through the installed V8 provider (90 tests) to cover real focus loss, capture and pending
+virtual targets. The two JSON reports were merged in memory using the installed
+`@vitest/istanbul-lib-coverage`; no dependency, runner, threshold, or persistent coverage setup was added.
+Targets below apply to statement coverage: core behavior 90%, supporting helpers 80%, UI/glue 60%.
+Branch coverage is reported separately rather than presented as a stronger guarantee.
+
+| Changed module under TileGrid              | Statements | Functions | Branches             | Target |
+| ------------------------------------------ | ---------- | --------- | -------------------- | ------ |
+| focus/navigation.ts                        | 96.96%     | 100%      | 100%                 | 90%    |
+| focus/useTileGridFocus.ts                  | 95.93%     | 96.66%    | 94.02%               | 80%    |
+| focus/useTileGridTabOrder.ts               | 94.40%     | 100%      | 90.37%               | 80%    |
+| selection/useGridSelection.ts              | 98.03%     | 100%      | 93.84%               | 90%    |
+| selection/clickSelection.ts                | 93.33%     | 100%      | 85.71%               | 90%    |
+| selection/useTileGridInteractions.ts       | 95.74%     | 100%      | 91.30%               | 80%    |
+| selection/useSelectionAnnouncement.ts      | 100%       | 100%      | 100%                 | 80%    |
+| marquee/createMarqueeController.ts         | 96.31%     | 95.65%    | 86.95%               | 90%    |
+| marquee/useTileGridMarquee.ts              | 98.52%     | 100%      | 96.03%               | 80%    |
+| virtualization/useAnchorPreservation.ts    | 100%       | 100%      | 100%                 | 80%    |
+| useTileGrid.ts                             | 87.95%     | 84.21%    | 84.48%               | 60%    |
+| TileGridItemView.tsx                       | 90%        | 66.66%    | 90%                  | 60%    |
+| TileGridSelectionControl.tsx               | 100%       | 100%      | 85.71%               | 60%    |
+| TileGrid.tsx / renderTileGrid.tsx / styles | 100% each  | 100% each | 66.66% / 100% / 100% | 60%    |
+
+Unchanged geometry and selection-transition baselines remain tested; they are not misreported as
+newly changed modules. Raw logs/reports are temporary and removed after their evidence is recorded.

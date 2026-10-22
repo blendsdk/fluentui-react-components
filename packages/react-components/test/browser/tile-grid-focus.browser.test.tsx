@@ -412,16 +412,76 @@ describe('TileGrid browser focus contract', () => {
       });
       const old = origin === 'consumer' ? button('Open Tile 0') : tile('Tile 0');
       await focus(old);
-      await userEvent.wheel(root, { delta: { y: 1680 } });
-      await waitFor(() => expect(old).not.toBeInTheDocument());
-      const expected = origin === 'all ineligible' ? 'Tile 20' : 'Tile 21';
-      await waitFor(() => expect(tile(expected)).toHaveFocus());
-      await frames();
-      expect(root.scrollTop).toBe(1680);
+      const handoffs: { target: HTMLElement; scrollTop: number; height: number }[] = [];
+      const scrollPositions = [root.scrollTop];
+      /** Samples the real scroll position without driving or cancelling native scrolling. */
+      function recordScroll() {
+        scrollPositions.push(root.scrollTop);
+      }
+      /** Captures each handoff's viewport and checks scrolling again after focus finishes. */
+      function recordFocus(event: FocusEvent) {
+        recordScroll();
+        if (event.target instanceof HTMLElement) {
+          handoffs.push({
+            target: event.target,
+            scrollTop: root.scrollTop,
+            height: root.clientHeight,
+          });
+        }
+        queueMicrotask(recordScroll);
+      }
+      root.addEventListener('focus', recordFocus, { capture: true, passive: true });
+      root.addEventListener('scroll', recordScroll, { passive: true });
+      try {
+        await userEvent.wheel(root, { delta: { y: 1680 } });
+        await waitFor(() => expect(old).not.toBeInTheDocument());
+        await waitFor(() => expect(root.scrollTop).toBe(1680));
+        await waitFor(() => {
+          expect(handoffs.at(-1)?.target).not.toBe(root);
+          expect(handoffs.at(-1)?.target).toHaveFocus();
+        });
+        await frames();
+        expect(root.scrollTop).toBe(1680);
+        recordScroll();
+      } finally {
+        root.removeEventListener('focus', recordFocus, true);
+        root.removeEventListener('scroll', recordScroll);
+      }
+
+      // Native wheel animation may complete several recoveries before reaching its final offset.
+      // The root may bridge focus; each tile destination must suit its own actual viewport.
+      const recoveries = handoffs.filter(({ target }) => target !== root);
+      let lastIndex = -1;
+      for (const { target, scrollTop, height } of recoveries) {
+        // Two 160px columns with an 8px gap put row n at n * 168, independently of the renderer.
+        const visible = MANY.map((item, index) => ({
+          item,
+          index,
+          top: Math.floor(index / 2) * 168,
+        })).filter(({ top }) => top < scrollTop + height && top + 160 > scrollTop);
+        const expected =
+          visible.find(({ item }) => origin !== 'all ineligible' && item.id !== 'tile-20') ??
+          visible[0];
+        if (!expected) throw new Error('The measured viewport must intersect a fixture tile.');
+        expect(target).toHaveAttribute('role', 'listitem');
+        expect(target).toHaveAccessibleName(expected.item.label);
+        lastIndex = expected.index;
+      }
+      const latest = recoveries.at(-1);
+      if (!latest)
+        throw new Error('Unmounting the focused tile must produce a tile focus handoff.');
+      expect(latest.target).toBeInTheDocument();
+      expect(latest.target).toHaveFocus();
+      // A positive wheel gesture must not be reversed by either the root bridge or tile focus.
+      for (let index = 1; index < scrollPositions.length; index++) {
+        expect(scrollPositions[index]).toBeGreaterThanOrEqual(scrollPositions[index - 1]);
+      }
       if (origin === 'all ineligible') {
-        expect(tile('Tile 20')).toHaveAttribute('aria-disabled', 'true');
+        expect(latest.target).toHaveAttribute('aria-disabled', 'true');
+        const rightIndex =
+          lastIndex % 2 === 0 && lastIndex + 1 < MANY.length ? lastIndex + 1 : lastIndex;
         await userEvent.keyboard('{ArrowRight} {Enter}');
-        expect(tile('Tile 21')).toHaveFocus();
+        expect(tile(MANY[rightIndex].label)).toHaveFocus();
         expect(within(root).queryByRole('checkbox')).not.toBeInTheDocument();
       }
       expect(onSelectionChange).not.toHaveBeenCalled();
