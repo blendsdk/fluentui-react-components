@@ -1,6 +1,7 @@
 import { FluentProvider, webLightTheme } from '@fluentui/react-components';
 import { act, fireEvent, render, renderHook, screen } from '@testing-library/react';
 import type { ReactElement } from 'react';
+import { useState } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { TileGrid } from '../src/components/TileGrid';
 import type { TileGridProps } from '../src/components/TileGrid';
@@ -41,6 +42,42 @@ beforeEach(() => resetDevWarningsForTests());
 afterEach(() => vi.restoreAllMocks());
 
 describe('TileGrid interaction internals', () => {
+  it('uses a replaced native keyboard callback without losing the active wrapper', async () => {
+    const first = vi.fn();
+    const second = vi.fn(event => event.preventDefault());
+    /** Parent callback replacement must reach the stable delegated handler. */
+    function App() {
+      const [prevent, setPrevent] = useState(false);
+      return themed(
+        <>
+          <button type="button" onClick={() => setPrevent(true)}>
+            Replace callback
+          </button>
+          <TileGrid
+            items={items}
+            getItemId={getItemId}
+            getItemLabel={getItemId}
+            renderItem={({ item }) => <span>{item}</span>}
+            ariaLabel="Interactions"
+            onKeyDown={prevent ? second : first}
+          />
+        </>
+      );
+    }
+    render(<App />);
+    await act(async () => setElementSize(screen.getByRole('list'), 800, 600));
+    const a = screen.getByRole('listitem', { name: 'a' });
+    const b = screen.getByRole('listitem', { name: 'b' });
+    act(() => a.focus());
+    fireEvent.keyDown(a, { key: 'ArrowRight' });
+    expect(b).toHaveFocus();
+    fireEvent.click(screen.getByRole('button', { name: 'Replace callback' }));
+    fireEvent.keyDown(b, { key: 'ArrowLeft' });
+    expect(first).toHaveBeenCalledTimes(1);
+    expect(second).toHaveBeenCalledTimes(1);
+    expect(b).toHaveFocus();
+  });
+
   it('keeps delegated handlers stable while reading updated native and activation callbacks', () => {
     const first = vi.fn();
     const second = vi.fn();

@@ -1,7 +1,7 @@
 ## Ambiguity Register: TileGrid RD-03
 
-> **Status**: ✅ GATE PASSED — all 21 items resolved, including six runtime decisions
-> **Last Updated**: 2026-10-22 03:23
+> **Status**: ✅ GATE PASSED — all 22 items resolved, including seven runtime decisions
+> **Last Updated**: 2026-10-22 03:45
 > **CodeOps Artifact Schema**: 1
 
 ## Planning Boundaries
@@ -322,6 +322,26 @@ cleanup; reopen if isolation still fails or a single test needs a later fresh mo
 **Hardening:** In-context environmental diagnosis; a direct existing cleanup correction.
 **Policy version:** 1. **Root invocation ID:** `rd03-20261022-0057`.
 **Reopen triggers:** Recurrent ordered resize failure or changed dependency test-mode behavior.
+
+### Runtime AR-22 — Foreign-Document Native Control Guard
+
+**Authority:** AI — delegated by `--auto-design`.
+**Eligibility:** Necessary internal correction for approved ownerDocument handling and native-control
+isolation; no public API, policy, dependency, or scope expansion.
+**Objective:** Consumer controls stay local when the grid is mounted in an iframe document.
+**Evidence:** The new ownerDocument internal test navigates correctly in the child document, but
+clicking its consumer button also selects the tile. `isInteractiveClickTarget` uses the global
+Element constructor, which rejects an element from the other window before examining its semantics.
+**Decision:** Pass the grid root's ownerDocument into the existing guard and click mapper and use
+that document's Element constructor. Preserve the existing global fallback for standalone callers.
+**Rejected alternatives:** Duck-typing arbitrary EventTargets weakens validation; rejecting every
+foreign-document event would also break valid wrapper interaction. No document-wide registry is needed.
+**Strongest counterargument:** Callers must supply the correct document; the root owns it directly,
+so no extra state or lookup is needed.
+**Confidence:** High; real iframe DOM reproduces the incorrect selection callback.
+**Hardening:** In-context cross-realm type-check review; the direct regression precedes the fix.
+**Policy version:** 1. **Root invocation ID:** `rd03-20261022-0057`.
+**Reopen triggers:** Cross-document interaction regressions or loss of ordinary root-document behavior.
 
 The user accepted all nine major recommendations, then selected **Apply and re-scan** for the
 three minor corrections and the documented singleton-radio exception. The separate

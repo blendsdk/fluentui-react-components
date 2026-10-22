@@ -19,9 +19,15 @@ const INTERACTIVE_SELECTOR = [
 /**
  * Returns true when a click target belongs to an interactive control or an
  * element explicitly marked by the application.
+ * Pass the root document when handling elements from another window or iframe.
  */
-export function isInteractiveClickTarget(target: EventTarget | null): boolean {
-  if (typeof Element === 'undefined' || !(target instanceof Element)) {
+export function isInteractiveClickTarget(
+  target: EventTarget | null,
+  ownerDocument?: Document
+): boolean {
+  const ElementType =
+    ownerDocument?.defaultView?.Element ?? (typeof Element === 'undefined' ? undefined : Element);
+  if (!ElementType || !(target instanceof ElementType)) {
     return false;
   }
   if (target.closest(INTERACTIVE_SELECTOR)) {
@@ -59,6 +65,8 @@ export interface ApplyItemClickInput {
   currentIds: readonly string[];
   /** Effective selection store. */
   selection: GridSelection;
+  /** Root document whose native element constructors classify event targets. */
+  ownerDocument?: Document;
 }
 
 /**
@@ -73,8 +81,13 @@ export function applyItemClick({
   mode,
   currentIds,
   selection,
+  ownerDocument,
 }: ApplyItemClickInput): void {
-  if (mode === 'none' || event.defaultPrevented || isInteractiveClickTarget(event.target)) {
+  if (
+    mode === 'none' ||
+    event.defaultPrevented ||
+    isInteractiveClickTarget(event.target, ownerDocument)
+  ) {
     return;
   }
 

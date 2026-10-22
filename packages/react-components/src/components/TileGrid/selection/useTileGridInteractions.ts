@@ -78,7 +78,7 @@ export function useTileGridInteractions<T>(input: TileGridInteractionsInput<T>):
       id === undefined ||
       id === null ||
       event.defaultPrevented ||
-      isInteractiveClickTarget(event.target) ||
+      isInteractiveClickTarget(event.target, event.currentTarget.ownerDocument) ||
       current.isDisabled(id)
     )
       return;
@@ -94,6 +94,7 @@ export function useTileGridInteractions<T>(input: TileGridInteractionsInput<T>):
         mode: selection.mode,
         currentIds: current.currentIds,
         selection,
+        ownerDocument: event.currentTarget.ownerDocument,
       });
     }
   }, []);
@@ -110,7 +111,7 @@ export function useTileGridInteractions<T>(input: TileGridInteractionsInput<T>):
       modified(event) ||
       current.selection.mode === 'none' ||
       current.interactionMode !== 'select' ||
-      isInteractiveClickTarget(event.target) ||
+      isInteractiveClickTarget(event.target, event.currentTarget.ownerDocument) ||
       current.isDisabled(id)
     )
       return;
