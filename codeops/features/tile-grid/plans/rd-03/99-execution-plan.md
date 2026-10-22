@@ -1,8 +1,8 @@
 # Execution Plan: TileGrid RD-03
 
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-22 06:30
-> **Progress**: 34/47 tasks (72%)
+> **Last Updated**: 2026-10-22 06:52
+> **Progress**: 35/47 tasks (74%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -169,7 +169,7 @@ verified tasks retain per-task commits/pushes.
 
 ### Session 3.3 — Internal Tests and Hardening
 
-- [ ] 3.3.1 Extend controller internal tests — `test/tile-grid-marquee.impl.test.ts`; resolver timing, rectangle-only notifications, duplicate terminals, and no full per-frame pass.
+- [x] 3.3.1 Extend controller internal tests — `test/tile-grid-marquee.impl.test.ts`; resolver timing, rectangle-only notifications, duplicate terminals, and no full per-frame pass. ✅ (completed: 2026-10-22 06:52; controller regressions and full 771-test gate pass; no large retained-set traversal during frames; documentation checked)
 - [ ] 3.3.2 Add mounted-host cleanup tests — `test/tile-grid-marquee-integration.impl.test.tsx`; stable geometry refs, capture failure, equal-membership parent updates, and no stale snapshot restoration.
 - [ ] 3.3.3 Run `pnpm verify && pnpm test:browser && pnpm test:perf`; record results and complete strict independent review.
 

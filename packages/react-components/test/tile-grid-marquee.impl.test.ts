@@ -4,6 +4,10 @@ import {
   normalizeRect,
   rectsIntersect,
 } from '../src/components/TileGrid/marquee';
+import type {
+  MarqueeRect,
+  MarqueeSelectionOptions,
+} from '../src/components/TileGrid/marquee/types';
 
 interface Rect {
   x: number;
@@ -33,7 +37,15 @@ function pointer(
 }
 
 function createHarness(
-  options: { selectedIds?: readonly string[]; capture?: HTMLElement | null } = {}
+  options: {
+    selectedIds?: readonly string[];
+    capture?: HTMLElement | null;
+    /** Optional notifications and final resolver under test. */
+    callbacks?: Pick<
+      MarqueeSelectionOptions,
+      'onRectChange' | 'resolveFinalSelection' | 'onPreview'
+    >;
+  } = {}
 ) {
   const container = document.createElement('div');
   Object.defineProperty(container, 'getBoundingClientRect', {
@@ -92,6 +104,7 @@ function createHarness(
     pointerCaptureTarget: options.capture ?? null,
     requestFrame,
     cancelFrame,
+    ...options.callbacks,
   });
 
   return {
@@ -127,6 +140,137 @@ function captureTarget(overrides: { setThrows?: boolean; releaseThrows?: boolean
 }
 
 describe('marquee controller implementation details', () => {
+  it('notifies rectangle-only changes with snapshots and removes the rectangle on cancellation', () => {
+    const rectangles: (MarqueeRect | null)[] = [];
+    const harness = createHarness({ callbacks: { onRectChange: rect => rectangles.push(rect) } });
+    harness.controller.handlePointerDown(pointer(10, 10));
+    harness.controller.handlePointerMove(pointer(30, 30));
+    harness.controller.handlePointerMove(pointer(40, 40));
+    harness.controller.handlePointerMove(pointer(40, 40));
+    expect(rectangles).toEqual([
+      { x: 10, y: 10, width: 20, height: 20 },
+      { x: 10, y: 10, width: 30, height: 30 },
+    ]);
+    expect(harness.onPreview).not.toHaveBeenCalled();
+    const snapshot = rectangles.at(-1);
+    if (!snapshot) throw new Error('Expected the current rectangle snapshot');
+    snapshot.x = 999;
+    expect(harness.controller.getRect()?.x).toBe(10);
+    harness.controller.handleKeyDown({ key: 'Escape', preventDefault: vi.fn() });
+    expect(rectangles.at(-1)).toBeNull();
+    expect(rectangles).toHaveLength(3);
+    expect(harness.onCommit).not.toHaveBeenCalled();
+  });
+
+  it('samples a release-only threshold crossing and invokes the final resolver once', () => {
+    const resolve = vi.fn(
+      (_rect: MarqueeRect, initial: ReadonlySet<string>, _additive: boolean) =>
+        new Set([...initial, 'resolved'])
+    );
+    const harness = createHarness({
+      selectedIds: ['z'],
+      callbacks: { resolveFinalSelection: resolve },
+    });
+    harness.controller.handlePointerDown(pointer(10, 10, { shiftKey: true }));
+    expect(resolve).not.toHaveBeenCalled();
+    harness.controller.handlePointerUp(pointer(20, 20));
+    expect(resolve).toHaveBeenCalledExactlyOnceWith(
+      { x: 10, y: 10, width: 10, height: 10 },
+      new Set(['z']),
+      true
+    );
+    expect(harness.onCommit).toHaveBeenCalledExactlyOnceWith(new Set(['z', 'resolved']));
+    harness.controller.handlePointerUp(pointer(150, 150));
+    harness.controller.handleLostPointerCapture(pointer(150, 150));
+    expect(resolve).toHaveBeenCalledTimes(1);
+    expect(harness.onCancel).not.toHaveBeenCalled();
+  });
+
+  it('marks release terminal before calling the resolver and ignores capture loss from that callback', () => {
+    let loseCapture = () => {};
+    const resolve = vi.fn(() => {
+      loseCapture();
+      return new Set(['final']);
+    });
+    const capture = captureTarget();
+    const harness = createHarness({ capture, callbacks: { resolveFinalSelection: resolve } });
+    loseCapture = () => harness.controller.handleLostPointerCapture(pointer(150, 150));
+    harness.controller.handlePointerDown(pointer(10, 10));
+    harness.controller.handlePointerMove(pointer(150, 150));
+    expect(resolve).not.toHaveBeenCalled();
+    harness.controller.handlePointerUp(pointer(160, 170));
+    expect(resolve).toHaveBeenCalledExactlyOnceWith(
+      { x: 10, y: 10, width: 150, height: 160 },
+      new Set(),
+      false
+    );
+    expect(harness.onCommit).toHaveBeenCalledExactlyOnceWith(new Set(['final']));
+    expect(harness.onCancel).not.toHaveBeenCalled();
+    expect(capture.releasePointerCapture).toHaveBeenCalledTimes(1);
+  });
+
+  it('clears decoration and releases capture when the terminal resolver throws', () => {
+    const failure = new Error('Resolution failed');
+    const capture = captureTarget();
+    const onRectChange = vi.fn();
+    const harness = createHarness({
+      capture,
+      callbacks: {
+        onRectChange,
+        resolveFinalSelection: () => {
+          throw failure;
+        },
+      },
+    });
+    harness.controller.handlePointerDown(pointer(10, 10));
+    harness.controller.handlePointerMove(pointer(150, 590));
+    expect(() => harness.controller.handlePointerUp(pointer(150, 590))).toThrow(failure);
+    expect(harness.pending.size).toBe(0);
+    expect(harness.controller.getRect()).toBeNull();
+    expect(onRectChange).toHaveBeenLastCalledWith(null);
+    expect(capture.releasePointerCapture).toHaveBeenCalledTimes(1);
+    expect(harness.onCommit).not.toHaveBeenCalled();
+    expect(harness.onCancel).not.toHaveBeenCalled();
+  });
+
+  it('does not traverse retained large membership on pointer frames without a full-set preview callback', () => {
+    const hidden = Array.from({ length: 20_000 }, (_, index) => `hidden-${index}`);
+    const harness = createHarness({ selectedIds: hidden, callbacks: { onPreview: undefined } });
+    harness.controller.handlePointerDown(pointer(10, 10, { shiftKey: true }));
+    let largeTraversals = 0;
+    const original = Set.prototype[Symbol.iterator];
+    const iterator = vi.spyOn(Set.prototype, Symbol.iterator).mockImplementation(function (
+      this: Set<unknown>
+    ) {
+      if (this.size >= hidden.length) largeTraversals++;
+      return original.call(this);
+    });
+    try {
+      for (let index = 0; index < 20; index++) {
+        harness.controller.handlePointerMove(index % 2 ? pointer(40, 40) : pointer(150, 150));
+      }
+      expect(largeTraversals).toBe(0);
+    } finally {
+      iterator.mockRestore();
+      harness.controller.dispose();
+    }
+  });
+
+  it('drops rectangle notifications from a saved frame after disposal', () => {
+    const onRectChange = vi.fn();
+    const harness = createHarness({ callbacks: { onRectChange } });
+    harness.controller.handlePointerDown(pointer(10, 10));
+    harness.controller.handlePointerMove(pointer(40, 590));
+    const callback = [...harness.pending.values()][0];
+    expect(callback).toBeDefined();
+    harness.controller.dispose();
+    expect(onRectChange).toHaveBeenLastCalledWith(null);
+    const calls = onRectChange.mock.calls.length;
+    callback?.(16);
+    expect(onRectChange).toHaveBeenCalledTimes(calls);
+    expect(harness.controller.getPreviewSelection().size).toBe(0);
+  });
+
   it('normalizes rectangles and excludes touching edges', () => {
     expect(normalizeRect(10, 20, 4, 8)).toEqual({ x: 4, y: 8, width: 6, height: 12 });
     expect(
