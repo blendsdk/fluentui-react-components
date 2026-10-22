@@ -32,9 +32,10 @@ function editable(element: Element | null): boolean {
   return false;
 }
 
-/** Checks native focusability with the author attribute restored, without measuring item geometry. */
-function eligible(element: FocusTarget, root: HTMLElement): boolean {
-  if (element.matches(':disabled') || element.closest('[hidden],[inert]')) return false;
+/** Checks native semantics with the author attribute restored, without probing focus or geometry. */
+function eligible(element: FocusTarget, root: HTMLElement, author: string | null): boolean {
+  if (element.matches(':disabled,input[type="hidden"]') || element.closest('[hidden],[inert]'))
+    return false;
   const view = root.ownerDocument.defaultView;
   if (!view) return false;
   const visibility = view.getComputedStyle(element).visibility;
@@ -43,7 +44,31 @@ function eligible(element: FocusTarget, root: HTMLElement): boolean {
     if (view.getComputedStyle(node).display === 'none') return false;
     if (node === root) break;
   }
-  return element.tabIndex >= 0 || (editable(element) && !editable(element.parentElement));
+  for (let ancestor = element.parentElement; ancestor; ancestor = ancestor.parentElement) {
+    if (
+      ancestor.matches('details:not([open])') &&
+      !ancestor.querySelector(':scope > summary')?.contains(element)
+    )
+      return false;
+    if (ancestor === root) break;
+  }
+  const authoredIndex = author === null ? NaN : Number.parseInt(author, 10);
+  if (Number.isFinite(authoredIndex)) return authoredIndex >= 0;
+  // Some native tabIndex getters report zero even without the semantics that
+  // make an element focusable, notably anchors after href has been removed.
+  if (
+    element.matches(
+      'button,input,select,textarea,a[href],area[href],audio[controls],video[controls]'
+    )
+  )
+    return true;
+  if (element.matches('summary')) {
+    return (
+      element.parentElement?.matches('details') === true &&
+      element.parentElement.querySelector(':scope > summary') === element
+    );
+  }
+  return editable(element) && !editable(element.parentElement);
 }
 
 /** Restores absence as well as an explicit author value, avoiding redundant mutations. */
@@ -119,7 +144,7 @@ export function useTileGridTabOrder(
         }
         writeTabIndex(element, author);
         const usable =
-          !(author !== null && Number.parseInt(author, 10) < 0) && eligible(element, root);
+          !(author !== null && Number.parseInt(author, 10) < 0) && eligible(element, root, author);
         if (usable) nextEnabled.push(element);
         writeTabIndex(element, usable ? '0' : '-1');
       }
@@ -147,6 +172,8 @@ export function useTileGridTabOrder(
             'style',
             'class',
             'open',
+            'type',
+            'controls',
           ],
         });
       }
@@ -205,8 +232,13 @@ export function useTileGridTabOrder(
       else if (event.shiftKey && target === enabled.current[0]) next = ownedInput ?? entry;
     }
     if (!next) return false;
-    event.preventDefault();
+    const before = root.ownerDocument.activeElement;
     next.focus({ preventScroll: true });
+    const after = root.ownerDocument.activeElement;
+    // Failed native focus must not trap Tab. A consumer may redirect focus to
+    // another control; preserve that transfer rather than trying another node.
+    if (after !== next && (after === before || after === root.ownerDocument.body)) return false;
+    event.preventDefault();
     return true;
   }, []);
 }

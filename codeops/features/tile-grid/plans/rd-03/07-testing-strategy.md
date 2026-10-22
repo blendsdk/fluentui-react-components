@@ -101,22 +101,23 @@ All paths below are relative to `packages/react-components/`. The unit files use
 the pure geometry-navigation contract may use `.spec.test.ts`. Browser files follow the existing
 `.browser.test.tsx` glob and remain immutable behavioral oracles after their spec-author step.
 
-| File                                                  | Cases                                                                             |
-| ----------------------------------------------------- | --------------------------------------------------------------------------------- |
-| `test/tile-grid-selection-invariants.spec.test.tsx`   | ST-01–ST-04                                                                       |
-| `test/tile-grid-interaction.spec.test.tsx`            | ST-05–ST-09                                                                       |
-| `test/tile-grid-accessibility.spec.test.tsx`          | ST-10–ST-13; type assertions included using existing Vitest type-test conventions |
-| `test/tile-grid-control-composition.spec.test.tsx`    | ST-40–ST-41; Phase 1 committed-control composition only                           |
-| `test/tile-grid-navigation.spec.test.ts`              | ST-14–ST-16 pure cases                                                            |
-| `test/tile-grid-focus.spec.test.tsx`                  | ST-16–ST-17, ST-19–ST-25 DOM-contract portions                                    |
-| `test/tile-grid-keyboard-zoom.spec.test.tsx`          | ST-18, ST-23–ST-24 controlled zoom/reset portions                                 |
-| `test/tile-grid-range-anchor.spec.test.tsx`           | ST-42 missing-anchor fallback preserves the original anchor                       |
-| `test/tile-grid-marquee-integration.spec.test.tsx`    | ST-26–ST-34 host contracts                                                        |
-| `test/tile-grid-integration.spec.test.tsx`            | ST-36, ST-38–ST-39 cross-feature guards                                           |
-| `test/browser/tile-grid-focus.browser.test.tsx`       | ST-19–ST-25, ST-37 actual browser focus                                           |
-| `test/browser/tile-grid-marquee.browser.test.tsx`     | ST-26–ST-34, ST-37 capture and scrolling                                          |
-| `test/browser/tile-grid-interaction.browser.test.tsx` | ST-35–ST-41 combined flows and native form/context regressions                    |
-| Existing `test/perf/tile-grid.perf.test.tsx`          | ST-35, ST-38 using its established budgets/method                                 |
+| File                                                     | Cases                                                                             |
+| -------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `test/tile-grid-selection-invariants.spec.test.tsx`      | ST-01–ST-04                                                                       |
+| `test/tile-grid-interaction.spec.test.tsx`               | ST-05–ST-09                                                                       |
+| `test/tile-grid-accessibility.spec.test.tsx`             | ST-10–ST-13; type assertions included using existing Vitest type-test conventions |
+| `test/tile-grid-control-composition.spec.test.tsx`       | ST-40–ST-41; Phase 1 committed-control composition only                           |
+| `test/tile-grid-navigation.spec.test.ts`                 | ST-14–ST-16 pure cases                                                            |
+| `test/tile-grid-focus.spec.test.tsx`                     | ST-16–ST-17, ST-19–ST-25 DOM-contract portions                                    |
+| `test/tile-grid-keyboard-zoom.spec.test.tsx`             | ST-18, ST-23–ST-24 controlled zoom/reset portions                                 |
+| `test/tile-grid-range-anchor.spec.test.tsx`              | ST-42 missing-anchor fallback preserves the original anchor                       |
+| `test/tile-grid-marquee-integration.spec.test.tsx`       | ST-26–ST-34 host contracts                                                        |
+| `test/tile-grid-integration.spec.test.tsx`               | ST-36, ST-38–ST-39 cross-feature guards                                           |
+| `test/browser/tile-grid-focus.browser.test.tsx`          | ST-19–ST-25, ST-37 actual browser focus                                           |
+| `test/browser/tile-grid-focus-recovery.browser.test.tsx` | ST-19/ST-21/ST-24/ST-25 review regression variants; RV-002/RV-003                 |
+| `test/browser/tile-grid-marquee.browser.test.tsx`        | ST-26–ST-34, ST-37 capture and scrolling                                          |
+| `test/browser/tile-grid-interaction.browser.test.tsx`    | ST-35–ST-41 combined flows and native form/context regressions                    |
+| Existing `test/perf/tile-grid.perf.test.tsx`             | ST-35, ST-38 using its established budgets/method                                 |
 
 Implementation tests cover observer write attribution, ref registry cleanup, stable handler
 identity, count-effect deduplication, resolver ordering, and controller teardown. Use

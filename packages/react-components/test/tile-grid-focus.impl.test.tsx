@@ -1,11 +1,13 @@
 import { FluentProvider, webLightTheme } from '@fluentui/react-components';
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import { StrictMode } from 'react';
-import type { ReactNode } from 'react';
+import { StrictMode, Suspense, startTransition, useRef, useState } from 'react';
+import type { Dispatch, ReactNode, SetStateAction } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { TileGrid } from '../src/components/TileGrid';
 import type { TileGridItemRenderArgs } from '../src/components/TileGrid';
 import { setElementSize } from './jsdomStubs';
+import { computeGeometry } from '../src/components/TileGrid/geometry';
+import { useTileGridFocus } from '../src/components/TileGrid/focus/useTileGridFocus';
 
 const items = ['a', 'b'];
 const getId = (item: string) => item;
@@ -45,6 +47,110 @@ async function measure(root = screen.getByRole('list')) {
 afterEach(() => vi.restoreAllMocks());
 
 describe('TileGrid focus internals', () => {
+  it('leaves native Tab available if a consumer disables the cached target during key dispatch', async () => {
+    render(
+      <FluentProvider theme={webLightTheme}>
+        <TileGrid
+          items={items}
+          getItemId={getId}
+          getItemLabel={getId}
+          ariaLabel="Focus internals"
+          renderItem={actions}
+          onKeyDownCapture={event => {
+            if (event.key === 'Tab')
+              screen.getByRole('button', { name: 'Action a' }).setAttribute('disabled', '');
+          }}
+        />
+      </FluentProvider>
+    );
+    await measure();
+    const wrapper = screen.getByRole('listitem', { name: 'a' });
+    act(() => wrapper.focus());
+    // The observer has not reconciled the just-disabled control yet. A failed
+    // focus attempt must not swallow the browser's subsequent native Tab action.
+    expect(fireEvent.keyDown(wrapper, { key: 'Tab' })).toBe(true);
+    expect(wrapper).toHaveFocus();
+  });
+
+  it('bounds the callback cache to mounted wrappers across abandoned transition renders', async () => {
+    const liveId = 'registry-live';
+    const ids = [liveId];
+    const geometry = computeGeometry({
+      items: ids,
+      getItemId: getId,
+      layout: 'fixed',
+      tileSize: 160,
+      tileAspectRatio: 1,
+      fallbackAspectRatio: 1,
+      gap: 8,
+      containerWidth: 328,
+    });
+    const neverReady = new Promise<void>(() => {});
+    const attempted: string[] = [];
+    let update: Dispatch<SetStateAction<string | undefined>> = () => {
+      throw new Error('Expected the mounted application setter');
+    };
+    // Spy without replacing Map behavior; the cache is identified by its live
+    // callback value, not by a production-only debug API.
+    const writes = vi.spyOn(Map.prototype, 'set');
+
+    /** Suspends after requesting a ref, before React can attach that attempted wrapper. */
+    function Registry({ attempt }: { attempt?: string }) {
+      const rootRef = useRef<HTMLDivElement>(null);
+      const focus = useTileGridFocus({
+        rootRef,
+        geometry,
+        geometryKey: 'fixed',
+        visibleItemRects: geometry.itemRects,
+        itemList: ids,
+        scrollResetKey: undefined,
+        selectedIds: new Set(),
+        isSelectable: () => true,
+      });
+      const liveRef = focus.getItemRef(liveId);
+      if (attempt) {
+        focus.getItemRef(attempt);
+        attempted.push(attempt);
+        throw neverReady;
+      }
+      return (
+        <div ref={rootRef}>
+          <div ref={liveRef} data-registry-wrapper="">
+            Mounted
+          </div>
+        </div>
+      );
+    }
+
+    /** A recovery update commits the old visible tree between aborted attempts. */
+    function App() {
+      const [attempt, setAttempt] = useState<string>();
+      update = setAttempt;
+      return (
+        <Suspense fallback={<span>Pending</span>}>
+          <Registry attempt={attempt} />
+        </Suspense>
+      );
+    }
+
+    const view = render(<App />);
+    const index = writes.mock.calls.findIndex(
+      ([key, value]) => key === liveId && typeof value === 'function'
+    );
+    const cache: unknown = writes.mock.contexts[index];
+    if (!(cache instanceof Map)) throw new Error('Expected the mounted callback cache');
+    for (let index = 0; index < 20; index++) {
+      const id = `registry-abandoned-${index}`;
+      await act(async () => startTransition(() => update(id)));
+      expect(attempted).toContain(id);
+      await act(async () => update(undefined));
+    }
+    expect(view.container.querySelectorAll('[data-registry-wrapper]')).toHaveLength(1);
+    expect(cache.size).toBe(1);
+    view.unmount();
+    expect(cache.size).toBe(0);
+  });
+
   it('drains a pending author change before restoring attributes on unmount', async () => {
     const view = render(grid());
     await measure();

@@ -63,7 +63,7 @@ function visible(rect: TileGridItemRect, root: HTMLElement): boolean {
  *
  * Only mounted wrappers are registered. Offscreen keyboard requests use cached
  * geometry; connected overscan targets focus immediately after scrolling, while
- * absent targets complete on registration only if the grid still owns focus.
+ * absent targets complete after registration and post-anchor layout validation.
  */
 export function useTileGridFocus(input: TileGridFocusInput): TileGridFocusState {
   const live = useRef(input);
@@ -123,11 +123,10 @@ export function useTileGridFocus(input: TileGridFocusInput): TileGridFocusState 
     if (existing) return existing;
     const callback: RefCallback<HTMLDivElement> = node => {
       if (node) {
+        // Abandoned renders never attach. Cache only committed refs so retained
+        // callbacks stay proportional to mounted wrappers, not attempted IDs.
+        callbacks.current.set(id, callback);
         wrappers.current.set(id, node);
-        if (pending.current === id && held.current && mounted.current) {
-          pending.current = undefined;
-          node.focus({ preventScroll: true });
-        }
       } else {
         const oldNode = wrappers.current.get(id);
         const root = live.current.rootRef.current;
@@ -150,7 +149,6 @@ export function useTileGridFocus(input: TileGridFocusInput): TileGridFocusState 
         if (callbacks.current.get(id) === callback) callbacks.current.delete(id);
       }
     };
-    callbacks.current.set(id, callback);
     return callback;
   }, []);
 
@@ -158,7 +156,7 @@ export function useTileGridFocus(input: TileGridFocusInput): TileGridFocusState 
     event => {
       live.current.onFocus?.(event);
       const root = event.currentTarget;
-      if (!root.contains(event.target)) return;
+      if (!root.contains(event.target) || root.ownerDocument.activeElement !== event.target) return;
       held.current = true;
       nullBlur.current = false;
       focusEpoch.current++;
@@ -167,6 +165,7 @@ export function useTileGridFocus(input: TileGridFocusInput): TileGridFocusState 
       const wrapper = event.target.closest('[data-tile-grid-item]');
       const id = wrapper?.getAttribute('data-tile-grid-item');
       if (id != null && wrapper?.closest('[data-tile-grid-root]') === root) {
+        if (pending.current !== id) pending.current = undefined;
         initialized.current = true;
         activate(id);
         lastRect.current = live.current.visibleItemRects.find(rect => rect.id === id);
@@ -244,17 +243,61 @@ export function useTileGridFocus(input: TileGridFocusInput): TileGridFocusState 
       itemList: input.itemList,
       resetKey: input.scrollResetKey,
     };
-    const viewport = input.visibleItemRects
-      .filter(rect => visible(rect, root))
-      .sort((a, b) => a.index - b.index);
+    const recoveryChanged = reset || layoutChanged || old.itemList !== input.itemList;
+    // Anchor restoration has already updated scrollTop, but the virtualizer can
+    // still expose its previous window. Query cached geometry for recovery only;
+    // ordinary scroll renders continue to examine just the mounted window.
+    const viewport = recoveryChanged
+      ? input.geometry
+          .itemsInRange(root.scrollTop, root.scrollTop + root.clientHeight)
+          .flatMap(index => {
+            const rect = input.geometry.itemRects[index];
+            return rect ? [rect] : [];
+          })
+      : input.visibleItemRects
+          .filter(rect => visible(rect, root))
+          .sort((a, b) => a.index - b.index);
+    const oldId = active.current;
+    const remembered =
+      old.geometry === input.geometry &&
+      lastRect.current &&
+      lastRect.current.id === oldId &&
+      visible(lastRect.current, root)
+        ? lastRect.current
+        : undefined;
+    const currentRect =
+      (recoveryChanged ? input.geometry.itemRects : input.visibleItemRects).find(
+        rect => rect.id === oldId
+      ) ?? remembered;
+    const actual = root.ownerDocument.activeElement;
+    if (held.current && actual && actual !== root.ownerDocument.body && !root.contains(actual))
+      leave();
     if (reset) pending.current = undefined;
     if (pending.current !== undefined) {
-      if (input.geometry.offsetForItem(pending.current) !== undefined) return;
+      const id = pending.current;
+      const rect =
+        old.geometry === input.geometry && lastRect.current?.id === id
+          ? lastRect.current
+          : input.geometry.itemRects.find(item => item.id === id);
+      if (
+        id === active.current &&
+        rect &&
+        input.geometry.offsetForItem(id) !== undefined &&
+        visible(rect, root)
+      ) {
+        lastRect.current = rect;
+        const node = wrappers.current.get(id);
+        if (node?.isConnected) {
+          pending.current = undefined;
+          if (held.current) node.focus({ preventScroll: true });
+        } else if (held.current && actual !== root) {
+          root.focus({ preventScroll: true });
+        }
+        return;
+      }
       pending.current = undefined;
     }
 
-    const oldId = active.current;
-    const currentRect = input.visibleItemRects.find(rect => rect.id === oldId);
     const currentVisible = currentRect && visible(currentRect, root);
     let target = currentRect;
     if (!initialized.current && viewport.length) {
@@ -274,20 +317,17 @@ export function useTileGridFocus(input: TileGridFocusInput): TileGridFocusState 
             return distance(rect) < distance(best) ? rect : best;
           }, undefined)
         : (viewport.find(rect => input.isSelectable(rect.id)) ?? viewport[0]);
-    } else if (!currentRect || !wrappers.current.has(currentRect.id)) {
+    } else if (!currentRect || (!wrappers.current.has(currentRect.id) && !currentVisible)) {
       target = viewport.find(rect => input.isSelectable(rect.id)) ?? viewport[0];
     }
 
     const nextId = target?.id;
     if (nextId !== oldId) activate(nextId);
     if (target) lastRect.current = target;
-    const actual = root.ownerDocument.activeElement;
-    if (held.current && actual && actual !== root.ownerDocument.body && !root.contains(actual)) {
-      leave();
-      return;
-    }
+    const targetNode = nextId === undefined ? root : wrappers.current.get(nextId);
+    if (target && !targetNode?.isConnected && visible(target, root)) pending.current = target.id;
     if (held.current && (nextId !== oldId || actual === root)) {
-      (nextId === undefined ? root : wrappers.current.get(nextId))?.focus({ preventScroll: true });
+      (targetNode ?? root).focus({ preventScroll: true });
     } else {
       recoverFocus();
     }

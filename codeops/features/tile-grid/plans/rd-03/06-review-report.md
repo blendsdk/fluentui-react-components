@@ -42,3 +42,56 @@ The guard now uses native `label.control` association. Full fix verification pas
 10.50/6.10/10.20/22.70ms for fixed/masonry/justified/mosaic; mounted counts 64/72/50/45;
 pure selection p95 0.40ms; scroll p95 16.80ms (50ms regression guard). No thresholds changed.
 Architecture documentation automation is not opted in; no techdocs hook applies.
+
+## Phase 2 — Navigation, Focus, Filtering, and Zoom
+
+**Baseline tree:** `3c098ae509ae38134d58c5ea9d249f8132a54f98`.
+**Scope:** Phase 2 task paths, the existing test cleanup correction under AR-21, the native target
+guard correction under AR-22, and plan evidence. Strict scope; approved mounted-local focus helper.
+
+| Check                     | Evidence                                                                                                                                                                                                       |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Specification-first       | 44 navigation cases initially could not import the planned helper; 46 DOM behavior failures / 12 baseline passes; 25 Chromium red cases. All 102 new unit and 25 native cases now pass unchanged.              |
+| Full verification         | `pnpm verify`: 720 unit tests pass.                                                                                                                                                                            |
+| Browser regression        | Full Chromium suite: 43 tests pass, including real Tab/radio traversal, portals, virtualized removal, pending focus, zero-width entry, and reset ownership.                                                    |
+| Performance               | 11 tests pass. Geometry p95 fixed 9.30ms, masonry 33.80ms, justified 13.00ms, mosaic 45.60ms (<200ms). Mounted counts 64/72/50/45 (<120). Pure selection p95 0.40ms (<16ms); scroll p95 16.70ms (<50ms guard). |
+| Correctness/API/standards | `ses_e9eae50d2ffeTEMVzkbkdyMT46`: RV-002/RV-003 reproduced, corrected under AR-23, and confirmed resolved in the one scoped re-review.                                                                         |
+| Performance audit         | `ses_e9eadf3c4ffeY6MWXZ6z4e7ov6`: PE-001 callback lifetime issue corrected and confirmed resolved; no new performance finding.                                                                                 |
+
+Review packets include AR-13's React/observer-write, author-intent, native radio, reverse-entry,
+removal and app-owned-portal risks. No new security profile is activated; base review and the
+existing hostile-ID/text cases cover the client-only surface. Firefox/WebKit remain final-matrix
+obligations. No performance threshold or immutable Phase 2 assertion changed.
+
+### Phase 2 Findings and Resolution
+
+| Finding | Evidence                                                                                                                                                                                                                                                | Bounded correction candidates                                                                                                                |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| RV-002  | On a 328×360 fixed grid at scrollTop 3360, focusing tile-41 then changing size 160→200 correctly scrolls to 13440 but moves focus to tile-40 although tile-41 remains visible. Recovery consumes layout change before the final mounted window arrives. | Resolve from cached final-viewport geometry and retain a pending mounted target, or retain layout-recovery intent until the viewport mounts. |
+| RV-003  | Closed-details content can be incorrectly classified from tabIndex alone and trap Tab. Removing a managed link's href also leaves an invalid native target.                                                                                             | Check native focus semantics and closed-details visibility within mounted content; do not consume traversal when focus fails.                |
+| PE-001  | getItemRef caches during render, so discarded Suspense/transition attempts never detach and remain cached.                                                                                                                                              | Cache callbacks only on ref attachment, retaining existing detach cleanup.                                                                   |
+
+The major findings block phase completion. A blind technical challenger compares mechanisms within
+the approved helper scope. Independent regressions precede fixes; the one fix-scoped re-review
+follows green verification. No new framework, public API, or risk waiver is proposed.
+
+PE-001 now has a real React Suspense/transition internal regression: 20 abandoned attempts retain
+21 cached callbacks for one mounted wrapper before the correction. The test spies on actual Map
+operations without replacing their behavior and confirms unmount cleanup separately.
+
+Blind challenger `ses_e9e99e064ffePC2pT3VXf8bUP8` converged on cached final-viewport recovery,
+post-anchor guarded completion, author-aware native eligibility with successful-focus checks,
+and attachment-only callback caching. Runtime AR-23 records delegated resolution. The three
+independent browser regressions failed before these corrections and now pass alongside all
+25 original native focus cases. The abandoned-render regression also passes. Additional pending
+supersession variants are being checked before the full fix gate and scoped re-review.
+
+**Phase 2 closure:** Passed. All five independent native recovery/traversal regressions pass;
+the two pending-supersession variants were justified baseline passes after the fix. Full gates:
+722 unit / 48 Chromium / 11 performance tests. Final geometry p95 8.90/6.20/11.90/25.50ms,
+mounted counts 64/72/50/45, pure selection p95 0.40ms, scroll p95 16.70ms (<50ms guard).
+The one fix-scoped correctness re-review confirms RV-002/RV-003 fixed with no direct remaining
+major finding; the performance re-review confirms PE-001 fixed with no new performance finding.
+Both continued independent sessions are identified above. No threshold changed or risk waived.
+Architecture documentation automation remains opted out. Temporary browser attachments were
+removed; final execution cleanup removes this phase's captured logs and review diffs.

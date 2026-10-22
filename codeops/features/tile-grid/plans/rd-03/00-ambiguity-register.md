@@ -1,7 +1,7 @@
 ## Ambiguity Register: TileGrid RD-03
 
-> **Status**: ✅ GATE PASSED — all 22 items resolved, including seven runtime decisions
-> **Last Updated**: 2026-10-22 03:45
+> **Status**: ✅ GATE PASSED — all 23 items resolved, including eight runtime decisions
+> **Last Updated**: 2026-10-22 04:42
 > **CodeOps Artifact Schema**: 1
 
 ## Planning Boundaries
@@ -342,6 +342,41 @@ so no extra state or lookup is needed.
 **Hardening:** In-context cross-realm type-check review; the direct regression precedes the fix.
 **Policy version:** 1. **Root invocation ID:** `rd03-20261022-0057`.
 **Reopen triggers:** Cross-document interaction regressions or loss of ordinary root-document behavior.
+
+### Runtime AR-23 — Focus Review Corrections
+
+**Authority:** AI — delegated by `--auto-design`.
+**Eligibility:** Necessary internal corrections to approved visible-focus preservation, native
+control traversal, and mounted-bounded registration. No product rule, public API, dependency,
+global registry, or additional support layer.
+**Objective:** Resolve RV-002/RV-003 without scroll reversal or focus theft, and keep PE-001's
+callback retention bounded by mounted wrappers.
+**Evidence:** Independent Chromium probes and three independently authored browser regressions
+reproduce visible tile-41 losing focus after scrolled zoom, hidden closed-details content trapping
+Tab, and a link retaining focusability after href removal. A real Suspense/transition internal
+regression retains 21 callbacks with one mounted wrapper after 20 abandoned renders.
+**Decision:** Resolve layout/reset/data recovery from cached geometry and the final post-anchor
+viewport; preserve the chosen ID through the existing pending mechanism. Validate and finish
+pending focus in the post-anchor layout effect, not ref attachment. Require current intent,
+membership, visibility, connection, and physical ownership; newer inline focus supersedes older
+requests. Native eligibility uses author-aware element semantics and all closed-details ancestors;
+consume Tab only after a confirmed focus transfer, respecting consumer redirection. Cache wrapper
+callbacks only on attachment, with the existing identity-aware detach cleanup.
+**Rejected alternatives:** Waiting for mounted-window readiness adds coordination without a
+reliable readiness signal; DOM rectangle probes cannot establish bare-anchor semantics and
+exploratory focus during reconciliation causes unwanted events; post-commit cache pruning can
+leave abandoned entries indefinitely when no later commit occurs.
+**Strongest counterargument:** Recovery adds a cached-geometry pass; restrict it to recovery
+transitions. Explicit native eligibility may miss engine-specific details; real-browser regression
+coverage and the failed-focus guard prevent the observed trap without pretending universal coverage.
+**Confidence:** High for geometry/cache mechanisms; medium-high for native eligibility until the
+matrix verifies. No risk is waived; failures reopen the gate.
+**Hardening:** Blind challenger `ses_e9e99e064ffePC2pT3VXf8bUP8` converged on all three mechanisms
+and classified them as component-local corrections within AR-13. This is the second/final fresh
+challenger context in the invocation. Existing reviewer performs the one fix-scoped re-review.
+**Policy version:** 1. **Root invocation ID:** `rd03-20261022-0057`.
+**Reopen triggers:** Incorrect final-viewport recovery, obsolete pending focus, native traversal
+regressions, or retained unattached callbacks.
 
 The user accepted all nine major recommendations, then selected **Apply and re-scan** for the
 three minor corrections and the documented singleton-radio exception. The separate

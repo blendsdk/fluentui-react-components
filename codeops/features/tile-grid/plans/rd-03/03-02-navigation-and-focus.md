@@ -52,6 +52,17 @@ Intentional focus movement outside the grid also invalidates a pending navigatio
 ref attachment must not reclaim focus after that departure. Offscreen overscan targets use their
 existing connected refs rather than waiting for a new attachment (preflight PF-004).
 
+For layout/reset/data recovery, derive visibility from cached geometry and the post-anchor actual
+viewport, even when the virtualizer still exposes its previous mounted window. Preserve a visible
+active ID through that gap. Reuse the existing pending mechanism for a chosen target that has not
+mounted, with the root as a temporary physical focus bridge. Ref attachment registers nodes only;
+post-anchor layout reconciliation validates current intent, membership, visibility, connection,
+and focus ownership before completing a pending request. New inline focus supersedes an older
+request. Recovery never scrolls to force an obsolete target back into view (runtime AR-23).
+
+Callback refs enter their cache only when attached; abandoned renders must not retain attempted
+item IDs. Stable mounted callbacks and identity-aware detach cleanup remain unchanged (AR-23).
+
 ## Tab Order in Custom Content
 
 `focus/useTileGridTabOrder.ts` implements the exact AR-13 contract. Scope it to registered mounted
@@ -65,6 +76,14 @@ Maintain each consumer element's author tabindex (including absence) separately 
 managed value. Discover native controls, links with `href`, editable nodes, and explicit tabindex
 elements through fixed selectors. Preserve author `-1`; positive values become zero when enabled
 so active controls follow DOM order. Respect disabled/hidden state and existing native focusability.
+
+Without an authored tabindex, classify actual native semantics rather than trusting the DOM
+tabIndex getter: a link needs href, hidden inputs are excluded, and a native summary must be the
+first direct summary. Exclude descendants of every closed details ancestor except its first summary
+and that summary's descendants. Observe type/controls as well as href/open when those attributes
+affect eligibility. At explicit Tab boundaries, confirm a real focus transfer before consuming the
+key; unsuccessful focus leaves native traversal available, and consumer redirection is respected
+(runtime AR-23).
 
 Drain queued external attribute records before computing current author intent. Disconnect the
 local observer for the manager's own synchronous writes and immediately reconnect. Reconcile on
