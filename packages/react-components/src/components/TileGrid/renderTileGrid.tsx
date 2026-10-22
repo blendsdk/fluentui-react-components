@@ -65,6 +65,25 @@ export function renderTileGrid<T>(state: TileGridState<T>): ReactElement {
             )}
           </div>
         )}
+        {state.marqueeRect && (
+          <div
+            aria-hidden="true"
+            className={classes.marqueeCanvas}
+            style={{ height: state.geometry.totalHeight }}
+          >
+            <div
+              data-tile-grid-marquee=""
+              aria-hidden="true"
+              className={classes.marquee}
+              style={{
+                left: state.marqueeRect.x,
+                top: state.marqueeRect.y,
+                width: state.marqueeRect.width,
+                height: state.marqueeRect.height,
+              }}
+            />
+          </div>
+        )}
       </div>
       <div role="status" aria-live="polite" aria-atomic="true" className={classes.status}>
         {state.selectionAnnouncement}

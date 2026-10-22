@@ -50,6 +50,14 @@ export interface MarqueeSelectionOptions {
   onCancel?(preSelection: ReadonlySet<string>): void;
   /** Receives changes to the preview set only. */
   onPreview?(preview: ReadonlySet<string>): void;
+  /** Receives independent rectangle snapshots, including null when the gesture ends. */
+  onRectChange?(rect: MarqueeRect | null): void;
+  /** Resolves complete final membership once at active release, using cached geometry. */
+  resolveFinalSelection?(
+    rect: MarqueeRect,
+    initialSelection: ReadonlySet<string>,
+    additive: boolean
+  ): ReadonlySet<string>;
   /** Distance from an edge that starts auto-scroll. Defaults to 24. */
   edgeThreshold?: number;
   /** Maximum auto-scroll distance per frame. Defaults to 20. */

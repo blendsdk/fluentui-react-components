@@ -10,6 +10,8 @@ import { useSelectionAnnouncement } from './selection/useSelectionAnnouncement';
 import { useTileGridFocus } from './focus/useTileGridFocus';
 import type { TileGridFocusState } from './focus/useTileGridFocus';
 import { useTileGridTabOrder } from './focus/useTileGridTabOrder';
+import { useTileGridMarquee } from './marquee/useTileGridMarquee';
+import type { MarqueeRect } from './marquee/types';
 import { useTileGridStyles } from './useTileGridStyles.styles';
 import { useTileGridVirtualizer } from './virtualization/useTileGridVirtualizer';
 import { useAnchorPreservation } from './virtualization/useAnchorPreservation';
@@ -76,6 +78,8 @@ export interface TileGridState<T> {
   selectionAnnouncement: string;
   /** Logical entry, physical ownership, and mounted wrapper registration. */
   focus: TileGridFocusState;
+  /** Transient background-gesture rectangle in cached content coordinates. */
+  marqueeRect: MarqueeRect | null;
   /** Selects every current item in multiselect mode. */
   selectAll: () => void;
   /** Clears every selected ID, including hidden IDs. */
@@ -240,6 +244,19 @@ export function useTileGrid<T>(props: TileGridProps<T>): TileGridState<T> {
     strings?.selectionCount
   );
 
+  const marquee = useTileGridMarquee({
+    rootRef,
+    enabled: enableMarquee && selection.mode === 'multiselect',
+    geometry,
+    visibleItemRects,
+    items: normalized.items,
+    selection,
+    selectedIds,
+    canSelect: isItemSelectable,
+    isSelectable,
+    isDisabled,
+    rootProps,
+  });
   const focus = useTileGridFocus({
     rootRef,
     geometry,
@@ -269,6 +286,7 @@ export function useTileGrid<T>(props: TileGridProps<T>): TileGridState<T> {
     rootProps,
     navigate: focus.navigate,
     handleInlineKey,
+    handleMarqueeKey: marquee.handleKeyDown,
     zoomable,
     tileSize: resolvedTileSize,
     minTileSize,
@@ -373,6 +391,7 @@ export function useTileGrid<T>(props: TileGridProps<T>): TileGridState<T> {
     rootRef,
     rootProps: {
       ...rootProps,
+      ...marquee.handlers,
       ...interactionHandlers,
       onFocus: focus.onFocus,
       onBlur: focus.onBlur,
@@ -393,7 +412,7 @@ export function useTileGrid<T>(props: TileGridProps<T>): TileGridState<T> {
     scrollToItem,
     scrollToIndex,
     scrollToOffset,
-    isSelected: selection.isSelected,
+    isSelected: id => marquee.previewSelection?.has(id) ?? selection.isSelected(id),
     selectionMode: selection.mode,
     isSelectable: isItemSelectable,
     isDisabled: isItemDisabled,
@@ -401,6 +420,7 @@ export function useTileGrid<T>(props: TileGridProps<T>): TileGridState<T> {
     radioName,
     selectionAnnouncement,
     focus,
+    marqueeRect: marquee.rect,
     clearSelection,
     scrollToSelected,
   };

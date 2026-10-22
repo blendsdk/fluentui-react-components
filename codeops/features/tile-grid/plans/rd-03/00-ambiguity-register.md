@@ -1,7 +1,7 @@
 ## Ambiguity Register: TileGrid RD-03
 
-> **Status**: ✅ GATE PASSED — all 23 items resolved, including eight runtime decisions
-> **Last Updated**: 2026-10-22 04:42
+> **Status**: ✅ GATE PASSED — all 24 items resolved, including nine runtime decisions
+> **Last Updated**: 2026-10-22 06:19
 > **CodeOps Artifact Schema**: 1
 
 ## Planning Boundaries
@@ -377,6 +377,31 @@ challenger context in the invocation. Existing reviewer performs the one fix-sco
 **Policy version:** 1. **Root invocation ID:** `rd03-20261022-0057`.
 **Reopen triggers:** Incorrect final-viewport recovery, obsolete pending focus, native traversal
 regressions, or retained unattached callbacks.
+
+### Runtime AR-24 — Marquee Decoration Must Not Expand Scroll Extent
+
+**Authority:** AI — delegated by `--auto-design`.
+**Eligibility:** Necessary local rendering correction for existing canvas/auto-scroll boundaries;
+one decorative clipping element, no new subsystem, public API, dependency, or scope expansion.
+**Objective:** A pointer outside the viewport must not create scrollable space through its overlay.
+**Evidence:** A Chromium DOM probe with a 260px viewport and 160px content changed scrollHeight
+from 260 to 310 when an absolute rectangle extended to y=310; a clipped canvas restored 260.
+The host's existing scroll helper clamps against DOM scrollHeight, so an expanding overlay can
+keep moving that boundary. The same problem applies horizontally.
+**Decision:** Add an aria-hidden, pointer-transparent clipping container whose height follows cached
+content height with a 100% viewport minimum and whose width is 100%. Keep the single marked inner
+rectangle's exact content coordinates and token styling. Add an independent native boundary
+regression before changing the renderer.
+**Rejected alternatives:** Capping only controller scroll leaves invented native scrollbars and
+manual scroll space; clamping the rectangle itself changes its logical coordinates and border
+presentation. Moving it outside the root changes component layout and the approved inspection boundary.
+**Strongest counterargument:** One extra DOM node exists during an active gesture. It has constant
+cost and removes overflow without per-frame geometry work or another event loop.
+**Confidence:** High on native overflow behavior; the component regression verifies the integration.
+**Hardening:** In-context native CSS probe and minimum-surface comparison; ordinary local rendering,
+not a material support-layer escalation. No risk is waived.
+**Policy version:** 1. **Root invocation ID:** `rd03-20261022-0057`.
+**Reopen triggers:** Changed scroll extent, altered inner rectangle coordinates, or viewport clipping regressions.
 
 The user accepted all nine major recommendations, then selected **Apply and re-scan** for the
 three minor corrections and the documented singleton-radio exception. The separate

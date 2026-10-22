@@ -36,6 +36,8 @@ export function createMarqueeController({
   onCommit,
   onCancel,
   onPreview,
+  onRectChange,
+  resolveFinalSelection,
   activationDistance = 4,
   edgeThreshold = 24,
   maxScrollSpeed = 20,
@@ -59,9 +61,27 @@ export function createMarqueeController({
   let frameHandle: number | null = null;
   let captured = false;
 
-  const releaseCapture = (): void => {
+  /** Rectangle presentation changes independently from the selected hit set. */
+  const setRect = (next: MarqueeRect | null): void => {
     if (
-      captured &&
+      rect === next ||
+      (rect &&
+        next &&
+        rect.x === next.x &&
+        rect.y === next.y &&
+        rect.width === next.width &&
+        rect.height === next.height)
+    )
+      return;
+    rect = next;
+    onRectChange?.(next ? { ...next } : null);
+  };
+
+  const releaseCapture = (): void => {
+    const wasCaptured = captured;
+    captured = false;
+    if (
+      wasCaptured &&
       pointerCaptureTarget &&
       typeof pointerCaptureTarget.releasePointerCapture === 'function'
     ) {
@@ -71,8 +91,6 @@ export function createMarqueeController({
         // Capture can already be gone; releasing is best-effort.
       }
     }
-
-    captured = false;
   };
 
   const stopFrames = (): void => {
@@ -97,9 +115,10 @@ export function createMarqueeController({
     clientY: number,
     bounds = containerBounds()
   ): { x: number; y: number } => {
+    const root = geometry.getScrollContainer();
     return {
-      x: clientX - (bounds?.left ?? 0),
-      y: clientY - (bounds?.top ?? 0) + geometry.getScrollOffset(),
+      x: clientX - (bounds?.left ?? 0) - (root?.clientLeft ?? 0),
+      y: clientY - (bounds?.top ?? 0) - (root?.clientTop ?? 0) + geometry.getScrollOffset(),
     };
   };
 
@@ -143,14 +162,15 @@ export function createMarqueeController({
     bounds = containerBounds()
   ): void => {
     const current = contentPoint(clientX, clientY, bounds);
-    rect = normalizeRect(startContentX, startContentY, current.x, current.y);
+    const nextRect = normalizeRect(startContentX, startContentY, current.x, current.y);
+    setRect(nextRect);
 
     const hits = new Set<string>();
 
     for (const id of geometry.getVisibleItemIds()) {
       const itemRect = geometry.getItemRect(id);
 
-      if (itemRect && isSelectable(id) && rectsIntersect(itemRect, rect)) {
+      if (itemRect && isSelectable(id) && rectsIntersect(itemRect, nextRect)) {
         hits.add(id);
       }
     }
@@ -233,11 +253,14 @@ export function createMarqueeController({
 
     phase = 'cancelled';
     stopFrames();
-    rect = null;
     preview = new Set(preSelection);
     lastHits = EMPTY_SELECTION;
-    onCancel?.(new Set(preSelection));
-    releaseCapture();
+    try {
+      setRect(null);
+      onCancel?.(new Set(preSelection));
+    } finally {
+      releaseCapture();
+    }
   };
 
   return {
@@ -258,7 +281,7 @@ export function createMarqueeController({
       preSelection = new Set(getSelectedIds());
       preview = additive ? new Set(preSelection) : new Set<string>();
       lastHits = EMPTY_SELECTION;
-      rect = null;
+      setRect(null);
       phase = 'pending';
 
       const bounds = containerBounds();
@@ -311,29 +334,45 @@ export function createMarqueeController({
     },
 
     handlePointerUp(event: PointerLikeEvent): void {
-      if (event.pointerId !== pointerId) {
+      if (event.pointerId !== pointerId || (phase !== 'pending' && phase !== 'active')) {
         return;
       }
 
+      // Release can be the first sample beyond the threshold, or differ from
+      // the last move. Sample it without scheduling another auto-scroll frame.
+      if (
+        phase === 'pending' &&
+        Math.hypot(event.clientX - startClientX, event.clientY - startClientY) >= activationDistance
+      ) {
+        phase = 'active';
+      }
       if (phase === 'pending') {
         phase = 'idle';
         stopFrames();
-        rect = null;
+        setRect(null);
         preview = new Set<string>();
         releaseCapture();
         return;
       }
 
-      if (phase !== 'active') {
-        return;
-      }
-
-      const finalSelection = new Set(preview);
+      updateFromPointer(event.clientX, event.clientY);
+      const finalRect = rect;
       phase = 'committed';
       stopFrames();
-      rect = null;
-      onCommit(finalSelection);
-      releaseCapture();
+      try {
+        const finalSelection =
+          resolveFinalSelection && finalRect
+            ? resolveFinalSelection({ ...finalRect }, preSelection, additive)
+            : new Set(preview);
+        setRect(null);
+        onCommit(finalSelection);
+      } finally {
+        try {
+          setRect(null);
+        } finally {
+          releaseCapture();
+        }
+      }
     },
 
     handlePointerCancel(event: PointerLikeEvent): void {
@@ -372,9 +411,14 @@ export function createMarqueeController({
     dispose(): void {
       phase = 'idle';
       stopFrames();
-      rect = null;
       preview = new Set<string>();
-      releaseCapture();
+      preSelection = EMPTY_SELECTION;
+      lastHits = EMPTY_SELECTION;
+      try {
+        setRect(null);
+      } finally {
+        releaseCapture();
+      }
     },
   };
 }

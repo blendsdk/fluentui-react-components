@@ -75,6 +75,11 @@ mouse/pen background gesture.
 Pointer move/up/cancel/lost-capture events must belong to the active pointer. Escape cancels before
 the ordinary focus Escape path. The controller's terminal guard owns pointer-up/capture-loss ordering.
 Overlay nodes are `aria-hidden`, have `pointer-events:none`, and use token stroke/fill colors.
+The single overlay uses `data-tile-grid-marquee=""`, following the existing item/content marker
+convention, so DOM tests can inspect its rectangle without giving decorative content an accessible role.
+Clip that rectangle inside a pointer-transparent decorative canvas: cached content height with a
+100% viewport minimum, and 100% width. The inner rectangle keeps its exact coordinates; its
+overflow must never enlarge native scroll extent or create extra auto-scroll range (runtime AR-24).
 
 An accepted gesture does not acquire keyboard focus. While pending or active, attach one bubbling
 `keydown` listener to the root's `ownerDocument` so Escape also arrives when a search field outside

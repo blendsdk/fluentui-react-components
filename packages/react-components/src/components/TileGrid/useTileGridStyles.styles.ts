@@ -6,7 +6,7 @@ const focusOutline = {
   outlineOffset: `calc(-1 * ${tokens.strokeWidthThick})`,
 };
 
-/** Griffel styles for the TileGrid scroll container and item wrappers. */
+/** Griffel styles for grid layout, focus, selection controls, and the decorative marquee. */
 export const useTileGridStyles = makeStyles({
   root: {
     position: 'relative',
@@ -41,6 +41,28 @@ export const useTileGridStyles = makeStyles({
     backgroundColor: tokens.colorNeutralBackground1,
     borderRadius: tokens.borderRadiusMedium,
     // Place the selection surface above application content without a portal.
+    zIndex: 1,
+  },
+  marquee: {
+    position: 'absolute',
+    pointerEvents: 'none',
+    boxSizing: 'border-box',
+    border: `${tokens.strokeWidthThin} solid ${tokens.colorBrandStroke1}`,
+    backgroundColor: tokens.colorNeutralStencil1Alpha,
+    // Draw the translucent rectangle over tile content without intercepting input.
+    zIndex: 1,
+    '@media (forced-colors: active)': { backgroundColor: 'transparent' },
+  },
+  // The rectangle may extend beyond content while capture follows an outside
+  // pointer. Clip its paint so it cannot enlarge the very scroll range it drives.
+  marqueeCanvas: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    minHeight: '100%',
+    overflow: 'hidden',
+    pointerEvents: 'none',
     zIndex: 1,
   },
   content: {

@@ -1,8 +1,8 @@
 # Execution Plan: TileGrid RD-03
 
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-22 04:55
-> **Progress**: 27/47 tasks (57%)
+> **Last Updated**: 2026-10-22 06:30
+> **Progress**: 34/47 tasks (72%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -139,7 +139,9 @@ verified tasks retain per-task commits/pushes.
 
 ## Phase 3: Mounted Marquee
 
-> **Phase baseline tree**: Recorded by exec-plan at phase start.
+> **Phase baseline tree**: `5e54aec635e969d00092afa1dd60089680c6aa78`
+> **Scope mode**: strict
+> **Expected modification set**: Phase 3 task paths under `packages/react-components/`, existing controller/types/intersection helpers, and this plan's execution/decision/review evidence. Existing geometry and one committed selection store remain authoritative; no new input framework.
 > **Lenses**: concurrency, perf
 > **Risk tags**: performance-critical
 > **Reasoning**: high — pointer terminal ordering and controlled updates must commit once
@@ -148,19 +150,19 @@ verified tasks retain per-task commits/pushes.
 
 **Reference:** 03-03; AR-10–AR-12; 07 ST-26–ST-34.
 
-- [ ] 3.1.1 [spec-author] Add host/preview/commit/cancel oracles with test-local stateful capture and active-preview preconditions — `test/tile-grid-marquee-integration.spec.test.tsx`; ST-26–ST-34, including preview/reset silence deferred from Phase 1.
-- [ ] 3.1.2 [spec-author] Add real capture, auto-scroll, and final-rectangle browser oracles — `test/browser/tile-grid-marquee.browser.test.tsx`; ST-26–ST-34.
-- [ ] 3.1.3 Run targeted specs and record expected red failures; existing controller unit behavior must still pass.
+- [x] 3.1.1 [spec-author] Add host/preview/commit/cancel oracles with test-local stateful capture and active-preview preconditions — `test/tile-grid-marquee-integration.spec.test.tsx`; ST-26–ST-34, including preview/reset silence deferred from Phase 1. ✅ (completed: 2026-10-22 06:30; all 43 cases pass unchanged after 42 red / 1 baseline pass)
+- [x] 3.1.2 [spec-author] Add real capture, auto-scroll, and final-rectangle browser oracles — `test/browser/tile-grid-marquee.browser.test.tsx`; ST-26–ST-34. ✅ (completed: 2026-10-22 06:30; all 31 native cases pass; original 22 red / 8 baseline passes plus AR-24 red boundary regression; mechanical typed getter preserved all expectations)
+- [x] 3.1.3 Run targeted specs and record expected red failures; existing controller unit behavior must still pass. ✅ (completed: 2026-10-22 06:30; independent red evidence recorded; all old controller oracles and new mounted oracles now green)
 
 **Deliverable:** Immutable marquee integration oracles and red evidence.
 **Verify:** Targeted unit/browser cases; expected red for the unmounted integration.
 
 ### Session 3.2 — Implementation
 
-- [ ] 3.2.1 Extend rectangle notifications, border-aware coordinates, release sampling, and optional terminal resolver — `src/components/TileGrid/marquee/types.ts`, `createMarqueeController.ts`; 03-03 Existing Controller, Mounted Host / Geometry and Selection Flow.
-- [ ] 3.2.2 Implement geometry port, bounded rectangle-derived preview, final reconciliation, cancellation, and gesture-scoped document Escape lifecycle — `src/components/TileGrid/marquee/useTileGridMarquee.ts`; 03-03 Geometry / Event Ownership / Cleanup.
-- [ ] 3.2.3 Wire root pointer/Escape composition and token overlay rendering with duplicate-cancellation guards — `src/components/TileGrid/useTileGrid.ts`, `renderTileGrid.tsx`, `useTileGridStyles.styles.ts`; 03-03 Event Ownership.
-- [ ] 3.2.4 Run Phase 3 unit/browser oracles to green and preserve existing controller expectations.
+- [x] 3.2.1 Extend rectangle notifications, border-aware coordinates, release sampling, and optional terminal resolver — `src/components/TileGrid/marquee/types.ts`, `createMarqueeController.ts`; 03-03 Existing Controller, Mounted Host / Geometry and Selection Flow. ✅ (completed: 2026-10-22 06:30; existing controller contracts and full 765-test gate pass; documentation checked)
+- [x] 3.2.2 Implement geometry port, bounded rectangle-derived preview, final reconciliation, cancellation, and gesture-scoped document Escape lifecycle — `src/components/TileGrid/marquee/useTileGridMarquee.ts`; 03-03 Geometry / Event Ownership / Cleanup. ✅ (completed: 2026-10-22 06:30; captured native/unit gesture, cancellation, committed-source and final-rectangle oracles pass; documentation checked)
+- [x] 3.2.3 Wire root pointer/Escape composition and token overlay rendering with duplicate-cancellation guards — `src/components/TileGrid/useTileGrid.ts`, `renderTileGrid.tsx`, `useTileGridStyles.styles.ts`, `selection/useTileGridInteractions.ts` Escape composition; 03-03 Event Ownership. ✅ (completed: 2026-10-22 06:30; AR-24 canvas clipping preserves scroll extent and exact inner coordinates; all unit/browser gates pass)
+- [x] 3.2.4 Run Phase 3 unit/browser oracles to green and preserve existing controller expectations. ✅ (completed: 2026-10-22 06:30; full gate 765 unit / 79 Chromium tests; existing controller expectations unchanged and boundary regression green)
 
 **Deliverable:** Mounted marquee following ST-26–ST-34.
 **Verify:** Targeted green checks, then `pnpm verify && pnpm test:browser`.

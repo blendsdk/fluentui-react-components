@@ -33,6 +33,8 @@ export interface TileGridInteractionsInput<T> {
   navigate?: (id: string, key: TileGridNavigationKey) => string | undefined;
   /** Tab/Escape boundary handling for inline content and the root fallback. */
   handleInlineKey?: (event: KeyboardEvent<HTMLDivElement>) => boolean;
+  /** Gives an active pointer gesture first refusal on Escape after consumer cancellation. */
+  handleMarqueeKey?: (event: KeyboardEvent<HTMLDivElement>) => boolean;
   /** Enables controlled wrapper zoom; a size callback is also required. */
   zoomable?: boolean;
   /** Resolved current size used as the base for a request. */
@@ -150,7 +152,12 @@ export function useTileGridInteractions<T>(input: TileGridInteractionsInput<T>):
   const onKeyDown = useCallback<NonNullable<RootHandlers['onKeyDown']>>(event => {
     const current = live.current;
     current.rootProps.onKeyDown?.(event);
-    if (event.defaultPrevented || current.handleInlineKey?.(event)) return;
+    if (
+      event.defaultPrevented ||
+      current.handleMarqueeKey?.(event) ||
+      current.handleInlineKey?.(event)
+    )
+      return;
     const wrapper = findItem(event.currentTarget, event.target);
     const id = wrapper?.getAttribute('data-tile-grid-item');
     if (event.target !== wrapper || id == null || event.altKey) return;
