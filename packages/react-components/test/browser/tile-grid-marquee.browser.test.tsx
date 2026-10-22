@@ -1,7 +1,7 @@
 import { FluentProvider, webLightTheme } from '@fluentui/react-components';
 import { act, render, screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { userEvent } from 'vitest/browser';
+import { page, userEvent } from 'vitest/browser';
 import type { UserEventClickOptions } from 'vitest/browser';
 import { TileGrid } from '../../src/components/TileGrid';
 import type {
@@ -598,35 +598,41 @@ describe('TileGrid native marquee contract', () => {
   it(
     'keeps the native scroll extent finite while a captured marquee extends beyond both edges',
     async () => {
-      const changes = vi.fn();
-      const view = await mount({ defaultSelectedIds: [], onSelectionChange: changes });
-      const { root } = view;
-      const height = root.clientHeight;
-      const width = root.clientWidth;
-      expect(root.scrollHeight).toBe(height);
-      expect(root.scrollWidth).toBe(width);
-      await held(
-        view,
-        async id => {
-          expect(root.hasPointerCapture(id)).toBe(true);
-          await userEvent.hover(root, { position: { x: 800, y: 310 }, force: true });
-          await waitFor(() => expect(overlay(root)).toBeVisible());
-          await frames();
-          expect(root.hasPointerCapture(id)).toBe(true);
-          expect(view.events.up).toBeUndefined();
-          // Decoration must not manufacture scrollable space beyond the finite content canvas.
-          expect({
-            scrollTop: root.scrollTop,
-            scrollLeft: root.scrollLeft,
-            scrollHeight: root.scrollHeight,
-            scrollWidth: root.scrollWidth,
-          }).toEqual({ scrollTop: 0, scrollLeft: 0, scrollHeight: height, scrollWidth: width });
-        },
-        { position: { x: 100, y: 210 } }
-      );
-      for (const item of SMALL) selected(item.id, false);
-      expect(changes).not.toHaveBeenCalled();
-      expect(overlay(root)).toBeNull();
+      const previousViewport = { width: innerWidth, height: innerHeight };
+      await page.viewport(1280, 900);
+      try {
+        const changes = vi.fn();
+        const view = await mount({ defaultSelectedIds: [], onSelectionChange: changes });
+        const { root } = view;
+        const height = root.clientHeight;
+        const width = root.clientWidth;
+        expect(root.scrollHeight).toBe(height);
+        expect(root.scrollWidth).toBe(width);
+        await held(
+          view,
+          async id => {
+            expect(root.hasPointerCapture(id)).toBe(true);
+            await userEvent.hover(root, { position: { x: 800, y: 310 }, force: true });
+            await waitFor(() => expect(overlay(root)).toBeVisible());
+            await frames();
+            expect(root.hasPointerCapture(id)).toBe(true);
+            expect(view.events.up).toBeUndefined();
+            // Decoration must not manufacture scrollable space beyond the finite content canvas.
+            expect({
+              scrollTop: root.scrollTop,
+              scrollLeft: root.scrollLeft,
+              scrollHeight: root.scrollHeight,
+              scrollWidth: root.scrollWidth,
+            }).toEqual({ scrollTop: 0, scrollLeft: 0, scrollHeight: height, scrollWidth: width });
+          },
+          { position: { x: 100, y: 210 } }
+        );
+        for (const item of SMALL) selected(item.id, false);
+        expect(changes).not.toHaveBeenCalled();
+        expect(overlay(root)).toBeNull();
+      } finally {
+        await page.viewport(previousViewport.width, previousViewport.height);
+      }
     },
     TEST_TIMEOUT
   );

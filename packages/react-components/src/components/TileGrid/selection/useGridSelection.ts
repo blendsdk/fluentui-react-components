@@ -185,12 +185,14 @@ export function useGridSelection({
         return;
       }
 
-      if (modeRef.current === 'single') {
-        select(targetId);
+      if (!isSelectableRef.current(targetId)) {
         return;
       }
 
-      if (!isSelectableRef.current(targetId)) {
+      if (modeRef.current === 'single') {
+        // A range changes single membership but preserves the original anchor,
+        // just like a multiselect range. Only non-range actions replace it.
+        commit(selectOnlySelection(targetId));
         return;
       }
 
@@ -213,7 +215,7 @@ export function useGridSelection({
         )
       );
     },
-    [commit, select]
+    [commit]
   );
 
   const selectAll = useCallback(

@@ -1,8 +1,15 @@
-import { render, waitFor } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { FluentProvider, webLightTheme } from '@fluentui/react-components';
+import { act, render, waitFor, within } from '@testing-library/react';
+import { createRef } from 'react';
+import { describe, expect, it, vi } from 'vitest';
+import { userEvent } from 'vitest/browser';
 import { computeGeometry } from '../../src/components/TileGrid/geometry';
 import { toggleSelection } from '../../src/components/TileGrid/selection';
 import { TileGrid } from '../../src/components/TileGrid';
+import type {
+  TileGridHandle,
+  TileGridItemRenderArgs,
+} from '../../src/components/TileGrid/TileGrid.types';
 import { createTileGridFixture, type TileGridFixtureItem } from '../fixtures/tileGridFixture';
 
 /** Layouts exercised by every performance measurement. */
@@ -316,6 +323,164 @@ describe('TileGrid scripted scroll performance', () => {
       const p95 = nearestRank95(intervals);
       console.info(
         `[tile-grid perf] scroll frame p95: ${p95.toFixed(2)} ms ` +
+          `(60 fps target ${TARGET_FRAME_MS.toFixed(2)} ms, budget ${FRAME_BUDGET_MS} ms, ` +
+          `${intervals.length} intervals measured)`
+      );
+      expect(p95).toBeLessThan(FRAME_BUDGET_MS);
+    },
+    TEST_TIMEOUT_MS
+  );
+});
+
+describe('TileGrid controls-enabled window and content performance', () => {
+  it.each(LAYOUTS)(
+    'bounds the %s 20K window and isolates focus, toggle, select-all and clear content work',
+    async layout => {
+      const handle = createRef<TileGridHandle>();
+      const changes = vi.fn<(next: ReadonlySet<string>) => void>();
+      // A single stable callback lets the real content memoization decide which cells render.
+      const renderContent = vi.fn(
+        ({ item, selected }: TileGridItemRenderArgs<TileGridFixtureItem>) => (
+          <span data-selected={selected}>{item.label}</span>
+        )
+      );
+      const { getByRole } = render(
+        <FluentProvider theme={webLightTheme}>
+          <div style={{ width: CONTAINER_WIDTH, height: CONTAINER_HEIGHT }}>
+            <TileGrid
+              ref={handle}
+              items={items}
+              getItemId={getItemId}
+              getItemLabel={getItemLabel}
+              getItemAspectRatio={getItemAspectRatio}
+              getItemSpan={getItemSpan}
+              renderItem={renderContent}
+              layout={layout}
+              tileSize={TILE_SIZE}
+              gap={GAP}
+              selectionMode="multiselect"
+              onSelectionChange={changes}
+              ariaLabel={`controls-perf-${layout}`}
+            />
+          </div>
+        </FluentProvider>
+      );
+      const root = getByRole('list', { name: `controls-perf-${layout}` });
+      await waitFor(
+        () => expect(root.querySelectorAll(TILE_ITEM_SELECTOR).length).toBeGreaterThan(1),
+        {
+          timeout: WAIT_TIMEOUT_MS,
+        }
+      );
+      await act(async () => {
+        await new Promise<void>(resolve =>
+          requestAnimationFrame(() => requestAnimationFrame(() => resolve()))
+        );
+      });
+      const mounted = Array.from(root.querySelectorAll<HTMLElement>(TILE_ITEM_SELECTOR));
+      expect(mounted.length).toBeLessThan(120);
+      expect(within(root).getAllByRole('checkbox')).toHaveLength(mounted.length);
+      renderContent.mockClear();
+      await act(async () => mounted[0].focus({ preventScroll: true }));
+      expect(mounted[0]).toHaveFocus();
+      await userEvent.keyboard('{ArrowRight}');
+      const active = document.activeElement;
+      if (!(active instanceof HTMLElement)) throw new Error('Expected a focused tile wrapper');
+      expect(active).not.toBe(mounted[0]);
+      expect(root).toContainElement(active);
+      expect(active).toHaveAttribute('role', 'listitem');
+      expect(renderContent).not.toHaveBeenCalled();
+      expect(changes).not.toHaveBeenCalled();
+      const id = active.getAttribute('data-tile-grid-item');
+      expect(id).toBeTruthy();
+
+      // Native Space covers the mounted event/store/React path, without timing it as a pure transition.
+      await userEvent.keyboard(' ');
+      expect(changes).toHaveBeenCalledExactlyOnceWith(new Set([id]));
+      expect(renderContent).toHaveBeenCalledTimes(1);
+      expect(renderContent.mock.calls[0][0].item.id).toBe(id);
+      expect(renderContent.mock.calls[0][0].selected).toBe(true);
+      expect(within(active).getByRole('checkbox')).toBeChecked();
+      expect(handle.current).not.toBeNull();
+
+      await act(async () => handle.current?.selectAll());
+      expect(changes).toHaveBeenCalledTimes(2);
+      expect(changes.mock.calls[1][0].size).toBe(ITEM_COUNT);
+      expect(changes.mock.calls[1][0].has(items.at(-1)!.id)).toBe(true);
+      for (const input of within(root).getAllByRole('checkbox')) expect(input).toBeChecked();
+      expect(root.querySelectorAll('[data-selected="true"]')).toHaveLength(mounted.length);
+      await act(async () => handle.current?.selectAll());
+      expect(changes).toHaveBeenCalledTimes(2);
+
+      await act(async () => handle.current?.clearSelection());
+      expect(changes).toHaveBeenCalledTimes(3);
+      expect(changes.mock.calls[2][0]).toEqual(new Set());
+      for (const input of within(root).getAllByRole('checkbox')) expect(input).not.toBeChecked();
+      expect(root.querySelectorAll('[data-selected="true"]')).toHaveLength(0);
+      await act(async () => handle.current?.clearSelection());
+      expect(changes).toHaveBeenCalledTimes(3);
+      expect(root.querySelectorAll(TILE_ITEM_SELECTOR)).toHaveLength(mounted.length);
+      expect(mounted.length).toBeLessThan(120);
+      console.info(
+        `[tile-grid perf] ${layout} controls mounted: ${mounted.length}; focus content renders: 0; toggle content renders: 1`
+      );
+    },
+    TEST_TIMEOUT_MS
+  );
+
+  it(
+    'keeps the controls-enabled fixed 20K scroll within the established frame budget',
+    async () => {
+      const { getByRole } = render(
+        <FluentProvider theme={webLightTheme}>
+          <div style={{ width: CONTAINER_WIDTH, height: CONTAINER_HEIGHT }}>
+            <TileGrid
+              items={items}
+              getItemId={getItemId}
+              getItemLabel={getItemLabel}
+              getItemAspectRatio={getItemAspectRatio}
+              getItemSpan={getItemSpan}
+              renderItem={renderItem}
+              layout="fixed"
+              tileSize={TILE_SIZE}
+              gap={GAP}
+              selectionMode="multiselect"
+              ariaLabel="controls-perf-scroll"
+            />
+          </div>
+        </FluentProvider>
+      );
+      const root = getByRole('list', { name: 'controls-perf-scroll' });
+      const scrollRoot = await waitFor(
+        () => {
+          expect(root.querySelectorAll(TILE_ITEM_SELECTOR).length).toBeGreaterThan(0);
+          const candidate = findScrollRootOrNull(root);
+          if (!candidate)
+            throw new Error('The controls-enabled grid must have a real scroll range');
+          return candidate;
+        },
+        { timeout: WAIT_TIMEOUT_MS }
+      );
+      const firstMountedIndex = scrollRoot
+        .querySelector(TILE_ITEM_SELECTOR)
+        ?.getAttribute('data-index');
+      expect(within(root).getAllByRole('checkbox').length).toBeGreaterThan(0);
+      const intervals = await measureScrollFrameIntervals(
+        scrollRoot,
+        SCROLL_FRAMES,
+        SCROLL_STEP_PX
+      );
+      expect(intervals).toHaveLength(SCROLL_FRAMES);
+      expect(scrollRoot.scrollTop).toBeGreaterThan(0);
+      expect(scrollRoot.querySelector(TILE_ITEM_SELECTOR)?.getAttribute('data-index')).not.toBe(
+        firstMountedIndex
+      );
+      const mountedCount = scrollRoot.querySelectorAll(TILE_ITEM_SELECTOR).length;
+      expect(mountedCount).toBeLessThan(120);
+      expect(within(root).getAllByRole('checkbox')).toHaveLength(mountedCount);
+      const p95 = nearestRank95(intervals);
+      console.info(
+        `[tile-grid perf] controls scroll frame p95: ${p95.toFixed(2)} ms ` +
           `(60 fps target ${TARGET_FRAME_MS.toFixed(2)} ms, budget ${FRAME_BUDGET_MS} ms, ` +
           `${intervals.length} intervals measured)`
       );

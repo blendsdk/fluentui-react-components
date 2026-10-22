@@ -12,6 +12,7 @@ const meta: Meta<typeof TileGrid> = {
           'A measured tile grid with fixed, masonry, justified and mosaic layouts. The grid root',
           'is the scroll container; the application sizes its parent, owns the data and supplies',
           'the tile content through `renderItem`.',
+          'Selection controls, keyboard navigation, filtering persistence and optional marquee are available in this internal workbench. TileGrid remains unreleased until its composed contract is frozen.',
           '',
           '**Manual review checklist (run in a real browser):**',
           '',
@@ -37,4 +38,8 @@ export { Fixed, FixedColumns, Masonry, Justified, Mosaic } from './TileGridLayou
 export { DefaultEmpty, CustomMessage, CustomEmpty } from './TileGridEmpty.story';
 export { ControlledTileSize } from './TileGridControlledTileSize.story';
 export { Selection } from './TileGridSelection.story';
+export { KeyboardNavigation } from './TileGridKeyboardNavigation.story';
+export { InteractionModes } from './TileGridInteractionModes.story';
+export { MarqueeSelection } from './TileGridMarqueeSelection.story';
+export { FilteringAndZoom } from './TileGridFilteringAndZoom.story';
 export { TwentyThousandBenchmark } from './TileGridTwentyThousandBenchmark.story';

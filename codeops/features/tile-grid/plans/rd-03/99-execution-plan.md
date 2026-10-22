@@ -1,8 +1,8 @@
 # Execution Plan: TileGrid RD-03
 
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-22 08:04
-> **Progress**: 37/47 tasks (79%)
+> **Last Updated**: 2026-10-22 08:52
+> **Progress**: 44/47 tasks (94%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -179,7 +179,9 @@ verified tasks retain per-task commits/pushes.
 
 ## Phase 4: Integration, Stories, Documentation, and Final Gates
 
-> **Phase baseline tree**: Recorded by exec-plan at phase start.
+> **Phase baseline tree**: `74a453b75162fb6289e988afa27dc0b6c0796d85`
+> **Scope mode**: strict
+> **Expected modification set**: Phase 4 task paths under `packages/react-components/` (integration/browser/performance tests, stories, package README, and AR-26's bounded selection-store correction), this plan's evidence, and derived roadmap summaries. TileGrid package-root exports/declarations remain closed through RD-04/final freeze.
 > **Lenses**: api-surface, perf
 > **Risk tags**: performance-critical
 > **Reasoning**: high — cross-feature behavior must retain the 20K budget and release boundary
@@ -188,19 +190,19 @@ verified tasks retain per-task commits/pushes.
 
 **Reference:** 03-01–03-03; AR-2, AR-3, AR-14, runtime AR-26; 07 ST-35–ST-41 and ST-43.
 
-- [ ] 4.1.1 [spec-author] Add combined application-flow, release-boundary, and single-range anchor guards — `test/tile-grid-integration.spec.test.tsx`, `test/tile-grid-single-range.spec.test.tsx`; ST-36, ST-38–ST-39, ST-43.
-- [ ] 4.1.2 [spec-author] Add combined browser/native-control and performance oracles using existing infrastructure — `test/browser/tile-grid-interaction.browser.test.tsx`, `test/perf/tile-grid.perf.test.tsx`; browser ST-35–ST-41 and existing ST-35/ST-38 performance measurements.
-- [ ] 4.1.3 Run the new cases before further implementation; record red findings or justified passes from Phases 1–3. Never fabricate failures for already delivered behavior.
+- [x] 4.1.1 [spec-author] Add combined application-flow, release-boundary, and single-range anchor guards — `test/tile-grid-integration.spec.test.tsx`, `test/tile-grid-single-range.spec.test.tsx`; ST-36, ST-38–ST-39, ST-43. ✅ (completed: 2026-10-22 08:52; 7 baseline passes / 3 expected failures now green; full verify 791 tests)
+- [x] 4.1.2 [spec-author] Add combined browser/native-control and performance oracles using existing infrastructure — `test/browser/tile-grid-interaction.browser.test.tsx`, `test/perf/tile-grid.perf.test.tsx`; browser ST-35–ST-41 and existing ST-35/ST-38 performance measurements. ✅ (completed: 2026-10-22 08:52; 11 new cases pass in Chromium/Firefox; 16 performance cases pass; thresholds preserved)
+- [x] 4.1.3 Run the new cases before further implementation; record red findings or justified passes from Phases 1–3. Never fabricate failures for already delivered behavior. ✅ (completed: 2026-10-22 08:52; recorded 3 range-anchor failures and 7 unit / 11 browser / 5 performance baseline passes; full green verified)
 
 **Deliverable:** Cross-feature regression oracles and baseline red/pass evidence.
 **Verify:** Targeted unit/browser/performance cases.
 
 ### Session 4.2 — Integration and Documentation
 
-- [ ] 4.2.1 Add KeyboardNavigation and InteractionModes scenarios — `src/components/TileGrid/stories/TileGridKeyboardNavigation.story.tsx`, `TileGridInteractionModes.story.tsx`; 03-01–03-02.
-- [ ] 4.2.2 Add MarqueeSelection and FilteringAndZoom scenarios — `src/components/TileGrid/stories/TileGridMarqueeSelection.story.tsx`, `TileGridFilteringAndZoom.story.tsx`; 03-02–03-03.
-- [ ] 4.2.3 Register stories and document controls, keys, stable predicates, filtering, app-owned portals, and the accepted singleton-radio conformance exception — `src/components/TileGrid/stories/TileGrid.stories.tsx`, `README.md`; AR-3, AR-13–AR-15 and PF-013.
-- [ ] 4.2.4 Correct the single-mode range branch in `src/components/TileGrid/selection/useGridSelection.ts` to preserve its anchor (03-01, AR-26, ST-43), then run all new integration oracles to green. Record any other required bounded correction against its owning 03 specification before fixing it.
+- [x] 4.2.1 Add KeyboardNavigation and InteractionModes scenarios — `src/components/TileGrid/stories/TileGridKeyboardNavigation.story.tsx`, `TileGridInteractionModes.story.tsx`; 03-01–03-02. ✅ (completed: 2026-10-22 08:52; full verify and Storybook build pass; documentation checked)
+- [x] 4.2.2 Add MarqueeSelection and FilteringAndZoom scenarios — `src/components/TileGrid/stories/TileGridMarqueeSelection.story.tsx`, `TileGridFilteringAndZoom.story.tsx`; 03-02–03-03. ✅ (completed: 2026-10-22 08:52; full verify and Storybook build pass; stable predicates/selection demonstrated)
+- [x] 4.2.3 Register stories and document controls, keys, stable predicates, filtering, app-owned portals, and the accepted singleton-radio conformance exception — `src/components/TileGrid/stories/TileGrid.stories.tsx`, `README.md`; AR-3, AR-13–AR-15 and PF-013. ✅ (completed: 2026-10-22 08:52; four stories registered; current contract documented; full verify and Storybook pass)
+- [x] 4.2.4 Correct the single-mode range branch in `src/components/TileGrid/selection/useGridSelection.ts` to preserve its anchor (03-01, AR-26, ST-43), then run all new integration oracles to green. Calibrate existing Firefox matrix launch preferences and marquee viewport under AR-28 without changing expectations. ✅ (completed: 2026-10-22 08:52; 791 unit / 180 Chromium+Firefox tests pass; Storybook build passes; no expectations changed)
 
 **Deliverable:** Complete examples and documentation with the TileGrid unreleased marker retained.
 **Verify:** `pnpm verify && pnpm storybook:build` plus the new browser cases.

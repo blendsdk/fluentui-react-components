@@ -1,6 +1,6 @@
 ## Ambiguity Register: TileGrid RD-03
 
-> **Status**: ✅ GATE PASSED — all 27 items resolved, including twelve runtime decisions
+> **Status**: ✅ GATE PASSED — all 28 items resolved, including thirteen runtime decisions
 > **Last Updated**: 2026-10-22 07:50
 > **CodeOps Artifact Schema**: 1
 
@@ -468,6 +468,30 @@ that is precisely the already approved terminal-before-calling-out rule.
 **Hardening:** Independent finding plus in-context control-flow check; no complex mechanism or risk waiver.
 **Policy version:** 1. **Root invocation ID:** `rd03-20261022-0057`.
 **Reopen triggers:** Duplicate terminal callbacks, skipped final resolver, or release cleanup regressions.
+
+### Runtime AR-28 — Cross-Browser Input Fixture Calibration
+
+**Authority:** AI — delegated by `--auto-design`.
+**Eligibility:** Necessary test-input setup correction; all behavioral expectations remain unchanged.
+**Evidence:** Firefox passes 71/79 existing cases. Seven failures occur before the behavioral action:
+native wheel delta 3360 yields 324px in a 360px viewport (confirmed against plain DOM in Playwright),
+so fixtures never reach their required scroll position. The outside-marquee case runs in Vitest's
+414px viewport with a 664px root and an 800px pointer coordinate. Firefox leaves the tester iframe,
+so release never reaches the root. Instrumentation confirmed the active overlay and absent pointer-up.
+**Decision:** Use Firefox's existing `mousewheel.allow_scrolling_more_than_one_page` launch preference
+in the existing matrix configuration. Mozilla uses this same preference in web-platform tests
+([bug 1962355](https://bugzilla.mozilla.org/show_bug.cgi?id=1962355)); a plain-DOM probe confirms one
+native 1680px event now reaches 1680px. Repeated smaller wheel events were tried and rejected because
+their intermediate unmount recoveries change the scenario's focus target. Retain the original single
+native wheel event and all exact geometry/focus assertions. Give the outside-boundary test a 1280px browser
+viewport using the installed public page.viewport API and restore the previous size afterward.
+No synthetic wheel event, runtime scroll compensation, or assertion weakening.
+**Rejected alternatives:** Repeated inputs alter the recovery scenario. Changing component behavior to compensate for browser input scaling,
+loosening expected offsets, or ignoring Firefox would hide fixture defects and weaken the contract.
+**Confidence:** High; plain-DOM probe and event/viewport evidence identify both setup failures.
+**Hardening:** In-context environment diagnosis. Existing native event paths and runner are retained.
+**Policy version:** 1. **Root invocation ID:** `rd03-20261022-0057`.
+**Reopen triggers:** Failure after the required scroll/viewport preconditions are demonstrably met.
 
 The user accepted all nine major recommendations, then selected **Apply and re-scan** for the
 three minor corrections and the documented singleton-radio exception. The separate

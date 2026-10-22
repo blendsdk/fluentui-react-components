@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitest/config';
+import { playwright } from '@vitest/browser-playwright';
 import { browserTestConfig } from './vitest.browser.config';
 
 /**
@@ -15,7 +16,16 @@ export default defineConfig({
       ...browserTestConfig.test.browser,
       instances: [
         { browser: 'chromium' as const },
-        { browser: 'firefox' as const },
+        {
+          browser: 'firefox' as const,
+          // Match native pixel-wheel fixtures across engines. Firefox uses this
+          // same preference in web-platform tests to avoid per-event page caps.
+          provider: playwright({
+            launchOptions: {
+              firefoxUserPrefs: { 'mousewheel.allow_scrolling_more_than_one_page': true },
+            },
+          }),
+        },
         { browser: 'webkit' as const },
       ],
     },

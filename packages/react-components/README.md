@@ -927,10 +927,10 @@ Call `run` from event handlers or effects, not during render.
   `ariaLive`) are intentionally not ported. The scrim and text follow the
   `FluentProvider` theme; `label` is the only user-facing string.
 
-### TileGrid (Phase A — unreleased)
+### TileGrid (unreleased)
 
-> **Internal Phase A surface.** The package does not publish or tag this
-> component until the later selection/focus and arranging work completes and
+> **Internal development surface.** The package does not publish or tag this
+> component until the tile-shell and arranging work completes and
 > the final public contract, export pin and dependency set are frozen. It is
 > not exported from the package root in the current release; the example below
 > documents the intended public API.
@@ -959,38 +959,46 @@ scroll helpers are not public.
 | `justified` | Photo-wall rows that fill the container width.                         |
 | `mosaic`    | A dense base grid with optional 2x2 feature spans.                     |
 
-| Prop                  | Type                                               | Default      | Description                                                                                           |
-| --------------------- | -------------------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------- |
-| `items`               | `readonly T[]`                                     | — (required) | Items to render; duplicate IDs keep the first occurrence.                                             |
-| `getItemId`           | `(item: T) => string`                              | — (required) | Stable identity for keys, geometry and selection. Use a stable function.                              |
-| `getItemLabel`        | `(item: T) => string`                              | — (required) | Accessible name of the item.                                                                          |
-| `getItemAspectRatio`  | `(item: T) => number \| null \| undefined`         | —            | Intrinsic ratio for masonry, justified and fixed fallback.                                            |
-| `getItemSpan`         | `(item: T) => { columns?: 1 \| 2; rows?: 1 \| 2 }` | —            | Optional 2x2 span for mosaic.                                                                         |
-| `renderItem`          | `(args: TileGridItemRenderArgs<T>) => ReactNode`   | — (required) | Draws the tile content inside the positioned wrapper. Use a stable function.                          |
-| `renderEmpty`         | `() => ReactNode`                                  | —            | Replaces the entire empty state and wins over `strings.emptyMessage`.                                 |
-| `layout`              | `'fixed' \| 'masonry' \| 'justified' \| 'mosaic'`  | `'fixed'`    | Layout strategy.                                                                                      |
-| `tileSize`            | `number`                                           | `160`        | Preferred tile size; clamped to the bounds below.                                                     |
-| `minTileSize`         | `number`                                           | `120`        | Lower tile-size bound.                                                                                |
-| `maxTileSize`         | `number`                                           | `320`        | Upper tile-size bound.                                                                                |
-| `columns`             | `number`                                           | automatic    | Explicit column count for fixed, masonry and mosaic; ignored by justified.                            |
-| `gap`                 | `number`                                           | `8`          | Gap between tiles and rows.                                                                           |
-| `tileAspectRatio`     | `number`                                           | `1`          | Fixed-layout aspect ratio.                                                                            |
-| `fallbackAspectRatio` | `number`                                           | `1`          | Ratio used when an intrinsic ratio is missing or invalid.                                             |
-| `selectionMode`       | `'none' \| 'single' \| 'multiselect'`              | `'none'`     | Selection behaviour.                                                                                  |
-| `selectedIds`         | `ReadonlySet<string>`                              | —            | Controlled selected IDs; the source of truth when supplied.                                           |
-| `defaultSelectedIds`  | `Iterable<string>`                                 | —            | Uncontrolled initial IDs; ignored when `selectedIds` is supplied.                                     |
-| `onSelectionChange`   | `(next: ReadonlySet<string>) => void`              | —            | Reports the requested next set after a user action or handle method.                                  |
-| `ariaLabel`           | `string`                                           | —            | Accessible list name; `aria-labelledby` wins when both are present.                                   |
-| `strings`             | `Partial<TileGridStrings>`                         | —            | Localized strings; currently `emptyMessage`.                                                          |
-| `ref`                 | `React.Ref<TileGridHandle>`                        | —            | Access to `selectAll`, `clearSelection` and `scrollToSelected`.                                       |
-| …                     | `ComponentPropsWithoutRef<'div'>`                  | —            | Native root props pass through except `children`, `role`, `aria-label` and `dangerouslySetInnerHTML`. |
+| Prop                  | Type                                               | Default       | Description                                                                                                       |
+| --------------------- | -------------------------------------------------- | ------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `items`               | `readonly T[]`                                     | — (required)  | Items to render; duplicate IDs keep the first occurrence.                                                         |
+| `getItemId`           | `(item: T) => string`                              | — (required)  | Stable identity for keys, geometry and selection. Use a stable function.                                          |
+| `getItemLabel`        | `(item: T) => string`                              | — (required)  | Accessible name of the item.                                                                                      |
+| `getItemAspectRatio`  | `(item: T) => number \| null \| undefined`         | —             | Intrinsic ratio for masonry, justified and fixed fallback.                                                        |
+| `getItemSpan`         | `(item: T) => { columns?: 1 \| 2; rows?: 1 \| 2 }` | —             | Optional 2x2 span for mosaic.                                                                                     |
+| `renderItem`          | `(args: TileGridItemRenderArgs<T>) => ReactNode`   | — (required)  | Draws the tile content inside the positioned wrapper. Use a stable function.                                      |
+| `renderEmpty`         | `() => ReactNode`                                  | —             | Replaces the entire empty state and wins over `strings.emptyMessage`.                                             |
+| `layout`              | `'fixed' \| 'masonry' \| 'justified' \| 'mosaic'`  | `'fixed'`     | Layout strategy.                                                                                                  |
+| `tileSize`            | `number`                                           | `160`         | Preferred tile size; clamped to the bounds below.                                                                 |
+| `minTileSize`         | `number`                                           | `120`         | Lower tile-size bound.                                                                                            |
+| `maxTileSize`         | `number`                                           | `320`         | Upper tile-size bound.                                                                                            |
+| `columns`             | `number`                                           | automatic     | Explicit column count for fixed, masonry and mosaic; ignored by justified.                                        |
+| `gap`                 | `number`                                           | `8`           | Gap between tiles and rows.                                                                                       |
+| `tileAspectRatio`     | `number`                                           | `1`           | Fixed-layout aspect ratio.                                                                                        |
+| `fallbackAspectRatio` | `number`                                           | `1`           | Ratio used when an intrinsic ratio is missing or invalid.                                                         |
+| `selectionMode`       | `'none' \| 'single' \| 'multiselect'`              | `'none'`      | Selection behaviour, fixed until unmount; remount to change it.                                                   |
+| `selectedIds`         | `ReadonlySet<string>`                              | —             | Controlled selected IDs; the source of truth when supplied.                                                       |
+| `defaultSelectedIds`  | `Iterable<string>`                                 | —             | Uncontrolled initial IDs; ignored when `selectedIds` is supplied.                                                 |
+| `onSelectionChange`   | `(next: ReadonlySet<string>) => void`              | —             | Reports the requested next set after a user action or handle method.                                              |
+| `ariaLabel`           | `string`                                           | —             | Accessible list name; `aria-labelledby` wins when both are present.                                               |
+| `interactionMode`     | `'browse' \| 'select'`                             | `'select'`    | Plain-click activation or selection when selection is enabled.                                                    |
+| `isSelectable`        | `(item: T) => boolean`                             | `() => true`  | Restricts new selection gestures without pruning stored membership.                                               |
+| `isDisabled`          | `(item: T) => boolean`                             | `() => false` | Blocks selection/activation; the item remains readable and keyboard reachable.                                    |
+| `onItemActivate`      | `(item: T) => void`                                | —             | Receives browse click, select-mode double-click, or wrapper Enter activation.                                     |
+| `enableMarquee`       | `boolean`                                          | `false`       | Mouse/pen background selection in multiselect mode.                                                               |
+| `scrollResetKey`      | `unknown`                                          | —             | An `Object.is` change resets to the top, retaining membership.                                                    |
+| `zoomable`            | `boolean`                                          | `false`       | Enables wrapper keyboard zoom when a size callback is supplied.                                                   |
+| `onTileSizeChange`    | `(size: number) => void`                           | —             | Requests a bounded size; the application applies it through `tileSize`.                                           |
+| `strings`             | `Partial<TileGridStrings>`                         | —             | `emptyMessage` and `selectionCount(selected, total)`.                                                             |
+| `ref`                 | `React.Ref<TileGridHandle>`                        | —             | Access to `selectAll`, `clearSelection` and `scrollToSelected`.                                                   |
+| …                     | `ComponentPropsWithoutRef<'div'>`                  | —             | Native root props pass through except `children`, `role`, `aria-label`, `tabIndex` and `dangerouslySetInnerHTML`. |
 
 `tileSize` defaults to 160 and is clamped to `minTileSize` (120) and
 `maxTileSize` (320); `gap` defaults to 8. `tileAspectRatio` and
 `fallbackAspectRatio` cover fixed and invalid intrinsic ratios. `getItemSpan`
 supplies mosaic spans. `tileSize` is controlled by the application and changing
-it preserves the first visible item and its pixel offset; there are no built-in
-zoom controls in this phase.
+it preserves the first visible item and its pixel offset. Keyboard zoom requests
+changes in steps of 20; it does not mutate the size internally.
 
 #### Selection
 
@@ -999,13 +1007,21 @@ supports plain replace, Ctrl/Cmd toggle and Shift range selection. `selectedIds`
 is the controlled source of truth; `defaultSelectedIds` seeds the uncontrolled
 case; `onSelectionChange` receives the requested next set after a user action or
 handle method, and never on mount, a controlled prop change or an item change.
-Hidden IDs are preserved. Clicks on buttons, links, inputs,
-selects, textareas, menu items, checkboxes, radios, switches, editable content
-or `[data-tile-grid-interactive]` do not select.
+Hidden and newly ineligible selected IDs are preserved. Select-all adds eligible
+current IDs; clear removes all membership, including hidden IDs. A rejected
+controlled proposal is restored from the parent value on the next render.
+
+In `interactionMode="select"`, plain clicks select and unmodified double-clicks
+activate after ordinary click selection. In `browse`, plain clicks activate;
+Ctrl/Cmd and Shift clicks select. Single mode never toggles its radio off.
+Selection controls operate in both interaction modes. None mode has no controls
+and activates on click/Enter. Consumer `preventDefault()` vetoes grid processing.
+Buttons, links, associated labels, native disclosure controls, editors, menus,
+and `[data-tile-grid-interactive]` keep their own interactions.
 
 ```tsx
 import { useRef, useState } from 'react';
-import { Button } from '@fluentui/react-components';
+import { Button, tokens } from '@fluentui/react-components';
 import {
   TileGrid,
   type TileGridHandle,
@@ -1019,7 +1035,15 @@ const renderPhoto = ({ item, selected }: TileGridItemRenderArgs<Photo>) => (
   <img
     src={item.thumbnailUrl}
     alt=""
-    style={{ outline: selected ? '2px solid #0f6cbd' : undefined }}
+    style={{
+      width: '100%',
+      height: '100%',
+      objectFit: 'cover',
+      outline: selected
+        ? `${tokens.strokeWidthThick} solid ${tokens.colorBrandStroke1}`
+        : undefined,
+      outlineOffset: `calc(-1 * ${tokens.strokeWidthThick})`,
+    }}
   />
 );
 
@@ -1067,7 +1091,59 @@ named root.
 The root is a named `role="list"`; every mounted tile is a `listitem` with
 `aria-setsize`, `aria-posinset` and the `getItemLabel` name. Prefer
 `aria-labelledby` when a visible heading exists; `ariaLabel` is the fallback.
-The root is keyboard-focusable by default.
+The active wrapper owns the single outside tab stop; the named root is the
+fallback while empty or unmeasured. The grid owns `tabIndex`. Initial selected
+IDs neither scroll nor autofocus. Focus recovery never steals focus from an
+external input or application popup and never reverses manual scrolling.
+
+| Key on a tile wrapper       | Action                                                                                |
+| --------------------------- | ------------------------------------------------------------------------------------- |
+| Arrows                      | Spatial movement without wrapping or changing selection.                              |
+| Home/End, Ctrl/Cmd+Home/End | First/last current item.                                                              |
+| PageUp/PageDown             | One visual row in the corresponding direction.                                        |
+| Shift+Arrow                 | Move and extend selection from the retained anchor in item order.                     |
+| Space                       | Toggle multiselect; select in single mode.                                            |
+| Enter                       | Activate an enabled item.                                                             |
+| Ctrl/Cmd+A                  | Select all eligible current items in multiselect mode.                                |
+| + or = / −                  | Request size ±20 when `zoomable` and `onTileSizeChange` are supplied.                 |
+| Tab / Shift+Tab             | Enter the owned input, then application controls in DOM order; leave without cycling. |
+| Escape in inline content    | Return to the wrapper, unless a nested control consumed it.                           |
+
+Both forward and reverse entry from outside reach the wrapper. Native inputs
+keep their own keys, including radio arrows and editable/browser zoom shortcuts.
+The grid manages only mounted inline content, preserves authored negative tabindex,
+and restores current author attributes on release. Portalled menus remain
+application-owned: the first Escape closes the menu, the next inline Escape
+returns to the wrapper. Custom popup owners must manage their own focus lifecycle.
+
+Real Fluent checkboxes/radios carry item-derived names. Disabled items expose
+`aria-disabled`; put the reason in readable tile content. Private controls are
+isolated from enclosing Fluent Field/RadioGroup defaults; application content
+retains its context. Native form reset preserves current checked presentation
+(including a drag preview) while ordinary form fields reset normally.
+
+A separate polite status region starts empty and announces only effective
+committed count changes. The default is `1,234 of 2,000 selected`; override
+`strings.selectionCount` for localization. Hidden IDs count toward selected,
+so that count can exceed the current item total. Same-count changes, rejected
+proposals, previews, and cancellations stay silent.
+
+#### Filtering, zoom, and marquee
+
+Change `scrollResetKey` with a filter to reset scroll before focus recovery.
+Keep it stable when appending pages. Filtering and zoom retain membership;
+the next entry recovers visibly while a focused search field keeps focus.
+Keep items, IDs, renderers, and eligibility callbacks stable between intentional
+changes. Predicate identity changes cancel an active marquee.
+
+With `enableMarquee` and multiselect, drag at least 4px from background/gaps.
+Plain drag replaces selection; Shift/Ctrl/Cmd adds to the starting membership.
+The mounted preview is temporary; release resolves the complete cached rectangle
+once, including currently unmounted hits. Touch, tile content, controls, empty
+content, and secondary-button starts do not start marquee. Escape cancels even
+when focus remains outside, unless the event was consumed. Capture loss,
+unmount, changed items/geometry/predicates/controlled membership, or disabling
+marquee cancels safely; equal-membership parent echoes do not cancel.
 
 At 20K items the grid mounts only the visible window plus two rows of overscan
 (under 120 wrappers at 1440×900, 160px tiles and 8px gaps). Pass stable
@@ -1076,17 +1152,16 @@ functions or `useCallback`) so a selection change re-renders only the affected
 mounted cell. The `TwentyThousandBenchmark` Storybook story and the browser/
 performance suites exercise the same fixture.
 
-#### Phase A limitations
+#### Remaining release boundaries
 
-- No selection controls, roving focus, keyboard selection, live announcements,
-  `isSelectable`/`isDisabled`, `interactionMode`, `enableMarquee`,
-  `onItemActivate` or `scrollResetKey` yet.
-- The marquee engine is internal and tested but not mounted; the overlay and
-  pointer host follow in a later release.
 - No tile shell, actions, drag/reorder or full photo-library recipe yet.
-- The public type is a deliberate Phase A subset; later work extends it and
-  completes the final export pin. The package-root export is added back with
-  that pin. Do not treat this section as a release authorization.
+- A singleton eligible item uses one real radio. This is an accepted narrow
+  HTML authoring-conformance exception; no fake peer is inserted. The component
+  maintainer revisits it if release conformance needs change or browser/assistive
+  technology evidence reveals a functional issue.
+- Final composed types, export pin, and dependencies are not frozen. TileGrid
+  remains absent from published runtime exports and declarations. The intended
+  example import above is not available in the current npm release.
 
 ## Agent skills
 
