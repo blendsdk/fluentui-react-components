@@ -37,7 +37,7 @@ grid never imports the shell. This keeps the dependency one-way and avoids a cyc
 ```ts
 export interface TileGridItemProps<T> extends Omit<
   React.ComponentPropsWithoutRef<'div'>,
-  'children' | 'aria-disabled'
+  'children' | 'aria-disabled' | 'title'
 > {
   /** Original item passed to action callbacks and predicates. */
   item: T;
@@ -90,7 +90,7 @@ export interface TileGridItemProps<T> extends Omit<
 
 | Field           | Meaning                                                                                                   |
 | --------------- | --------------------------------------------------------------------------------------------------------- |
-| `rootProps`     | Native `div` props minus `children` and `aria-disabled`                                                   |
+| `rootProps`     | Native `div` props minus `children`, `aria-disabled`, and the native `title` attribute                    |
 | `classes`       | Griffel classes for the root and slots                                                                    |
 | `strings`       | Merged strings (`dragHandleLabel`, `moveUp`, `moveDown`, `reorderPosition`, `moreActions`, existing keys) |
 | `inlineActions` | `actions`, or empty when disabled or `isOverlay`                                                          |
@@ -127,8 +127,9 @@ the list position. The shell never mutates the supplied action objects.
 ```
 
 The root is a flex column that fills the tile, clips overflow, and merges caller `className` and
-`style` last. Native `div` props pass through. `aria-disabled` is written from `disabled` and cannot
-be overridden through props.
+`style` last. Native `div` props pass through, except `children`, `aria-disabled`, and the native
+`title` attribute. `aria-disabled` is written from `disabled` and cannot be overridden through
+props; the `title` slot replaces the native tooltip attribute.
 
 ### Media
 
@@ -154,9 +155,29 @@ be overridden through props.
   application may provide meaningful content.
 - Interactive descendants (`button`, `a`, `input`, `select`, `textarea`, `[role="button"]`,
   `[role="menuitem"]`) re-enable pointer events.
-- It renders above media and the selection badge, and below the inline action layer, menu trigger,
-  and drag handle.
+- It renders above media and below the selection badge, inline action layer, menu trigger, and drag
+  handle.
 - In forced-colors mode it keeps a visible border using `Highlight`.
+
+### Test Hooks
+
+Stable attributes keep the shell observable without depending on Griffel class
+names:
+
+| Region              | Attribute                                                          |
+| ------------------- | ------------------------------------------------------------------ |
+| Root                | `data-tile-grid-item-shell`                                        |
+| Media container     | `data-tile-grid-media`; `data-fit="cover"` or `data-fit="contain"` |
+| Selection badge     | `data-tile-grid-selection-indicator`                               |
+| Status overlay      | `data-tile-grid-status-overlay`                                    |
+| Inline action row   | `data-tile-grid-inline-actions`                                    |
+| Menu trigger        | `data-tile-grid-menu-trigger`                                      |
+| Action entry        | `data-tile-grid-action-id="<id>"`                                  |
+| Action intent       | `data-intent="default"` or `data-intent="danger"`                  |
+| Default drag handle | `data-tile-grid-drag-handle`                                       |
+
+The root also reflects `data-selected`, `data-disabled`, `data-dragging`, and
+`data-overlay` while those states are active.
 
 ### Actions
 
@@ -165,8 +186,9 @@ Inline actions render at the top-right, in a row beside the menu trigger:
 - If an action has an `icon`, the button is icon-only with `aria-label` set to the resolved label.
 - If no icon exists, the button renders the label as text.
 - The inline row is visible on root `:hover` and `:focus-within`, and hidden under
-  `@media (hover: none)`. Hidden actions are not focusable until the row is revealed; the overflow
-  menu always contains the same actions, so touch users never lose access.
+  `@media (hover: none)`. Hidden inline actions stay in the tab order; focusing one reveals the row
+  through the root `:focus-within` rule. The overflow menu always contains the same actions, so
+  touch users never lose access even when the inline row is `display: none`.
 - The menu trigger is always visible when `showMenu` is true, regardless of hover.
 - `intent: 'danger'` uses `colorPaletteRedForeground1` for inline and menu entries.
 - `isDisabled(item)` disables the individual action. A disabled tile disables all actions.
@@ -201,26 +223,26 @@ Inline actions render at the top-right, in a row beside the menu trigger:
 
 ### Visual States
 
-| State                | Effect                                                                               |
-| -------------------- | ------------------------------------------------------------------------------------ |
-| `selected`           | Shows the default selection badge                                                    |
-| `selectable={false}` | Hides the selection badge                                                            |
-| `disabled`           | `aria-disabled="true"`; actions and handle removed; content stays readable           |
-| `isDragging`         | Source tile opacity `0.5`                                                            |
-| `isOverlay`          | Fills the overlay, adds `shadow16`, hides actions and handle, ignores pointer events |
+| State                | Effect                                                                                       |
+| -------------------- | -------------------------------------------------------------------------------------------- |
+| `selected`           | Shows the default selection badge                                                            |
+| `selectable={false}` | Hides the selection badge                                                                    |
+| `disabled`           | `aria-disabled="true"`; actions and handle removed; content stays readable                   |
+| `isDragging`         | Source tile opacity `0.5`; the overlay copy is never faded, even when it receives both flags |
+| `isOverlay`          | Fills the overlay, adds `shadow16`, hides actions and handle, ignores pointer events         |
 
 ## Error Handling
 
-| Error Case                                      | Handling Strategy                                  | AR Ref |
-| ----------------------------------------------- | -------------------------------------------------- | ------ |
-| Blank action label                              | Render the action `id`                             | AR-24  |
-| Duplicate action ids                            | Render all entries; keys include position          | AR-24  |
-| Action callback throws                          | Propagate to the application; tile state unchanged | AR-24  |
-| Invalid `aspectRatio`                           | Fall back to `1`                                   | AR-21  |
-| `dragHandle` supplied without `dragHandleProps` | Render no handle                                   | AR-26  |
-| Empty `moreActions` string                      | Fall back to "More actions"                        | AR-14  |
-| Empty drag-handle label                         | Fall back to `Reorder <item label>`                | AR-14  |
-| `isOverlay` copy                                | Suppress actions, menu, and handle                 | AR-26  |
+| Error Case                                      | Handling Strategy                                                   | AR Ref |
+| ----------------------------------------------- | ------------------------------------------------------------------- | ------ |
+| Blank action label                              | Render the action `id`                                              | AR-24  |
+| Duplicate action ids                            | Render all entries; keys include position                           | AR-24  |
+| Action callback throws                          | Propagate to the application; tile state unchanged                  | AR-24  |
+| Invalid `aspectRatio`                           | Fall back to `1`                                                    | AR-21  |
+| `dragHandle` supplied without `dragHandleProps` | Render no handle                                                    | AR-26  |
+| Empty `moreActions` string                      | Fall back to "More actions"                                         | AR-14  |
+| Empty drag-handle label                         | Grid supplies `Reorder <item label>`; shell falls back to `Reorder` | AR-14  |
+| `isOverlay` copy                                | Suppress actions, menu, and handle                                  | AR-26  |
 
 ## Accessibility
 

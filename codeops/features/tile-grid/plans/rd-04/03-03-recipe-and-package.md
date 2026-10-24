@@ -227,7 +227,8 @@ adds compile-time checks for every new type, including a wrong-generic rejection
 
 ### Declaration Build
 
-`tsconfig.build.json` currently excludes `src/components/TileGrid/**`. Removing that exclusion makes
+`tsconfig.build.json` currently excludes `src/components/TileGrid/**` and
+`src/components/TileGridItem/**`. Removing both exclusions in Phase 3 makes
 the declaration build emit the TileGrid and TileGridItem modules, so `dist/index.d.ts` resolves the
 new exports. Story files remain excluded by the existing patterns. TypeScript also emits declarations
 for internal TileGrid modules that the public barrel does not re-export; the package `exports` map

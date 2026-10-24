@@ -94,10 +94,11 @@ function handleAttributes(
 ): Record<string, string | number | boolean | undefined> {
   const next: Record<string, string | number | boolean | undefined> = { ...attributes };
   delete next['aria-describedby'];
-  // The handle is pointer-only; keyboard reorder lives in the action menu.
-  // Removing dnd-kit's tab stop lets the default shell choose its own focus
-  // policy without pretending Enter/Space starts a keyboard drag.
+  // A pointer-only handle is not a pressed toggle, and keyboard reorder lives
+  // in the action menu. Removing dnd-kit's tab stop and pressed state lets the
+  // default shell choose its own focus policy without claiming a keyboard drag.
   delete next['tabIndex'];
+  delete next['aria-pressed'];
   return next;
 }
 
@@ -159,7 +160,7 @@ function TileGridItemViewComponent<T>({
             listeners: handleListeners(listeners),
             isDragging: dragging,
             disabled: false,
-            label: strings.dragHandleLabel(label),
+            label: strings.dragHandleLabel(label).trim() || `Reorder ${label}`,
           }
         : undefined,
     [attributes, canReorder, dragging, label, listeners, setNodeRef, strings.dragHandleLabel]

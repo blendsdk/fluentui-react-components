@@ -1,8 +1,8 @@
 # Execution Plan: TileGrid RD-04
 
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-24 10:29
-> **Progress**: 15/41 tasks (37%)
+> **Last Updated**: 2026-10-24 23:55
+> **Progress**: 27/41 tasks (66%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -89,42 +89,42 @@ skill with the selected execution mode.
 
 ## Phase 2: Tile Shell, Actions, and Keyboard Menu
 
-> **Phase baseline tree**: _(recorded by the exec-plan skill)_
+> **Phase baseline tree**: `7f757e299b2f4fce33092e008b7d41cdb7723b3e`
 > **Scope mode**: strict
 > **Expected modification set**: Phase 2 task paths under `packages/react-components/`, this plan's execution evidence, and the derived TileGrid roadmap status. The shell reuses Fluent Menu, Button, and Griffel; no new dependency.
 > **Lenses**: api-surface
 > **Risk tags**: complex
 > **Reasoning**: high — action semantics, menu focus, touch reachability, and drag isolates meet in one small surface
-> **Review**: pending post-phase review
+> **Review**: RV-201..RV-212 fixed; the single scoped re-review closed every finding with no new findings. Evidence: [05-findings.md](05-findings.md).
 
 ### Session 2.1 — Specification Tests
 
 **Reference:** 03-02; AR-5, AR-7, AR-14, AR-21–AR-26, AR-32; 07 ST-24–ST-44 and ST-60–ST-62.
 
-- [ ] 2.1.1 [spec-author] Add shell slot, action, state, fallback, and security oracles — `test/tile-grid-item.spec.test.tsx`; ST-24–ST-29, ST-33–ST-39, ST-41, ST-43, ST-44, ST-60, ST-61
-- [ ] 2.1.2 [spec-author] Add handle, touch reachability, menu focus, and isolation oracles — `test/browser/tile-grid-item.browser.test.tsx`; ST-30–ST-32, ST-37, ST-40, ST-42, ST-62
-- [ ] 2.1.3 [spec-author] Add the shell server-render smoke — `test/tile-grid-item-ssr.spec.test.ts`; ST-59
-- [ ] 2.1.4 Run the targeted specs and type-check; record expected red failures
+- [x] 2.1.1 [spec-author] Add shell slot, action, state, fallback, and security oracles — `test/tile-grid-item.spec.test.tsx`; ST-24–ST-29, ST-33–ST-39, ST-41, ST-43, ST-44, ST-60, ST-61 ✅ (completed: 2026-10-24 12:38; 23 invocations, red at missing shell module)
+- [x] 2.1.2 [spec-author] Add handle, touch reachability, menu focus, and isolation oracles — `test/browser/tile-grid-item.browser.test.tsx`; ST-30–ST-32, ST-37, ST-40, ST-42, ST-62 ✅ (completed: 2026-10-24 12:38; 8 cases after the keyboard-menu integration addition; red at missing shell module; touch media verified through the emitted `(hover: none)` rule; the over-specific initial `aria-expanded=false` assertion was removed because ST-42 requires naming and focus return, not the initial expanded value)
+- [x] 2.1.3 [spec-author] Add the shell server-render smoke — `test/tile-grid-item-ssr.spec.test.ts`; ST-59 ✅ (completed: 2026-10-24 12:38; node renderToString smoke, red at missing shell module)
+- [x] 2.1.4 Run the targeted specs and type-check; record expected red failures ✅ (completed: 2026-10-24 12:38; jsdom/SSR 2 files failed before collection, browser 0 collected, type-check reports the expected missing-module errors and the not-yet-exercised negative type cases)
 
 **Deliverable:** Immutable Phase 2 oracles and red evidence.
 **Verify:** Targeted Vitest files and `pnpm type-check`; expected red before implementation.
 
 ### Session 2.2 — Implementation
 
-- [ ] 2.2.1 Add shell types, the callable generic wrapper, and the barrel — `src/components/TileGridItem/TileGridItem.types.ts`, `src/components/TileGridItem/TileGridItem.tsx`, `src/components/TileGridItem/index.ts`; 03-02 Public Props
-- [ ] 2.2.2 Add state resolution, strings, action/menu composition, and label fallbacks — `src/components/TileGridItem/useTileGridItem.ts`; 03-02 State Hook, Actions
-- [ ] 2.2.3 Add the pure renderer and Griffel styles — `src/components/TileGridItem/renderTileGridItem.tsx`, `src/components/TileGridItem/useTileGridItemStyles.styles.ts`; 03-02 Render Structure, Media, Visual States
-- [ ] 2.2.4 Add the overflow menu, default drag handle, status overlay, and selection indicator — `src/components/TileGridItem/renderTileGridItem.tsx`, `src/components/TileGridItem/useTileGridItem.ts`; 03-02 Overflow Menu, Drag Handle, Selection Indicator
-- [ ] 2.2.5 Connect grid handle props and reorder actions to the shell through render arguments; verify keyboard Move up/Move down and the shared announcement — `src/components/TileGrid/TileGridItemView.tsx`, `src/components/TileGrid/renderTileGrid.tsx`; 03-01 Keyboard reorder, 03-02 Drag Handle
-- [ ] 2.2.6 Run the Phase 2 specification tests to green and preserve the Phase 1 oracles
+- [x] 2.2.1 Add shell types, the callable generic wrapper, and the barrel — `src/components/TileGridItem/TileGridItem.types.ts`, `src/components/TileGridItem/TileGridItem.tsx`, `src/components/TileGridItem/index.ts`; 03-02 Public Props ✅ (completed: 2026-10-24 21:06; native `title` omitted because the title slot owns that name)
+- [x] 2.2.2 Add state resolution, strings, action/menu composition, and label fallbacks — `src/components/TileGridItem/useTileGridItem.ts`; 03-02 State Hook, Actions ✅ (completed: 2026-10-24 21:06)
+- [x] 2.2.3 Add the pure renderer and Griffel styles — `src/components/TileGridItem/renderTileGridItem.tsx`, `src/components/TileGridItem/useTileGridItemStyles.styles.ts`; 03-02 Render Structure, Media, Visual States ✅ (completed: 2026-10-24 21:06)
+- [x] 2.2.4 Add the overflow menu, default drag handle, status overlay, and selection indicator — `src/components/TileGridItem/renderTileGridItem.tsx`, `src/components/TileGridItem/useTileGridItem.ts`; 03-02 Overflow Menu, Drag Handle, Selection Indicator ✅ (completed: 2026-10-24 21:06)
+- [x] 2.2.5 Connect grid handle props and reorder actions to the shell through render arguments; verify keyboard Move up/Move down and the shared announcement — `src/components/TileGrid/TileGridItemView.tsx`, `src/components/TileGrid/renderTileGrid.tsx`; 03-01 Keyboard reorder, 03-02 Drag Handle ✅ (completed: 2026-10-24 21:06; shell menu Move down reports the payload and announces "Moved to position 2 of 3")
+- [x] 2.2.6 Run the Phase 2 specification tests to green and preserve the Phase 1 oracles ✅ (completed: 2026-10-24 21:06; 75 jsdom / 26 browser targeted)
 
 **Deliverable:** Shell behavior matching ST-24–ST-44 and ST-59–ST-62.
 **Verify:** Targeted green checks, then `pnpm verify`.
 
 ### Session 2.3 — Internal Tests and Hardening
 
-- [ ] 2.3.1 Add label fallback, menu composition, aspect-ratio, and attribute-filtering internals — `test/tile-grid-item.impl.test.tsx`; 03-02, 07 Implementation Tests
-- [ ] 2.3.2 Run `pnpm verify && pnpm test:browser && pnpm test:perf`; record results and complete the strict independent phase-review loop
+- [x] 2.3.1 Add label fallback, menu composition, aspect-ratio, and attribute-filtering internals — `test/tile-grid-item.impl.test.tsx`; 03-02, 07 Implementation Tests ✅ (completed: 2026-10-24 21:06; 16 internal cases)
+- [x] 2.3.2 Run `pnpm verify && pnpm test:browser && pnpm test:perf`; record results and complete the strict independent phase-review loop ✅ (completed: 2026-10-24 23:55; 871 unit / 121 browser / 17 performance; RV-201..RV-212 closed; re-review no new findings)
 
 **Deliverable:** Verified Phase 2 and closed or authorized review findings.
 **Verify:** `pnpm verify && pnpm test:browser && pnpm test:perf`.

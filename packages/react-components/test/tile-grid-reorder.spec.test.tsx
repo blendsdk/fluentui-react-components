@@ -312,6 +312,19 @@ describe('tile grid reorder contract', () => {
     expect(onReorder).not.toHaveBeenCalled();
   });
 
+  it('should fall back to the item label when the handle formatter is blank', async () => {
+    await mountGrid({
+      items: SMALL_ITEMS,
+      reorderable: true,
+      onReorder: vi.fn(),
+      strings: { dragHandleLabel: () => '   ' },
+    });
+
+    expect(
+      within(tile('item-1')).getByRole('button', { name: 'Reorder Tile 1' })
+    ).toBeInTheDocument();
+  });
+
   it('should disable moving up from the first position', async () => {
     // The first item has no previous slot, so its upward action does nothing.
     const onReorder = vi.fn<(args: TileGridReorderArgs) => void>();

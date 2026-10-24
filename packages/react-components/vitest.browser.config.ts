@@ -12,6 +12,11 @@ import { defineConfig } from 'vitest/config';
 /** Shared Chromium browser project; the matrix config replaces its instances. */
 export const browserTestConfig = {
   plugins: [react()],
+  optimizeDeps: {
+    // The icon package can otherwise be pre-bundled with a second React copy,
+    // which makes its internal hooks run outside the test renderer.
+    exclude: ['@fluentui/react-icons'],
+  },
   resolve: {
     dedupe: ['react', 'react-dom'],
   },

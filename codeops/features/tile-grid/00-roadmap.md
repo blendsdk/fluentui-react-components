@@ -3,7 +3,7 @@
 > **Feature-Set**: tile-grid
 > **Status**: In Progress
 > **Created**: 2026-10-20
-> **Last Updated**: 2026-10-24 10:35
+> **Last Updated**: 2026-10-24 23:55
 > **Progress**: 2 / 4 (50%)
 > **CodeOps Artifact Schema**: 1
 
@@ -29,4 +29,4 @@
 - All four RDs are v1 release-blocking; the implementation order is RD-01/RD-02, then RD-03, then RD-04.
 - Phase A plan preflighted and passed at `plans/v1/`: it implements RD-01 and RD-02 plus the minimal RD-03 selection wiring needed to exercise RD-01. RD-03 focus/keyboard/accessibility and RD-04 arranging remain preflighted for later plans.
 - Aggregate RD-01/RD-03 delivery is verified in [acceptance evidence](plans/rd-03/08-acceptance-evidence.md), including independent reviews and the full three-browser matrix. Task progress is owned by `plans/rd-03/99-execution-plan.md`. RD-02's final composed contract/export/dependency freeze awaits RD-04. TileGrid remains unpublished.
-- Phase A is complete. RD-04 Phase 1 (reorder foundation and pointer drag) is verified in [plans/rd-04](plans/rd-04/00-index.md); Phase 2 (tile shell) is next. Portfolio synchronization is deferred until this feature branch lands on `main`.
+- Phase A is complete. RD-04 Phases 1–2 (reorder foundation and tile shell) are verified in [plans/rd-04](plans/rd-04/00-index.md); Phase 3 (recipe, docs, package surface) is next. Portfolio synchronization is deferred until this feature branch lands on `main`.
