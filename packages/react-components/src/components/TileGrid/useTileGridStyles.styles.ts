@@ -65,6 +65,26 @@ export const useTileGridStyles = makeStyles({
     pointerEvents: 'none',
     zIndex: 1,
   },
+  // The insertion line can sit beyond the last tile; clipping its paint keeps
+  // the decoration from enlarging the scrollable area.
+  dropIndicatorCanvas: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    minHeight: '100%',
+    overflow: 'hidden',
+    pointerEvents: 'none',
+    zIndex: 1,
+  },
+  dropIndicator: {
+    position: 'absolute',
+    pointerEvents: 'none',
+    backgroundColor: tokens.colorBrandStroke1,
+    borderRadius: tokens.borderRadiusSmall,
+    zIndex: 2,
+    '@media (forced-colors: active)': { backgroundColor: 'Highlight' },
+  },
   content: {
     width: '100%',
     height: '100%',

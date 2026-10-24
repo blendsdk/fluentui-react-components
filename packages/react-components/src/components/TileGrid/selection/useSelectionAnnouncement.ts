@@ -1,10 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import { defaultTileGridStrings } from '../strings';
 import type { TileGridStrings } from '../TileGrid.types';
-
-/** Default complete message; applications can replace the formatter for localization. */
-function formatSelectionCount(selected: number, total: number): string {
-  return `${selected.toLocaleString('en-US')} of ${total.toLocaleString('en-US')} selected`;
-}
 
 /**
  * Announces effective committed count changes after the initial render.
@@ -16,14 +12,14 @@ function formatSelectionCount(selected: number, total: number): string {
 export function useSelectionAnnouncement(
   count: number,
   total: number,
-  formatter: TileGridStrings['selectionCount'] = formatSelectionCount
-): string {
+  formatter: TileGridStrings['selectionCount'] = defaultTileGridStrings.selectionCount,
+  announce: (message: string) => void
+): void {
   const previousCount = useRef(count);
-  const [message, setMessage] = useState('');
+
   useEffect(() => {
     if (previousCount.current === count) return;
     previousCount.current = count;
-    setMessage(formatter(count, total));
-  }, [count, total, formatter]);
-  return message;
+    announce(formatter(count, total));
+  }, [count, total, formatter, announce]);
 }

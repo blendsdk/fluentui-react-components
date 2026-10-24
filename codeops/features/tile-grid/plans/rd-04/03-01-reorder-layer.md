@@ -33,7 +33,7 @@ useTileGrid
 └── useTileGridMarquee             (unchanged)
 
 renderTileGrid
-├── DndContext                     (only when arranging is enabled)
+├── DndContext                     (always mounted; inert when arranging is off)
 │   └── TileGridRoot               (local component; calls useDroppable)
 └── TileGridDragOverlay            (custom body portal while a drag is active)
 ```
@@ -42,6 +42,13 @@ renderTileGrid
 `useTileGrid` would sit above the provider and never see the drag manager. It owns the root ref
 merge for the scroll container and the single droppable. `TileGridItemView` calls `useDraggable`
 for its tile and exposes the handle props and reorder actions to `renderItem`.
+
+`DndContext` stays mounted across enable/disable transitions. The pointer sensor stays registered
+with a stable descriptor; with arranging off it is inert, the droppable is disabled, item views
+expose no handle or reorder action, and no overlay is rendered. Keeping the provider and sensor
+array in the tree preserves both the scroll container's identity and dnd-kit's hook shape; swapping
+the provider for a bare root would remount the container, reset its measurement, scroll, and focus,
+and leave the size observer watching a detached node.
 
 ## Public Contract Additions
 
@@ -220,9 +227,13 @@ A custom body portal renders the presentational copy of the active tile:
   during a client drag.
 - The copy receives `isOverlay: true`, `isDragging: true`, `dragHandleProps: undefined`, and
   `reorderActions: undefined`.
-- The portal unmounts at drop or cancel; there is no drop animation because the controlled order is
-  expected to update immediately.
-- The source tile stays mounted with `isDragging: true` and a reduced opacity.
+- The portal root carries `data-tile-grid-overlay` and unmounts at drop or cancel; there is no drop
+  animation because the controlled order is expected to update immediately.
+- The source wrapper, while it remains in the mounted window, receives `isDragging: true` and
+  `data-dragging="true"`. The tile shell applies the reduced visual from `isDragging`; the grid
+  does not style application content. The overlay copy persists through auto-scroll because the
+  active item, index, and rectangle are captured at drag start rather than re-read from the
+  virtual window.
 
 ### Drop indicator
 
@@ -234,9 +245,9 @@ coordinates.
 | `fixed`, `justified`, `mosaic` | Vertical    | `x = rect.x - gap/2` for `before`, `rect.x + rect.width + gap/2` for `after`; `y = rect.y`; height = `rect.height` |
 | `masonry`                      | Horizontal  | `y = rect.y - gap/2` for `before`, `rect.y + rect.height + gap/2` for `after`; `x = rect.x`; width = `rect.width`  |
 
-The line uses `tokens.colorBrandStroke1`, a `Highlight` background in forced-colors mode,
-`pointer-events: none`, `aria-hidden="true"`, and `z-index: 2`. It is clipped by the scroll
-container and never changes its scroll extent.
+The line carries `data-tile-grid-drop-indicator`, uses `tokens.colorBrandStroke1`, a `Highlight`
+background in forced-colors mode, `pointer-events: none`, `aria-hidden="true"`, and `z-index: 2`.
+It is clipped by the scroll container and never changes its scroll extent.
 
 ### Keyboard reorder
 
@@ -275,14 +286,15 @@ count comparison stays in place so equal-count replacements do not re-announce.
   `strings.dragHandleLabel(label)`.
 - Passes `isDragging`, `dragHandleProps`, `reorderActions`, and `strings` into the memoized content
   arguments.
-- Calls `useDraggable` unconditionally so hook order stays stable; without a `DndContext` the
-  default dnd-kit context makes the hook inert.
+- Calls `useDraggable` unconditionally so hook order stays stable; the hook is disabled when
+  arranging is off.
 
 ### `renderTileGrid`
 
 - Defines `TileGridRoot` at module scope; it calls `useDroppable` and merges the scroll-container
   ref with the droppable ref.
-- Wraps `TileGridRoot` in `DndContext` only when reorder is enabled.
+- Wraps `TileGridRoot` in the always-mounted `DndContext`; the provider is inert when reorder is
+  off.
 - Passes `collisionDetection`, sensors, and the drag lifecycle handlers.
 - Renders `TileGridDropIndicator` after the items and before the marquee canvas.
 - Renders the body portal beside the list, using the active item's render arguments and the stored

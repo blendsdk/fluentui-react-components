@@ -1,8 +1,8 @@
 # Execution Plan: TileGrid RD-04
 
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-23 09:30
-> **Progress**: 0/41 tasks (0%)
+> **Last Updated**: 2026-10-24 10:29
+> **Progress**: 15/41 tasks (37%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -42,45 +42,45 @@ skill with the selected execution mode.
 
 ## Phase 1: Reorder Foundation and Pointer Drag
 
-> **Phase baseline tree**: _(recorded by the exec-plan skill)_
+> **Phase baseline tree**: `b4e2ccec38fdf32c23d2024f27a40b3fe421931c`
 > **Scope mode**: strict
 > **Expected modification set**: Phase 1 task paths under `packages/react-components/`, this plan's execution evidence, and the derived TileGrid roadmap status. Dependency approval is the existing requirements AR #11 packet; no new support surface.
 > **Lenses**: api-surface, perf
 > **Risk tags**: complex, performance-critical
 > **Reasoning**: max — pointer geometry, virtualized mounting, and controlled order meet in one gesture path
-> **Review**: pending post-phase review
+> **Review**: RV-001..RV-013, PE-001..PE-004, PE-006, PE-007 and the re-review RV-101..RV-105 / PE-101 are fixed; PE-005 is deferred to Phase 3. No open critical/major findings. Evidence: [05-findings.md](05-findings.md).
 
 ### Session 1.1 — Specification Tests
 
 **Reference:** 03-01; AR-3, AR-6, AR-9, AR-10, AR-13, AR-17, AR-18, AR-19, AR-31, AR-34; 07 ST-1–ST-23.
 
-- [ ] 1.1.1 [spec-author] Add reorder props, actions, payload, warning, and announcement oracles — `test/tile-grid-reorder.spec.test.tsx`; ST-1–ST-5, ST-13–ST-16, ST-19, ST-22, ST-23
-- [ ] 1.1.2 [spec-author] Add real-browser pointer drag, cancel, capture, indicator, auto-scroll, and layout oracles — `test/browser/tile-grid-drag.browser.test.tsx`; ST-4, ST-6–ST-12, ST-17, ST-18, ST-20, ST-21
-- [ ] 1.1.3 Run the new targeted specs and type-check; record expected red failures and any already-passing regression cases without altering their assertions
-- [ ] 1.1.4 Confirm the dependency contract: `@dnd-kit/core` 6.3.1 exports `DndContext`, `useDraggable`, `useDroppable`, `PointerSensor`, and `useSensors`, and its pointer sensor cancels on Escape; record the check in the plan evidence
+- [x] 1.1.1 [spec-author] Add reorder props, actions, payload, warning, and announcement oracles — `test/tile-grid-reorder.spec.test.tsx`; ST-1–ST-3, ST-5, ST-13–ST-16, ST-19, ST-22, ST-23 ✅ (completed: 2026-10-23 10:39; 12 cases, red 8 failed / 4 baseline absence passes)
+- [x] 1.1.2 [spec-author] Add real-browser pointer drag, cancel, capture, indicator, auto-scroll, and layout oracles — `test/browser/tile-grid-drag.browser.test.tsx`; ST-4, ST-6–ST-12, ST-17, ST-18, ST-20, ST-21 ✅ (completed: 2026-10-23 10:39; 15 cases, red 15 failed; native provider click + stepped hover path because this runner exposes no page.mouse)
+- [x] 1.1.3 Run the new targeted specs and type-check; record expected red failures and any already-passing regression cases without altering their assertions ✅ (completed: 2026-10-23 10:39; jsdom 8/4, browser 15/0, type-check 19 expected missing-reorder errors; no oracle changed)
+- [x] 1.1.4 Confirm the dependency contract: `@dnd-kit/core` 6.3.1 exports `DndContext`, `useDraggable`, `useDroppable`, `PointerSensor`, and `useSensors`, and its pointer sensor cancels on Escape; record the check in the plan evidence ✅ (completed: 2026-10-23 10:40; exports present, Escape listener confirmed in the pointer sensor)
 
 **Deliverable:** Immutable Phase 1 oracles and red evidence.
 **Verify:** Targeted Vitest files and `pnpm type-check`; expected red before implementation.
 
 ### Session 1.2 — Implementation
 
-- [ ] 1.2.1 Add the approved dependency and externalization — `package.json`, `pnpm-lock.yaml`, `vite.config.ts`; 03-01 Architecture, AR-3
-- [ ] 1.2.2 Add the public reorder types, props, strings, and render-argument fields; update the existing render-args type fixture — `src/components/TileGrid/TileGrid.types.ts`, `src/components/TileGrid/index.ts`, `test/tile-grid-selection.types.test.tsx`; 03-01 Public Contract Additions, AR-14, AR-31
-- [ ] 1.2.3 Add pure insertion and payload helpers — `src/components/TileGrid/reorder/insertion.ts`, `src/components/TileGrid/reorder/payload.ts`, `src/components/TileGrid/reorder/types.ts`; 03-01 Insertion calculation
-- [ ] 1.2.4 Add proportional RAF auto-scroll — `src/components/TileGrid/reorder/useAutoScroll.ts`; 03-01 Auto-scroll, AR-6
-- [ ] 1.2.5 Add the reorder controller, shared announcement channel, and keyboard actions — `src/components/TileGrid/reorder/useTileGridReorder.ts`, `src/components/TileGrid/useLiveAnnouncement.ts`, `src/components/TileGrid/selection/useSelectionAnnouncement.ts`; 03-01 Lifecycle, Keyboard reorder, Announcement
-- [ ] 1.2.6 Add the custom portal overlay and drop indicator — `src/components/TileGrid/reorder/TileGridDragOverlay.tsx`, `src/components/TileGrid/reorder/TileGridDropIndicator.tsx`, `src/components/TileGrid/useTileGridStyles.styles.ts`; 03-01 Overlay, Drop indicator, AR-34
-- [ ] 1.2.7 Wire state, items, the `TileGridRoot` droppable component, and the renderer — `src/components/TileGrid/useTileGrid.ts`, `src/components/TileGrid/TileGridItemView.tsx`, `src/components/TileGrid/renderTileGrid.tsx`; 03-01 Integration Points
-- [ ] 1.2.8 Add the missing-callback development warning and confirm arranging stays absent — `src/components/TileGrid/useTileGrid.ts`, `src/components/TileGrid/devWarnings.ts`; 03-01 Enablement, AR-12
-- [ ] 1.2.9 Run the Phase 1 specification tests to green and preserve every existing layout, selection, focus, marquee, and export oracle
+- [x] 1.2.1 Add the approved dependency and externalization — `package.json`, `pnpm-lock.yaml`, `vite.config.ts`; 03-01 Architecture, AR-3 ✅ (completed: 2026-10-23 10:40; exact 6.3.1, frozen install passes, `@dnd-kit/` externalized)
+- [x] 1.2.2 Add the public reorder types, props, strings, and render-argument fields; update the existing render-args type fixture — `src/components/TileGrid/TileGrid.types.ts`, `src/components/TileGrid/index.ts`, `test/tile-grid-selection.types.test.tsx`; 03-01 Public Contract Additions, AR-14, AR-31 ✅ (completed: 2026-10-23 10:43; type-check passes; render-arg fields are temporarily optional until the view supplies them in 1.2.7, then become required)
+- [x] 1.2.3 Add pure insertion and payload helpers — `src/components/TileGrid/reorder/insertion.ts`, `src/components/TileGrid/reorder/payload.ts`, `src/components/TileGrid/reorder/types.ts`; 03-01 Insertion calculation ✅ (completed: 2026-10-23 10:46; type-check passes; insertion uses mounted rectangles and clamps to the collection)
+- [x] 1.2.4 Add proportional RAF auto-scroll — `src/components/TileGrid/reorder/useAutoScroll.ts`; 03-01 Auto-scroll, AR-6 ✅ (completed: 2026-10-23 10:58; 4–18 px/frame, vertical edges, frame-by-frame insertion refresh)
+- [x] 1.2.5 Add the reorder controller, shared announcement channel, and keyboard actions — `src/components/TileGrid/reorder/useTileGridReorder.ts`, `src/components/TileGrid/useLiveAnnouncement.ts`, `src/components/TileGrid/selection/useSelectionAnnouncement.ts`; 03-01 Lifecycle, Keyboard reorder, Announcement ✅ (completed: 2026-10-23 10:58; single polite channel, stable per-index actions, Escape delegated to the pointer sensor)
+- [x] 1.2.6 Add the custom portal overlay and drop indicator — `src/components/TileGrid/reorder/TileGridDragOverlay.tsx`, `src/components/TileGrid/reorder/TileGridDropIndicator.tsx`, `src/components/TileGrid/useTileGridStyles.styles.ts`; 03-01 Overlay, Drop indicator, AR-34 ✅ (completed: 2026-10-23 10:58; fixed body portal, clipped indicator canvas, forced-colors line)
+- [x] 1.2.7 Wire state, items, the `TileGridRoot` droppable component, and the renderer — `src/components/TileGrid/useTileGrid.ts`, `src/components/TileGrid/TileGridItemView.tsx`, `src/components/TileGrid/renderTileGrid.tsx`; 03-01 Integration Points ✅ (completed: 2026-10-23 10:58; stable merged root ref, inert hidden dnd-kit live region, render args now required)
+- [x] 1.2.8 Add the missing-callback development warning and confirm arranging stays absent — `src/components/TileGrid/useTileGrid.ts`, `src/components/TileGrid/devWarnings.ts`; 03-01 Enablement, AR-12 ✅ (completed: 2026-10-23 10:58; one warning key, no handle or actions without the callback)
+- [x] 1.2.9 Run the Phase 1 specification tests to green and preserve every existing layout, selection, focus, marquee, and export oracle ✅ (completed: 2026-10-23 10:58; jsdom 12/12, Chromium drag 15/15; type-check green)
 
 **Deliverable:** Reorder behavior matching ST-1–ST-23 with no regression.
 **Verify:** Targeted green checks, then `pnpm verify`.
 
 ### Session 1.3 — Internal Tests and Hardening
 
-- [ ] 1.3.1 Add insertion, boundary conversion, payload, auto-scroll, and announcement internals — `test/tile-grid-reorder.impl.test.tsx`; 03-01, 07 Implementation Tests
-- [ ] 1.3.2 Run `pnpm verify && pnpm test:browser && pnpm test:perf`; record results and complete the strict independent phase-review loop
+- [x] 1.3.1 Add insertion, boundary conversion, payload, auto-scroll, and announcement internals — `test/tile-grid-reorder.impl.test.tsx`; 03-01, 07 Implementation Tests ✅ (completed: 2026-10-23 11:02; 17 internal cases pass)
+- [x] 1.3.2 Run `pnpm verify && pnpm test:browser && pnpm test:perf`; record results and complete the strict independent phase-review loop ✅ (completed: 2026-10-24 10:29; 828 unit / 108 Chromium / 17 performance; RV-001..RV-105 and PE-001..PE-101 closed, PE-005 deferred)
 
 **Deliverable:** Verified Phase 1 and closed or authorized review findings.
 **Verify:** `pnpm verify && pnpm test:browser && pnpm test:perf`.

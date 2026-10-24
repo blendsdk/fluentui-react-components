@@ -28,31 +28,31 @@
 
 ### Reorder behavior
 
-| #     | Input / Scenario                                                      | Expected Output / Behavior                                                                                                                | Source                              |
-| ----- | --------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
-| ST-1  | `reorderable` omitted or false                                        | No drag handle, reorder menu action, overlay, indicator, or reorder announcement renders                                                  | RD-04 AC1                           |
-| ST-2  | `reorderable` true and `reorderDisabled` true                         | No handle, listener, overlay, indicator, or keyboard reorder action renders                                                               | RD-04 AC2                           |
-| ST-3  | `reorderable` true without `onReorder`                                | No handle or reorder action renders; one development warning is emitted                                                                   | AR-12                               |
-| ST-4  | Drag the item at index 5 to before the item at index 2                | `onReorder` fires once with `{ itemId, fromIndex: 5, toIndex: 2, orderedIds }`; ordered IDs match the moved order; selection is unchanged | RD-04 AC3                           |
-| ST-5  | Drop an item at its current index                                     | No `onReorder` call and no announcement                                                                                                   | RD-04 AC3, AR-10                    |
-| ST-6  | Press Escape during a drag                                            | No `onReorder` call; the order is unchanged; the drag surface clears                                                                      | RD-04 AC4                           |
-| ST-7  | Release the pointer, then dispatch `lostpointercapture`               | The committed order stays; `onReorder` fired once                                                                                         | RD-04 AC4                           |
-| ST-8  | Drag across an insertion boundary                                     | A 2px vertical line appears before and after row-flow tiles and at the collection end                                                     | RD-04 AC5                           |
-| ST-9  | Drag across a masonry lane boundary                                   | A 2px horizontal line appears before and after tiles in the lane                                                                          | RD-04 AC5, AR-8                     |
-| ST-10 | Drag within 24px of the bottom edge                                   | `scrollTop` increases while the pointer stays in the zone; scrolling stops at drop                                                        | RD-04 AC6                           |
-| ST-11 | Drag within 24px of the top edge                                      | `scrollTop` decreases while the pointer stays in the zone; scrolling stops at cancel                                                      | RD-04 AC6                           |
-| ST-12 | Repeat the index-5-to-2 drag in fixed, masonry, justified, and mosaic | Every layout reports the same payload shape and final order                                                                               | RD-04 AC8                           |
-| ST-13 | Keyboard Move down on index 2 of 20                                   | `onReorder` reports index 3; the live region reads `Moved to position 4 of 20`                                                            | RD-04 AC7                           |
-| ST-14 | Keyboard Move up at index 0                                           | The action is disabled; no callback and no announcement                                                                                   | RD-04 AC7                           |
-| ST-15 | Keyboard Move down at the last index                                  | The action is disabled; no callback and no announcement                                                                                   | RD-04 AC7                           |
-| ST-16 | `reorderDisabled` true                                                | The overflow menu contains no Move up or Move down entry                                                                                  | RD-04 AC2, AC7                      |
-| ST-17 | Pointer-down on an action button                                      | No drag starts; no marquee starts; the tile is not activated                                                                              | RD-04 AC9                           |
-| ST-18 | Pointer-down on the selection control                                 | No drag starts; no marquee starts; selection behavior is unchanged                                                                        | RD-04 AC9                           |
-| ST-19 | Drag an item while three items are selected                           | The selection set is byte-for-byte unchanged                                                                                              | RD-04 AC3                           |
-| ST-20 | Drag start                                                            | The source tile has reduced opacity; the portal copy has no actions and no handle                                                         | RD-04 §Drag overlay                 |
-| ST-21 | Drop outside the grid bounds                                          | The insertion clamps to the nearest collection boundary and fires a normal `onReorder` if the index changes                               | AR-10                               |
-| ST-22 | Successful drop or keyboard move                                      | The shared polite region shows the reorder position; a later selection change replaces the message                                        | RD-04 AC7, AR-13                    |
-| ST-23 | Item is disabled by `isDisabled`                                      | No handle and no reorder actions render for that item                                                                                     | RD-04 §Opt-in, §Application disable |
+| #     | Input / Scenario                                                      | Expected Output / Behavior                                                                                                                                 | Source                              |
+| ----- | --------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| ST-1  | `reorderable` omitted or false                                        | No drag handle, reorder menu action, overlay, indicator, or reorder announcement renders                                                                   | RD-04 AC1                           |
+| ST-2  | `reorderable` true and `reorderDisabled` true                         | No handle, listener, overlay, indicator, or keyboard reorder action renders                                                                                | RD-04 AC2                           |
+| ST-3  | `reorderable` true without `onReorder`                                | No handle or reorder action renders; one development warning is emitted                                                                                    | AR-12                               |
+| ST-4  | Drag the item at index 5 to before the item at index 2                | `onReorder` fires once with `{ itemId, fromIndex: 5, toIndex: 2, orderedIds }`; ordered IDs match the moved order; selection is unchanged                  | RD-04 AC3                           |
+| ST-5  | Drop an item at its current index                                     | No `onReorder` call and no announcement                                                                                                                    | RD-04 AC3, AR-10                    |
+| ST-6  | Press Escape during a drag                                            | No `onReorder` call; the order is unchanged; the drag surface clears                                                                                       | RD-04 AC4                           |
+| ST-7  | Release the pointer, then dispatch `lostpointercapture`               | The committed order stays; `onReorder` fired once                                                                                                          | RD-04 AC4                           |
+| ST-8  | Drag across an insertion boundary                                     | A 2px vertical line appears before and after row-flow tiles and at the collection end                                                                      | RD-04 AC5                           |
+| ST-9  | Drag across a masonry lane boundary                                   | A 2px horizontal line appears before and after tiles in the lane                                                                                           | RD-04 AC5, AR-8                     |
+| ST-10 | Drag within 24px of the bottom edge                                   | `scrollTop` increases while the pointer stays in the zone; scrolling stops at drop                                                                         | RD-04 AC6                           |
+| ST-11 | Drag within 24px of the top edge                                      | `scrollTop` decreases while the pointer stays in the zone; scrolling stops at cancel                                                                       | RD-04 AC6                           |
+| ST-12 | Repeat the index-5-to-2 drag in fixed, masonry, justified, and mosaic | Every layout reports the same payload shape and final order                                                                                                | RD-04 AC8                           |
+| ST-13 | Keyboard Move down on index 2 of 20                                   | `onReorder` reports index 3; the live region reads `Moved to position 4 of 20`                                                                             | RD-04 AC7                           |
+| ST-14 | Keyboard Move up at index 0                                           | The action is disabled; no callback and no announcement                                                                                                    | RD-04 AC7                           |
+| ST-15 | Keyboard Move down at the last index                                  | The action is disabled; no callback and no announcement                                                                                                    | RD-04 AC7                           |
+| ST-16 | `reorderDisabled` true                                                | The overflow menu contains no Move up or Move down entry                                                                                                   | RD-04 AC2, AC7                      |
+| ST-17 | Pointer-down on an action button                                      | No drag starts; no marquee starts; the tile is not activated                                                                                               | RD-04 AC9                           |
+| ST-18 | Pointer-down on the selection control                                 | No drag starts; no marquee starts; selection behavior is unchanged                                                                                         | RD-04 AC9                           |
+| ST-19 | Drag an item while three items are selected                           | The selection set is byte-for-byte unchanged                                                                                                               | RD-04 AC3                           |
+| ST-20 | Drag start, including a multi-viewport auto-scroll                    | The source wrapper is marked dragging; the shell applies the reduced opacity; the portal copy stays alive through auto-scroll and has no actions or handle | RD-04 §Drag overlay                 |
+| ST-21 | Drop outside the grid bounds                                          | The insertion clamps to the nearest collection boundary and fires a normal `onReorder` if the index changes                                                | AR-10                               |
+| ST-22 | Successful drop or keyboard move                                      | The shared polite region shows the reorder position; a later selection change replaces the message                                                         | RD-04 AC7, AR-13                    |
+| ST-23 | Item is disabled by `isDisabled`                                      | No handle and no reorder actions render for that item                                                                                                      | RD-04 §Opt-in, §Application disable |
 
 ### Tile shell
 
@@ -114,8 +114,8 @@
 
 | Test File                                        | ST Cases Covered                                              | Component                                         |
 | ------------------------------------------------ | ------------------------------------------------------------- | ------------------------------------------------- |
-| `test/tile-grid-reorder.spec.test.tsx`           | ST-1..ST-5, ST-13..ST-16, ST-19, ST-22, ST-23                 | Reorder props, actions, announcements             |
-| `test/browser/tile-grid-drag.browser.test.tsx`   | ST-4, ST-6..ST-12, ST-17, ST-18, ST-20, ST-21                 | Pointer drag in a real browser                    |
+| `test/tile-grid-reorder.spec.test.tsx`           | ST-1..ST-3, ST-13..ST-16, ST-19, ST-22, ST-23                 | Reorder props, actions, announcements             |
+| `test/browser/tile-grid-drag.browser.test.tsx`   | ST-4..ST-12, ST-17, ST-18, ST-20, ST-21                       | Pointer drag, no-op drop, selection isolation     |
 | `test/tile-grid-item.spec.test.tsx`              | ST-24..ST-29, ST-33..ST-39, ST-41, ST-43, ST-44, ST-60, ST-61 | Tile shell                                        |
 | `test/browser/tile-grid-item.browser.test.tsx`   | ST-30..ST-32, ST-37, ST-40, ST-42, ST-62                      | Handle, touch reachability, menu focus, isolation |
 | `test/browser/tile-grid-recipe.browser.test.tsx` | ST-45..ST-54                                                  | Photo-library recipe                              |
@@ -128,6 +128,12 @@
 | -------------------------------------- | --------------------------------------------------------------------------------------------------------------- | -------- |
 | `test/tile-grid-reorder.impl.test.tsx` | Insertion math, boundary conversion, payload derivation, auto-scroll speed, RAF start/stop, shared announcement | High     |
 | `test/tile-grid-item.impl.test.tsx`    | Label fallback, menu composition, aspect-ratio normalization, attribute filtering                               | Medium   |
+
+### Performance Tests
+
+| Test File                                | Description                                                                                              | Priority |
+| ---------------------------------------- | -------------------------------------------------------------------------------------------------------- | -------- |
+| `test/perf/tile-grid-drag.perf.test.tsx` | Reorder-enabled 20K drag: mounted count, item-wrapper rectangle reads, render counts, auto-scroll frames | High     |
 
 ### Integration Tests
 

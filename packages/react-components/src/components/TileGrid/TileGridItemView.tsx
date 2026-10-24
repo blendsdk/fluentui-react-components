@@ -1,7 +1,23 @@
-import { memo, useId } from 'react';
-import type { CSSProperties, MouseEvent, ReactElement, ReactNode, RefCallback } from 'react';
+import { memo, useId, useMemo } from 'react';
+import type {
+  CSSProperties,
+  MouseEvent,
+  ReactElement,
+  ReactNode,
+  RefCallback,
+  SyntheticEvent,
+} from 'react';
+import { useDraggable } from '@dnd-kit/core';
+import type { DraggableAttributes, DraggableSyntheticListeners } from '@dnd-kit/core';
 import type { TileGridItemRect } from './geometry';
-import type { TileGridItemRenderArgs, TileGridSelectionMode } from './TileGrid.types';
+import type {
+  TileGridAction,
+  TileGridDragHandleProps,
+  TileGridItemRenderArgs,
+  TileGridSelectionMode,
+  TileGridStrings,
+} from './TileGrid.types';
+import { defaultTileGridStrings } from './strings';
 import { TileGridSelectionControl } from './TileGridSelectionControl';
 
 /** Props for the internal memoized tile wrapper. */
@@ -44,6 +60,14 @@ export interface TileGridItemViewProps<T> {
   tabIndex?: 0 | -1;
   /** Enables the owned input only while its active tile holds inline focus. */
   controlTabIndex?: 0 | -1;
+  /** Whether arranging is enabled for the grid. */
+  reorderEnabled?: boolean;
+  /** Active drag source ID, used for the source tile's reduced state. */
+  activeId?: string;
+  /** Fully resolved strings for handle names and content. */
+  strings?: TileGridStrings;
+  /** Returns the keyboard reorder actions for an item index. */
+  getReorderActions?: (index: number) => readonly TileGridAction<T>[] | undefined;
 }
 
 /** Keeps control and focus updates from invoking unchanged application content. */
@@ -58,6 +82,40 @@ function TileGridContentComponent<T>({
 }
 
 const TileGridContent = memo(TileGridContentComponent) as typeof TileGridContentComponent;
+
+/**
+ * Copies dnd-kit handle attributes without its keyboard-drag instructions.
+ *
+ * Keyboard reorder uses the action menu, so describing a keyboard drag gesture
+ * on the handle would promise behavior this component does not implement.
+ */
+function handleAttributes(
+  attributes: DraggableAttributes
+): Record<string, string | number | boolean | undefined> {
+  const next: Record<string, string | number | boolean | undefined> = { ...attributes };
+  delete next['aria-describedby'];
+  // The handle is pointer-only; keyboard reorder lives in the action menu.
+  // Removing dnd-kit's tab stop lets the default shell choose its own focus
+  // policy without pretending Enter/Space starts a keyboard drag.
+  delete next['tabIndex'];
+  return next;
+}
+
+/** Normalizes dnd-kit listener maps to the public handle contract. */
+function handleListeners(
+  listeners: DraggableSyntheticListeners
+): Record<string, (event: SyntheticEvent) => void> {
+  const next: Record<string, (event: SyntheticEvent) => void> = {};
+
+  for (const key of Object.keys(listeners ?? {})) {
+    const listener = listeners?.[key];
+    if (typeof listener === 'function') {
+      next[key] = event => listener(event);
+    }
+  }
+
+  return next;
+}
 
 /** Positions a labelled tile while keeping input and content lifecycles independent. */
 function TileGridItemViewComponent<T>({
@@ -80,8 +138,33 @@ function TileGridItemViewComponent<T>({
   itemRef,
   tabIndex = -1,
   controlTabIndex = -1,
+  reorderEnabled = false,
+  activeId,
+  strings = defaultTileGridStrings,
+  getReorderActions,
 }: TileGridItemViewProps<T>): ReactElement {
   const contentId = useId();
+  const canReorder = reorderEnabled && !disabled;
+  const { setNodeRef, attributes, listeners } = useDraggable({
+    id: rect.id,
+    disabled: !canReorder,
+  });
+  const dragging = reorderEnabled && activeId === rect.id;
+  const dragHandleProps = useMemo<TileGridDragHandleProps | undefined>(
+    () =>
+      canReorder
+        ? {
+            setNodeRef,
+            attributes: handleAttributes(attributes),
+            listeners: handleListeners(listeners),
+            isDragging: dragging,
+            disabled: false,
+            label: strings.dragHandleLabel(label),
+          }
+        : undefined,
+    [attributes, canReorder, dragging, label, listeners, setNodeRef, strings.dragHandleLabel]
+  );
+  const reorderActions = canReorder ? getReorderActions?.(index) : undefined;
   const position: CSSProperties = {
     top: rect.y,
     left: rect.x,
@@ -101,6 +184,7 @@ function TileGridItemViewComponent<T>({
       aria-disabled={disabled || undefined}
       data-tile-grid-item={rect.id}
       data-index={index}
+      data-dragging={dragging ? 'true' : undefined}
       className={className}
       style={position}
       onClick={onItemClick ? event => onItemClick(event, rect.id) : undefined}
@@ -125,6 +209,11 @@ function TileGridItemViewComponent<T>({
           selected={selected}
           selectable={selectable}
           disabled={disabled}
+          isDragging={dragging}
+          isOverlay={false}
+          dragHandleProps={dragHandleProps}
+          reorderActions={reorderActions}
+          strings={strings}
           renderItem={renderItem}
         />
       </div>

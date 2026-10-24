@@ -1,12 +1,16 @@
 import { useCallback, useEffect, useId, useMemo, useRef } from 'react';
 import type { ComponentPropsWithoutRef, CSSProperties, ReactNode, RefObject } from 'react';
 import { computeGeometry, normalizeGap, normalizeItems, normalizeTileSize } from './geometry';
-import type { TileGridGeometryResult, TileGridItemRect } from './geometry';
-import type { TileGridItemRenderArgs, TileGridProps } from './TileGrid.types';
+import type { TileGridGeometryResult, TileGridItemRect, TileGridLayout } from './geometry';
+import type { TileGridItemRenderArgs, TileGridProps, TileGridStrings } from './TileGrid.types';
+import { resolveTileGridStrings } from './strings';
+import { useTileGridReorder } from './reorder';
+import type { TileGridReorderState } from './reorder';
 import { devWarn } from './devWarnings';
 import { useGridSelection } from './selection';
 import { useTileGridInteractions } from './selection/useTileGridInteractions';
 import { useSelectionAnnouncement } from './selection/useSelectionAnnouncement';
+import { useLiveAnnouncement } from './useLiveAnnouncement';
 import { useTileGridFocus } from './focus/useTileGridFocus';
 import type { TileGridFocusState } from './focus/useTileGridFocus';
 import { useTileGridTabOrder } from './focus/useTileGridTabOrder';
@@ -74,8 +78,16 @@ export interface TileGridState<T> {
   isDisabled: (id: string) => boolean;
   /** Generated native group name, unique to this mounted grid. */
   radioName: string;
-  /** Latest committed count change, initially empty. */
-  selectionAnnouncement: string;
+  /** Latest selection or reorder message, initially empty. */
+  announcement: string;
+  /** Reorder controller state. */
+  reorder: TileGridReorderState<T>;
+  /** Fully resolved localizable strings. */
+  strings: TileGridStrings;
+  /** Resolved layout strategy. */
+  layout: TileGridLayout;
+  /** Resolved gap between tiles. */
+  gap: number;
   /** Logical entry, physical ownership, and mounted wrapper registration. */
   focus: TileGridFocusState;
   /** Transient background-gesture rectangle in cached content coordinates. */
@@ -123,6 +135,9 @@ export function useTileGrid<T>(props: TileGridProps<T>): TileGridState<T> {
     enableMarquee = false,
     isSelectable,
     isDisabled,
+    reorderable = false,
+    reorderDisabled = false,
+    onReorder,
     onItemActivate,
     scrollResetKey,
     zoomable = false,
@@ -132,13 +147,17 @@ export function useTileGrid<T>(props: TileGridProps<T>): TileGridState<T> {
     ...rootProps
   } = props;
   const rootRef = useRef<HTMLDivElement>(null);
+  const [announcement, announce] = useLiveAnnouncement();
   const radioName = useId();
   const classes = useTileGridStyles();
   const size = useContainerSize(rootRef);
   const normalized = useMemo(() => normalizeItems(items, getItemId), [items, getItemId]);
   const resolvedTileSize = normalizeTileSize(tileSize, minTileSize, maxTileSize);
   const resolvedGap = normalizeGap(gap);
-  const emptyMessage = strings?.emptyMessage?.trim() ? strings.emptyMessage.trim() : 'No items';
+  const resolvedStrings = useMemo(() => resolveTileGridStrings(strings), [strings]);
+  const emptyMessage = resolvedStrings.emptyMessage.trim()
+    ? resolvedStrings.emptyMessage.trim()
+    : 'No items';
   const ariaLabelledBy = rootProps['aria-labelledby'];
 
   const geometry = useMemo(
@@ -209,6 +228,18 @@ export function useTileGrid<T>(props: TileGridProps<T>): TileGridState<T> {
   });
 
   const currentIds = useMemo(() => normalized.items.map(getItemId), [normalized.items, getItemId]);
+  const reorder = useTileGridReorder<T>({
+    rootRef,
+    items: normalized.items,
+    currentIds,
+    visibleItemRects,
+    layout,
+    strings: resolvedStrings,
+    reorderable,
+    reorderDisabled,
+    onReorder,
+    announce,
+  });
   const itemById = useMemo(
     () => new Map(normalized.items.map(item => [getItemId(item), item])),
     [normalized.items, getItemId]
@@ -238,10 +269,11 @@ export function useTileGrid<T>(props: TileGridProps<T>): TileGridState<T> {
   });
   const selectionRef = useRef(selection);
   selectionRef.current = selection;
-  const selectionAnnouncement = useSelectionAnnouncement(
+  useSelectionAnnouncement(
     selection.selectedIds.size,
     normalized.items.length,
-    strings?.selectionCount
+    resolvedStrings.selectionCount,
+    announce
   );
 
   const marquee = useTileGridMarquee({
@@ -353,7 +385,20 @@ export function useTileGrid<T>(props: TileGridProps<T>): TileGridState<T> {
         'TileGrid ignores interactionMode when selection mode is none.'
       );
     }
-  }, [enableMarquee, selection.mode, props.interactionMode]);
+    if (reorderable && !reorderDisabled && onReorder === undefined) {
+      devWarn(
+        'tile-grid-reorder-callback',
+        'TileGrid arranging requires onReorder; arranging is disabled.'
+      );
+    }
+  }, [
+    enableMarquee,
+    selection.mode,
+    props.interactionMode,
+    reorderable,
+    reorderDisabled,
+    onReorder,
+  ]);
 
   useEffect(() => {
     if (normalized.duplicateIds.length > 0) {
@@ -418,7 +463,11 @@ export function useTileGrid<T>(props: TileGridProps<T>): TileGridState<T> {
     isDisabled: isItemDisabled,
     selectAll,
     radioName,
-    selectionAnnouncement,
+    announcement,
+    reorder,
+    strings: resolvedStrings,
+    layout,
+    gap: resolvedGap,
     focus,
     marqueeRect: marquee.rect,
     clearSelection,

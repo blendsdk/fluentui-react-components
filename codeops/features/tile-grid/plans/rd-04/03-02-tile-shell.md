@@ -188,10 +188,13 @@ Inline actions render at the top-right, in a row beside the menu trigger:
 ### Drag Handle
 
 - The default handle is a transparent icon button using `ReorderRegular`, named by
-  `dragHandleProps.label`, with `type="button"` so a surrounding form is never submitted.
+  `dragHandleProps.label`, with `type="button"` so a surrounding form is never submitted. It is
+  pointer-only (`tabIndex={-1}`), because keyboard reorder lives in the action menu, and carries
+  `data-tile-grid-drag-handle` for test and styling hooks.
 - It applies `dragHandleProps.setNodeRef`, `listeners`, and filtered `attributes`. The shell removes
-  dnd-kit's screen-reader keyboard-drag instructions because keyboard reorder uses the menu; the
-  label and disabled state remain.
+  dnd-kit's screen-reader keyboard-drag instructions and its tab stop because keyboard reorder uses
+  the menu; the label and disabled state remain. A custom `dragHandle` render prop decides its own
+  focus policy.
 - A supplied `dragHandle` render prop replaces the button and receives the same props. When
   `dragHandleProps` is absent, no handle renders even if a render prop is supplied.
 - The handle is absent when the tile is disabled or rendered as the overlay.

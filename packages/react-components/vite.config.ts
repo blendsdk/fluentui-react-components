@@ -26,6 +26,7 @@ export default defineConfig({
         /^react-hook-form($|\/)/,
         /^@fluentui\//,
         /^@tanstack\//,
+        /^@dnd-kit\//,
       ],
     },
   },

@@ -1,4 +1,4 @@
-import type { ComponentPropsWithoutRef, ReactNode } from 'react';
+import type { ComponentPropsWithoutRef, ReactNode, SyntheticEvent } from 'react';
 import type { TileGridLayout } from './geometry';
 
 export type { TileGridLayout };
@@ -25,6 +25,64 @@ export interface TileGridHandle {
 }
 
 /**
+ * Result reported after a drag drop or keyboard move changes the item order.
+ *
+ * The application owns the item array; the grid never mutates `items`.
+ */
+export interface TileGridReorderArgs {
+  /** ID of the moved item. */
+  itemId: string;
+  /** Zero-based index before the move in the current normalized item list. */
+  fromIndex: number;
+  /** Final zero-based index after the move. */
+  toIndex: number;
+  /** Complete ID order for the current items array, after the move. */
+  orderedIds: readonly string[];
+}
+
+/**
+ * Library-owned drag handle wiring passed to the default or custom handle.
+ *
+ * Raw dnd-kit types stay private; applications receive only these stable
+ * values.
+ */
+export interface TileGridDragHandleProps {
+  /** Attaches the drag sensor to the handle node. */
+  setNodeRef: (node: HTMLElement | null) => void;
+  /** Handle attributes; unsupported keyboard instructions are removed. */
+  attributes: Record<string, string | number | boolean | undefined>;
+  /** Pointer listeners that start and track the drag. */
+  listeners: Record<string, (event: SyntheticEvent) => void>;
+  /** Whether this tile is the active drag source. */
+  isDragging: boolean;
+  /** Whether arranging is unavailable for this tile. */
+  disabled: boolean;
+  /** Accessible handle name, normally `Reorder <item label>`. */
+  label: string;
+}
+
+/**
+ * Application-supplied action rendered by the tile shell.
+ *
+ * Actions are supplied by the application; the package never hardcodes
+ * domain-specific actions.
+ */
+export interface TileGridAction<T> {
+  /** Stable action identity. */
+  id: string;
+  /** Visible and accessible label; a blank label falls back to `id`. */
+  label: string;
+  /** Optional icon. When present, inline actions render icon-only. */
+  icon?: ReactNode;
+  /** Visual intent; defaults to `default`. */
+  intent?: 'default' | 'danger';
+  /** Runs once when the action is chosen. */
+  onSelect: (item: T) => void;
+  /** Optional per-item disabled state. */
+  isDisabled?: (item: T) => boolean;
+}
+
+/**
  * Arguments passed to the application's `renderItem` callback.
  *
  * The wrapper owns positioning and list semantics. The renderer draws the
@@ -47,14 +105,34 @@ export interface TileGridItemRenderArgs<T> {
   selectable: boolean;
   /** Whether this item is disabled. */
   disabled: boolean;
+  /** Whether this tile is the active drag source. */
+  isDragging: boolean;
+  /** Whether this content is the portal overlay copy. */
+  isOverlay: boolean;
+  /** Handle wiring; absent when arranging is unavailable. */
+  dragHandleProps?: TileGridDragHandleProps;
+  /** Move up and Move down actions; absent when arranging is unavailable. */
+  reorderActions?: readonly TileGridAction<T>[];
+  /** Resolved localizable strings. */
+  strings: TileGridStrings;
 }
 
-/** Localizable empty-state and committed-selection messages. */
+/** Localizable empty-state, selection, reorder, and menu messages. */
 export interface TileGridStrings {
   /** Message shown when there are no items. */
   emptyMessage: string;
   /** Formats the committed count, including hidden IDs, against the current item total. */
   selectionCount: (selected: number, total: number) => string;
+  /** Formats the drag handle name; defaults to `Reorder <item label>`. */
+  dragHandleLabel: (itemLabel: string) => string;
+  /** Keyboard move-up label; defaults to "Move up". */
+  moveUp: string;
+  /** Keyboard move-down label; defaults to "Move down". */
+  moveDown: string;
+  /** Formats the new position; defaults to `Moved to position <n> of <total>`. */
+  reorderPosition: (position: number, total: number) => string;
+  /** Accessible name for the overflow menu trigger; defaults to "More actions". */
+  moreActions: string;
 }
 
 /**
@@ -136,6 +214,12 @@ export interface TileGridProps<T> extends Omit<
    * Defaults to false. Keep the callback identity stable during marquee.
    */
   isDisabled?: (item: T) => boolean;
+  /** Enables single-item drag and keyboard arranging. Defaults to false. */
+  reorderable?: boolean;
+  /** Removes drag handles, listeners, and keyboard reorder while true. Defaults to false. */
+  reorderDisabled?: boolean;
+  /** Reports a changed order; arranging is disabled when omitted. */
+  onReorder?: (args: TileGridReorderArgs) => void;
   /** Receives enabled item activation from browse clicks, select double-clicks, or Enter. */
   onItemActivate?: (item: T) => void;
   /** Changing this key resets scroll to the top while retaining selection. Compared with Object.is. */
