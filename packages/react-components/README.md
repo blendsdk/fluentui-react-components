@@ -929,17 +929,15 @@ Call `run` from event handlers or effects, not during render.
 
 ### TileGrid (unreleased)
 
-> **Internal development surface.** The package does not publish or tag this
-> component until the tile-shell and arranging work completes and
-> the final public contract, export pin and dependency set are frozen. It is
-> not exported from the package root in the current release; the example below
-> documents the intended public API.
+> **Source-complete, not yet published.** The source package root now exports
+> `TileGrid`, `TileGridItem` and their public types, but no npm release contains
+> them yet. The final dependency and pack freeze is a separate release step.
 
 `TileGrid<T>` is a generic, virtualized tile collection with fixed, masonry,
 justified and mosaic layouts. It owns the scroll container and list semantics;
 the application owns the items, tile content and selection state. The grid
-ships with `@tanstack/react-virtual` as a direct dependency, installed with the
-package; React, Fluent UI and React Hook Form stay peers.
+ships with `@tanstack/react-virtual` and `@dnd-kit/core` as direct dependencies;
+React, Fluent UI, Fluent icons and React Hook Form stay peers.
 
 #### Scroll contract
 
@@ -986,10 +984,13 @@ scroll helpers are not public.
 | `isDisabled`          | `(item: T) => boolean`                             | `() => false` | Blocks selection/activation; the item remains readable and keyboard reachable.                                    |
 | `onItemActivate`      | `(item: T) => void`                                | —             | Receives browse click, select-mode double-click, or wrapper Enter activation.                                     |
 | `enableMarquee`       | `boolean`                                          | `false`       | Mouse/pen background selection in multiselect mode.                                                               |
+| `reorderable`         | `boolean`                                          | `false`       | Enables single-item pointer and keyboard arranging.                                                               |
+| `reorderDisabled`     | `boolean`                                          | `false`       | Removes handles, listeners and keyboard reorder actions while true.                                               |
+| `onReorder`           | `(args: TileGridReorderArgs) => void`              | —             | Reports a changed order; arranging is disabled when omitted.                                                      |
 | `scrollResetKey`      | `unknown`                                          | —             | An `Object.is` change resets to the top, retaining membership.                                                    |
 | `zoomable`            | `boolean`                                          | `false`       | Enables wrapper keyboard zoom when a size callback is supplied.                                                   |
 | `onTileSizeChange`    | `(size: number) => void`                           | —             | Requests a bounded size; the application applies it through `tileSize`.                                           |
-| `strings`             | `Partial<TileGridStrings>`                         | —             | `emptyMessage` and `selectionCount(selected, total)`.                                                             |
+| `strings`             | `Partial<TileGridStrings>`                         | —             | Localizable empty, selection, reorder and menu messages.                                                          |
 | `ref`                 | `React.Ref<TileGridHandle>`                        | —             | Access to `selectAll`, `clearSelection` and `scrollToSelected`.                                                   |
 | …                     | `ComponentPropsWithoutRef<'div'>`                  | —             | Native root props pass through except `children`, `role`, `aria-label`, `tabIndex` and `dangerouslySetInnerHTML`. |
 
@@ -1078,13 +1079,173 @@ The handle exposes `selectAll()`, `clearSelection()` and `scrollToSelected()`.
 `selectAll()` is multiselect-only; `clearSelection()` also clears hidden IDs;
 `scrollToSelected()` targets the first selected item in current order.
 
-#### Empty state and strings
+#### Arranging
 
-The default empty message is `No items`. Override it with
-`strings={{ emptyMessage: 'No photos' }}`; a blank string falls back to the
-default. `renderEmpty()` replaces the whole empty state and wins over the
-string. The empty state is rendered as the list's single list item inside the
-named root.
+Arranging is opt-in. `reorderable` adds a pointer-only drag handle and the
+`Move up` / `Move down` keyboard actions. `onReorder` is the commit: the grid
+reports the new order and never mutates `items` or the selection set. The
+application applies `orderedIds` by ID, so a controlled order update is the only
+way the displayed order changes.
+
+```tsx
+<TileGrid
+  items={photos}
+  getItemId={photo => photo.id}
+  getItemLabel={photo => photo.name}
+  reorderable
+  onReorder={({ orderedIds }) => setPhotos(applyOrder(orderedIds))}
+  renderItem={renderPhotoTile}
+/>
+```
+
+`TileGridReorderArgs` contains `itemId`, `fromIndex`, `toIndex` and the complete
+`orderedIds`. `toIndex` is the final index after removal. A drop at the current
+index fires nothing. A drop outside the mounted grid clamps to the nearest
+collection boundary. Escape or a pointer cancel clears the drag surface without
+calling `onReorder`. A committed pointer-up stays committed if a late
+`lostpointercapture` arrives.
+
+The drag source keeps its place with reduced opacity. The portal overlay starts
+at the tile rectangle, follows the pointer, shows the same content without
+actions or a handle, and is removed on drop or cancel. A 2px accent line marks
+the insertion boundary: vertical in row flow, horizontal inside masonry lanes.
+Holding the pointer within 24px of the top or bottom edge auto-scrolls
+proportionally (about 4–18 px per frame); leaving the zone or dropping stops it.
+
+While `reorderDisabled` is true, no handle, drag listener, overlay or keyboard
+reorder action renders. The same is true for an item disabled by `isDisabled`,
+and for the portal overlay copy. When `reorderable` is true but `onReorder` is
+omitted, arranging stays absent and development builds warn once.
+
+Keyboard arranging uses the tile shell's action menu. `Move up` and `Move down`
+are disabled at the collection ends and report the same payload as a drag. A
+successful move writes the new position to the shared polite status region; a
+later selection change replaces that message. Dragging or moving items never
+changes selection membership.
+
+#### Tile shell
+
+`TileGridItem<T>` is the optional Fluent presentation shell for `renderItem`.
+It is not required: an application can keep drawing its own tile content. The
+shell renders media, readable text, badges, a selection indicator, a status
+overlay, actions and the default drag handle inside the wrapper that `TileGrid`
+positions. It never selects, activates, drags or reorders on its own.
+
+```tsx
+<TileGridItem
+  item={photo}
+  selected={selected}
+  selectable={selectable}
+  disabled={disabled}
+  isDragging={isDragging}
+  isOverlay={isOverlay}
+  dragHandleProps={dragHandleProps}
+  reorderActions={reorderActions}
+  strings={strings}
+  media={<img src={photo.thumbnailUrl} alt="" loading="lazy" />}
+  title={photo.name}
+  description={photo.description}
+  badges={<Badge appearance="tint">RAW</Badge>}
+  actions={[{ id: 'preview', label: 'Preview', icon: <EyeRegular />, onSelect: openPreview }]}
+  overflowActions={[
+    { id: 'favorite', label: 'Favorite', icon: <StarRegular />, onSelect: toggleFavorite },
+  ]}
+/>
+```
+
+| Prop                 | Type                              | Default      | Description                                                                       |
+| -------------------- | --------------------------------- | ------------ | --------------------------------------------------------------------------------- |
+| `item`               | `T`                               | — (required) | Original item passed to action callbacks and predicates.                          |
+| `media`              | `ReactNode`                       | —            | Media node, typically an image or video.                                          |
+| `title`              | `ReactNode`                       | —            | Primary text; replaces the native title attribute.                                |
+| `description`        | `ReactNode`                       | —            | Secondary text.                                                                   |
+| `badges`             | `ReactNode`                       | —            | Badge row below the description.                                                  |
+| `actions`            | `readonly TileGridAction<T>[]`    | —            | Inline actions, always duplicated into the overflow menu.                         |
+| `overflowActions`    | `readonly TileGridAction<T>[]`    | —            | Menu-only actions.                                                                |
+| `selectionIndicator` | `ReactNode`                       | —            | Replaces the default check badge.                                                 |
+| `statusOverlay`      | `ReactNode`                       | —            | Overlay above media; only its interactive descendants receive pointer events.     |
+| `dragHandle`         | `(props) => ReactNode`            | —            | Replaces the default handle.                                                      |
+| `dragHandleProps`    | `TileGridDragHandleProps`         | —            | Library wiring; absent when arranging is unavailable.                             |
+| `reorderActions`     | `readonly TileGridAction<T>[]`    | —            | Move up / Move down actions supplied by the grid.                                 |
+| `strings`            | `Partial<TileGridStrings>`        | —            | Localized strings; partial over English defaults.                                 |
+| `selected`           | `boolean`                         | `false`      | Visual selection state.                                                           |
+| `selectable`         | `boolean`                         | `true`       | Hides the selection badge when false.                                             |
+| `disabled`           | `boolean`                         | `false`      | Marks the root disabled and suppresses actions and the handle.                    |
+| `isDragging`         | `boolean`                         | `false`      | Marks the source tile; applies reduced opacity.                                   |
+| `isOverlay`          | `boolean`                         | `false`      | Marks the portal copy; suppresses actions, handle and pointer events.             |
+| `fit`                | `'cover' \| 'contain'`            | `'cover'`    | Media fit inside the aspect-ratio box.                                            |
+| `aspectRatio`        | `number`                          | `1`          | Media ratio; invalid values fall back to 1.                                       |
+| …                    | `ComponentPropsWithoutRef<'div'>` | —            | Native props except `children`, `aria-disabled` and the native `title` attribute. |
+
+`TileGridAction<T>` has `id`, `label`, `onSelect(item)`, optional `icon`,
+optional `intent` (`default` or `danger`), and optional `isDisabled(item)`.
+Inline actions are icon-only when an icon exists, and text-only otherwise; the
+label is always the accessible name. A blank label falls back to the action id.
+Every `actions` entry is also present in the overflow menu so touch users never
+lose access. Menu order is `actions`, then `overflowActions`, then
+`reorderActions`. The menu trigger is named by `strings.moreActions`, focus
+returns to it after a menu action, and menu content never selects the tile.
+
+The default selection indicator is a check badge at the top-right when
+`selected` is true and `selectable` is not false. The status overlay covers the
+media but ignores pointer events; buttons and links inside it opt back in. The
+media keeps its ratio, the content yields first only after the media, and the
+root clips overflow. `className` and `style` merge with the shell values and the
+caller wins. Native `aria-disabled` is written from `disabled`, so a caller
+cannot claim an enabled state the grid disabled.
+
+The default drag handle is a transparent icon button with the item-derived
+accessible name. It is pointer-only: it is removed from the tab order and
+dnd-kit's keyboard instructions are filtered, because keyboard arranging lives
+in the action menu. A custom `dragHandle` render prop receives the node ref,
+attributes, pointer listeners, dragging state, disabled state and label. A
+custom handle without `dragHandleProps` is never rendered.
+
+The media is a React node, so the application owns URL allowlisting, fallback
+content and network behavior. Use `loading="lazy"`, `decoding="async"`, explicit
+width and height, and empty `alt=""` when the tile label already names the
+image. Add `srcSet` and `sizes` when the application has multiple image sizes;
+the 20K fixture deliberately has one.
+
+#### Strings
+
+| Key               | Default                            | Use                                    |
+| ----------------- | ---------------------------------- | -------------------------------------- |
+| `emptyMessage`    | `No items`                         | Empty-state text.                      |
+| `selectionCount`  | `<selected> of <total> selected`   | Polite selection announcement.         |
+| `dragHandleLabel` | `Reorder <item label>`             | Default handle accessible name.        |
+| `moveUp`          | `Move up`                          | Keyboard reorder menu action.          |
+| `moveDown`        | `Move down`                        | Keyboard reorder menu action.          |
+| `reorderPosition` | `Moved to position <n> of <total>` | Polite reorder announcement.           |
+| `moreActions`     | `More actions`                     | Overflow menu trigger accessible name. |
+
+#### Photo-library recipe
+
+The `PhotoLibraryRecipe` story is the 20K integration composition. It is also
+the browser-tested recipe: the test mounts the exported story component, not a
+parallel fixture.
+
+- The fixture supplies 20,000 deterministic data-URL thumbnails, so no network
+  request is made and the mounted image count is the request boundary.
+- The application owns `order`, filters, selection, favorites, tile size and the
+  preview. `onReorder` maps `orderedIds` back through an ID map.
+- `query` filters tile labels; the orientation dropdown filters portrait, square
+  and landscape ratios. Both filters advance `scrollResetKey`, so the grid
+  returns to the top while the selected IDs stay controlled and preserved.
+- Arranging is enabled only while both filters are empty. While filtered the
+  grid receives `reorderDisabled`, which removes handles and keyboard reorder
+  actions; clearing the filters restores them.
+- `onItemActivate` opens a non-modal, application-owned Fluent `Dialog` with the
+  image and label. The toolbar remains usable while it is open; the dialog
+  closes when the previewed ID leaves the filtered set.
+- Images use `loading="lazy"`, `decoding="async"`, explicit dimensions and
+  `alt=""`. The package never fetches, validates or logs an image URL.
+- Fewer than 120 tiles and images mount at 1440×900 in every layout, including
+  the two-row overscan used by the virtualizer.
+
+The recipe deliberately contains no package-owned lightbox, filter toolbar,
+upload, editing or authorization logic. Applications copy the composition and
+replace the fixture with their authorized data source.
 
 #### Accessibility and performance
 
@@ -1123,8 +1284,10 @@ retains its context. Native form reset preserves current checked presentation
 (including a drag preview) while ordinary form fields reset normally.
 
 A separate polite status region starts empty and announces only effective
-committed count changes. The default is `1,234 of 2,000 selected`; override
-`strings.selectionCount` for localization. Hidden IDs count toward selected,
+committed count or reorder changes. The default selection message is
+`1,234 of 2,000 selected`; the default reorder message is
+`Moved to position 3 of 20`. Override `strings.selectionCount` and
+`strings.reorderPosition` for localization. Hidden IDs count toward selected,
 so that count can exceed the current item total. Same-count changes, rejected
 proposals, previews, and cancellations stay silent.
 
@@ -1149,19 +1312,21 @@ At 20K items the grid mounts only the visible window plus two rows of overscan
 (under 120 wrappers at 1440×900, 160px tiles and 8px gaps). Pass stable
 `getItemId`, `getItemLabel`, aspect-ratio and `renderItem` callbacks (module
 functions or `useCallback`) so a selection change re-renders only the affected
-mounted cell. The `TwentyThousandBenchmark` Storybook story and the browser/
-performance suites exercise the same fixture.
+mounted cell. The `TwentyThousandBenchmark` and `PhotoLibraryRecipe` Storybook
+stories and the browser/performance suites exercise the same fixture.
 
 #### Remaining release boundaries
 
-- No tile shell, actions, drag/reorder or full photo-library recipe yet.
+- The source package root exports TileGrid and TileGridItem; the next npm
+  release publishes them after the final dependency and pack freeze. Deep
+  imports remain blocked by the package `exports` map.
 - A singleton eligible item uses one real radio. This is an accepted narrow
   HTML authoring-conformance exception; no fake peer is inserted. The component
   maintainer revisits it if release conformance needs change or browser/assistive
   technology evidence reveals a functional issue.
-- Final composed types, export pin, and dependencies are not frozen. TileGrid
-  remains absent from published runtime exports and declarations. The intended
-  example import above is not available in the current npm release.
+- Multi-item and cross-grid drag, touch long-press drag, RTL arranging, a built-in
+  lightbox/upload/editing surface, server persistence and image URL validation
+  are out of scope for the package.
 
 ## Agent skills
 

@@ -72,3 +72,19 @@ export type { LoadingOverlayProps } from './components/LoadingOverlay';
 export { SystemErrorProvider } from './components/SystemErrorProvider';
 export { useSystemError } from './components/SystemErrorProvider';
 export type { CatchErrorOptions, SystemErrorProviderProps } from './components/SystemErrorProvider';
+
+export { TileGrid } from './components/TileGrid';
+export type {
+  TileGridAction,
+  TileGridDragHandleProps,
+  TileGridHandle,
+  TileGridInteractionMode,
+  TileGridItemRenderArgs,
+  TileGridLayout,
+  TileGridProps,
+  TileGridReorderArgs,
+  TileGridSelectionMode,
+  TileGridStrings,
+} from './components/TileGrid';
+export { TileGridItem } from './components/TileGridItem';
+export type { TileGridItemProps } from './components/TileGridItem';

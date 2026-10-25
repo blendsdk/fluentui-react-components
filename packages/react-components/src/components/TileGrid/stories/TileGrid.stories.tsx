@@ -12,7 +12,7 @@ const meta: Meta<typeof TileGrid> = {
           'A measured tile grid with fixed, masonry, justified and mosaic layouts. The grid root',
           'is the scroll container; the application sizes its parent, owns the data and supplies',
           'the tile content through `renderItem`.',
-          'Selection controls, keyboard navigation, filtering persistence and optional marquee are available in this internal workbench. TileGrid remains unreleased until its composed contract is frozen.',
+          'Selection controls, keyboard navigation, filtering persistence, optional marquee, pointer arranging and the optional TileGridItem shell are available in this workbench. The npm release still waits for the final package freeze.',
           '',
           '**Manual review checklist (run in a real browser):**',
           '',
@@ -24,8 +24,10 @@ const meta: Meta<typeof TileGrid> = {
           '6. Selection — in Selection, plain click replaces, Ctrl/Cmd toggles, Shift extends from the anchor, and the Select all/Clear buttons update the count and the selected outline.',
           '7. Accessibility — every story exposes a named list with labelled list items; the a11y addon reports no violations.',
           '8. 20K — open TwentyThousandBenchmark: the 900px frame scrolls 20,000 items and mounts only the visible window plus overscan.',
+          '9. Drag — open Drag, choose each layout and drag a handle: the overlay follows the pointer, the accent line marks the boundary, and a held pointer near an edge auto-scrolls.',
+          '10. Photo library — open PhotoLibraryRecipe: filter by label or orientation, confirm selection survives, preview a tile, zoom, and confirm handles disappear while filtered.',
+          '11. Tile shell — open Components/TileGridItem: compare slots, states, actions and the default, custom and absent drag handles.',
           '',
-          'Keyboard navigation and the full photo-library recipe are added with later work.',
         ].join('\n'),
       },
     },
@@ -43,3 +45,5 @@ export { InteractionModes } from './TileGridInteractionModes.story';
 export { MarqueeSelection } from './TileGridMarqueeSelection.story';
 export { FilteringAndZoom } from './TileGridFilteringAndZoom.story';
 export { TwentyThousandBenchmark } from './TileGridTwentyThousandBenchmark.story';
+export { Drag } from './TileGridDrag.story';
+export { PhotoLibraryRecipe } from './TileGridPhotoLibrary.story';

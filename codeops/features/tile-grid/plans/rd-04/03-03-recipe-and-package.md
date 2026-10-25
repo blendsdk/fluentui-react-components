@@ -21,7 +21,9 @@ surface makes the completed contract reachable from the package root.
 | `src/components/TileGridItem/stories/TileGridItem.stories.tsx`   | `AllSlots`, `States`, `Actions`, `DragHandle` | Shell documentation                                        |
 
 `PhotoLibraryRecipe` is a component export so `test/browser/tile-grid-recipe.browser.test.tsx` can
-mount the exact story composition instead of a parallel fixture.
+mount the exact story composition instead of a parallel fixture. It accepts an optional `layout`
+prop (default `fixed`) so the measurement test can mount the same composition in each layout;
+Storybook uses the default.
 
 ### State and Data
 
@@ -131,9 +133,11 @@ package. The favorite state is local story state and is reflected in a badge.
 
 ### Preview Boundary
 
-`onItemActivate` opens a Fluent `Dialog` containing the image, the label, and a close action.
-The dialog is application-owned; the package contains no lightbox, upload, or editing surface.
-Closing the dialog returns focus according to Fluent Dialog behavior.
+`onItemActivate` opens a non-modal Fluent `Dialog` containing the image, the label, and a close
+action. Keeping it non-modal lets the toolbar filters stay usable while a preview is open; the
+recipe closes the dialog when the previewed ID leaves the filtered set. The dialog is
+application-owned; the package contains no lightbox, upload, or editing surface. Closing the dialog
+returns focus according to Fluent Dialog behavior.
 
 ### Filtering and Arranging
 

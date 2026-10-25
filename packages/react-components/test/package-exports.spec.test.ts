@@ -35,6 +35,17 @@ import type {
   LoadingOverlayProps,
   LoadingProps,
   SystemErrorProviderProps,
+  TileGridAction,
+  TileGridDragHandleProps,
+  TileGridHandle,
+  TileGridInteractionMode,
+  TileGridItemProps,
+  TileGridItemRenderArgs,
+  TileGridLayout,
+  TileGridProps,
+  TileGridReorderArgs,
+  TileGridSelectionMode,
+  TileGridStrings,
 } from '../src/index';
 
 describe('package export surface', () => {
@@ -42,8 +53,6 @@ describe('package export surface', () => {
     // Consumers import from the package root, so the runtime surface is part
     // of the contract: every documented component is reachable and no
     // internal module leaks out.
-    // TileGrid is intentionally absent until its public contract is frozen for
-    // release; internal tests import it from its component folder.
     expect(Object.keys(api).sort()).toEqual([
       'AppLauncher',
       'AppLauncherGrid',
@@ -68,10 +77,108 @@ describe('package export surface', () => {
       'Loading',
       'LoadingOverlay',
       'SystemErrorProvider',
+      'TileGrid',
+      'TileGridItem',
       'useConfirm',
       'useLoading',
       'useSystemError',
     ]);
+  });
+
+  it('exports the public TileGrid and TileGridItem types', () => {
+    // The imports above only compile when the package root exports them; the
+    // values keep the file local-usage clean under noUnusedLocals.
+    interface Photo {
+      id: string;
+      label: string;
+    }
+
+    const action: TileGridAction<Photo> = {
+      id: 'open',
+      label: 'Open',
+      onSelect: () => {},
+    };
+    const handle: TileGridHandle = {
+      selectAll: () => {},
+      clearSelection: () => {},
+      scrollToSelected: () => {},
+    };
+    const handleProps: TileGridDragHandleProps = {
+      setNodeRef: () => {},
+      attributes: {},
+      listeners: {},
+      isDragging: false,
+      disabled: false,
+      label: 'Reorder A',
+    };
+    const reorder: TileGridReorderArgs = {
+      itemId: 'a',
+      fromIndex: 0,
+      toIndex: 1,
+      orderedIds: ['b', 'a'],
+    };
+    const strings: TileGridStrings = {
+      emptyMessage: 'No photos',
+      selectionCount: (selected, total) => `${selected} of ${total} selected`,
+      dragHandleLabel: label => `Reorder ${label}`,
+      moveUp: 'Move up',
+      moveDown: 'Move down',
+      reorderPosition: (position, total) => `Position ${position} of ${total}`,
+      moreActions: 'More actions',
+    };
+    const renderArgs: TileGridItemRenderArgs<Photo> = {
+      item: { id: 'a', label: 'A' },
+      index: 0,
+      tileSize: 160,
+      width: 160,
+      height: 160,
+      selected: false,
+      selectable: true,
+      disabled: false,
+      isDragging: false,
+      isOverlay: false,
+      dragHandleProps: handleProps,
+      reorderActions: [action],
+      strings,
+    };
+    const layout = 'masonry' satisfies TileGridLayout;
+    const selectionMode = 'multiselect' satisfies TileGridSelectionMode;
+    const interactionMode = 'browse' satisfies TileGridInteractionMode;
+    const gridProps: TileGridProps<Photo> = {
+      items: [renderArgs.item],
+      getItemId: item => item.id,
+      getItemLabel: item => item.label,
+      renderItem: () => null,
+      layout,
+      selectionMode,
+      interactionMode,
+      strings,
+    };
+    const itemProps: TileGridItemProps<Photo> = {
+      item: renderArgs.item,
+      title: 'A',
+      actions: [action],
+      dragHandleProps: handleProps,
+      reorderActions: [action],
+      strings,
+    };
+    const wrongItemProps: TileGridItemProps<Photo> = {
+      // @ts-expect-error The item must match the declared item type.
+      item: { id: 'video-1', duration: 4 },
+    };
+
+    expect(action.id).toBe('open');
+    expect(handle).toBeDefined();
+    expect(handleProps.label).toBe('Reorder A');
+    expect(reorder.toIndex).toBe(1);
+    expect(strings.moreActions).toBe('More actions');
+    expect(renderArgs.tileSize).toBe(160);
+    expect(layout).toBe('masonry');
+    expect(selectionMode).toBe('multiselect');
+    expect(interactionMode).toBe('browse');
+    expect(gridProps.items).toHaveLength(1);
+    expect(itemProps.title).toBe('A');
+    expect(wrongItemProps).toBeDefined();
   });
 
   it('exports the public ErrorDialog types', () => {

@@ -1,8 +1,8 @@
 # Execution Plan: TileGrid RD-04
 
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-24 23:55
-> **Progress**: 27/41 tasks (66%)
+> **Last Updated**: 2026-10-25 23:50
+> **Progress**: 37/41 tasks (90%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -133,7 +133,7 @@ skill with the selected execution mode.
 
 ## Phase 3: Recipe, Documentation, and Package Surface
 
-> **Phase baseline tree**: _(recorded by the exec-plan skill)_
+> **Phase baseline tree**: `4e3e85366c141d118cd135bbae4b6510e125bcab`
 > **Scope mode**: strict
 > **Expected modification set**: Phase 3 task paths under `packages/react-components/`, the feature roadmap link, this plan's execution evidence, and the derived TileGrid roadmap status. No npm publication.
 > **Lenses**: api-surface, perf
@@ -145,28 +145,28 @@ skill with the selected execution mode.
 
 **Reference:** 03-03; AR-4, AR-9, AR-27, AR-28, AR-29, AR-30, AR-33; 07 ST-45–ST-59.
 
-- [ ] 3.1.1 [spec-author] Add recipe filtering, selection persistence, disabled arranging, preview, mounted-count, and image-count oracles — `test/browser/tile-grid-recipe.browser.test.tsx`; ST-45–ST-54
-- [ ] 3.1.2 [spec-author] Update the exact export pin and type contract — `test/package-exports.spec.test.ts`; ST-55–ST-57
-- [ ] 3.1.3 Run the targeted specs and type-check; record expected red failures
+- [x] 3.1.1 [spec-author] Add recipe filtering, selection persistence, disabled arranging, preview, mounted-count, and image-count oracles — `test/browser/tile-grid-recipe.browser.test.tsx`; ST-45–ST-54 ✅ (completed: 2026-10-25 23:40; 9 browser invocations; red at the missing story module)
+- [x] 3.1.2 [spec-author] Update the exact export pin and type contract — `test/package-exports.spec.test.ts`; ST-55–ST-57 ✅ (completed: 2026-10-25 23:40; runtime pin expects TileGrid and TileGridItem; type contract covers every new type plus the rejected item mismatch)
+- [x] 3.1.3 Run the targeted specs and type-check; record expected red failures ✅ (completed: 2026-10-25 23:40; recipe file failed to import the missing story; export pin failed on the two absent keys; type-check reported the expected missing-export and missing-module errors)
 
 **Deliverable:** Immutable Phase 3 oracles and red evidence.
 **Verify:** Targeted Vitest files and `pnpm type-check`; expected red before implementation.
 
 ### Session 3.2 — Implementation
 
-- [ ] 3.2.1 Add the 20K photo-library recipe with toolbar, filters, zoom, selection count, preview, and shell content — `src/components/TileGrid/stories/TileGridPhotoLibrary.story.tsx`; 03-03 Recipe
-- [ ] 3.2.2 Add the drag story and register both stories — `src/components/TileGrid/stories/TileGridDrag.story.tsx`, `src/components/TileGrid/stories/TileGrid.stories.tsx`; 03-03 Drag Story
-- [ ] 3.2.3 Add the shell story set — `src/components/TileGridItem/stories/TileGridItem.stories.tsx`; 03-03 TileGridItem Stories
-- [ ] 3.2.4 Document the shipped contract and recipe — `README.md`; 03-03 README Updates
-- [ ] 3.2.5 Complete the package exports and declaration build — `src/index.ts`, `src/components/TileGrid/index.ts`, `src/components/TileGridItem/index.ts`, `tsconfig.build.json`; 03-03 Package Surface, AR-4
-- [ ] 3.2.6 Run the Phase 3 specification tests to green and preserve every prior oracle
+- [x] 3.2.1 Add the 20K photo-library recipe with toolbar, filters, zoom, selection count, preview, and shell content — `src/components/TileGrid/stories/TileGridPhotoLibrary.story.tsx`; 03-03 Recipe ✅ (completed: 2026-10-25 23:42; 9 recipe browser cases green)
+- [x] 3.2.2 Add the drag story and register both stories — `src/components/TileGrid/stories/TileGridDrag.story.tsx`, `src/components/TileGrid/stories/TileGrid.stories.tsx`; 03-03 Drag Story ✅ (completed: 2026-10-25 23:50; four-layout layout dropdown, local order, shell rendering, registered in the workbench)
+- [x] 3.2.3 Add the shell story set — `src/components/TileGridItem/stories/TileGridItem.stories.tsx`; 03-03 TileGridItem Stories ✅ (completed: 2026-10-25 23:50; AllSlots, States, Actions and DragHandle)
+- [x] 3.2.4 Document the shipped contract and recipe — `README.md`; 03-03 README Updates ✅ (completed: 2026-10-25 23:50; arranging, shell, strings, recipe, images, dependencies and release boundaries)
+- [x] 3.2.5 Complete the package exports and declaration build — `src/index.ts`, `src/components/TileGrid/index.ts`, `src/components/TileGridItem/index.ts`, `tsconfig.build.json`; 03-03 Package Surface, AR-4 ✅ (completed: 2026-10-25 23:50; complete root surface, declarations emitted, and the pre-freeze package guard updated to the completed surface)
+- [x] 3.2.6 Run the Phase 3 specification tests to green and preserve every prior oracle ✅ (completed: 2026-10-25 23:50; recipe 9/9 and export pin 19/19 targeted green; full verify 872 unit and build green)
 
 **Deliverable:** Recipe and package surface matching ST-45–ST-57.
 **Verify:** Targeted green checks, then `pnpm verify`.
 
 ### Session 3.3 — Hardening and Final Gates
 
-- [ ] 3.3.1 Run `pnpm verify`; record the full unit/type/build result
+- [x] 3.3.1 Run `pnpm verify`; record the full unit/type/build result ✅ (completed: 2026-10-25 23:50; 872 unit tests, 77 files, type-check and declaration build green)
 - [ ] 3.3.2 Run `pnpm test:browser` and `pnpm test:browser:all`; record Chromium, Firefox, and WebKit results
 - [ ] 3.3.3 Run `pnpm test:perf` and `pnpm storybook:build`; confirm no regression and a complete story index
 - [ ] 3.3.4 Run `pnpm pack:check`; confirm the tarball contains the TileGrid and TileGridItem declarations, both skills, and no source or story files

@@ -12,8 +12,6 @@
     "src/**/*.stories.ts",
     "src/**/*.stories.tsx",
     "src/**/*.story.ts",
-    "src/**/*.story.tsx",
-    "src/components/TileGrid/**",
-    "src/components/TileGridItem/**"
+    "src/**/*.story.tsx"
   ]
 }

@@ -337,15 +337,16 @@ describe('TileGrid combined application flows', () => {
     expect(info).not.toHaveBeenCalled();
   });
 
-  it('keeps the usable local component out of the stable runtime and declaration package', () => {
-    // Existing exact-export and node-import oracles remain authoritative; this also checks built output.
+  it('exposes the completed TileGrid surface in the stable runtime and declaration package', () => {
+    // The complete public surface replaces the earlier "keep TileGrid local" guard.
     expect(TileGrid).toBeTypeOf('function');
-    expect(Object.keys(packageRoot).some(name => /TileGrid|GridSelection|Marquee/.test(name))).toBe(
-      false
-    );
+    expect(packageRoot.TileGrid).toBe(TileGrid);
+    expect(packageRoot.TileGridItem).toBeTypeOf('function');
+    expect(Object.keys(packageRoot).some(name => /GridSelection|Marquee/.test(name))).toBe(false);
     // Package test commands run here; jsdom's transformed module URLs are HTTP, not file URLs.
-    expect(readFileSync('dist/index.js', 'utf8')).not.toContain('TileGrid');
-    expect(readFileSync('dist/index.d.ts', 'utf8')).not.toContain('TileGrid');
-    expect(existsSync('dist/components/TileGrid')).toBe(false);
+    expect(readFileSync('dist/index.js', 'utf8')).toContain('TileGrid');
+    expect(readFileSync('dist/index.d.ts', 'utf8')).toContain('TileGrid');
+    expect(existsSync('dist/components/TileGrid')).toBe(true);
+    expect(existsSync('dist/components/TileGridItem')).toBe(true);
   });
 });
