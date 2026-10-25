@@ -1,8 +1,8 @@
 # Execution Plan: TileGrid RD-04
 
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-25 23:50
-> **Progress**: 37/41 tasks (90%)
+> **Last Updated**: 2026-10-26 00:19
+> **Progress**: 40/41 tasks (98%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -167,10 +167,10 @@ skill with the selected execution mode.
 ### Session 3.3 — Hardening and Final Gates
 
 - [x] 3.3.1 Run `pnpm verify`; record the full unit/type/build result ✅ (completed: 2026-10-25 23:50; 872 unit tests, 77 files, type-check and declaration build green)
-- [ ] 3.3.2 Run `pnpm test:browser` and `pnpm test:browser:all`; record Chromium, Firefox, and WebKit results
-- [ ] 3.3.3 Run `pnpm test:perf` and `pnpm storybook:build`; confirm no regression and a complete story index
-- [ ] 3.3.4 Run `pnpm pack:check`; confirm the tarball contains the TileGrid and TileGridItem declarations, both skills, and no source or story files
-- [ ] 3.3.5 Complete the strict independent final review, record acceptance evidence, and update the feature roadmap link and stage
+- [x] 3.3.2 Run `pnpm test:browser` and `pnpm test:browser:all`; record Chromium, Firefox, and WebKit results ✅ (completed: 2026-10-26 00:05; Chromium 130; matrix 390 across Chromium/Firefox/WebKit; fixed a test-fixture handle overlap exposed by the small justified WebKit tiles)
+- [x] 3.3.3 Run `pnpm test:perf` and `pnpm storybook:build`; confirm no regression and a complete story index ✅ (completed: 2026-10-26 00:18; 17 performance tests; Storybook built with Drag and PhotoLibraryRecipe plus all four shell stories in the index)
+- [x] 3.3.4 Run `pnpm pack:check`; confirm the tarball contains the TileGrid and TileGridItem declarations, both skills, and no source or story files ✅ (completed: 2026-10-26 00:19; 229 files, both skills, TileGrid and TileGridItem declarations; only the documented skill templates carry story-like names)
+- [~] 3.3.5 Complete the strict independent final review, record acceptance evidence, and update the feature roadmap link and stage ⏳ (implemented: 2026-10-26 00:19; final correctness and performance review running)
 
 **Deliverable:** Full acceptance evidence and a release-ready, still-unpublished package surface.
 **Verify:** `pnpm verify && pnpm test:browser:all && pnpm test:perf && pnpm storybook:build && pnpm pack:check`.

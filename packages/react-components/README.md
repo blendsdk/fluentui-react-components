@@ -1189,10 +1189,10 @@ returns to it after a menu action, and menu content never selects the tile.
 The default selection indicator is a check badge at the top-right when
 `selected` is true and `selectable` is not false. The status overlay covers the
 media but ignores pointer events; buttons and links inside it opt back in. The
-media keeps its ratio, the content yields first only after the media, and the
-root clips overflow. `className` and `style` merge with the shell values and the
-caller wins. Native `aria-disabled` is written from `disabled`, so a caller
-cannot claim an enabled state the grid disabled.
+media box starts from its ratio and yields height before the content is
+squeezed; the root clips overflow. `className` and `style` merge with the shell
+values and the caller wins. Native `aria-disabled` is written from `disabled`,
+so a caller cannot claim an enabled state the grid disabled.
 
 The default drag handle is a transparent icon button with the item-derived
 accessible name. It is pointer-only: it is removed from the tab order and

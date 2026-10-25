@@ -83,6 +83,9 @@ function renderTileItem({
           {...dragHandleProps.attributes}
           {...dragHandleProps.listeners}
           aria-label={dragHandleProps.label}
+          // Keep the test handle clear of the grid's top-left selection control,
+          // matching the positioned slot the shipped shell provides.
+          style={{ position: 'absolute', left: 4, bottom: 4, zIndex: 2 }}
         >
           Handle
         </button>
