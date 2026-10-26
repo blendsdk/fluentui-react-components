@@ -1,7 +1,7 @@
 # RD-02: TileGrid Layout and Virtualization
 
 > **Document**: RD-02-layout-and-virtualization.md
-> **Status**: Preflighted baseline; native tabIndex contract revised — focused refresh required
+> **Status**: Implemented and release-freeze verified
 > **Created**: 2026-10-20
 > **Project**: fluentui-react-components
 > **Depends On**: —
@@ -31,95 +31,95 @@ lightbox. The application supplies already-filtered, already-ordered items.
 
 ### Must Have (M)
 
-- [ ] **Generic component.** `TileGrid<T>` accepts `items: readonly T[]`, `getItemId(item)`,
+- [x] **Generic component.** `TileGrid<T>` accepts `items: readonly T[]`, `getItemId(item)`,
       `getItemLabel(item)`, and `renderItem(args)`.
-- [ ] **Layout selection.** `layout` accepts `'fixed' | 'masonry' | 'justified' | 'mosaic'` and
+- [x] **Layout selection.** `layout` accepts `'fixed' | 'masonry' | 'justified' | 'mosaic'` and
       defaults to `'fixed'`.
-- [ ] **Fixed layout.** Uniform tiles in rows. Columns are `columns` when supplied, otherwise
+- [x] **Fixed layout.** Uniform tiles in rows. Columns are `columns` when supplied, otherwise
       `max(1, floor((containerWidth + gap) / (tileSize + gap)))`. The actual tile width is
       `(containerWidth - gap * (columns - 1)) / columns`; the height is `tileWidth / tileAspectRatio`.
-- [ ] **Masonry layout.** Fixed column width with variable item heights. Columns use the same
+- [x] **Masonry layout.** Fixed column width with variable item heights. Columns use the same
       formula as fixed. Each item's height is `columnWidth / itemAspectRatio`. Items are placed in
       the shortest column, with the leftmost column winning ties. Item order is the source order.
       The geometry engine owns this lane assignment; the virtualizer consumes it and never
       recomputes lanes.
-- [ ] **Justified layout.** Variable-width rows. `tileSize` is the target row height. Each item's
+- [x] **Justified layout.** Variable-width rows. `tileSize` is the target row height. Each item's
       width at the target height is `tileSize * itemAspectRatio`. A row closes when adding the next
       item would exceed the container width. Completed rows scale to fill the container width; the
       last row stays at the target height and is left-aligned.
-- [ ] **Mosaic layout.** Dense base grid with optional 2×2 spans. `tileSize` is the base cell size.
+- [x] **Mosaic layout.** Dense base grid with optional 2×2 spans. `tileSize` is the base cell size.
       Columns use the fixed formula and therefore honor `columns` when supplied. `getItemSpan`
       returns `{ columns: 1 | 2, rows: 1 | 2 }`, default `{ columns: 1, rows: 1 }`. The packer scans
       row-major for the first free rectangle that fits the span; if none fits in existing rows, it
       appends rows. Invalid spans are clamped to the available columns and rows.
-- [ ] **Aspect ratio.** `getItemAspectRatio(item)` returns a finite positive width/height ratio.
+- [x] **Aspect ratio.** `getItemAspectRatio(item)` returns a finite positive width/height ratio.
       It is required for masonry, justified, and mosaic. If it returns `undefined`, `null`, `NaN`,
       zero, a negative value, or any non-finite value including `Infinity`, `fallbackAspectRatio`
       (default `1`) is used. `fallbackAspectRatio` and `tileAspectRatio` must themselves be finite
       and positive; invalid values fall back to `1`. `tileAspectRatio` defaults to `1` for fixed
       layout. The grid never measures images on load and never reflows because an image loaded.
-- [ ] **Span source.** `getItemSpan` is consulted only in mosaic layout. Fixed, masonry, and
+- [x] **Span source.** `getItemSpan` is consulted only in mosaic layout. Fixed, masonry, and
       justified layouts ignore it.
-- [ ] **Gap.** `gap` is a non-negative finite number of pixels, default `8`. Negative and
+- [x] **Gap.** `gap` is a non-negative finite number of pixels, default `8`. Negative and
       non-finite values clamp to `0`.
-- [ ] **tileSize bounds.** `tileSize` defaults to `160`; `minTileSize` defaults to `120`;
+- [x] **tileSize bounds.** `tileSize` defaults to `160`; `minTileSize` defaults to `120`;
       `maxTileSize` defaults to `320`. Values outside the bounds clamp to the nearest bound. If
       `minTileSize` exceeds `maxTileSize`, `minTileSize` clamps to `maxTileSize` and the grid emits
       a development warning.
-- [ ] **Columns.** `columns` is clamped to `max(1, trunc(value))`; a non-finite or missing value
+- [x] **Columns.** `columns` is clamped to `max(1, trunc(value))`; a non-finite or missing value
       falls back to the automatic formula. Mosaic honors `columns` in the same way as fixed and
       masonry; only justified ignores it.
-- [ ] **Optional zoom.** `zoomable` defaults to `false`. When false, the grid renders at the
+- [x] **Optional zoom.** `zoomable` defaults to `false`. When false, the grid renders at the
       supplied or default `tileSize` and exposes no zoom affordance. When true, `tileSize` is
       controlled: `onTileSizeChange` receives the next value and the application applies it. The
       grid never owns, persists, or defaults the zoom state; there is no uncontrolled zoom or
       `defaultTileSize`.
-- [ ] **Anchor preservation.** Changing `layout` or `tileSize` preserves the first visible item ID
+- [x] **Anchor preservation.** Changing `layout` or `tileSize` preserves the first visible item ID
       and its pixel offset when that item still exists; otherwise the grid scrolls to the top.
-- [ ] **Container measurement.** The grid measures its scroll container width with a
+- [x] **Container measurement.** The grid measures its scroll container width with a
       `ResizeObserver` and recomputes geometry when the width, layout, items, span, ratio, gap, or
       tile size changes. The jsdom test setup provides a controllable `ResizeObserver` stub; the
       component assumes a browser that supports the API.
-- [ ] **Virtualized rendering.** Only the visible item window plus two rows of overscan is
+- [x] **Virtualized rendering.** Only the visible item window plus two rows of overscan is
       mounted. Fixed, justified, and mosaic virtualize bands/rows. Masonry uses `lanes = columns`
       and a vertical item window; it never mounts whole columns. The geometry engine's lane
       assignment is the single source for both layout and virtualization. On the shared benchmark
       fixture (20K items, 1440×900, 160px `tileSize`, 8px gap, aspect ratios 0.8–2.0, two-row
       overscan), every layout mounts fewer than 120 item wrappers.
-- [ ] **Stable keys and duplicate IDs.** Rendered item wrappers use `getItemId(item)` as their
+- [x] **Stable keys and duplicate IDs.** Rendered item wrappers use `getItemId(item)` as their
       React key. Duplicate IDs are an application contract violation: the grid emits a development
       warning and renders and selects only the first occurrence in display order, so later
       duplicates never share DOM or selection state.
-- [ ] **Item rendering contract.** `renderItem` receives
+- [x] **Item rendering contract.** `renderItem` receives
       `{ item, index, tileSize, width, height, selected, selectable, disabled, isDragging, isOverlay, dragHandleProps, reorderActions, strings }`.
       RD-03 supplies the selection and disabled values; RD-04 supplies the drag, overlay, and reorder
       values. The core does not interpret the returned React content.
-- [ ] **Public handle and internal scroll helpers.** The forwarded ref exposes the
+- [x] **Public handle and internal scroll helpers.** The forwarded ref exposes the
       `TileGridHandle` defined in the final contract below. `scrollToItem(id)`,
       `scrollToIndex(index)`, and `scrollToOffset(offset)` are internal helpers used by focus and
       anchor restoration; they are not public. The public `scrollToSelected()` is defined in RD-03.
-- [ ] **Empty state.** When `items` is empty, the grid renders `renderEmpty()` when supplied, else
+- [x] **Empty state.** When `items` is empty, the grid renders `renderEmpty()` when supplied, else
       `strings.emptyMessage` (default `'No items'`). The empty state is inside the same accessible
       root as the collection.
-- [ ] **No internal data fetching.** The component never calls an API, reads storage, or loads
+- [x] **No internal data fetching.** The component never calls an API, reads storage, or loads
       images itself. The application supplies items and image content.
-- [ ] **No internal filtering or sorting.** The application supplies the filtered, sorted order.
-- [ ] **Storybook.** `TileGrid.stories.tsx` shows fixed, masonry, justified, and mosaic layouts,
+- [x] **No internal filtering or sorting.** The application supplies the filtered, sorted order.
+- [x] **Storybook.** `TileGrid.stories.tsx` shows fixed, masonry, justified, and mosaic layouts,
       `zoomable` on/off with controlled `tileSize`, the empty state, and the named
       `TwentyThousandBenchmark` story.
-- [ ] **Documentation.** The package README documents the component, layouts, `tileSize`, aspect
+- [x] **Documentation.** The package README documents the component, layouts, `tileSize`, aspect
       ratio requirements, zoom, performance guidance, and the image rendering contract.
-- [ ] **Package surface.** The package root exports `TileGrid`, `TileGridItem`, `TileGridProps`,
+- [x] **Package surface.** The package root exports `TileGrid`, `TileGridItem`, `TileGridProps`,
       `TileGridItemProps`, `TileGridAction`, `TileGridLayout`, `TileGridSelectionMode`,
       `TileGridInteractionMode`, `TileGridHandle`, `TileGridItemRenderArgs`, `TileGridReorderArgs`,
       `TileGridDragHandleProps`, and `TileGridStrings`. The export pin test is updated.
 
 ### Should Have
 
-- [ ] Development warning when `columns` is supplied for justified layout, where it is ignored.
-- [ ] Development warning when `minTileSize > maxTileSize`; the grid clamps `minTileSize` to
+- [x] Development warning when `columns` is supplied for justified layout, where it is ignored.
+- [x] Development warning when `minTileSize > maxTileSize`; the grid clamps `minTileSize` to
       `maxTileSize`.
-- [ ] Development warning when a duplicate `getItemId` value is encountered.
+- [x] Development warning when a duplicate `getItemId` value is encountered.
 
 ### Won't Have (Out of Scope)
 

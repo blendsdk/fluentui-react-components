@@ -11,7 +11,7 @@
 ## Structure
 
 - `packages/react-components/` — the only publishable package, `@blendsdk/fluentui-react-components`. Component sources live in `src/components/<Name>/`, tests in `test/`, stories in each component's `stories/` folder, Storybook configuration in `.storybook/`.
-- `packages/react-components/src/components/TileGrid/` — the largest component, split into internal `geometry/`, `virtualization/`, `selection/`, `focus/` and `marquee/` modules. It stays out of the package-root export until the tile shell and arranging work lands and the contract and dependencies freeze.
+- `packages/react-components/src/components/TileGrid/` — the largest component, split into internal `geometry/`, `virtualization/`, `selection/`, `focus/`, `marquee/` and `reorder/` modules. It is exported from the package root as part of the 0.4.0 release surface; the internal modules remain private.
 - `skills/` — the distributable agent skills: `fluentui-components` (component pattern, references, templates) and `rhf-zod-forms` (RHF + Zod form workflow). `opencode.json` registers `./skills` as an extra source.
 - `scripts/check-skill.mjs` — validates the distributable skills under `skills/` and the CodeOps skills under `.opencode/skills`: ID shape, frontmatter, duplicate IDs, and relative links outside code fences.
 - `scripts/sync-skills.mjs` — mirrors `skills/` into `packages/react-components/skills/` at build and before packing; the package copy is generated and gitignored.

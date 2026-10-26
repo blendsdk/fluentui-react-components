@@ -8,9 +8,12 @@
  * story files ever enter the tarball.
  *
  * The guard requires a completed build: it also fails when the pack list has
- * no `dist/` entries, which catches an accidentally empty artifact. The two
+ * no `dist/` entries, which catches an accidentally empty artifact. It pins the
+ * public TileGrid runtime/declaration paths and confirms that the root output
+ * keeps `@dnd-kit` behind the TileGrid modules for tree-shaking. The two
  * distributable skills must also be present, because consumers install them
- * from the published package.
+ * from the published package. Published source maps embed original source for
+ * debugging; they are generated assets, not source files in the pack list.
  *
  * Usage:
  *
@@ -21,6 +24,7 @@
  */
 
 import { execFileSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -43,6 +47,21 @@ const FORBIDDEN_FILENAME_PARTS = ['.stories.', '.story.'];
 const REQUIRED_SKILL_FILES = [
   'skills/fluentui-components/SKILL.md',
   'skills/rhf-zod-forms/SKILL.md',
+];
+
+/** Public runtime and declaration files that every package artifact must contain. */
+const REQUIRED_DIST_FILES = [
+  'dist/index.js',
+  'dist/index.d.ts',
+  'dist/components/TileGrid/TileGrid.js',
+  'dist/components/TileGrid/TileGrid.d.ts',
+  'dist/components/TileGrid/TileGrid.types.d.ts',
+  'dist/components/TileGrid/index.d.ts',
+  'dist/components/TileGrid/reorder/useTileGridReorder.js',
+  'dist/components/TileGridItem/TileGridItem.js',
+  'dist/components/TileGridItem/TileGridItem.d.ts',
+  'dist/components/TileGridItem/TileGridItem.types.d.ts',
+  'dist/components/TileGridItem/index.d.ts',
 ];
 
 /** Generated skill templates that may legitimately carry story/test names. */
@@ -125,6 +144,18 @@ if (!paths.some(filePath => filePath.startsWith('dist/'))) {
   process.exit(1);
 }
 
+const missingDistFiles = REQUIRED_DIST_FILES.filter(filePath => !paths.includes(filePath));
+
+if (missingDistFiles.length > 0) {
+  console.error('The publish artifact is missing required dist files:');
+
+  for (const filePath of missingDistFiles) {
+    console.error(`  ${filePath}`);
+  }
+
+  process.exit(1);
+}
+
 const missingSkillFiles = REQUIRED_SKILL_FILES.filter(filePath => !paths.includes(filePath));
 
 if (missingSkillFiles.length > 0) {
@@ -137,6 +168,23 @@ if (missingSkillFiles.length > 0) {
   process.exit(1);
 }
 
+const rootRuntime = readFileSync(join(PACKAGE_DIR, 'dist/index.js'), 'utf8');
+
+if (rootRuntime.includes('@dnd-kit')) {
+  console.error('The package root output imports @dnd-kit; TileGrid must stay tree-shakeable.');
+  process.exit(1);
+}
+
+const reorderRuntime = readFileSync(
+  join(PACKAGE_DIR, 'dist/components/TileGrid/reorder/useTileGridReorder.js'),
+  'utf8'
+);
+
+if (!reorderRuntime.includes('@dnd-kit/core')) {
+  console.error('The TileGrid reorder runtime is missing its @dnd-kit dependency.');
+  process.exit(1);
+}
+
 console.log(
-  `Publish artifact verified: ${paths.length} files, both skills present, no source or story files.`
+  `Publish artifact verified: ${paths.length} files, both skills present, the public dist surface present, no source or story files (source maps embed original source for debugging).`
 );

@@ -40,7 +40,7 @@
 | RV-210  | 2     | MINOR    | plan-progress-drift   | fixed    |
 | RV-211  | 2     | MINOR    | oracle-adjustment     | fixed    |
 | RV-212  | 2     | MINOR    | type-docs             | fixed    |
-| PE-301  | 3     | MAJOR    | bundle-format         | deferred |
+| PE-301  | 3     | MAJOR    | bundle-format         | fixed    |
 | PE-302  | 3     | MINOR    | recipe-strings        | fixed    |
 | PE-303  | 3     | MINOR    | recipe-count-oracle   | fixed    |
 | RV-301  | 3     | MINOR    | badge-corner-doc      | fixed    |
@@ -54,4 +54,4 @@ RV-211 records a deliberate oracle adjustment made while turning the new suite g
 
 All Phase 2 findings RV-201..RV-212 are closed; the single scoped re-review found no new critical, major, or minor issues.
 
-PE-301 is deferred to the release freeze by the user's ruling: the established single ESM bundle is kept for RD-04, and the measured consumer-size delta (about 9.1 kB gzip before TileGrid versus 29.4 kB gzip with TileGrid and @dnd-kit for a Loading-only import) is recorded in the README. Per-module ESM output is a release-architecture decision and was not changed in this phase.
+PE-301 was deferred from RD-04 to the release freeze. The freeze adopts per-module ESM output: a Loading-only consumer measures 1.35 kB gzip and contains no TileGrid or @dnd-kit reference, versus about 29.4 kB gzip for the former single bundle. The package-surface and artifact guards cover the new output.

@@ -2,9 +2,9 @@
  * @blendsdk/fluentui-react-components — custom React components built on
  * Fluent UI v9.
  *
- * Every released component is exported from this package root; internal and
- * unreleased modules are private to the package. See the component's own
- * documentation for its props and behavior.
+ * Every released component is exported from this package root; internal modules
+ * are private to the package. See the component's own documentation for its
+ * props and behavior.
  *
  * @packageDocumentation
  */

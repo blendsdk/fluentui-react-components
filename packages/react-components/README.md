@@ -21,6 +21,10 @@ because the package root exports the form field wrappers. The DatePicker
 wrapper uses the compat package's 0.6.x line; pin it in the application when
 you need a reproducible calendar implementation.
 
+The published declarations target TypeScript's `moduleResolution: "bundler"`
+(the repository baseline). A `nodenext` consumer with `skipLibCheck: false`
+reports extension errors until a future declaration-extension change.
+
 Wrap the application in `FluentProvider` as usual; the components follow the
 active theme.
 
@@ -927,11 +931,11 @@ Call `run` from event handlers or effects, not during render.
   `ariaLive`) are intentionally not ported. The scrim and text follow the
   `FluentProvider` theme; `label` is the only user-facing string.
 
-### TileGrid (unreleased)
+### TileGrid
 
-> **Source-complete, not yet published.** The source package root now exports
-> `TileGrid`, `TileGridItem` and their public types, but no npm release contains
-> them yet. The final dependency and pack freeze is a separate release step.
+> **Release-frozen for 0.4.0.** The package root exports `TileGrid`,
+> `TileGridItem` and their public types. The npm release is a separate release
+> step after the freeze lands on `main`.
 
 `TileGrid<T>` is a generic, virtualized tile collection with fixed, masonry,
 justified and mosaic layouts. It owns the scroll container and list semantics;
@@ -1321,17 +1325,16 @@ stories and the browser/performance suites exercise the same fixture.
 
 #### Remaining release boundaries
 
-- The source package root exports TileGrid and TileGridItem; the next npm
-  release publishes them after the final dependency and pack freeze. Deep
-  imports remain blocked by the package `exports` map.
+- The package root exports TileGrid and TileGridItem; 0.4.0 is the first npm
+  release containing them. Deep imports remain blocked by the package `exports`
+  map.
+- The build emits per-module ESM, so a root import tree-shakes. A Loading-only
+  consumer measures about 1.35 kB gzip; the former single-bundle build measured
+  about 29.4 kB gzip with TileGrid and `@dnd-kit`.
 - A singleton eligible item uses one real radio. This is an accepted narrow
   HTML authoring-conformance exception; no fake peer is inserted. The component
   maintainer revisits it if release conformance needs change or browser/assistive
   technology evidence reveals a functional issue.
-- The current single-bundle build ships the complete component surface to every
-  root import. A consumer importing only `Loading` measures about 29.4 kB gzip
-  with TileGrid and `@dnd-kit`, versus about 9.1 kB gzip before those exports.
-  Per-module ESM output is deferred to the release freeze.
 - Multi-item and cross-grid drag, touch long-press drag, RTL arranging, a built-in
   lightbox/upload/editing surface, server persistence and image URL validation
   are out of scope for the package.

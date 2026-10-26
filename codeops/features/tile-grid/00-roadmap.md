@@ -1,10 +1,10 @@
 # Roadmap: Tile Grid
 
 > **Feature-Set**: tile-grid
-> **Status**: In Progress
+> **Status**: Complete
 > **Created**: 2026-10-20
-> **Last Updated**: 2026-10-26 11:20
-> **Progress**: 3 / 4 (75%)
+> **Last Updated**: 2026-10-26 13:15
+> **Progress**: 4 / 4 (100%)
 > **CodeOps Artifact Schema**: 1
 
 ## Legend
@@ -13,12 +13,12 @@
 
 ## Tracker
 
-| ID    | Title                                           | RD                                                               | Plan                                                         | Stage        | Status | Last Updated | Depends-on / Blocker  |
-| ----- | ----------------------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------ | ------------ | ------ | ------------ | --------------------- |
-| RD-01 | Selection and marquee internals                 | [RD-01](requirements/RD-01-selection-and-marquee.md)             | [v1](plans/v1/00-index.md), [rd-03](plans/rd-03/00-index.md) | ✅ Done      | ✅     | 2026-10-22   | —                     |
-| RD-02 | TileGrid layout and virtualization              | [RD-02](requirements/RD-02-layout-and-virtualization.md)         | [v1](plans/v1/00-index.md), [rd-03](plans/rd-03/00-index.md) | 🔄 Executing | 🔄     | 2026-10-21   | Final contract: RD-04 |
-| RD-03 | Selection integration, focus, and accessibility | [RD-03](requirements/RD-03-selection-focus-and-accessibility.md) | [rd-03](plans/rd-03/00-index.md)                             | ✅ Done      | ✅     | 2026-10-22   | —                     |
-| RD-04 | Arranging, tile shell, and actions              | [RD-04](requirements/RD-04-arranging-tile-shell-and-actions.md)  | [rd-04](plans/rd-04/00-index.md)                             | ✅ Done      | ✅     | 2026-10-26   | RD-02, RD-03          |
+| ID    | Title                                           | RD                                                               | Plan                                                                                         | Stage   | Status | Last Updated | Depends-on / Blocker |
+| ----- | ----------------------------------------------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | ------- | ------ | ------------ | -------------------- |
+| RD-01 | Selection and marquee internals                 | [RD-01](requirements/RD-01-selection-and-marquee.md)             | [v1](plans/v1/00-index.md), [rd-03](plans/rd-03/00-index.md)                                 | ✅ Done | ✅     | 2026-10-22   | —                    |
+| RD-02 | TileGrid layout and virtualization              | [RD-02](requirements/RD-02-layout-and-virtualization.md)         | [v1](plans/v1/00-index.md), [rd-03](plans/rd-03/00-index.md), [freeze](08-release-freeze.md) | ✅ Done | ✅     | 2026-10-26   | —                    |
+| RD-03 | Selection integration, focus, and accessibility | [RD-03](requirements/RD-03-selection-focus-and-accessibility.md) | [rd-03](plans/rd-03/00-index.md)                                                             | ✅ Done | ✅     | 2026-10-22   | —                    |
+| RD-04 | Arranging, tile shell, and actions              | [RD-04](requirements/RD-04-arranging-tile-shell-and-actions.md)  | [rd-04](plans/rd-04/00-index.md)                                                             | ✅ Done | ✅     | 2026-10-26   | RD-02, RD-03         |
 
 ## Notes
 
@@ -28,5 +28,5 @@
 - The simplified complexity packet is approved: `@tanstack/react-virtual`, `@dnd-kit/core`, one browser test runner, and internal generic selection/marquee modules.
 - All four RDs are v1 release-blocking; the implementation order is RD-01/RD-02, then RD-03, then RD-04.
 - Phase A plan preflighted and passed at `plans/v1/`: it implements RD-01 and RD-02 plus the minimal RD-03 selection wiring needed to exercise RD-01. RD-03 focus/keyboard/accessibility and RD-04 arranging remain preflighted for later plans.
-- Aggregate RD-01/RD-03 delivery is verified in [acceptance evidence](plans/rd-03/08-acceptance-evidence.md), including independent reviews and the full three-browser matrix. Task progress is owned by `plans/rd-03/99-execution-plan.md`. RD-02's final composed contract/export/dependency freeze awaits RD-04. TileGrid remains unpublished.
-- Phase A is complete. RD-04 is complete: 41/41 tasks, 872 unit tests, 130 Chromium browser tests, 390 cross-browser matrix tests, 17 performance tests, Storybook build and a 229-file pack check. The independent final review deferred the single-bundle size decision (PE-301) to the release freeze and all other findings were fixed. RD-02's final contract/export/dependency freeze and npm publication remain the release step. Portfolio synchronization is deferred until this feature branch lands on `main`.
+- Aggregate RD-01/RD-03 delivery is verified in [acceptance evidence](plans/rd-03/08-acceptance-evidence.md), including independent reviews and the full three-browser matrix. Task progress is owned by `plans/rd-03/99-execution-plan.md`. RD-02's final composed contract, export pin, dependency set and package artifact are verified in [release-freeze evidence](08-release-freeze.md).
+- Phase A is complete. RD-04 is complete: 41/41 tasks, 872 unit tests, 130 Chromium browser tests, 390 cross-browser matrix tests, 17 performance tests, Storybook build and a 500-file pack check. The release freeze adopts per-module ESM output; a Loading-only consumer measures 1.35 kB gzip with no TileGrid or `@dnd-kit` reference. PE-301 is resolved by that build change. The 0.4.0 npm publication remains a separate release workflow dispatch; portfolio synchronization follows merge to `main`.

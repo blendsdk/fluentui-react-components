@@ -58,6 +58,10 @@ The accepted singleton-radio HTML authoring-conformance exception remains docume
 package README. The maintainer reopens it if conformance requirements change or browser/assistive
 technology evidence shows a functional problem. No synthetic peer or fake item was introduced.
 
+> **Superseded by the 0.4.0 release freeze.** RD-02 is now closed and TileGrid is exported; see
+> [release-freeze evidence](../../08-release-freeze.md). The historical boundary below describes
+> the state of this branch before that freeze.
+
 ## Remaining Delivery and Release Boundary
 
 - RD-02's four layouts, virtualization, anchor preservation and controlled keyboard zoom are
