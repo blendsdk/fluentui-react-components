@@ -12,7 +12,7 @@ const meta: Meta<typeof TileGrid> = {
           'A measured tile grid with fixed, masonry, justified and mosaic layouts. The grid root',
           'is the scroll container; the application sizes its parent, owns the data and supplies',
           'the tile content through `renderItem`.',
-          'Selection controls, keyboard navigation, filtering persistence, optional marquee, pointer arranging and the optional TileGridItem shell are available in this workbench. The npm 0.4.0 release follows this frozen surface.',
+          'Selection controls, keyboard navigation, filtering persistence, optional marquee, pointer arranging and the optional TileGridItem shell are available in this workbench. The npm 0.4.0 release is published.',
           '',
           '**Manual review checklist (run in a real browser):**',
           '',

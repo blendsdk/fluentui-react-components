@@ -933,9 +933,8 @@ Call `run` from event handlers or effects, not during render.
 
 ### TileGrid
 
-> **Release-frozen for 0.4.0.** The package root exports `TileGrid`,
-> `TileGridItem` and their public types. The npm release is a separate release
-> step after the freeze lands on `main`.
+> **Published as 0.4.0.** The package root exports `TileGrid`,
+> `TileGridItem` and their public types.
 
 `TileGrid<T>` is a generic, virtualized tile collection with fixed, masonry,
 justified and mosaic layouts. It owns the scroll container and list semantics;

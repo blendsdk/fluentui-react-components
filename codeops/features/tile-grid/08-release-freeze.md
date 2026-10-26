@@ -79,11 +79,18 @@ The package-surface oracle is `test/package-exports.spec.test.ts`; the built-out
 
 ## Release Metadata
 
-- Published npm latest: `0.3.0`; tag `v0.3.0`.
-- Release target: `0.4.0` minor, selected by the release workflow's conventional-commit analysis.
-- `main` is an ancestor of the feature branch; the branch lands by fast-forward merge.
-- No publish, release dispatch, or tag is part of this freeze. Publication remains an explicit
-  release decision.
+- Published npm latest: `0.4.0`; tag `v0.4.0`; release commit `1585944`.
+- Published version: `0.4.0` minor, selected by the release workflow's conventional-commit analysis.
+- The freeze landed on `main` by fast-forward merge. The release workflow then pushed the version
+  commit and tag.
+- The freeze itself did not publish; publication was a separate explicit release dispatch after the
+  freeze landed.
+
+## Publication
+
+Release workflow run [40326634394](https://github.com/blendsdk/fluentui-react-components/actions/runs/40326634394)
+completed successfully on 2026-10-26. It published `0.4.0` with the `latest` dist-tag and pushed
+the `v0.4.0` tag. npm serves `0.4.0` with a provenance attestation.
 
 ## Known Limitation
 

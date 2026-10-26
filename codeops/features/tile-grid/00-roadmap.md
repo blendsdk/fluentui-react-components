@@ -3,7 +3,7 @@
 > **Feature-Set**: tile-grid
 > **Status**: Complete
 > **Created**: 2026-10-20
-> **Last Updated**: 2026-10-26 13:15
+> **Last Updated**: 2026-10-26 13:45
 > **Progress**: 4 / 4 (100%)
 > **CodeOps Artifact Schema**: 1
 
@@ -29,4 +29,4 @@
 - All four RDs are v1 release-blocking; the implementation order is RD-01/RD-02, then RD-03, then RD-04.
 - Phase A plan preflighted and passed at `plans/v1/`: it implements RD-01 and RD-02 plus the minimal RD-03 selection wiring needed to exercise RD-01. RD-03 focus/keyboard/accessibility and RD-04 arranging remain preflighted for later plans.
 - Aggregate RD-01/RD-03 delivery is verified in [acceptance evidence](plans/rd-03/08-acceptance-evidence.md), including independent reviews and the full three-browser matrix. Task progress is owned by `plans/rd-03/99-execution-plan.md`. RD-02's final composed contract, export pin, dependency set and package artifact are verified in [release-freeze evidence](08-release-freeze.md).
-- Phase A is complete. RD-04 is complete: 41/41 tasks, 872 unit tests, 130 Chromium browser tests, 390 cross-browser matrix tests, 17 performance tests, Storybook build and a 500-file pack check. The release freeze adopts per-module ESM output; a Loading-only consumer measures 1.35 kB gzip with no TileGrid or `@dnd-kit` reference. PE-301 is resolved by that build change. The 0.4.0 npm publication remains a separate release workflow dispatch; portfolio synchronization follows merge to `main`.
+- Phase A is complete. RD-04 is complete: 41/41 tasks, 872 unit tests, 130 Chromium browser tests, 390 cross-browser matrix tests, 17 performance tests, Storybook build and a 500-file pack check. The release freeze adopts per-module ESM output; a Loading-only consumer measures 1.35 kB gzip with no TileGrid or `@dnd-kit` reference. PE-301 is resolved by that build change. The 0.4.0 release workflow completed successfully; npm `latest` and tag `v0.4.0` point at the release. Portfolio synchronization is complete.

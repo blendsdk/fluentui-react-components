@@ -1,7 +1,7 @@
 # Portfolio Roadmap: Fluent UI React Components
 
 > **Status**: Complete
-> **Last Updated**: 2026-10-26 13:38
+> **Last Updated**: 2026-10-26 13:45
 > **Features**: 7 / 7 done
 > **CodeOps Artifact Schema**: 1
 
@@ -28,4 +28,4 @@
 
 ## Notes
 
-- TileGrid 0.4.0 is frozen on `main` at `e5e5919`. npm publication remains a separate release workflow dispatch; npm still serves 0.3.0 until that dispatch.
+- TileGrid 0.4.0 is published. npm `latest` and tag `v0.4.0` point to release commit `1585944`; provenance is attached.
