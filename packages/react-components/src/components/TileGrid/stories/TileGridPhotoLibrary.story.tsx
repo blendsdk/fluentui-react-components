@@ -13,6 +13,8 @@ import {
   Tag,
   TagGroup,
   Text,
+  Toolbar,
+  ToolbarGroup,
   makeStyles,
   tokens,
 } from '@fluentui/react-components';
@@ -34,6 +36,7 @@ import type {
   TileGridItemRenderArgs,
   TileGridLayout,
   TileGridReorderArgs,
+  TileGridStrings,
 } from '../TileGrid.types';
 import { TileGridItem } from '../../TileGridItem';
 
@@ -53,6 +56,9 @@ const MIN_TILE_SIZE = 120;
 const MAX_TILE_SIZE = 320;
 const TILE_SIZE_STEP = 20;
 const DEFAULT_TILE_SIZE = 160;
+
+/** Stable partial strings keep memoized cells from invalidating on every recipe render. */
+const RECIPE_STRINGS: Partial<TileGridStrings> = { emptyMessage: 'No photos' };
 
 /** Application-owned orientation filter values. */
 type OrientationFilter = 'all' | 'portrait' | 'square' | 'landscape';
@@ -298,8 +304,8 @@ export function PhotoLibraryRecipe({ layout = 'fixed' }: PhotoLibraryRecipeProps
 
   return (
     <div className={classes.root}>
-      <div className={classes.toolbar}>
-        <div className={classes.toolbarGroup}>
+      <Toolbar aria-label="Photo library controls" className={classes.toolbar}>
+        <ToolbarGroup className={classes.toolbarGroup}>
           <SearchBox
             aria-label="Filter photos"
             placeholder="Search photos"
@@ -321,9 +327,9 @@ export function PhotoLibraryRecipe({ layout = 'fixed' }: PhotoLibraryRecipeProps
               </Option>
             ))}
           </Dropdown>
-        </div>
+        </ToolbarGroup>
 
-        <div className={classes.toolbarGroup}>
+        <ToolbarGroup className={classes.toolbarGroup}>
           <Button
             appearance="subtle"
             icon={<ZoomOutRegular />}
@@ -339,15 +345,15 @@ export function PhotoLibraryRecipe({ layout = 'fixed' }: PhotoLibraryRecipeProps
             onClick={() => setTileSize(size => Math.min(MAX_TILE_SIZE, size + TILE_SIZE_STEP))}
           />
           <Text>{tileSize}px</Text>
-        </div>
+        </ToolbarGroup>
 
-        <div className={classes.toolbarGroup}>
+        <ToolbarGroup className={classes.toolbarGroup}>
           <Text weight="semibold">{selectedIds.size} selected</Text>
           <Button appearance="secondary" onClick={() => gridRef.current?.clearSelection()}>
             Clear selection
           </Button>
-        </div>
-      </div>
+        </ToolbarGroup>
+      </Toolbar>
 
       {query.trim().length > 0 || orientation !== 'all' ? (
         <TagGroup aria-label="Active filters" className={classes.tags} onDismiss={dismissFilter}>
@@ -387,7 +393,7 @@ export function PhotoLibraryRecipe({ layout = 'fixed' }: PhotoLibraryRecipeProps
           scrollResetKey={filterKey}
           zoomable
           onTileSizeChange={setTileSize}
-          strings={{ emptyMessage: 'No photos' }}
+          strings={RECIPE_STRINGS}
         />
       </div>
 

@@ -47,8 +47,8 @@
 
 RD-04 owns acceptance criteria 1–17. This plan adds only:
 
-1. [ ] Every RD-04 acceptance criterion 1–17 is covered by at least one spec test or browser test in `07-testing-strategy.md`.
-2. [ ] The package export pin contains the complete TileGrid and TileGridItem surface and no internal module.
-3. [ ] `pnpm verify`, `pnpm test:browser`, `pnpm test:browser:all`, `pnpm test:perf`, `pnpm storybook:build`, and `pnpm pack:check` pass.
-4. [ ] No dependency beyond `@dnd-kit/core` 6.3.x is added, and it is externalized in the Vite build.
-5. [ ] README and both Storybook story sets document the shipped behavior without referencing planning artifacts.
+1. [x] Every RD-04 acceptance criterion 1–17 is covered by at least one spec test or browser test in `07-testing-strategy.md`.
+2. [x] The package export pin contains the complete TileGrid and TileGridItem surface and no internal module.
+3. [x] `pnpm verify`, `pnpm test:browser`, `pnpm test:browser:all`, `pnpm test:perf`, `pnpm storybook:build`, and `pnpm pack:check` pass.
+4. [x] No dependency beyond `@dnd-kit/core` 6.3.x is added, and it is externalized in the Vite build.
+5. [x] README and both Storybook story sets document the shipped behavior without referencing planning artifacts.

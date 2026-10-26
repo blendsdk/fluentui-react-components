@@ -40,9 +40,18 @@
 | RV-210  | 2     | MINOR    | plan-progress-drift   | fixed    |
 | RV-211  | 2     | MINOR    | oracle-adjustment     | fixed    |
 | RV-212  | 2     | MINOR    | type-docs             | fixed    |
+| PE-301  | 3     | MAJOR    | bundle-format         | deferred |
+| PE-302  | 3     | MINOR    | recipe-strings        | fixed    |
+| PE-303  | 3     | MINOR    | recipe-count-oracle   | fixed    |
+| RV-301  | 3     | MINOR    | badge-corner-doc      | fixed    |
+| RV-302  | 3     | MINOR    | toolbar-composition   | fixed    |
+| RV-303  | 3     | MINOR    | selection-oracle      | fixed    |
+| RV-304  | 3     | MINOR    | empty-state-doc       | fixed    |
 
 PE-005 is deferred until the Phase 3 recipe measurements: owner exec-plan, revisit when the 20K recipe is measured. It is a render-cost observation, not a correctness defect, and PE-001 removes the dominant re-render amplifier.
 
 RV-211 records a deliberate oracle adjustment made while turning the new suite green: the initial `aria-expanded="false"` assertion was removed because the governing ST-42 case requires the trigger name, one action, and focus return, not the initial expanded value, and an eighth browser case now covers the keyboard-menu integration. The shell spec remains the Phase 2 oracle; later assertions will not be relaxed to match implementation.
 
 All Phase 2 findings RV-201..RV-212 are closed; the single scoped re-review found no new critical, major, or minor issues.
+
+PE-301 is deferred to the release freeze by the user's ruling: the established single ESM bundle is kept for RD-04, and the measured consumer-size delta (about 9.1 kB gzip before TileGrid versus 29.4 kB gzip with TileGrid and @dnd-kit for a Loading-only import) is recorded in the README. Per-module ESM output is a release-architecture decision and was not changed in this phase.

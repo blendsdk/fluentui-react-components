@@ -73,6 +73,8 @@ describe('photo-library recipe', () => {
       const { root } = await mountRecipe();
       const searchbox = screen.getByRole('searchbox', { name: 'Filter photos' });
 
+      expect(screen.getByRole('toolbar', { name: 'Photo library controls' })).toBeInTheDocument();
+      expect(screen.getByRole('checkbox', { name: ITEMS[0].label })).toBeChecked();
       root.scrollTop = 400;
       fireEvent.scroll(root);
       expect(screen.getByText('2 selected')).toBeInTheDocument();
@@ -97,6 +99,9 @@ describe('photo-library recipe', () => {
       await userEvent.clear(searchbox);
       await waitFor(() => {
         expect(screen.getAllByRole('button', { name: /^Reorder / }).length).toBeGreaterThan(0);
+      });
+      await waitFor(() => {
+        expect(screen.getByRole('checkbox', { name: ITEMS[0].label })).toBeChecked();
       });
       expect(screen.getByText('2 selected')).toBeInTheDocument();
     },
@@ -218,7 +223,10 @@ describe('photo-library recipe', () => {
     async layout => {
       const { root } = await mountRecipe(layout);
 
-      expect(root.querySelectorAll('[data-tile-grid-item]').length).toBeLessThan(120);
+      const mounted = root.querySelectorAll('[data-tile-grid-item]');
+      expect(mounted.length).toBeGreaterThan(20);
+      expect(mounted.length).toBeLessThan(120);
+      expect(mounted[0]).toHaveAttribute('aria-setsize', String(ITEMS.length));
       const images = mountedImages(root);
       expect(images.length).toBeGreaterThan(0);
       expect(images.length).toBeLessThan(120);

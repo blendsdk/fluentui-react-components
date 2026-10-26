@@ -1186,7 +1186,7 @@ lose access. Menu order is `actions`, then `overflowActions`, then
 `reorderActions`. The menu trigger is named by `strings.moreActions`, focus
 returns to it after a menu action, and menu content never selects the tile.
 
-The default selection indicator is a check badge at the top-right when
+The default selection indicator is a check badge at the bottom-right when
 `selected` is true and `selectable` is not false. The status overlay covers the
 media but ignores pointer events; buttons and links inside it opt back in. The
 media box starts from its ratio and yields height before the content is
@@ -1218,6 +1218,10 @@ the 20K fixture deliberately has one.
 | `moveDown`        | `Move down`                        | Keyboard reorder menu action.          |
 | `reorderPosition` | `Moved to position <n> of <total>` | Polite reorder announcement.           |
 | `moreActions`     | `More actions`                     | Overflow menu trigger accessible name. |
+
+A blank `strings.emptyMessage` falls back to `No items`. `renderEmpty()` replaces
+the entire empty state and wins over the string. The empty state is rendered as
+the list's single `listitem` inside the named root.
 
 #### Photo-library recipe
 
@@ -1324,6 +1328,10 @@ stories and the browser/performance suites exercise the same fixture.
   HTML authoring-conformance exception; no fake peer is inserted. The component
   maintainer revisits it if release conformance needs change or browser/assistive
   technology evidence reveals a functional issue.
+- The current single-bundle build ships the complete component surface to every
+  root import. A consumer importing only `Loading` measures about 29.4 kB gzip
+  with TileGrid and `@dnd-kit`, versus about 9.1 kB gzip before those exports.
+  Per-module ESM output is deferred to the release freeze.
 - Multi-item and cross-grid drag, touch long-press drag, RTL arranging, a built-in
   lightbox/upload/editing surface, server persistence and image URL validation
   are out of scope for the package.

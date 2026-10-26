@@ -167,14 +167,14 @@ project's end-to-end boundary; no separate application harness exists.
 
 ## Verification Checklist
 
-- [ ] All specification test cases (ST-*) are defined with concrete input/output pairs
-- [ ] Every ST case traces to RD-04, a 03 document, or an AR entry
-- [ ] Specification tests are written before implementation and verified to fail
-- [ ] Specification tests pass after implementation
-- [ ] Implementation tests cover edge cases and internals
-- [ ] `pnpm verify` passes
-- [ ] `pnpm test:browser` and `pnpm test:browser:all` pass
-- [ ] `pnpm test:perf` shows no regression
-- [ ] `pnpm storybook:build` passes
-- [ ] `pnpm pack:check` passes
-- [ ] No regressions in the existing 793 unit tests
+- [x] All specification test cases (ST-*) are defined with concrete input/output pairs
+- [x] Every ST case traces to RD-04, a 03 document, or an AR entry
+- [x] Specification tests are written before implementation and verified to fail
+- [x] Specification tests pass after implementation
+- [x] Implementation tests cover edge cases and internals
+- [x] `pnpm verify` passes
+- [x] `pnpm test:browser` and `pnpm test:browser:all` pass
+- [x] `pnpm test:perf` shows no regression
+- [x] `pnpm storybook:build` passes
+- [x] `pnpm pack:check` passes
+- [x] No regressions in the existing 793 unit tests
