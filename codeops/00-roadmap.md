@@ -1,8 +1,8 @@
 # Portfolio Roadmap: Fluent UI React Components
 
-> **Status**: Active
-> **Last Updated**: 2026-10-21 11:19
-> **Features**: 6 / 7 done
+> **Status**: Complete
+> **Last Updated**: 2026-10-26 13:38
+> **Features**: 7 / 7 done
 > **CodeOps Artifact Schema**: 1
 
 ## Legend
@@ -11,17 +11,21 @@
 
 ## Features
 
-| Feature             | Roadmap                                         | Stage Summary                           | Progress | Status | Last Updated |
-| ------------------- | ----------------------------------------------- | --------------------------------------- | -------- | ------ | ------------ |
-| error-dialog        | [→](features/error-dialog/00-roadmap.md)        | 1 plan done · 2 RDs done                | 2/2 RDs  | ✅     | 2026-10-16   |
-| confirm-dialog      | [→](features/confirm-dialog/00-roadmap.md)      | 1 plan done · 2 RDs done                | 2/2 RDs  | ✅     | 2026-10-16   |
-| app-launcher        | [→](features/app-launcher/00-roadmap.md)        | 1 plan done · 2 RDs done                | 2/2 RDs  | ✅     | 2026-10-16   |
-| loading             | [→](features/loading/00-roadmap.md)             | 1 plan done · 1 RD done                 | 1/1 RDs  | ✅     | 2026-10-18   |
-| form-fields         | [→](features/form-fields/00-roadmap.md)         | 1 plan done · 1 RD done                 | 1/1 RDs  | ✅     | 2026-10-19   |
-| skills-distribution | [→](features/skills-distribution/00-roadmap.md) | 1 plan done · 1 RD done                 | 1/1 RDs  | ✅     | 2026-10-19   |
-| tile-grid           | [→](features/tile-grid/00-roadmap.md)           | 1 plan done (Phase A) · 2 RDs executing | 0/4 RDs  | 🔄     | 2026-10-21   |
+| Feature             | Roadmap                                         | Stage Summary                            | Progress | Status | Last Updated |
+| ------------------- | ----------------------------------------------- | ---------------------------------------- | -------- | ------ | ------------ |
+| error-dialog        | [→](features/error-dialog/00-roadmap.md)        | 1 plan done · 2 RDs done                 | 2/2 RDs  | ✅     | 2026-10-16   |
+| confirm-dialog      | [→](features/confirm-dialog/00-roadmap.md)      | 1 plan done · 2 RDs done                 | 2/2 RDs  | ✅     | 2026-10-16   |
+| app-launcher        | [→](features/app-launcher/00-roadmap.md)        | 1 plan done · 2 RDs done                 | 2/2 RDs  | ✅     | 2026-10-16   |
+| loading             | [→](features/loading/00-roadmap.md)             | 1 plan done · 1 RD done                  | 1/1 RDs  | ✅     | 2026-10-18   |
+| form-fields         | [→](features/form-fields/00-roadmap.md)         | 1 plan done · 1 RD done                  | 1/1 RDs  | ✅     | 2026-10-19   |
+| skills-distribution | [→](features/skills-distribution/00-roadmap.md) | 1 plan done · 1 RD done                  | 1/1 RDs  | ✅     | 2026-10-19   |
+| tile-grid           | [→](features/tile-grid/00-roadmap.md)           | 3 plans done · 4 RDs done · 0.4.0 frozen | 4/4 RDs  | ✅     | 2026-10-26   |
 
 ## Archived
 
 | Feature | Roadmap | Completed | Last Updated |
 | ------- | ------- | --------- | ------------ |
+
+## Notes
+
+- TileGrid 0.4.0 is frozen on `main` at `e5e5919`. npm publication remains a separate release workflow dispatch; npm still serves 0.3.0 until that dispatch.
