@@ -1,25 +1,32 @@
 # Preflight Report: CollapsibleSection
 
-> **Status**: ❌ PREFLIGHT BLOCKED — 1 major unresolved; 1 minor also pending application
-> **Iteration**: 1 — first scan
+> **Status**: ✅ PREFLIGHT PASSED — all 2 findings resolved
+> **Iteration**: 2 — bounded re-scan after authorized fixes
+> **Previous Iteration**: 2 findings — 1 major, 1 minor
+> **This Iteration**: 0 new findings; PF-001 and PF-002 verified resolved at plan level
+> **Carried Forward**: None
 > **Artifact**: Full implementation plan at `codeops/features/collapsible-section/plans/collapsible-section/`
 > **CodeOps Artifact Schema**: 1
 > **Last Updated**: 2026-10-28
 > **Scan-start HEAD**: `eccd531195687e732dd9cf8da89b3811e6e8d908`
 
+> **Same-session corrections:** This session applied the two authorized corrections. The original
+> plan was authored before this session; six independent review clusters checked the revised
+> target. This is plan-level evidence, not implementation or browser verification.
+
 ## Scope and authority
 
-| Boundary                | Contract                                                                                                                                                                                                             |
-| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Audit target            | The seven original documents listed in the revision table below. This report and continuity notes are excluded from the target hash.                                                                                 |
-| Context only            | Root guidance, manifests, component source, tests, skills, installed Fluent source, Storybook configuration, feature/portfolio roadmaps and read-only CodeOps parser. No sibling artifact receives a verdict.        |
-| Product baseline        | One presentation-only Card/Accordion disclosure component with local state, styles, stable IDs and conditional focus recovery; existing dependencies, tests, README and one stories file. AR-1–AR-30 govern.         |
-| Scope mode              | Strict. No optional additions, new infrastructure, browser/SSR suite, dependency, app migration or CastingAppMT access.                                                                                              |
-| Modification permission | Audit report and required derived bookkeeping only. The invocation did not authorize plan fixes or implementation.                                                                                                   |
-| Commit permission       | `--auto-commit`: local commit of audit-owned output after verification; no push and no inclusion of pre-existing planning changes.                                                                                   |
-| Design authority        | Auto-design policy 1; root invocation `preflight-collapsible-section-20261028`. Eligible technical resolutions may be selected, not silently applied. Product/acceptance changes and risk waivers remain user-owned. |
+| Boundary                | Contract                                                                                                                                                                                                                                                      |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Audit target            | The seven original documents listed in the revision table below. This report and continuity notes are excluded from the target hash.                                                                                                                          |
+| Context only            | Root guidance, manifests, component source, tests, skills, installed Fluent source, Storybook configuration, feature/portfolio roadmaps and read-only CodeOps parser. No sibling artifact receives a verdict.                                                 |
+| Product baseline        | One presentation-only Card/Accordion disclosure component with local state, styles, stable IDs and conditional focus recovery; existing dependencies, tests, README and one stories file. AR-1–AR-30 govern.                                                  |
+| Scope mode              | Strict. No optional additions, new infrastructure, browser/SSR suite, dependency, app migration or CastingAppMT access.                                                                                                                                       |
+| Modification permission | User said “proceed” after the request to apply PF-001/PF-002 and re-scan. This authorizes the two in-plan corrections, report updates and passing-stage bookkeeping, not implementation.                                                                      |
+| Commit permission       | Continuing local `--auto-commit`, no push. After the user selected “Include plan (Recommended)”, include the complete corrected feature plan, report and related feature/portfolio roadmaps. Leave `codeops/specialist-check.json` untouched and uncommitted. |
+| Design authority        | Auto-design policy 1; root invocation `preflight-collapsible-section-20261028`. Eligible technical resolutions may be selected, not silently applied. Product/acceptance changes and risk waivers remain user-owned.                                          |
 
-## Audited revision
+## Iteration 1 audited revision
 
 The plan was untracked at scan start, so SHA-256 content hashes identify the reviewed revision.
 Any later change requires a targeted re-check before this report can be used as readiness evidence.
@@ -32,6 +39,22 @@ Any later change requires a targeted re-check before this report can be used as 
 | `02-current-state.md`          | `3a7d58b8565542396274d9e7392769e58b9dd22562c798a151f4f9118f305908` |
 | `03-01-collapsible-section.md` | `a001703c316c63a6d69242efda845a15a2860123ce8a9823163b62522c483d42` |
 | `07-testing-strategy.md`       | `cfb7010c7bb862d4e4d3d15d5b1b188c0bfe12085073386123bb85447dcd5aba` |
+| `99-execution-plan.md`         | `f3806d8324bbda38ef2647915ded48fea3174b752129c7405fec11d00eb5345c` |
+
+## Current audited revision — iteration 2
+
+Both correction files were formatted before recording these hashes. The other five original
+documents are unchanged. This is the revision covered by the passing verdict; the earlier table
+remains historical evidence for the original findings.
+
+| Document                       | SHA-256                                                            |
+| ------------------------------ | ------------------------------------------------------------------ |
+| `00-ambiguity-register.md`     | `0137faf666e0fbb457fa81ac02678653eebc887f5aba0f12678342f25b9c72b0` |
+| `00-index.md`                  | `921afc3067f753f40ff3cf3eb200c1560d1fd30fc83d6ff87ccdda0b6e0a4f91` |
+| `01-requirements.md`           | `08c78be7300ab4d5c67bde937431f05f44a80107df52da311b81c43bf5dc251a` |
+| `02-current-state.md`          | `3a7d58b8565542396274d9e7392769e58b9dd22562c798a151f4f9118f305908` |
+| `03-01-collapsible-section.md` | `9a0cbbdde3a6ee9e9419b64ef93e34cb691c9f1f889c274723ed549fc0252dcc` |
+| `07-testing-strategy.md`       | `3581d4aaeedd693c8c9766e8300d7c0c6fa09515c09916dfb685145593d793ad` |
 | `99-execution-plan.md`         | `f3806d8324bbda38ef2647915ded48fea3174b752129c7405fec11d00eb5345c` |
 
 ## Codebase context summary
@@ -75,7 +98,8 @@ migration, financial calculation, compiler or distributed system is introduced.
 
 ## Summary by dimension
 
-Counts assign each unique root cause to its primary dimension; related dimensions are noted below.
+Counts retain each original unique root cause at its primary dimension; both are now resolved.
+Iteration 2 re-scanned all dimensions within the unchanged target and found no new issues.
 
 | #   | Dimension               | Findings | Highest severity                  |
 | --- | ----------------------- | -------- | --------------------------------- |
@@ -95,12 +119,12 @@ Counts assign each unique root cause to its primary dimension; related dimension
 
 ## Summary by severity
 
-| Severity       | Count | Status                                                             |
-| -------------- | ----- | ------------------------------------------------------------------ |
-| 🔴 CRITICAL    | 0     | —                                                                  |
-| 🟠 MAJOR       | 1     | Resolution selected; artifact correction not authorized or applied |
-| 🟡 MINOR       | 1     | Resolution selected; artifact correction not authorized or applied |
-| 🔵 OBSERVATION | 0     | —                                                                  |
+| Severity       | Count | Status                                                    |
+| -------------- | ----- | --------------------------------------------------------- |
+| 🔴 CRITICAL    | 0     | —                                                         |
+| 🟠 MAJOR       | 1     | PF-001 resolved and independently rechecked at plan level |
+| 🟡 MINOR       | 1     | PF-002 resolved and independently rechecked at plan level |
+| 🔵 OBSERVATION | 0     | —                                                         |
 
 ## Findings
 
@@ -152,8 +176,16 @@ association text and ST-16 before oracle authoring. No new task or public surfac
 | Policy version / root invocation | 1 / `preflight-collapsible-section-20261028`                                                                                                                     |
 | Reopen triggers                  | Installed panel gains native role/association behavior, or approved panel naming/landmark policy changes.                                                        |
 
-**Application state:** Open — resolution selected, not fixed. User authorization is still needed
-to edit the plan; execution must not freeze the incorrect ST-16 expectation.
+**Iteration 1 application state:** Resolution selected, not fixed; audit blocked pending permission.
+
+**Iteration 2 application state:** User authorized both corrections with “proceed”. Composition
+and association text now require a named mounted panel group; ST-16 checks the role and
+accessible name, and the persistent host remains generic after exit. **Resolved at plan level.**
+
+**Iteration 2 evidence:** `03-01-collapsible-section.md:104–114,156–161` and
+`07-testing-strategy.md:39` agree on role, name and lifecycle. Grounding, risk, soundness,
+delivery, fit and web reviewers confirmed the correction without a new finding. Installed native
+panel props preserve inert/unmount handling. No running component is claimed to be verified.
 
 ### PF-002: Reduced-motion acceptance and fixed default motion conflict — 🟡 MINOR
 
@@ -204,27 +236,44 @@ an animation engine, a global stylesheet or new automated browser tests.
 | Policy version / root invocation | 1 / `preflight-collapsible-section-20261028`                                                                                                                                                                                                                                                                               |
 | Reopen triggers                  | Fluent changes the SVG/transition implementation, browser evidence disproves suppression, or the user confirms unchanged upstream motion is required under every preference.                                                                                                                                               |
 
-**Application state:** Open — resolution selected, not fixed. No accepted risk, waiver or fix
-permission is inferred from `--auto-design`. If the eligibility boundary above is disputed,
-escalate the precise motion priority rather than silently accepting the limitation.
+**Iteration 1 application state:** Resolution selected, not fixed; no risk waiver inferred.
+
+**Iteration 2 application state:** User authorized both corrections with “proceed”. The
+specification now permits only the preference-scoped SVG transition override through the public
+expand-icon slot. The manual check explicitly distinguishes ordinary/reduced motion and excludes
+caller SVGs. No default-motion or acceptance waiver was used. **Resolved at plan level.**
+
+**Iteration 2 evidence:** `03-01-collapsible-section.md:208–220` and
+`07-testing-strategy.md:98` define ordinary and preference-specific behavior consistently.
+Grounding checked public slot class merging, the default icon's direct SVG root, separate caller
+title content, and Griffel selector/media-rule support. All review clusters found no residual
+contract defect. Actual computed transition and visible panel checks remain execution task 1.3.5.
 
 ## Verification and disposition
 
 | Check                                          | Result                                                                                                                                                                                              |
 | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Baseline `pnpm verify`                         | Exit 0; 77 test files / 872 tests passed through Turbo cache. Node 24.21.0 and pnpm were available after explicitly extending PATH. Existing Keyborg teardown warnings did not fail the suite.      |
+| Baseline and corrected-plan `pnpm verify`      | Both exit 0; 77 test files / 872 tests passed through Turbo cache. Node 24.21.0 and pnpm were available after explicitly extending PATH. Existing Keyborg teardown warnings did not fail the suite. |
 | Feature implementation/manual browser evidence | Not run; no component code exists. These remain execution tasks, not preflight evidence.                                                                                                            |
-| Same-session authorship                        | This session did not author the audited plan; independent review clusters and direct standard text were used.                                                                                       |
+| Same-session authorship                        | Original plan predates this session; the two same-session corrections received independent cluster rechecks. Direct standard text remains cited above.                                              |
 | Adversarial checks                             | Rechecked assumptions about primitive semantics and motion rather than trusting the planning register; these produced PF-001 and PF-002. No optional feature proposals were promoted into findings. |
-| Roadmap                                        | No advancement while a major finding remains unresolved; the target stays Plan Created, 0/15 implementation tasks verified.                                                                         |
+| Iteration 2 static validation                  | All seven documents, all 33 local Markdown links/anchors and the unchanged specification-first 15-task sequence checked. Read-only plan parser reports Ready with no structural problems.           |
+| Roadmap                                        | Only this feature's plan advanced to Plan Preflighted and cascaded on main. Counter engine preserved standalone n/a; unrelated stages unchanged. Implementation remains 0/15 verified.              |
+
+## Disposition history
+
+| Iteration | Disposition                                                                                                                                                                          |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1         | Blocked: 1 major unresolved; 1 minor also not applied. No roadmap advancement. Report committed as `f8fe489`.                                                                        |
+| 2         | Passed: both corrections authorized, applied and independently rechecked across all 13 dimensions and the web lens. Zero new findings; no remaining accepted risks or open findings. |
 
 ## Final disposition
 
-**❌ PREFLIGHT BLOCKED — 1 major unresolved.** Both technical corrections are selected and
-recorded, but the audited plan remains byte-for-byte unchanged. A decision is not a verified fix.
-No roadmap row advances and no implementation task starts in this audit.
+**✅ PREFLIGHT PASSED — all 2 findings resolved.** This is not a clean first-scan claim: the
+original findings and decisions remain above. The passing target is the complete plan at the
+iteration-2 hashes. No component code or tests were written; runtime/manual evidence is still
+required during execution.
 
-| Next action                                                                                                                                                                            | Owner     |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
-| Authorize applying PF-001 and PF-002 to this plan, or explicitly request a different reserved behavior ruling.                                                                         | User      |
-| After authorization, update the affected specification/test-strategy sections, preserve finding IDs, and verify the corrections and direct consequences in a bounded second iteration. | Preflight |
+| Next action                                                                                                  | Owner |
+| ------------------------------------------------------------------------------------------------------------ | ----- |
+| Start `exec-plan collapsible-section` when ready; the first task authors the behavioral specification tests. | User  |
