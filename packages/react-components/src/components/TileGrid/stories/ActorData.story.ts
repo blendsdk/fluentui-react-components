@@ -27,7 +27,7 @@ import actor26 from './assets/casting-actors/actor-26.jpg';
 import actor27 from './assets/casting-actors/actor-27.jpg';
 import actor28 from './assets/casting-actors/actor-28.jpg';
 
-/** One synthetic actor portrait used by the CastingAppMT reference story. */
+/** One synthetic actor portrait used by the actors reference story. */
 export interface CastingActor {
   /** Stable identity used by the grid and the story dialogs. */
   id: string;

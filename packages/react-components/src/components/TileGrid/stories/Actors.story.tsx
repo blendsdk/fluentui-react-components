@@ -17,15 +17,11 @@ import { useCallback, useMemo, useState } from 'react';
 import type { ReactElement } from 'react';
 import { TileGrid } from '../TileGrid';
 import type { TileGridItemRenderArgs } from '../TileGrid.types';
-import {
-  castingActors,
-  getCastingActorId,
-  getCastingActorName,
-} from './CastingAppMTActorData.story';
-import type { CastingActor } from './CastingAppMTActorData.story';
+import { castingActors, getCastingActorId, getCastingActorName } from './ActorData.story';
+import type { CastingActor } from './ActorData.story';
 
 /**
- * Exact geometry taken from CastingAppMT's actor-overview `ActorTile`:
+ * Exact geometry taken from the legacy actor-overview `ActorTile`:
  * 150px wide, 2px border on every side, 200px image area, 24px caption.
  */
 const TILE_WIDTH = 150;
@@ -174,7 +170,7 @@ const useStyles = makeStyles({
   },
 });
 
-/** A single CastingAppMT actor tile with the legacy hover toolbar. */
+/** A single actor tile with the legacy hover toolbar. */
 function ActorPortraitCard({
   actor,
   onPreview,
@@ -239,14 +235,14 @@ function ActorPortraitCard({
 }
 
 /**
- * The CastingAppMT actor-overview reference.
+ * The legacy actor-overview reference.
  *
  * The outer frame owns scrolling while the grid keeps the legacy fixed tile
  * width. That preserves the 150 x 228 cards and 96px gaps even when a vertical
  * scrollbar is present. The first row's hover toolbar can therefore slide into
  * the 48px top inset without being clipped by the grid root.
  */
-export function CastingAppMTActors(): ReactElement {
+export function Actors(): ReactElement {
   const classes = useStyles();
   const [items, setItems] = useState<readonly CastingActor[]>(castingActors);
   const [previewItem, setPreviewItem] = useState<CastingActor | null>(null);
@@ -307,7 +303,7 @@ export function CastingAppMTActors(): ReactElement {
             tileAspectRatio={TILE_WIDTH / TILE_HEIGHT}
             gap={TILE_GAP}
             selectionMode="none"
-            ariaLabel="CastingAppMT actor overview"
+            ariaLabel="Actor overview"
             onItemActivate={openPreview}
             style={gridStyle}
           />
@@ -332,7 +328,7 @@ export function CastingAppMTActors(): ReactElement {
                     alt={`Synthetic portrait of ${previewItem.name}`}
                   />
                 ) : null}
-                <Text size={200}>Synthetic portrait used as a CastingAppMT reference fixture.</Text>
+                <Text size={200}>Synthetic portrait used as an actor-grid reference fixture.</Text>
               </div>
             </DialogContent>
             <DialogActions>

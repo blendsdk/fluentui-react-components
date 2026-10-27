@@ -9,7 +9,7 @@ They are not photographs of real people.
 
 The source site grants permission to use the generated faces for personal and commercial
 purposes and states that it does not claim copyright on them. The images are used here as
-development fixtures for the CastingAppMT reference Storybook story. They are not covered by
+development fixtures for the actor-reference Storybook story. They are not covered by
 this repository's MIT license.
 
 All files were centre-cropped to 3:4, resized to 512 x 683 JPEG, stripped of metadata, and

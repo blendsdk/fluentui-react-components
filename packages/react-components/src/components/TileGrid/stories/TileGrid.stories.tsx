@@ -27,7 +27,7 @@ const meta: Meta<typeof TileGrid> = {
           '9. Drag — open Drag, choose each layout and drag a handle: the overlay follows the pointer, the accent line marks the boundary, and a held pointer near an edge auto-scrolls.',
           '10. Photo library — open PhotoLibraryRecipe: filter by label or orientation, confirm selection survives, preview a tile, zoom, and confirm handles disappear while filtered.',
           '11. Tile shell — open Components/TileGridItem: compare slots, states, actions and the default, custom and absent drag handles.',
-          '12. CastingAppMT — open CastingAppMTActors: confirm 150x228 cards, 146x200 contain images, 96px gaps, the 48px outer inset, and the hover/focus Preview, Zoom and Edit toolbar sliding above each tile. The portraits are synthetic fixtures from ThisPersonNotExist.org; see `stories/assets/casting-actors/NOTICE.md`.',
+          '12. Actors — open Actors: confirm 150x228 cards, 146x200 contain images, 96px gaps, the 48px outer inset, and the hover/focus Preview, Zoom and Edit toolbar sliding above each tile. The portraits are synthetic fixtures from ThisPersonNotExist.org; see `stories/assets/casting-actors/NOTICE.md`.',
           '',
         ].join('\n'),
       },
@@ -48,4 +48,4 @@ export { FilteringAndZoom } from './TileGridFilteringAndZoom.story';
 export { TwentyThousandBenchmark } from './TileGridTwentyThousandBenchmark.story';
 export { Drag } from './TileGridDrag.story';
 export { PhotoLibraryRecipe } from './TileGridPhotoLibrary.story';
-export { CastingAppMTActors } from './CastingAppMTActors.story';
+export { Actors } from './Actors.story';
