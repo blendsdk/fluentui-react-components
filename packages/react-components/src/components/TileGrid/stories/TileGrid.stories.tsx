@@ -28,6 +28,7 @@ const meta: Meta<typeof TileGrid> = {
           '10. Photo library — open PhotoLibraryRecipe: filter by label or orientation, confirm selection survives, preview a tile, zoom, and confirm handles disappear while filtered.',
           '11. Tile shell — open Components/TileGridItem: compare slots, states, actions and the default, custom and absent drag handles.',
           '12. Actors — open Actors: confirm 150x228 cards, 146x200 contain images, 96px gaps, the 48px outer inset, and the hover/focus Preview, Zoom and Edit toolbar sliding above each tile. The portraits are synthetic fixtures from ThisPersonNotExist.org; see `stories/assets/casting-actors/NOTICE.md`.',
+          '13. ActorsRow — scroll horizontally through all 28 actors, then drag the grip on a tile: the source dims, the overlay follows the pointer, the vertical accent line marks the insertion, and dropping commits the new order. Escape cancels.',
           '',
         ].join('\n'),
       },
@@ -49,3 +50,4 @@ export { TwentyThousandBenchmark } from './TileGridTwentyThousandBenchmark.story
 export { Drag } from './TileGridDrag.story';
 export { PhotoLibraryRecipe } from './TileGridPhotoLibrary.story';
 export { Actors } from './Actors.story';
+export { ActorsRow } from './ActorsRow.story';
