@@ -26,6 +26,8 @@ export { AppLauncherSection } from './components/AppLauncherSection';
 export type { AppLauncherSectionProps } from './components/AppLauncherSection';
 export { AppLauncherTrigger } from './components/AppLauncherTrigger';
 export type { AppLauncherTriggerProps } from './components/AppLauncherTrigger';
+export { CollapsibleSection } from './components/CollapsibleSection';
+export type { CollapsibleSectionProps } from './components/CollapsibleSection';
 export { ConfirmDialog } from './components/ConfirmDialog';
 export type {
   ConfirmAction,

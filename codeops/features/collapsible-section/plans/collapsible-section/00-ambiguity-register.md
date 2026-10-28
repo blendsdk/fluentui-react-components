@@ -1,7 +1,7 @@
 # Ambiguity Register: CollapsibleSection
 
-> **Status**: ✅ GATE PASSED — all 30 items resolved
-> **Last Updated**: 2026-10-27 15:33
+> **Status**: ✅ GATE PASSED — all 31 items resolved (includes runtime fixture correction)
+> **Last Updated**: 2026-10-28 17:20
 > **CodeOps Artifact Schema**: 1
 
 ## Planning scope contract
@@ -110,3 +110,43 @@ metadata target only; the standalone plan and no-invented-RD decisions remain in
 
 Confidence: High — the installed parser explicitly supports REQ targets. Hardening: mechanical
 readiness validation caught the unsupported empty-target recommendation before execution.
+
+## AR-31 — Mount-focus oracle fixture (runtime)
+
+**Category:** Testing (runtime) — immutable specification fixture correction.
+
+**Status:** Resolved — user explicitly approved the fixture-only correction.
+
+**Evidence:** The first targeted green attempt passed 52/54 tests. Both failures occur in
+`collapsible-section-accessibility.spec.test.tsx` at the assertion immediately after replacing
+the initially rendered lone outside button with `focusSections(collapsed)`, a fragment with
+three siblings. The captured outside element may be detached by React reconciliation independently
+of CollapsibleSection. The approved behavior still requires mounting/expanding the section not
+to steal focus from a persistent external control.
+
+**Candidate correction:** Keep the same fragment/first button structure on the initial render,
+then add the sections without replacing that focused button. Preserve every focus assertion and
+both initial collapsed values; add an explicit connected-element check. No source behavior,
+acceptance criterion, dependency or test setup changes.
+
+**Alternative:** If independent reproduction shows the outside button remains connected, fix
+the component instead. Never weaken focus expectations or add global focus repair.
+
+**Independent diagnosis:** Fresh challenger `ses_e800a2830ffeEoixuqnIaW2x7h` reproduced the
+failure with React 19.3.1, the actual FluentProvider and native placeholders only, with no
+CollapsibleSection imported. The lone-button fixture detached/replaced the original node and
+focus fell to BODY. Stable three-child fragment structure retained identity and focus through
+mount/expansion. Component source repairs only committed collapse transitions, not mount.
+
+**Decision and authority:** User selected “Approve fixture fix (Recommended)” in the explicit
+frozen-test correction question. Change only initial fixture structure, retain every original
+focus assertion and both parameter cases, and add original-node identity/connectivity checks.
+No component behavior or acceptance criterion is changed. Rejected source-level restoration of
+an externally replaced button: it is not component-owned and would violate the no-steal contract.
+
+**Confidence:** High. **Hardening:** independent component-free reproduction converged; source
+and contract comparison confirmed the failure was outside the component. Strongest counterargument:
+oracle edits after implementation can hide defects; preserve all assertions and rerun them against
+the real component. Reopen if a connected persistent external control loses focus.
+Root invocation `exec-collapsible-section-20261028`, policy version 1. This is user authority,
+not an auto-design waiver of the immutable oracle.

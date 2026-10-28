@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { createElement, createRef } from 'react';
 import type { Control } from 'react-hook-form';
 import * as api from '../src/index';
 import type {
@@ -12,6 +13,7 @@ import type {
   AppLauncherSectionProps,
   AppLauncherTriggerProps,
   CatchErrorOptions,
+  CollapsibleSectionProps,
   ConfirmAction,
   ConfirmDialogProps,
   ConfirmDialogStrings,
@@ -61,6 +63,7 @@ describe('package export surface', () => {
       'AppLauncherSearch',
       'AppLauncherSection',
       'AppLauncherTrigger',
+      'CollapsibleSection',
       'ConfirmDialog',
       'ConfirmProvider',
       'DescriptionList',
@@ -83,6 +86,74 @@ describe('package export surface', () => {
       'useLoading',
       'useSystemError',
     ]);
+  });
+
+  it('exports CollapsibleSection props with rich content, all sizes and heading levels, and a div ref', () => {
+    // Public props accept React content and native div events without reducing title to a string.
+    const props: CollapsibleSectionProps = {
+      title: createElement('strong', null, 'Details'),
+      children: createElement('p', null, 'Content'),
+      actions: createElement('button', { type: 'button' }, 'Edit'),
+      collapsed: false,
+      defaultCollapsed: true,
+      onCollapsedChange: collapsed => {
+        const requested: boolean = collapsed;
+        expect(typeof requested).toBe('boolean');
+      },
+      id: 'section-root',
+      'aria-label': 'Detail card',
+      className: 'caller-class',
+      style: { maxWidth: '420px' },
+      onClick: event => {
+        const root: HTMLDivElement = event.currentTarget;
+        root.dataset.clicked = 'true';
+      },
+    };
+    const sizes = ['small', 'medium', 'large', 'extra-large'] as const;
+    const sizePins: CollapsibleSectionProps[] = sizes.map(size => ({ ...props, size }));
+    const levels = [2, 3, 4, 5, 6] as const;
+    const headingPins: CollapsibleSectionProps[] = levels.map(headingLevel => ({
+      ...props,
+      headingLevel,
+    }));
+
+    // The component, rather than its standalone props type, accepts the forwarded root ref.
+    const ref = createRef<HTMLDivElement>();
+    const element = createElement(api.CollapsibleSection, { ...props, ref });
+    expect(element.type).toBe(api.CollapsibleSection);
+    expect(element.props.ref).toBe(ref);
+    expect(element.props.title).toBe(props.title);
+    expect(element.props.children).toBe(props.children);
+    expect(element.props.actions).toBe(props.actions);
+    expect(sizePins.map(pin => pin.size)).toEqual(['small', 'medium', 'large', 'extra-large']);
+    expect(headingPins.map(pin => pin.headingLevel)).toEqual([2, 3, 4, 5, 6]);
+  });
+
+  it('rejects unsupported disclosure headings, sizes, appearance and raw HTML', () => {
+    // Compile-time failures keep unsupported customization and HTML parsing out of the contract.
+    const props: CollapsibleSectionProps = { title: 'Details', children: 'Content' };
+    const headingPin: CollapsibleSectionProps = {
+      ...props,
+      // @ts-expect-error Disclosure headings support levels two through six only.
+      headingLevel: 1,
+    };
+    const sizePin: CollapsibleSectionProps = {
+      ...props,
+      // @ts-expect-error Only the four documented header sizes are accepted.
+      size: 'extra-small',
+    };
+    const appearancePin: CollapsibleSectionProps = {
+      ...props,
+      // @ts-expect-error The card appearance is fixed rather than a caller option.
+      appearance: 'outline',
+    };
+    const htmlPin: CollapsibleSectionProps = {
+      ...props,
+      // @ts-expect-error Structured children cannot be replaced with raw HTML.
+      dangerouslySetInnerHTML: { __html: '<b>Content</b>' },
+    };
+
+    expect([headingPin, sizePin, appearancePin, htmlPin]).toHaveLength(4);
   });
 
   it('exports the public TileGrid and TileGridItem types', () => {
