@@ -3,7 +3,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AppLauncherTrigger } from '../AppLauncherTrigger';
 
 const meta: Meta<typeof AppLauncherTrigger> = {
-  title: 'Components/AppLauncherTrigger',
+  id: 'components-applaunchertrigger',
+  title: 'Navigation/AppLauncherTrigger',
   component: AppLauncherTrigger,
   tags: ['autodocs'],
 };

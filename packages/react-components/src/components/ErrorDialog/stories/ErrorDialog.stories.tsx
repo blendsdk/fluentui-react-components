@@ -6,7 +6,8 @@ import { ErrorDialog } from '../ErrorDialog';
 import type { ErrorDialogProps } from '../ErrorDialog.types';
 
 const meta: Meta<typeof ErrorDialog> = {
-  title: 'Components/ErrorDialog',
+  id: 'components-errordialog',
+  title: 'Dialogs/ErrorDialog',
   component: ErrorDialog,
   tags: ['autodocs'],
 };

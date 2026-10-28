@@ -15,7 +15,8 @@ const useStyles = makeStyles({
 
 /** Workbench metadata and the manual acceptance checklist for native browser behavior. */
 const meta: Meta<typeof CollapsibleSection> = {
-  title: 'Components/CollapsibleSection',
+  id: 'components-collapsiblesection',
+  title: 'Layout/CollapsibleSection',
   component: CollapsibleSection,
   tags: ['autodocs'],
   parameters: {

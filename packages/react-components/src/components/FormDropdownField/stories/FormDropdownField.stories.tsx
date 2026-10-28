@@ -27,7 +27,8 @@ function ColorOptions(): ReactElement {
 }
 
 const meta: Meta<typeof FormDropdownField> = {
-  title: 'Components/FormDropdownField',
+  id: 'components-formdropdownfield',
+  title: 'Forms/FormDropdownField',
   component: FormDropdownField,
   tags: ['autodocs'],
   parameters: {

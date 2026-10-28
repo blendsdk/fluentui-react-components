@@ -4,7 +4,8 @@ import type { ReactElement } from 'react';
 import { Loading } from '../Loading';
 
 const meta: Meta<typeof Loading> = {
-  title: 'Components/Loading',
+  id: 'components-loading',
+  title: 'Feedback/Loading',
   component: Loading,
   tags: ['autodocs'],
   parameters: {

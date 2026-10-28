@@ -107,7 +107,8 @@ function mediaFor(item: TileGridFixtureItem): ReactElement {
 }
 
 const meta: Meta<typeof TileGridItem> = {
-  title: 'Components/TileGridItem',
+  id: 'components-tilegriditem',
+  title: 'Data display/TileGridItem',
   component: TileGridItem,
   tags: ['autodocs'],
   parameters: {

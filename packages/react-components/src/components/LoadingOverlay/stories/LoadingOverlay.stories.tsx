@@ -7,7 +7,8 @@ import { SystemErrorProvider, useSystemError } from '../../SystemErrorProvider';
 import { LoadingOverlay } from '../LoadingOverlay';
 
 const meta: Meta<typeof LoadingOverlay> = {
-  title: 'Components/LoadingOverlay',
+  id: 'components-loadingoverlay',
+  title: 'Feedback/LoadingOverlay',
   component: LoadingOverlay,
   tags: ['autodocs'],
   parameters: {

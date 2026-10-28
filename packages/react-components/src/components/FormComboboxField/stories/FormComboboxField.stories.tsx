@@ -27,7 +27,8 @@ function ColorOptions(): ReactElement {
 }
 
 const meta: Meta<typeof FormComboboxField> = {
-  title: 'Components/FormComboboxField',
+  id: 'components-formcomboboxfield',
+  title: 'Forms/FormComboboxField',
   component: FormComboboxField,
   tags: ['autodocs'],
   parameters: {

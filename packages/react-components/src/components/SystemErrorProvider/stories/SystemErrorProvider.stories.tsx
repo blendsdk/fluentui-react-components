@@ -6,7 +6,8 @@ import type { SystemErrorProviderProps } from '../SystemErrorProvider.types';
 import { useSystemError } from '../useSystemError';
 
 const meta: Meta<typeof SystemErrorProvider> = {
-  title: 'Components/SystemErrorProvider',
+  id: 'components-systemerrorprovider',
+  title: 'Dialogs/SystemErrorProvider',
   component: SystemErrorProvider,
   tags: ['autodocs'],
 };

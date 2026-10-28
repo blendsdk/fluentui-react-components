@@ -28,7 +28,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Example } from '../Example';
 
 const meta: Meta<typeof Example> = {
-  title: 'Components/Example',
+  id: 'example',
+  title: 'Layout/Example',
   component: Example,
   tags: ['autodocs'],
 };
@@ -50,9 +51,24 @@ export const Compact: Story = {
 
 Conventions:
 
-- `title: 'Components/<Name>'` — all components live under `Components/`;
-  container/child pairs are separate entries, and the container's stories show
-  the pair together.
+- `title: '<Group>/<Name>'` groups components by their function, without an outer
+  `Components/` group. Use the existing group that matches the component:
+
+  | Group        | Components                                          |
+  | ------------ | --------------------------------------------------- |
+  | Layout       | CollapsibleSection and other layout containers      |
+  | Data display | DescriptionList, TileGrid and their item components |
+  | Forms        | Form field wrappers                                 |
+  | Navigation   | AppLauncher and its related components              |
+  | Dialogs      | Confirmation/error dialogs and their providers      |
+  | Feedback     | Loading indicators and overlays                     |
+
+  Keep container/child pairs in the same group as separate entries; the
+  container's stories show the pair together.
+
+- Set a stable explicit `id` so changing a sidebar group does not break story or
+  autodocs URLs. For an existing entry, preserve its current ID (including the
+  legacy `components-` prefix). For a new component, use its kebab-case name.
 - `tags: ['autodocs']` gives the component an autodocs page built from the
   props types and JSDoc. The doc comments you write are the documentation the
   page renders — keep them accurate.
@@ -111,6 +127,7 @@ not set that variable.
 ## Review checklist
 
 - [ ] Story file exists in the component's `stories/` folder with `autodocs`.
+- [ ] Functional group matches the component's purpose; existing story IDs remain stable.
 - [ ] Every documented prop variant is reachable; descriptions say when to use
       each one.
 - [ ] `pnpm storybook:build` succeeds and the a11y addon shows no violations.

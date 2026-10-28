@@ -9,7 +9,8 @@ type StoryValues = {
 };
 
 const meta: Meta<typeof FormRadioGroupField> = {
-  title: 'Components/FormRadioGroupField',
+  id: 'components-formradiogroupfield',
+  title: 'Forms/FormRadioGroupField',
   component: FormRadioGroupField,
   tags: ['autodocs'],
   parameters: {

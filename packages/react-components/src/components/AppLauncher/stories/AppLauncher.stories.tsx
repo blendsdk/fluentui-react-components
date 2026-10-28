@@ -2,7 +2,8 @@ import type { Meta } from '@storybook/react-vite';
 import { AppLauncher } from '../AppLauncher';
 
 const meta: Meta<typeof AppLauncher> = {
-  title: 'Components/AppLauncher',
+  id: 'components-applauncher',
+  title: 'Navigation/AppLauncher',
   component: AppLauncher,
   tags: ['autodocs'],
   parameters: {

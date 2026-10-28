@@ -9,7 +9,8 @@ type StoryValues = {
 };
 
 const meta: Meta<typeof FormTextareaField> = {
-  title: 'Components/FormTextareaField',
+  id: 'components-formtextareafield',
+  title: 'Forms/FormTextareaField',
   component: FormTextareaField,
   tags: ['autodocs'],
   parameters: {

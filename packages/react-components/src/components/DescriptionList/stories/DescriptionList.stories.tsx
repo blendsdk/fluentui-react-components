@@ -6,7 +6,8 @@ import { DescriptionList } from '../DescriptionList';
 import type { DescriptionListProps } from '../DescriptionList.types';
 
 const meta: Meta<typeof DescriptionList> = {
-  title: 'Components/DescriptionList',
+  id: 'components-descriptionlist',
+  title: 'Data display/DescriptionList',
   component: DescriptionList,
   tags: ['autodocs'],
 };

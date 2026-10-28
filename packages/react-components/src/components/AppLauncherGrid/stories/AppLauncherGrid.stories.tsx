@@ -14,7 +14,8 @@ import { AppLauncherItem } from '../../AppLauncherItem';
 import { AppLauncherGrid } from '../AppLauncherGrid';
 
 const meta: Meta<typeof AppLauncherGrid> = {
-  title: 'Components/AppLauncherGrid',
+  id: 'components-applaunchergrid',
+  title: 'Navigation/AppLauncherGrid',
   component: AppLauncherGrid,
   tags: ['autodocs'],
 };

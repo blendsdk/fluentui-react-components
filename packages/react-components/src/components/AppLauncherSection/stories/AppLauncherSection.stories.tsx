@@ -6,7 +6,8 @@ import { AppLauncherItem } from '../../AppLauncherItem';
 import { AppLauncherSection } from '../AppLauncherSection';
 
 const meta: Meta<typeof AppLauncherSection> = {
-  title: 'Components/AppLauncherSection',
+  id: 'components-applaunchersection',
+  title: 'Navigation/AppLauncherSection',
   component: AppLauncherSection,
   tags: ['autodocs'],
 };

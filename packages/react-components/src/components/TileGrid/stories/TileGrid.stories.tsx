@@ -2,7 +2,8 @@ import type { Meta } from '@storybook/react-vite';
 import { TileGrid } from '../TileGrid';
 
 const meta: Meta<typeof TileGrid> = {
-  title: 'Components/TileGrid',
+  id: 'components-tilegrid',
+  title: 'Data display/TileGrid',
   component: TileGrid,
   tags: ['autodocs'],
   parameters: {

@@ -167,10 +167,11 @@ callerClassName)` so applications can adjust without losing the pattern.
 `templates/` holds one file per artifact the workflow produces. Copy the file,
 then replace the placeholders:
 
-| Placeholder         | Meaning                       | Example      |
-| ------------------- | ----------------------------- | ------------ |
-| `<Name>`            | Component name, PascalCase    | `StatusBar`  |
-| `<kebab-case-name>` | Component name for file names | `status-bar` |
+| Placeholder         | Meaning                                                 | Example      |
+| ------------------- | ------------------------------------------------------- | ------------ |
+| `<Name>`            | Component name, PascalCase                              | `StatusBar`  |
+| `<kebab-case-name>` | Component name for file names                           | `status-bar` |
+| `<Group>`           | Functional Storybook group from the Storybook reference | `Layout`     |
 
 Delete template comments that do not apply — they are instructions, not
 documentation. The templates are excluded from the repository's formatting

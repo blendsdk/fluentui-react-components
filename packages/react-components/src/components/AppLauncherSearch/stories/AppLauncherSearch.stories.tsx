@@ -7,7 +7,8 @@ import { AppLauncherList } from '../../AppLauncherList';
 import { AppLauncherSearch } from '../AppLauncherSearch';
 
 const meta: Meta<typeof AppLauncherSearch> = {
-  title: 'Components/AppLauncherSearch',
+  id: 'components-applaunchersearch',
+  title: 'Navigation/AppLauncherSearch',
   component: AppLauncherSearch,
   tags: ['autodocs'],
 };

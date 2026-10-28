@@ -9,7 +9,8 @@ type StoryValues = {
 };
 
 const meta: Meta<typeof FormCheckboxField> = {
-  title: 'Components/FormCheckboxField',
+  id: 'components-formcheckboxfield',
+  title: 'Forms/FormCheckboxField',
   component: FormCheckboxField,
   tags: ['autodocs'],
   parameters: {

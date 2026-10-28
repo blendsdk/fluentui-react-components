@@ -28,7 +28,8 @@ const parseDateFromString = (value: string): Date | null => {
 };
 
 const meta: Meta<typeof FormDatePickerField> = {
-  title: 'Components/FormDatePickerField',
+  id: 'components-formdatepickerfield',
+  title: 'Forms/FormDatePickerField',
   component: FormDatePickerField,
   tags: ['autodocs'],
   parameters: {

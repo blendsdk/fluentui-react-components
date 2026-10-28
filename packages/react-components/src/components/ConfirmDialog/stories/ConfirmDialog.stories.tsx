@@ -6,7 +6,8 @@ import { useState } from 'react';
 import { ConfirmDialog } from '../ConfirmDialog';
 
 const meta: Meta<typeof ConfirmDialog> = {
-  title: 'Components/ConfirmDialog',
+  id: 'components-confirmdialog',
+  title: 'Dialogs/ConfirmDialog',
   component: ConfirmDialog,
   tags: ['autodocs'],
   parameters: {

@@ -6,7 +6,8 @@ import { ConfirmProvider } from '../ConfirmProvider';
 import { useConfirm } from '../useConfirm';
 
 const meta: Meta<typeof ConfirmProvider> = {
-  title: 'Components/ConfirmProvider',
+  id: 'components-confirmprovider',
+  title: 'Dialogs/ConfirmProvider',
   component: ConfirmProvider,
   tags: ['autodocs'],
 };

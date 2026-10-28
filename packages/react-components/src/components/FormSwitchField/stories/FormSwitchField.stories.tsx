@@ -8,7 +8,8 @@ type StoryValues = {
 };
 
 const meta: Meta<typeof FormSwitchField> = {
-  title: 'Components/FormSwitchField',
+  id: 'components-formswitchfield',
+  title: 'Forms/FormSwitchField',
   component: FormSwitchField,
   tags: ['autodocs'],
   parameters: {

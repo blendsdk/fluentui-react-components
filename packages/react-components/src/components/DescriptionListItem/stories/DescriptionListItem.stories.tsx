@@ -3,7 +3,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { DescriptionListItem } from '../DescriptionListItem';
 
 const meta: Meta<typeof DescriptionListItem> = {
-  title: 'Components/DescriptionListItem',
+  id: 'components-descriptionlistitem',
+  title: 'Data display/DescriptionListItem',
   component: DescriptionListItem,
   tags: ['autodocs'],
 };

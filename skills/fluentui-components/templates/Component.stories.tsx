@@ -1,5 +1,7 @@
 // Template: src/components/<Name>/stories/<Name>.stories.tsx
-// Replace <Name>. One story per documented variant (see the README prop
+// Replace <Name>, <Group> and <kebab-case-name>. Choose the functional group
+// from references/storybook.md. Preserve an existing ID when regrouping stories.
+// One story per documented variant (see the README prop
 // table). Descriptions say WHEN to choose a variant, not what it looks like.
 // The FluentProvider wrapper comes from .storybook/preview.tsx — do not
 // repeat it here.
@@ -7,7 +9,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { <Name> } from '../<Name>';
 
 const meta: Meta<typeof <Name>> = {
-  title: 'Components/<Name>',
+  id: '<kebab-case-name>',
+  title: '<Group>/<Name>',
   component: <Name>,
   tags: ['autodocs'],
 };
