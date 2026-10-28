@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-28 17:26
-> **Progress**: 9/15 tasks (60%)
+> **Last Updated**: 2026-10-28 17:32
+> **Progress**: 10/15 tasks (67%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -121,7 +121,7 @@ Behavioral and export oracle hashes remain unchanged.
 **Reference:** [07 implementation/manual checks](07-testing-strategy.md#test-categories),
 03-01 Tests and Documentation, AR-18–AR-20, AR-22, AR-26–AR-28.
 
-- [ ] 1.3.1 Write implementation tests — `test/collapsible-section.impl.test.tsx`; cover the private structure/style/ref checks in 07 Implementation Tests using real primitives, then run the component tests.
+- [x] 1.3.1 Write implementation tests — `test/collapsible-section.impl.test.tsx`; cover the private structure/style/ref checks in 07 Implementation Tests using real primitives, then run the component tests. ✅ (completed: 2026-10-28 17:32)
 - [ ] 1.3.2 Add all required variants and manual checklist — `src/components/CollapsibleSection/stories/CollapsibleSection.stories.tsx`; use the existing provider and run package type-check.
 - [ ] 1.3.3 Document the full props contract and composition — `README.md`; include examples, title/action accessibility, localization, header-versus-Card size, controlled ownership and body-state reset; validate examples against type pins.
 - [ ] 1.3.4 Format only intended changes and run `pnpm verify` plus `pnpm storybook:build` at the repository root; record actual exit results and report unrelated failures without broad cleanup.
