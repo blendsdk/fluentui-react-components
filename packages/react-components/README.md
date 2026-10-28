@@ -199,6 +199,113 @@ through to the compat component.
 
 ## Components
 
+### CollapsibleSection
+
+A presentation-only disclosure card built from Fluent UI v9 Card and Accordion.
+The application supplies the title, body and independent header actions. The
+component supplies a filled small Card, a real heading, disclosure semantics and
+conditional local focus recovery. It does not fetch or persist data.
+
+| Prop                | Type                                              | Default      | Description                                                                                                                                                                    |
+| ------------------- | ------------------------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `title`             | `ReactNode`                                       | — (required) | Meaningful, non-interactive disclosure label; not a native tooltip.                                                                                                            |
+| `children`          | `ReactNode`                                       | — (required) | Body content; unmounts when Fluent's collapse exit completes.                                                                                                                  |
+| `actions`           | `ReactNode`                                       | —            | Controls beside the heading, immediately absent while collapsed.                                                                                                               |
+| `collapsed`         | `boolean`                                         | —            | Controlled state; when defined, overrides the initial uncontrolled value.                                                                                                      |
+| `defaultCollapsed`  | `boolean`                                         | `false`      | Initial uncontrolled state; later prop changes do not reset it.                                                                                                                |
+| `onCollapsedChange` | `(collapsed: boolean) => void`                    | —            | Reports one requested user change; mount and prop updates never notify.                                                                                                        |
+| `headingLevel`      | `2 \| 3 \| 4 \| 5 \| 6`                           | `2`          | Real heading level, independent of visual size.                                                                                                                                |
+| `size`              | `'small' \| 'medium' \| 'large' \| 'extra-large'` | `'large'`    | Accordion header size only; the Card always stays small and filled.                                                                                                            |
+| …                   | `ComponentPropsWithoutRef<'div'>`                 | —            | Native props pass to the root div, except owned `title`, `children` and `dangerouslySetInnerHTML`. Classes merge, inline style passes through, and the ref points to that div. |
+
+#### Uncontrolled details and DescriptionList composition
+
+```tsx
+import { Button } from '@fluentui/react-components';
+import {
+  CollapsibleSection,
+  DescriptionList,
+  DescriptionListItem,
+} from '@blendsdk/fluentui-react-components';
+
+<CollapsibleSection
+  title="Personal details"
+  headingLevel={2}
+  actions={<Button aria-label="Edit personal details">Edit</Button>}
+>
+  <DescriptionList layout="columns">
+    <DescriptionListItem label="Name">Alex Morgan</DescriptionListItem>
+    <DescriptionListItem label="Plan">Pro</DescriptionListItem>
+  </DescriptionList>
+</CollapsibleSection>;
+```
+
+The section starts expanded. Add `defaultCollapsed` to start closed; initially
+collapsed children do not mount until expansion. Mount this example under the
+application's existing `FluentProvider`.
+
+#### Controlled ownership
+
+```tsx
+import { useState } from 'react';
+import { Button } from '@fluentui/react-components';
+import { CollapsibleSection } from '@blendsdk/fluentui-react-components';
+
+/** The application owns visibility and accepts each requested change. */
+function ControlledDetails() {
+  const [collapsed, setCollapsed] = useState(false);
+  return (
+    <>
+      <Button onClick={() => setCollapsed(false)}>Expand details</Button>
+      <CollapsibleSection title="Details" collapsed={collapsed} onCollapsedChange={setCollapsed}>
+        Application-owned content
+      </CollapsibleSection>
+    </>
+  );
+}
+```
+
+With `collapsed` supplied, a click requests a change but cannot override the
+parent's value. Controlled `false` wins even if `defaultCollapsed` is `true`.
+The callback is optional in both modes; omitting it does not prevent uncontrolled
+changes, while controlled usage remains fixed until the parent updates the prop.
+Switching between controlled and uncontrolled modes during a mounted lifetime is
+not a supported contract.
+
+#### Accessibility, lifecycle and localization
+
+- **Keep the title non-interactive.** Use meaningful text or rich non-interactive
+  elements. Put buttons and links in `actions` or the body, never inside the
+  disclosure label. Name each action independently, especially icon-only buttons.
+- **Choose headings for the page outline.** Nested sections are independent;
+  their heading levels are explicit rather than inferred from nesting or size.
+- **Only the disclosure toggles.** Root/body clicks do not toggle the section.
+  Header actions are siblings outside the heading and disclosure button. Native
+  root events keep normal React propagation and cancellation behavior.
+- **Body state resets.** Actions disappear immediately on collapse; body content
+  unmounts after Fluent's exit completes. Reopening mounts fresh local state.
+  Keep durable form/data state above the section when it must survive collapse.
+- **Focus recovery is local.** If a committed collapse removes or makes focused
+  body/action content inert, focus returns to this disclosure. Mount, expansion,
+  unrelated renders and collapse with outside focus do not steal focus. The Card
+  adds no extra tab stop or focus trap; a caller-supplied root `tabIndex` remains.
+- **Stable associations persist.** Each disclosure controls its own permanent
+  generic content host; its mounted panel is a named group, not an added landmark.
+  Caller root IDs and labels do not replace these internal associations.
+- **Motion follows the user's preference.** Ordinary motion remains Fluent's.
+  Reduced motion suppresses only the default chevron transition, retaining its
+  final rotation and Fluent's own panel handling. Caller SVGs are not targeted.
+- **All copy is application-owned.** The component ships no English strings or
+  string resources. Localize title, body, action labels and accessible names in
+  the application. A blank title has no generated fallback.
+- **Strings remain text.** Markup-looking strings are not parsed as HTML.
+  Caller-supplied React elements and their behavior remain caller-owned; this is
+  not a sanitizer for arbitrary React code. There is no `keepMounted`, appearance,
+  disabled or custom-motion API.
+
+The verified dependency baseline is React 19.3.1 and Fluent umbrella 9.74.9;
+this does not claim every version allowed by the peer range was tested.
+
 ### DescriptionList
 
 Groups `DescriptionListItem` children and decides how they read: the label
