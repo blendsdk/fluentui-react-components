@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-28 17:41
-> **Progress**: 13/15 tasks (87%)
+> **Last Updated**: 2026-10-29 00:17
+> **Progress**: 15/15 tasks (100%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -125,8 +125,8 @@ Behavioral and export oracle hashes remain unchanged.
 - [x] 1.3.2 Add all required variants and manual checklist — `src/components/CollapsibleSection/stories/CollapsibleSection.stories.tsx`; use the existing provider and run package type-check. ✅ (completed: 2026-10-28 17:37)
 - [x] 1.3.3 Document the full props contract and composition — `README.md`; include examples, title/action accessibility, localization, header-versus-Card size, controlled ownership and body-state reset; validate examples against type pins. ✅ (completed: 2026-10-28 17:39)
 - [x] 1.3.4 Format only intended changes and run `pnpm verify` plus `pnpm storybook:build` at the repository root; record actual exit results and report unrelated failures without broad cleanup. ✅ (completed: 2026-10-28 17:41)
-- [!] 1.3.5 Complete and record the Storybook manual checks from 07 Browser and E2E, including native keyboard, focus recovery/no-steal, narrow layout, themes and reduced motion. If access is unavailable, leave this task blocked rather than claiming a build proves it. Blocked: no interactive browser tool is available in this session; actual observations are required.
-- [ ] 1.3.6 Run the exec-plan phase quality loop (independent reviewer plus auditor), obtain authorized rulings for critical/major findings, apply approved in-scope fixes, and rerun the full gates after fixes. Record findings through exec-plan and update this checklist only after verification.
+- [x] 1.3.5 Complete and record the Storybook manual checks from 07 Browser and E2E, including native keyboard, focus recovery/no-steal, narrow layout, themes and reduced motion. If access is unavailable, leave this task blocked rather than claiming a build proves it. ✅ (completed: 2026-10-29 00:13) — all eight checks explicitly user-confirmed; bookkeeping and full verify passed.
+- [x] 1.3.6 Run the exec-plan phase quality loop (independent reviewer plus auditor), obtain authorized rulings for critical/major findings, apply approved in-scope fixes, and rerun the full gates after fixes. Record findings through exec-plan and update this checklist only after verification. ✅ (completed: 2026-10-29 00:17) — both independent reviews returned no findings; full verify and Storybook build passed.
 
 **Verify:** `pnpm verify` and `pnpm storybook:build`, actual manual evidence, and strict-quality
 review according to root `codeops/codeops.json`. The independent quality loop is not replaced by
@@ -140,13 +140,48 @@ props/imports match the public type pins and compiled stories. 1.3.4 `pnpm verif
 `pnpm storybook:build` both exited 0. Final repository suite: 80 files / 923 tests passed
 (cached on the final bookkeeping-only rerun). No browser result is inferred from either build.
 
-**Manual-check blocker (1.3.5):** No interactive browser tool is exposed in this session.
+**Historical manual-check blocker (1.3.5):** No interactive browser tool was exposed in the session.
 All eight rows in 07 Browser and E2E remain NOT RUN: native keyboard/tab order; external
 collapse recovery/no-steal; ordinary/reduced motion and caller SVG isolation; narrow layout/zoom;
 sizes/headings; themes/RTL/forced colors; a11y panel/heading navigation; nesting/body reset.
 No automated browser suite, temporary browser harness or unsupported motion shim was added.
 Resume with actual browser access or user-supplied observations for every row. Task 1.3.6 remains
 pending in the specified order; no independent phase review or completed-feature claim is made.
+
+**Manual-check resolution (2026-10-29):** After running the local Storybook, the user explicitly
+selected “All eight checks passed” in a clarification question. This supersedes the earlier
+conflicting multi-selection and general LGTM. All eight rows are now user-reported PASS:
+native keyboard/tab order; external-collapse focus recovery/no-steal; ordinary/reduced motion
+and caller SVG isolation; narrow layout/200% zoom; sizes/headings; themes/RTL/forced colors;
+a11y panel/heading navigation; nesting/body reset. Browser version and screenshots were not
+provided. These are the user's observations, not agent-driven browser measurements.
+
+**Release continuation authority:** User requested commit, push and publication if not already
+released. npm latest 0.5.0 lacks CollapsibleSection. Independent phase review remains mandatory;
+this continuation does not waive findings or infer new auto-design authority. The separately
+approved Storybook regrouping is committed as `73378ac`; its metadata-only changes to unrelated
+stories and authoring guidance are excluded from this component phase's review scope.
+
+**Independent phase quality review (2026-10-29):** Both unavailable named roles used fresh
+general-agent packets with the phase's medium reasoning suggestion, strict scope and the
+minimum-sufficient baseline. Review diff derived from the full phase-start tree and included
+committed, staged and unstaged component work; unrelated regrouping files and pre-existing
+specialist state were excluded.
+
+| Role                 | Session                          | Outcome     | Coverage                                                                                                                                                                             |
+| -------------------- | -------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Correctness reviewer | `ses_e7b34bd27ffeFjkTQnxk4dKiok` | No findings | Correctness, maintainability, standards, accessibility/focus/state/lifecycle, API, docs and frozen oracles. Independently reran `pnpm verify`: pass, 80 files / 923 tests via cache. |
+| Security auditor     | `ses_e7b346848ffelCsHmEiVm6bUTo` | No findings | React text/DOM injection boundary, caller-owned elements/callbacks, local IDs/DOM access, package surface and side effects. Server controls N/A.                                     |
+
+No critical/major/minor findings, remediations, waivers, unapproved machinery or re-review were
+needed. No findings ledger is fabricated for an empty result. Browser evidence remains explicitly
+user-reported, not independently reproduced; historical red-first evidence was inspected rather
+than replayed. The npm artifact guard passed and built runtime/declarations include the new
+component; generated packaged authoring guidance matches its source. CI and Pages for `73378ac`
+also completed successfully. Final full verify and Storybook build remain the promotion gate.
+
+**Completion gate:** Final `pnpm verify` and `pnpm storybook:build` both exited 0 after review.
+All 15 tasks are verified; no open blocker, finding or accepted-risk waiver remains.
 
 ## Dependencies
 
