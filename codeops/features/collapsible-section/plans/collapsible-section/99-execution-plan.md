@@ -2,8 +2,8 @@
 
 > **Document**: 99-execution-plan.md
 > **Parent**: [Index](00-index.md)
-> **Last Updated**: 2026-10-28 17:39
-> **Progress**: 12/15 tasks (80%)
+> **Last Updated**: 2026-10-28 17:41
+> **Progress**: 13/15 tasks (87%)
 > **CodeOps Artifact Schema**: 1
 
 ## Overview
@@ -124,14 +124,29 @@ Behavioral and export oracle hashes remain unchanged.
 - [x] 1.3.1 Write implementation tests — `test/collapsible-section.impl.test.tsx`; cover the private structure/style/ref checks in 07 Implementation Tests using real primitives, then run the component tests. ✅ (completed: 2026-10-28 17:32)
 - [x] 1.3.2 Add all required variants and manual checklist — `src/components/CollapsibleSection/stories/CollapsibleSection.stories.tsx`; use the existing provider and run package type-check. ✅ (completed: 2026-10-28 17:37)
 - [x] 1.3.3 Document the full props contract and composition — `README.md`; include examples, title/action accessibility, localization, header-versus-Card size, controlled ownership and body-state reset; validate examples against type pins. ✅ (completed: 2026-10-28 17:39)
-- [ ] 1.3.4 Format only intended changes and run `pnpm verify` plus `pnpm storybook:build` at the repository root; record actual exit results and report unrelated failures without broad cleanup.
-- [ ] 1.3.5 Complete and record the Storybook manual checks from 07 Browser and E2E, including native keyboard, focus recovery/no-steal, narrow layout, themes and reduced motion. If access is unavailable, leave this task blocked rather than claiming a build proves it.
+- [x] 1.3.4 Format only intended changes and run `pnpm verify` plus `pnpm storybook:build` at the repository root; record actual exit results and report unrelated failures without broad cleanup. ✅ (completed: 2026-10-28 17:41)
+- [!] 1.3.5 Complete and record the Storybook manual checks from 07 Browser and E2E, including native keyboard, focus recovery/no-steal, narrow layout, themes and reduced motion. If access is unavailable, leave this task blocked rather than claiming a build proves it. Blocked: no interactive browser tool is available in this session; actual observations are required.
 - [ ] 1.3.6 Run the exec-plan phase quality loop (independent reviewer plus auditor), obtain authorized rulings for critical/major findings, apply approved in-scope fixes, and rerun the full gates after fixes. Record findings through exec-plan and update this checklist only after verification.
 
 **Verify:** `pnpm verify` and `pnpm storybook:build`, actual manual evidence, and strict-quality
 review according to root `codeops/codeops.json`. The independent quality loop is not replaced by
 the absence of a specialist. Commit behavior comes from the chosen exec-plan mode and the
 git-commit skill, not raw commands in this plan.
+
+**Hardening evidence:** 1.3.1 targeted internal tests and full `pnpm verify` passed; real Card
+and Accordion exercise private structure, caller handlers/classes, mappings, unmount safety and
+generated rules without mocks. 1.3.2 stories and 1.3.3 README each passed full verify; example
+props/imports match the public type pins and compiled stories. 1.3.4 `pnpm verify` and
+`pnpm storybook:build` both exited 0. Final repository suite: 80 files / 923 tests passed
+(cached on the final bookkeeping-only rerun). No browser result is inferred from either build.
+
+**Manual-check blocker (1.3.5):** No interactive browser tool is exposed in this session.
+All eight rows in 07 Browser and E2E remain NOT RUN: native keyboard/tab order; external
+collapse recovery/no-steal; ordinary/reduced motion and caller SVG isolation; narrow layout/zoom;
+sizes/headings; themes/RTL/forced colors; a11y panel/heading navigation; nesting/body reset.
+No automated browser suite, temporary browser harness or unsupported motion shim was added.
+Resume with actual browser access or user-supplied observations for every row. Task 1.3.6 remains
+pending in the specified order; no independent phase review or completed-feature claim is made.
 
 ## Dependencies
 
