@@ -756,6 +756,10 @@ each tile in a list item, so assistive technology hears the panel content as a
 list of apps. The default is three columns, the Microsoft 365 launcher's
 column count.
 
+Rows keep their content height and stay at the top when the grid fills a taller
+container. Extra height remains below the tiles, including a partial final row;
+no section or divider is needed to keep rows compact.
+
 | Prop       | Type                             | Default      | Description                                        |
 | ---------- | -------------------------------- | ------------ | -------------------------------------------------- |
 | `children` | `ReactNode`                      | — (required) | Tiles to lay out; pass `AppLauncherItem` elements. |
@@ -780,6 +784,12 @@ name is the visible label — with an optional icon. The surrounding container
 decides the layout: inside `AppLauncherGrid` the item renders as a tile (icon
 above the name), inside `AppLauncherList` as a row (icon beside the name);
 standalone it falls back to the tile layout.
+
+Tile names wrap to at most two lines, then end in an ellipsis. The full label
+remains the button's accessible name. Standard 32px icons and the default text
+size fit in an 88px tile. This is a minimum, not a hard height cap: larger text
+or caller-sized icons can still make a row taller. List names keep their
+single-line ellipsis.
 
 | Prop                | Type                                 | Default      | Description                                                                                                                                                                                                                            |
 | ------------------- | ------------------------------------ | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

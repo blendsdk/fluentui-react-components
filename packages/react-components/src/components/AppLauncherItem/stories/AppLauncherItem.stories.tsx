@@ -85,17 +85,17 @@ export const DisabledPair: Story = {
 };
 
 /**
- * A long app name: it wraps inside a grid tile and ends in an ellipsis inside
- * a list row — the surrounding container decides.
+ * Long app names end in an ellipsis after two lines in a tile or one line in
+ * a list row. The full name remains the accessible name in both layouts.
  */
 export const LongName: Story = {
   render: () => (
     <div>
       <AppLauncherGrid>
-        <AppLauncherItem label="Resource Planning" icon={<CalendarLtr32Regular />} />
+        <AppLauncherItem label="Contoso Resource Planning" icon={<CalendarLtr32Regular />} />
       </AppLauncherGrid>
       <AppLauncherList>
-        <AppLauncherItem label="Resource Planning" icon={<CalendarLtr20Regular />} />
+        <AppLauncherItem label="Contoso Resource Planning" icon={<CalendarLtr20Regular />} />
       </AppLauncherList>
     </div>
   ),

@@ -3,6 +3,9 @@ import { makeStyles, tokens } from '@fluentui/react-components';
 const useStyles = makeStyles({
   root: {
     display: 'grid',
+    // Keep rows at their content height when a caller gives the grid extra
+    // vertical space. The default stretches auto rows and their tile buttons.
+    alignContent: 'start',
     // The panel width of the Microsoft 365 app launcher. The grid owns it
     // because the surface wraps its content: the widest block inside the
     // panel decides how wide the launcher opens.
@@ -25,6 +28,7 @@ export type AppLauncherGridClasses = {
  *
  * The grid removes the list decoration the `ul` element brings along and
  * fixes the panel width so the launcher does not resize with its content.
+ * Rows stay packed at the top rather than stretching to fill a taller grid.
  *
  * @returns class names for the grid slots
  */

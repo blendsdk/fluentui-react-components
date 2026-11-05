@@ -63,15 +63,32 @@ export const FourColumns: Story = {
 };
 
 /**
- * A long app name wraps inside its tile; the tile grows instead of clipping
- * the label.
+ * Long app names wrap to two lines, then end in an ellipsis. The full name
+ * remains available to assistive technology without making the row taller.
  */
 export const LongName: Story = {
   render: () => (
     <AppLauncherGrid>
-      <AppLauncherItem label="Resource Planning" icon={<CalendarLtr32Regular />} />
+      <AppLauncherItem label="Contoso Resource Planning" icon={<CalendarLtr32Regular />} />
       <AppLauncherItem label="Mail" icon={<Mail32Regular />} />
       <AppLauncherItem label="Chat" icon={<Chat32Regular />} />
     </AppLauncherGrid>
+  ),
+};
+
+/**
+ * Four tiles occupy two compact rows even when the grid fills a tall parent.
+ * No section or divider is needed; unused height stays below the last tile.
+ */
+export const TallContainer: Story = {
+  render: () => (
+    // A 400px host demonstrates spare vertical space; no theme token defines it.
+    <div style={{ height: 400 }}>
+      <AppLauncherGrid style={{ height: '100%' }}>
+        {apps.slice(0, 4).map(app => (
+          <AppLauncherItem key={app.label} label={app.label} icon={app.icon} />
+        ))}
+      </AppLauncherGrid>
+    </div>
   ),
 };

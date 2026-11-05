@@ -11,7 +11,11 @@ import type { ComponentPropsWithoutRef, ReactElement } from 'react';
  * through to the button element.
  */
 export type AppLauncherItemProps = Omit<ComponentPropsWithoutRef<'button'>, 'children'> & {
-  /** Name of the app, shown with the icon and used as the accessible name. */
+  /**
+   * Name of the app, shown with the icon and used in full as the accessible
+   * name. The visible label ends in an ellipsis after two lines in a tile or
+   * one line in a list row.
+   */
   label: string;
 
   /**

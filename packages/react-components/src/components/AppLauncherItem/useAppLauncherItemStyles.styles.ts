@@ -86,6 +86,13 @@ const useStyles = makeStyles({
     lineHeight: tokens.lineHeightBase200,
     textAlign: 'center',
     overflowWrap: 'anywhere',
+    // Limit the visible name without capping the button's height: larger text
+    // or caller-sized icons can still need more space. CSS adds the ellipsis
+    // while the full text remains the button's accessible name.
+    display: '-webkit-box',
+    WebkitBoxOrient: 'vertical',
+    WebkitLineClamp: 2,
+    overflow: 'hidden',
   },
   labelRow: {
     // Follows the button color like the tile label does, so a disabled
@@ -137,9 +144,9 @@ export type AppLauncherItemClasses = {
  * Resolves the item style classes for a layout.
  *
  * The tile layout stacks the icon above the app name and keeps a fixed
- * minimum height so tiles in a row stay aligned when a name wraps onto a
- * second line. The row layout puts the icon beside the name and truncates a
- * long name with an ellipsis.
+ * minimum height so tiles in a row stay aligned. Names wrap to at most two
+ * visible lines, then end in an ellipsis without changing the accessible name.
+ * The row layout puts the icon beside the name and uses a single-line ellipsis.
  *
  * @param layout - layout the surrounding container resolved for the item
  * @returns class names for the item slots
