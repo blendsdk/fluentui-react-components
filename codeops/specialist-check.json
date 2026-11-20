@@ -1,13 +1,16 @@
 {
-  "checkedAt": "2026-10-22T15:23:00Z",
+  "checkedAt": "2026-11-20T13:39:37Z",
   "plans": [
+    "codeops/features/app-bar/plans/app-bar",
     "codeops/features/app-launcher/plans/app-launcher",
+    "codeops/features/collapsible-section/plans/collapsible-section",
     "codeops/features/confirm-dialog/plans/confirm-dialog",
     "codeops/features/error-dialog/plans/error-dialog",
     "codeops/features/form-fields/plans/form-fields",
     "codeops/features/loading/plans/loading",
     "codeops/features/skills-distribution/plans/skills-distribution",
     "codeops/features/tile-grid/plans/rd-03",
+    "codeops/features/tile-grid/plans/rd-04",
     "codeops/features/tile-grid/plans/v1"
   ]
 }

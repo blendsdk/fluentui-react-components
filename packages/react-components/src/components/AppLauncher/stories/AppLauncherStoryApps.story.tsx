@@ -1,4 +1,4 @@
-import { Button, Text, makeStyles, tokens } from '@fluentui/react-components';
+import { makeStyles, tokens } from '@fluentui/react-components';
 import {
   CalendarClock20Regular,
   CalendarClock32Regular,
@@ -10,7 +10,6 @@ import {
   Folder32Regular,
   Globe20Regular,
   Globe32Regular,
-  GridDots20Regular,
   Mail32Regular,
   PeopleTeam20Regular,
   PeopleTeam32Regular,
@@ -19,8 +18,8 @@ import {
   Video20Regular,
   Video32Regular,
 } from '@fluentui/react-icons';
-import { forwardRef, useState } from 'react';
-import type { ComponentPropsWithoutRef, ReactElement, ReactNode } from 'react';
+import { useState } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 import { AppLauncherGrid } from '../../AppLauncherGrid';
 import { AppLauncherItem } from '../../AppLauncherItem';
 import { AppLauncherList } from '../../AppLauncherList';
@@ -232,36 +231,6 @@ const useFrameStyles = makeStyles({
     minHeight: '100vh',
     backgroundColor: tokens.colorNeutralBackground2,
   },
-  bar: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    padding: '6px 16px',
-    backgroundColor: tokens.colorBrandBackground,
-  },
-  brand: {
-    color: tokens.colorNeutralForegroundOnBrand,
-  },
-  // The trigger sits on the brand bar, so it must keep its on-brand colors
-  // in every interaction state: Fluent's transparent Button repaints its
-  // foreground with brand-hover colors on hover and press, which vanish on a
-  // brand-colored bar. The `&.fui-Button` selectors outrank the Button's own
-  // `:hover` rules, and the icon pins its own color through `waffle` so it
-  // cannot be repainted by inheritance.
-  trigger: {
-    color: tokens.colorNeutralForegroundOnBrand,
-    '&.fui-Button:hover': {
-      color: tokens.colorNeutralForegroundOnBrand,
-      backgroundColor: 'rgba(255, 255, 255, 0.12)',
-    },
-    '&.fui-Button:hover:active': {
-      color: tokens.colorNeutralForegroundOnBrand,
-      backgroundColor: 'rgba(255, 255, 255, 0.22)',
-    },
-  },
-  waffle: {
-    color: tokens.colorNeutralForegroundOnBrand,
-  },
   card: {
     display: 'flex',
     flexDirection: 'column',
@@ -272,68 +241,6 @@ const useFrameStyles = makeStyles({
     borderRadius: tokens.borderRadiusXLarge,
     backgroundColor: tokens.colorNeutralBackground1,
   },
-});
-
-/**
- * A minimal application bar in the Contoso brand blue: the context the
- * launcher docks to in the stories. The forwarded ref points at the bar
- * element, so a story can pass it as the launcher's `dockTarget`.
- */
-export const AppBar = forwardRef<HTMLElement, { children?: ReactNode }>(function AppBar(
-  { children },
-  ref
-) {
-  const styles = useFrameStyles();
-
-  return (
-    <header ref={ref} className={styles.bar}>
-      {children}
-    </header>
-  );
-});
-
-/**
- * The application name shown in the bar, in the on-brand foreground color.
- */
-export function Brand({ name = 'Contoso' }: { name?: string }) {
-  const styles = useFrameStyles();
-
-  return (
-    <Text className={styles.brand} weight="semibold">
-      {name}
-    </Text>
-  );
-}
-
-/**
- * The waffle trigger styled for the brand-colored bar: a transparent Button
- * whose icon keeps the on-brand color in every state, with a soft white
- * overlay as the hover and press feedback.
- *
- * Forwards its props and ref to the Button, which is the contract the
- * launcher requires of a caller-provided trigger: `PopoverTrigger` injects
- * event handlers and its anchor ref into the element it renders.
- *
- * @param props - component props plus anything the launcher injects
- * @param props.label - accessible name of the trigger
- * @param ref - ref to the root button element, forwarded to the Button
- */
-export const LauncherTriggerButton = forwardRef<
-  HTMLButtonElement,
-  { label?: string } & Omit<ComponentPropsWithoutRef<'button'>, 'children'>
->(function LauncherTriggerButton({ label = 'App launcher', ...rest }, ref) {
-  const styles = useFrameStyles();
-
-  return (
-    <Button
-      {...rest}
-      ref={ref}
-      appearance="transparent"
-      aria-label={label}
-      className={styles.trigger}
-      icon={<GridDots20Regular className={styles.waffle} />}
-    />
-  );
 });
 
 /**

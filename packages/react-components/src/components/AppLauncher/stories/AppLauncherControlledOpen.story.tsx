@@ -1,13 +1,14 @@
 import { Text } from '@fluentui/react-components';
 import { useRef, useState } from 'react';
+import { GridDots20Regular } from '@fluentui/react-icons';
 import { AppLauncher } from '../AppLauncher';
+import { AppBar } from '../../AppBar';
+import { AppBarButton } from '../../AppBarButton';
+import { AppBarTitle } from '../../AppBarTitle';
 import { AppLauncherSection } from '../../AppLauncherSection';
 import {
-  AppBar,
   AppRows,
-  Brand,
   Captions,
-  LauncherTriggerButton,
   Page,
   apps,
   initialRecentLabels,
@@ -46,7 +47,7 @@ export const ControlledOpen = () => {
     <Page>
       <AppBar ref={barRef}>
         <AppLauncher
-          trigger={<LauncherTriggerButton />}
+          trigger={<AppBarButton aria-label="App launcher" icon={<GridDots20Regular />} />}
           dockTarget={barRef}
           open={launcher.open}
           onOpenChange={launcher.onOpenChange}
@@ -55,7 +56,7 @@ export const ControlledOpen = () => {
             <AppRows items={recentApps} onActivate={recordUse} />
           </AppLauncherSection>
         </AppLauncher>
-        <Brand />
+        <AppBarTitle>Contoso</AppBarTitle>
       </AppBar>
       <Captions>
         <Text size={500} weight="semibold">

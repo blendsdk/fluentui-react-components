@@ -1,13 +1,13 @@
 # Portfolio Roadmap: Fluent UI React Components
 
 > **Status**: Complete
-> **Last Updated**: 2026-10-29 00:17
-> **Features**: 7 / 7 done (RD-backed; standalone plan done)
+> **Last Updated**: 2026-11-21
+> **Features**: 9 / 9 done
 > **CodeOps Artifact Schema**: 1
 
 ## Legend
 
-⬜ Backlog · 🔄 In progress · ✅ Done · ⛔ Blocked · ⏸️ Deferred · 📦 Archived
+⬜ Backlog · 📋 Plan created · 🔬 Plan preflighted · 🔄 In progress · ✅ Done · ⛔ Blocked · ⏸️ Deferred · 📦 Archived
 
 ## Features
 
@@ -21,6 +21,7 @@
 | skills-distribution | [→](features/skills-distribution/00-roadmap.md) | 1 plan done · 1 RD done                  | 1/1 RDs               | ✅     | 2026-10-19   |
 | tile-grid           | [→](features/tile-grid/00-roadmap.md)           | 3 plans done · 4 RDs done · 0.4.0 frozen | 4/4 RDs               | ✅     | 2026-10-26   |
 | collapsible-section | [→](features/collapsible-section/00-roadmap.md) | 1 standalone plan done                   | n/a · standalone plan | ✅     | 2026-10-29   |
+| app-bar             | [→](features/app-bar/00-roadmap.md)             | 1 plan done · 2 RDs done · 1 task done   | 2/2 RDs               | ✅     | 2026-11-21   |
 
 ## Archived
 

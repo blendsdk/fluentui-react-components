@@ -1,15 +1,16 @@
 import { Text } from '@fluentui/react-components';
 import { useRef, useState } from 'react';
+import { GridDots20Regular } from '@fluentui/react-icons';
 import { AppLauncher } from '../AppLauncher';
+import { AppBar } from '../../AppBar';
+import { AppBarButton } from '../../AppBarButton';
+import { AppBarTitle } from '../../AppBarTitle';
 import { AppLauncherSearch } from '../../AppLauncherSearch';
 import { AppLauncherSection } from '../../AppLauncherSection';
 import {
-  AppBar,
   AppRows,
   AppTiles,
-  Brand,
   Captions,
-  LauncherTriggerButton,
   Page,
   allApps,
   apps,
@@ -60,7 +61,7 @@ export const KitchenSink = () => {
     <Page>
       <AppBar ref={barRef}>
         <AppLauncher
-          trigger={<LauncherTriggerButton />}
+          trigger={<AppBarButton aria-label="App launcher" icon={<GridDots20Regular />} />}
           dockTarget={barRef}
           open={launcher.open}
           onOpenChange={launcher.onOpenChange}
@@ -92,7 +93,7 @@ export const KitchenSink = () => {
             </AppLauncherSection>
           )}
         </AppLauncher>
-        <Brand />
+        <AppBarTitle>Contoso</AppBarTitle>
       </AppBar>
       <Captions>
         <Text size={500} weight="semibold">

@@ -1,5 +1,6 @@
 import { Text } from '@fluentui/react-components';
 import {
+  GridDots20Regular,
   CalendarLtr20Regular,
   CalendarLtr32Regular,
   Settings20Regular,
@@ -7,15 +8,15 @@ import {
 } from '@fluentui/react-icons';
 import { useRef, useState } from 'react';
 import { AppLauncher } from '../AppLauncher';
+import { AppBar } from '../../AppBar';
+import { AppBarButton } from '../../AppBarButton';
+import { AppBarTitle } from '../../AppBarTitle';
 import { AppLauncherSearch } from '../../AppLauncherSearch';
 import { AppLauncherSection } from '../../AppLauncherSection';
 import {
-  AppBar,
   AppRows,
   AppTiles,
-  Brand,
   Captions,
-  LauncherTriggerButton,
   Page,
   apps,
   pinnedApps,
@@ -40,7 +41,7 @@ function GermanExample() {
   return (
     <AppBar ref={barRef}>
       <AppLauncher
-        trigger={<LauncherTriggerButton label="App-Starter" />}
+        trigger={<AppBarButton aria-label="App-Starter" icon={<GridDots20Regular />} />}
         dockTarget={barRef}
         open={launcher.open}
         onOpenChange={launcher.onOpenChange}
@@ -60,7 +61,7 @@ function GermanExample() {
           <AppRows items={results} onActivate={launcher.close} />
         )}
       </AppLauncher>
-      <Brand />
+      <AppBarTitle>Contoso</AppBarTitle>
     </AppBar>
   );
 }
@@ -94,7 +95,7 @@ function ArmenianExample() {
   return (
     <AppBar ref={barRef}>
       <AppLauncher
-        trigger={<LauncherTriggerButton label="Հավելվածների գործարկիչ" />}
+        trigger={<AppBarButton aria-label="Հավելվածների գործարկիչ" icon={<GridDots20Regular />} />}
         dockTarget={barRef}
         open={launcher.open}
         onOpenChange={launcher.onOpenChange}
@@ -114,7 +115,7 @@ function ArmenianExample() {
           )}
         </AppLauncherSection>
       </AppLauncher>
-      <Brand name="Կոնտոսո" />
+      <AppBarTitle>Կոնտոսո</AppBarTitle>
     </AppBar>
   );
 }

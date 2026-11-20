@@ -9,6 +9,14 @@
  * @packageDocumentation
  */
 
+export { AppBar } from './components/AppBar';
+export type { AppBarProps } from './components/AppBar';
+export { AppBarButton } from './components/AppBarButton';
+export type { AppBarButtonProps } from './components/AppBarButton';
+export { AppBarSpacer } from './components/AppBarSpacer';
+export type { AppBarSpacerProps } from './components/AppBarSpacer';
+export { AppBarTitle } from './components/AppBarTitle';
+export type { AppBarTitleProps } from './components/AppBarTitle';
 export { AppLauncher } from './components/AppLauncher';
 export type { AppLauncherDocking, AppLauncherProps } from './components/AppLauncher';
 export { AppLauncherGrid } from './components/AppLauncherGrid';

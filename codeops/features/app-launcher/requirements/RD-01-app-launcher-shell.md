@@ -55,9 +55,10 @@ AR #10, AR #13), and the `AppLauncherTrigger` story shows the trigger's document
 - [ ] Docking: `docking` is `'default'` (surface wraps its content) or `'full'` (surface extends
       from its anchored top edge to the window bottom); every docking merges `autoSize: 'height'`
       into the positioning so the positioning layer caps the surface at the space to the window
-      bottom and scrolls the content inside instead of growing the page; the default docking
-      rounds all corners with `borderRadiusXLarge`, the full docking rounds only the top corners
-      and stays square at the window edge (AR #2).
+      bottom and scrolls the content inside instead of growing the page; the default docking keeps
+      the top corners square so the panel meets the application bar flush and rounds the bottom
+      corners with `borderRadiusXLarge`; the full docking rounds the top corners and stays square
+      at the window edge (AR #2; updated 2026-11-20 at the user's request).
 - [ ] The surface carries the `data-app-launcher-surface` attribute and pins its background to
       `colorNeutralBackground1` through the attribute-qualified selector — the documented
       mechanism that outweighs Fluent's own surface styles, whose stylesheet is inserted after

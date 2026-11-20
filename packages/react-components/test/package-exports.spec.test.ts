@@ -3,6 +3,10 @@ import { createElement, createRef } from 'react';
 import type { Control } from 'react-hook-form';
 import * as api from '../src/index';
 import type {
+  AppBarButtonProps,
+  AppBarProps,
+  AppBarSpacerProps,
+  AppBarTitleProps,
   AppLauncherDocking,
   AppLauncherGridProps,
   AppLauncherItemProps,
@@ -56,6 +60,10 @@ describe('package export surface', () => {
     // of the contract: every documented component is reachable and no
     // internal module leaks out.
     expect(Object.keys(api).sort()).toEqual([
+      'AppBar',
+      'AppBarButton',
+      'AppBarSpacer',
+      'AppBarTitle',
       'AppLauncher',
       'AppLauncherGrid',
       'AppLauncherItem',
@@ -154,6 +162,21 @@ describe('package export surface', () => {
     };
 
     expect([headingPin, sizePin, appearancePin, htmlPin]).toHaveLength(4);
+  });
+
+  it('exports the public AppBar types', () => {
+    const bar: AppBarProps = { children: 'Content' };
+    const button: AppBarButtonProps = { children: 'Settings' };
+    const title: AppBarTitleProps = { children: 'Contoso', headingLevel: 1 };
+    const spacer: AppBarSpacerProps = { id: 'gap' };
+    const ref = createRef<HTMLElement>();
+    const element = createElement(api.AppBar, { ...bar, ref });
+
+    expect(element.type).toBe(api.AppBar);
+    expect(button.children).toBe('Settings');
+    expect(title.headingLevel).toBe(1);
+    expect(spacer.id).toBe('gap');
+    expect(ref.current).toBeNull();
   });
 
   it('exports the public TileGrid and TileGridItem types', () => {

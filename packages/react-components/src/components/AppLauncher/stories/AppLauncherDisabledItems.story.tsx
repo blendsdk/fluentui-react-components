@@ -1,15 +1,19 @@
 import { Text } from '@fluentui/react-components';
-import { CalendarClock20Regular, CalendarClock32Regular } from '@fluentui/react-icons';
+import {
+  CalendarClock20Regular,
+  CalendarClock32Regular,
+  GridDots20Regular,
+} from '@fluentui/react-icons';
 import { useRef } from 'react';
 import { AppLauncher } from '../AppLauncher';
+import { AppBar } from '../../AppBar';
+import { AppBarButton } from '../../AppBarButton';
+import { AppBarTitle } from '../../AppBarTitle';
 import { AppLauncherSection } from '../../AppLauncherSection';
 import {
-  AppBar,
   AppRows,
   AppTiles,
-  Brand,
   Captions,
-  LauncherTriggerButton,
   Page,
   useActivatingLauncher,
 } from './AppLauncherStoryApps.story';
@@ -54,7 +58,7 @@ export const DisabledItems = () => {
     <Page>
       <AppBar ref={barRef}>
         <AppLauncher
-          trigger={<LauncherTriggerButton />}
+          trigger={<AppBarButton aria-label="App launcher" icon={<GridDots20Regular />} />}
           dockTarget={barRef}
           open={launcher.open}
           onOpenChange={launcher.onOpenChange}
@@ -66,7 +70,7 @@ export const DisabledItems = () => {
             <AppRows items={items} onActivate={launcher.close} />
           </AppLauncherSection>
         </AppLauncher>
-        <Brand />
+        <AppBarTitle>Contoso</AppBarTitle>
       </AppBar>
       <Captions>
         <Text size={500} weight="semibold">

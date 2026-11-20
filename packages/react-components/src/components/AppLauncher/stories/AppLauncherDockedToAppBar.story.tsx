@@ -1,13 +1,14 @@
 import { Text } from '@fluentui/react-components';
 import { useRef } from 'react';
+import { GridDots20Regular } from '@fluentui/react-icons';
 import { AppLauncher } from '../AppLauncher';
+import { AppBar } from '../../AppBar';
+import { AppBarButton } from '../../AppBarButton';
+import { AppBarTitle } from '../../AppBarTitle';
 import { AppLauncherSection } from '../../AppLauncherSection';
 import {
-  AppBar,
   AppTiles,
-  Brand,
   Captions,
-  LauncherTriggerButton,
   Page,
   allApps,
   pinnedApps,
@@ -28,7 +29,7 @@ export const DockedToAppBar = () => {
     <Page>
       <AppBar ref={barRef}>
         <AppLauncher
-          trigger={<LauncherTriggerButton />}
+          trigger={<AppBarButton aria-label="App launcher" icon={<GridDots20Regular />} />}
           dockTarget={barRef}
           open={launcher.open}
           onOpenChange={launcher.onOpenChange}
@@ -40,7 +41,7 @@ export const DockedToAppBar = () => {
             <AppTiles items={allApps} onActivate={launcher.close} />
           </AppLauncherSection>
         </AppLauncher>
-        <Brand />
+        <AppBarTitle>Contoso</AppBarTitle>
       </AppBar>
       <Captions>
         <Text size={500} weight="semibold">
@@ -48,9 +49,9 @@ export const DockedToAppBar = () => {
         </Text>
         <Text>
           A launcher in the application bar passes the bar element as its dockTarget: the panel
-          opens flush with the window's edge beneath the bar, with its top corners rounded and its
-          bottom corners square. The panel wraps its content until the space below the bar runs out,
-          then it stops at the window bottom and scrolls inside instead of growing the page.
+          opens flush with the window's edge beneath the bar, with its top corners square and its
+          bottom corners rounded. The panel wraps its content until the space below the bar runs
+          out, then it stops at the window bottom and scrolls inside instead of growing the page.
         </Text>
       </Captions>
     </Page>

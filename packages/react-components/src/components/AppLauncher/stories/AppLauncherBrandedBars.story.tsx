@@ -1,26 +1,19 @@
-import { Text, makeStyles } from '@fluentui/react-components';
+import { Text } from '@fluentui/react-components';
+import { GridDots20Regular } from '@fluentui/react-icons';
 import { useRef, useState } from 'react';
 import { AppLauncher } from '../AppLauncher';
+import { AppBar } from '../../AppBar';
+import { AppBarButton } from '../../AppBarButton';
+import { AppBarTitle } from '../../AppBarTitle';
 import { AppLauncherSearch } from '../../AppLauncherSearch';
 import { AppLauncherSection } from '../../AppLauncherSection';
 import {
   AppTiles,
-  Brand,
   Captions,
-  LauncherTriggerButton,
   Page,
   apps,
   useActivatingLauncher,
 } from './AppLauncherStoryApps.story';
-
-const useStyles = makeStyles({
-  bar: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    padding: '6px 16px',
-  },
-});
 
 /** One branded bar: the product name and its brand color. */
 type BrandedBarProps = {
@@ -42,12 +35,10 @@ const brands: BrandedBarProps[] = [
 ];
 
 /**
- * One application bar with its own launcher: the waffle is a transparent
- * Button restyled for the bar (see {@link LauncherTriggerButton}), and the
- * panel docks to the bar it was opened from.
+ * One application bar with its own launcher: the waffle is an AppBarButton,
+ * and the panel docks to the bar it was opened from.
  */
 function BrandedBar({ name, color }: BrandedBarProps) {
-  const styles = useStyles();
   const barRef = useRef<HTMLElement>(null);
   const launcher = useActivatingLauncher();
   const [query, setQuery] = useState('');
@@ -56,9 +47,11 @@ function BrandedBar({ name, color }: BrandedBarProps) {
   const results = apps.filter(item => item.label.toLowerCase().includes(needle));
 
   return (
-    <header ref={barRef} className={styles.bar} style={{ backgroundColor: color }}>
+    <AppBar ref={barRef} aria-label={`${name} application bar`} style={{ backgroundColor: color }}>
       <AppLauncher
-        trigger={<LauncherTriggerButton label={`App launcher (${name})`} />}
+        trigger={
+          <AppBarButton aria-label={`App launcher (${name})`} icon={<GridDots20Regular />} />
+        }
         dockTarget={barRef}
         open={launcher.open}
         onOpenChange={launcher.onOpenChange}
@@ -76,17 +69,16 @@ function BrandedBar({ name, color }: BrandedBarProps) {
           )}
         </AppLauncherSection>
       </AppLauncher>
-      <Brand name={name} />
-    </header>
+      <AppBarTitle>{name}</AppBarTitle>
+    </AppBar>
   );
 }
 
 /**
- * The launcher on application bars in different brand colors. The trigger
- * keeps its on-brand color while hovered, pressed and focused on every bar:
- * Fluent's transparent Button would otherwise repaint it with brand-hover
- * colors, which disappear on a colored bar. Open the launcher from each bar
- * — the panel docks to the bar it was opened from.
+ * The launcher on application bars in different brand colors. The
+ * AppBarButton keeps the white foreground and the soft white overlay states
+ * on every bar color. Open the launcher from each bar — the panel docks to the
+ * bar it was opened from.
  */
 export const BrandedBars = () => (
   <Page>
@@ -98,8 +90,9 @@ export const BrandedBars = () => (
         Branded bars
       </Text>
       <Text>
-        Hover, press and focus each waffle: it stays on-brand on every bar color, with a soft white
-        overlay as the interaction feedback. The panel docks to the bar it was opened from.
+        Hover and press each waffle: it stays on-brand on every bar color, with a soft white overlay
+        as the interaction feedback; keyboard focus shows the white focus ring. The panel docks to
+        the bar it was opened from.
       </Text>
     </Captions>
   </Page>

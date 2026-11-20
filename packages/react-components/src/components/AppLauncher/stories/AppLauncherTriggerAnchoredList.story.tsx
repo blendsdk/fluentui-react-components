@@ -1,15 +1,10 @@
 import { Text, makeStyles } from '@fluentui/react-components';
+import { GridDots20Regular } from '@fluentui/react-icons';
 import { AppLauncher } from '../AppLauncher';
-import {
-  AppBar,
-  AppRows,
-  Brand,
-  Captions,
-  LauncherTriggerButton,
-  Page,
-  apps,
-  useActivatingLauncher,
-} from './AppLauncherStoryApps.story';
+import { AppBar } from '../../AppBar';
+import { AppBarButton } from '../../AppBarButton';
+import { AppBarTitle } from '../../AppBarTitle';
+import { AppRows, Captions, Page, apps, useActivatingLauncher } from './AppLauncherStoryApps.story';
 
 const useStyles = makeStyles({
   end: {
@@ -31,10 +26,10 @@ export const TriggerAnchoredList = () => {
   return (
     <Page>
       <AppBar>
-        <Brand />
+        <AppBarTitle>Contoso</AppBarTitle>
         <div className={styles.end}>
           <AppLauncher
-            trigger={<LauncherTriggerButton />}
+            trigger={<AppBarButton aria-label="App launcher" icon={<GridDots20Regular />} />}
             positioning={{ position: 'below', align: 'end' }}
             open={launcher.open}
             onOpenChange={launcher.onOpenChange}

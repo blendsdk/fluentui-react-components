@@ -1,13 +1,14 @@
 import { Text } from '@fluentui/react-components';
 import { useRef, useState } from 'react';
+import { GridDots20Regular } from '@fluentui/react-icons';
 import { AppLauncher } from '../AppLauncher';
+import { AppBar } from '../../AppBar';
+import { AppBarButton } from '../../AppBarButton';
+import { AppBarTitle } from '../../AppBarTitle';
 import { AppLauncherSearch } from '../../AppLauncherSearch';
 import {
-  AppBar,
   AppTiles,
-  Brand,
   Captions,
-  LauncherTriggerButton,
   Page,
   stressApps,
   useActivatingLauncher,
@@ -31,7 +32,9 @@ export const FullDock = () => {
     <Page>
       <AppBar ref={barRef}>
         <AppLauncher
-          trigger={<LauncherTriggerButton label="App launcher (full dock)" />}
+          trigger={
+            <AppBarButton aria-label="App launcher (full dock)" icon={<GridDots20Regular />} />
+          }
           docking="full"
           dockTarget={barRef}
           open={launcher.open}
@@ -44,7 +47,7 @@ export const FullDock = () => {
           />
           <AppTiles items={needle === '' ? stressApps : results} onActivate={launcher.close} />
         </AppLauncher>
-        <Brand />
+        <AppBarTitle>Contoso</AppBarTitle>
       </AppBar>
       <Captions>
         <Text size={500} weight="semibold">

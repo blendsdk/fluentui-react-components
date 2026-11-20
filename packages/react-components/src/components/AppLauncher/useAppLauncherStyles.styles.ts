@@ -18,16 +18,20 @@ const panelBackground = {
 
 const useStyles = makeStyles({
   surface: {
-    borderRadius: tokens.borderRadiusXLarge,
+    // The top corners stay square so the panel meets the application bar
+    // flush; the bottom corners keep the 8px Microsoft 365 rounding.
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
+    borderBottomLeftRadius: tokens.borderRadiusXLarge,
+    borderBottomRightRadius: tokens.borderRadiusXLarge,
     ...panelBackground,
   },
   surfaceFullDock: {
     // Asking for the full window height is what makes the positioning
     // layer's height clamp — and with it the dock — always apply.
     height: '100dvh',
-    // The full dock matches the default dock's 8px rounding on the
-    // corners that do not touch the window edge and stays square at the
-    // bottom, where the panel is flush with the window.
+    // Full docking rounds the top corners and stays square at the bottom,
+    // where the panel is flush with the window.
     borderTopLeftRadius: tokens.borderRadiusXLarge,
     borderTopRightRadius: tokens.borderRadiusXLarge,
     borderBottomLeftRadius: '0',
@@ -45,13 +49,13 @@ export type AppLauncherClasses = {
 /**
  * Resolves the surface style classes.
  *
- * The default docking rounds the surface with `borderRadiusXLarge` (8px), the
- * radius used by the Microsoft 365 app launcher. Full docking sizes the
- * surface instead: it asks for the full window height, rounds only the top
- * corners — staying square where the panel meets the window — and the
- * positioning layer clamps it to the space below the anchor, scrolling the
- * content when it is taller. Both variants carry the panel background from
- * one place.
+ * The default docking keeps the top corners square so the panel meets the
+ * application bar flush, and rounds the bottom corners with
+ * `borderRadiusXLarge` (8px). Full docking sizes the surface instead: it asks
+ * for the full window height, rounds the top corners and stays square at the
+ * bottom, where the panel meets the window. The positioning layer clamps the
+ * surface to the space below the anchor, scrolling the content when it is
+ * taller. Both variants carry the panel background from one place.
  *
  * @param docking - resolved docking behavior
  * @returns class names for the surface slot

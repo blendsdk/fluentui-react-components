@@ -558,6 +558,165 @@ as the user's choice. The promise never rejects.
   Server rendering emits the children only; a request needs a client-side
   interaction.
 
+### AppBar
+
+The brand application header: a semantic `<header>` that hosts the launcher, the
+product name and global commands. It is presentation-only; the application owns
+the launcher state and the command set. The bar is the banner landmark, so mount
+it at the top level of the page. Its forwarded ref is the element an application
+passes to `AppLauncher`'s `dockTarget`.
+
+```tsx
+import { useRef } from 'react';
+import { GridDots20Regular, Settings20Regular } from '@fluentui/react-icons';
+import {
+  AppBar,
+  AppBarButton,
+  AppBarSpacer,
+  AppBarTitle,
+  AppLauncher,
+  AppLauncherSection,
+} from '@blendsdk/fluentui-react-components';
+
+function TopBar() {
+  const barRef = useRef<HTMLElement>(null);
+
+  return (
+    <AppBar ref={barRef} aria-label="Application">
+      <AppLauncher
+        trigger={<AppBarButton aria-label="App launcher" icon={<GridDots20Regular />} />}
+        dockTarget={barRef}
+      >
+        <AppLauncherSection>{/* the application's launcher content */}</AppLauncherSection>
+      </AppLauncher>
+      <AppBarTitle>Contoso</AppBarTitle>
+      <AppBarSpacer />
+      <AppBarButton aria-label="Settings" icon={<Settings20Regular />} />
+    </AppBar>
+  );
+}
+```
+
+| Prop       | Type                  | Default    | Description                                                              |
+| ---------- | --------------------- | ---------- | ------------------------------------------------------------------------ |
+| `children` | `ReactNode`           | — required | Bar content: launcher, title, spacer and commands.                       |
+| …          | native `header` props | —          | All native header props (`id`, `aria-label`, `style`, ...) pass through. |
+
+The bar is 48px high at normal text, with zero bar padding and zero gap. A
+leading 48×48 command slot sits flush with the leading edge, the title starts
+8px after it, and trailing 48px commands sit flush with the trailing edge. The
+bar uses `min-height` rather than a fixed height, so at 200% text-only zoom it
+grows if the content exceeds 48px instead of clipping. The title truncates with
+an ellipsis when the bar is narrow.
+
+| Property           | Value                                                  |
+| ------------------ | ------------------------------------------------------ |
+| Height             | `min-height: 48px`; exactly 48px at normal text        |
+| Horizontal padding | `0`                                                    |
+| Gap                | `0`; spacing comes from the title's 8px inline margins |
+| Leading command    | 48×48, flush with the leading edge                     |
+| Title inset        | 8px on each inline side                                |
+| Trailing command   | 48px wide, flush with the trailing edge                |
+| Overflow           | visible; the title truncates with an ellipsis          |
+| Background         | `tokens.colorBrandBackground`                          |
+| Foreground         | `tokens.colorNeutralForegroundOnBrand`                 |
+
+#### Composition patterns
+
+- **Mount the bar once as the page banner.** A top-level `<header>` exposes the
+  banner landmark; the application names it with `aria-label` when needed.
+- **Dock the launcher to the bar.** Pass the bar's ref to `AppLauncher`'s
+  `dockTarget`; the launcher owns the panel, the trigger and the open state.
+- **The bar does not restyle arbitrary buttons.** A command owns its own
+  treatment; the bar only provides the 48px surface and the spacing.
+- **Localization is caller-owned.** The package ships no strings; the title and
+  the bar's `aria-label` are application content.
+
+### AppBarButton
+
+The on-brand command button for the bar. It wraps Fluent's `Button`, fixes the
+transparent, square, medium treatment, and supplies the Microsoft 365 states:
+white foreground, a 12% white hover, a 22% white pressed/open state, a white 2px
+inset focus ring and a muted disabled state. It works as the `AppLauncher`
+trigger because it forwards the props and ref that `PopoverTrigger` injects.
+
+```tsx
+<AppBarButton aria-label="Settings" icon={<Settings20Regular />} />
+<AppBarButton>Settings</AppBarButton>
+<AppBarButton icon={<CalendarLtr20Regular />}>Calendar</AppBarButton>
+```
+
+| Prop                                            | Type                                     | Default        | Description                                                                                  |
+| ----------------------------------------------- | ---------------------------------------- | -------------- | -------------------------------------------------------------------------------------------- |
+| `children`                                      | `ReactNode`                              | —              | Visible label; must be non-empty. Omit only when a non-empty `aria-label` names the command. |
+| `aria-label`                                    | `string`                                 | —              | Required for an icon-only command; must be non-empty.                                        |
+| `icon`                                          | Fluent icon slot (`ButtonProps['icon']`) | —              | Renders through Fluent's Button icon slot.                                                   |
+| `iconPosition`                                  | `'before' \| 'after'`                    | Fluent default | Position of the icon relative to the label.                                                  |
+| `type`                                          | `'button' \| 'submit' \| 'reset'`        | `'button'`     | Defaults to `button` so a bar command never submits a form.                                  |
+| `disabled`                                      | `boolean`                                | `false`        | Native disabled; never activates.                                                            |
+| `disabledFocusable`                             | `boolean`                                | `false`        | Announced disabled, still focusable, never activates.                                        |
+| …                                               | native button props                      | —              | `onClick`, `className`, `style`, `aria-*` and the other button props pass through.           |
+| `appearance` / `shape` / `size` / `as` / `href` | —                                        | —              | Not accepted; the M365 treatment is fixed and commands are actions, not links.               |
+
+| State          | Background               | Foreground                               |
+| -------------- | ------------------------ | ---------------------------------------- |
+| Resting        | transparent              | `colorNeutralForegroundOnBrand` (white)  |
+| Hover          | `rgba(255,255,255,0.12)` | white                                    |
+| Pressed / open | `rgba(255,255,255,0.22)` | white                                    |
+| Focus          | white 2px inset ring     | white                                    |
+| Disabled       | transparent              | `colorNeutralForegroundDisabled` (muted) |
+
+The 48px target and 12px inline padding match the Microsoft 365 bar commands.
+Text commands on the 12%/22% overlays carry a documented contrast exception:
+white 14px text measures 4.29:1 on hover and 3.58:1 on pressed/open; icon-only
+commands meet the 3:1 non-text threshold in every state.
+
+#### Composition patterns
+
+- **Use it as the launcher trigger.** Pass it as `trigger`; it accepts the
+  injected `aria-expanded`, `onClick` and ref and keeps the 22% open highlight.
+- **Name every icon-only command.** The type requires a non-empty `aria-label`
+  when there are no children; visible children must also be non-empty.
+- **Do not configure the appearance.** The bar has one command treatment; a
+  different visual hierarchy belongs outside the bar.
+
+### AppBarTitle
+
+The product or application name in the bar. The default is a non-heading span,
+so the page keeps control of its `h1`. `headingLevel` renders `h1`–`h6` when the
+product name really is the document heading; `href` renders a link. The two
+forms are mutually exclusive.
+
+```tsx
+<AppBarTitle>Contoso</AppBarTitle>
+<AppBarTitle headingLevel={1}>Contoso</AppBarTitle>
+<AppBarTitle href="/">Contoso</AppBarTitle>
+```
+
+| Prop             | Type                         | Default    | Description                                                               |
+| ---------------- | ---------------------------- | ---------- | ------------------------------------------------------------------------- |
+| `children`       | `ReactNode`                  | — required | Visible name; keep it plain text or non-interactive content in link mode. |
+| `headingLevel`   | `1 \| 2 \| 3 \| 4 \| 5 \| 6` | —          | Renders the matching heading; cannot be combined with `href`.             |
+| `href`           | `string`                     | —          | Renders an anchor; cannot be combined with `headingLevel`.                |
+| `target` / `rel` | native anchor props          | —          | Link mode only.                                                           |
+| …                | native span/anchor props     | —          | All native props of the rendered root pass through.                       |
+
+The title is 14px / 20px at normal text (unitless `1.4286`, so it scales at text
+zoom), semibold, white, with 8px inline margins. It is single-line with an
+ellipsis; the full text stays in the DOM. The link has no underline at rest, an
+underline on hover and a white focus ring.
+
+### AppBarSpacer
+
+The empty flex element that pushes trailing commands to the end of the bar. It
+renders a `<div>` with no children, no accessible content and no tab stop; all
+native div props pass through. It is invisible and has no visual contract of its
+own.
+
+| Prop | Type               | Default | Description                                                                       |
+| ---- | ------------------ | ------- | --------------------------------------------------------------------------------- |
+| …    | native `div` props | —       | `className`, `id`, `aria-*`, event handlers and the other div props pass through. |
+
 ### AppLauncher
 
 The launcher shell: a waffle trigger that opens a popover panel of application

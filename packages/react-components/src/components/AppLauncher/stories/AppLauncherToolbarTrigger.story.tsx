@@ -13,10 +13,10 @@ import {
 import { GridDots20Regular, Home20Regular, Settings20Regular } from '@fluentui/react-icons';
 import { useState } from 'react';
 import { AppLauncher } from '../AppLauncher';
+import { AppBar } from '../../AppBar';
+import { AppBarTitle } from '../../AppBarTitle';
 import {
-  AppBar,
   AppTiles,
-  Brand,
   Captions,
   Page,
   apps,
@@ -50,7 +50,7 @@ export const ToolbarTrigger = () => {
   return (
     <Page>
       <AppBar>
-        <Brand />
+        <AppBarTitle>Contoso</AppBarTitle>
       </AppBar>
       <OverlayDrawer
         modalType="non-modal"
